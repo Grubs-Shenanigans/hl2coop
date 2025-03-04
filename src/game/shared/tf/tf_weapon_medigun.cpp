@@ -1357,7 +1357,11 @@ bool CWeaponMedigun::FindAndHealTargets( void )
 				}
 
 #ifdef CLIENT_DLL
+#ifdef BDSBASE
+					if (GetMedigunType() == MEDIGUN_RESIST && prediction->IsFirstTimePredicted())
+#else
 					if ( GetMedigunType() == MEDIGUN_RESIST )
+#endif
 					{
 						// Play a sound when we tick over to a new charge level
 						int nChargeLevel = int(floor(flNewLevel/flMinChargeAmount));
