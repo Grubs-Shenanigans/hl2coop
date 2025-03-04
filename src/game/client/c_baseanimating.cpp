@@ -2345,7 +2345,11 @@ CBoneCache *C_BaseAnimating::GetBoneCache( CStudioHdr *pStudioHdr )
 	CBoneCache *pcache = Studio_GetBoneCache( m_hitboxBoneCacheHandle );
 	if ( pcache )
 	{
+#ifdef BDSBASE
+		if (pcache->IsValid(gpGlobals->curtime, 0.0) && pcache->m_timeValid <= gpGlobals->curtime)
+#else
 		if ( pcache->IsValid( gpGlobals->curtime, 0.0 ) )
+#endif
 		{
 			// in memory and still valid, use it!
 			return pcache;
