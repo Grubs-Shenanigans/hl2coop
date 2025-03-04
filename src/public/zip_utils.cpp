@@ -1331,13 +1331,9 @@ void CZipFile::ParseXZipCommentString( const char *pCommentString )
 		// parse out the alignement configuration
 		if ( !m_bForceAlignment )
 		{
-#ifdef BDSBASE
-            if ( sscanf( pCommentString + 4, "%u", &m_AlignmentSize ) != 1 || !IsPowerOfTwo( m_AlignmentSize ) )
-#else
 			m_AlignmentSize = 0;
 			sscanf( pCommentString + 4, "%d", &m_AlignmentSize );
 			if ( !IsPowerOfTwo( m_AlignmentSize ) )
-#endif
 			{
 				m_AlignmentSize = 0;
 			}

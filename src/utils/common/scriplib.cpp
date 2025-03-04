@@ -1150,65 +1150,32 @@ int CScriptLib::GetFileList( const char* pDirPath, const char* pPattern, CUtlVec
 	bool	bFindDirs;
 
 	fileList.Purge();
-#ifdef BDSBASE
-    V_strcpy_safe( sourcePath, pDirPath );
-	int len = V_strlen( sourcePath );
-#else
 	strcpy( sourcePath, pDirPath );
 	int len = (int)strlen( sourcePath );
-#endif
+    
 	if ( !len )
 	{
-#ifdef BDSBASE
-        V_strcpy_safe( sourcePath, ".\\" );
-#else
 		strcpy( sourcePath, ".\\" );
-#endif
 	}
 	else if ( sourcePath[len-1] != '\\' )
 	{
-#ifdef BDSBASE
-        if ( len != ARRAYSIZE( sourcePath ) - 1 )
-		{
-			sourcePath[len]   = '\\';
-			sourcePath[len+1] = '\0';
-		}
-		else
-		{
-			Error( "Directory path \"%s\" to get list of files by pattern \"%s\" is too large. "
-				"Max directory path length is %zu, but got %zu",
-				pDirPath, pPattern, ARRAYSIZE( sourcePath ) - 2, len );
-		}
-#else
 		sourcePath[len]   = '\\';
 		sourcePath[len+1] = '\0';
-#endif
 	}
 
-#ifdef BDSBASE
-    V_strcpy_safe( fullPath, sourcePath );
-#else
 	strcpy( fullPath, sourcePath );
-#endif
+    
 	if ( pPattern[0] == '\\' && pPattern[1] == '\0' )
 	{
 		// find directories only
 		bFindDirs = true;
-#ifdef BDSBASE
-        V_strcat_safe( fullPath, "*" );
-#else
 		strcat( fullPath, "*" );
-#endif
 	}
 	else
 	{
 		// find files, use provided pattern
 		bFindDirs = false;
-#ifdef BDSBASE
-        V_strcat_safe( fullPath, pPattern );
-#else
 		strcat( fullPath, pPattern );
-#endif
 	}
 
 #ifdef WIN32
@@ -1242,13 +1209,8 @@ int CScriptLib::GetFileList( const char* pDirPath, const char* pPattern, CUtlVec
 			continue;
 
 		char fileName[MAX_PATH];
-#ifdef BDSBASE
-        V_strcpy_safe( fileName, sourcePath );
-		V_strcat_safe( fileName, findData.name );
-#else
 		strcpy( fileName, sourcePath );
 		strcat( fileName, findData.name );
-#endif
 
 		int j = fileList.AddToTail();
 		fileList[j].fileName.Set( fileName );
@@ -1289,13 +1251,8 @@ int CScriptLib::GetFileList( const char* pDirPath, const char* pPattern, CUtlVec
 			continue;
 
 		char fileName[MAX_PATH];
-#ifdef BDSBASE
-        V_strcpy_safe( fileName, sourcePath );
-		V_strcat_safe( fileName, findData.cFileName );
-#else
 		strcpy( fileName, sourcePath );
 		strcat( fileName, findData.cFileName );
-#endif
 
 		int j = fileList.AddToTail();
 		fileList[j].fileName.Set( fileName );

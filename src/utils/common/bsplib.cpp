@@ -2738,10 +2738,6 @@ void WriteBSPFile( const char *filename, char *pUnused )
 	g_pFileSystem->Seek( g_hBSPFile, 0, FILESYSTEM_SEEK_HEAD );
 	WriteData( g_pBSPHeader );
 	g_pFileSystem->Close( g_hBSPFile );
-    
-#ifdef BDSBASE
-    g_pBSPHeader = nullptr;
-#endif
 }
 
 // Generate the next clear lump filename for the bsp file

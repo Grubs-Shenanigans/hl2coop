@@ -1979,19 +1979,6 @@ FORCEINLINE fltx4 RotateLeft2( const fltx4 & a )
 	return _mm_shuffle_ps( a, a, MM_SHUFFLE_REV( 2, 3, 0, 1 ) );
 }
 
-#ifdef BDSBASE
-// a b c d -> d a b c
-FORCEINLINE fltx4 RotateRight(const fltx4& a)
-{
-	return _mm_shuffle_ps(a, a, MM_SHUFFLE_REV(3, 0, 1, 2));
-}
-
-// a b c d -> c d a b
-FORCEINLINE fltx4 RotateRight2(const fltx4& a)
-{
-	return _mm_shuffle_ps(a, a, MM_SHUFFLE_REV(2, 3, 0, 1));
-}
-#else
 // a b c d -> d a b c
 FORCEINLINE fltx4 RotateRight( const fltx4 & a )
 {
@@ -2003,7 +1990,6 @@ FORCEINLINE fltx4 RotateRight2( const fltx4 & a )
 {
 	return _mm_shuffle_ps( a, a, _MM_SHUFFLE( 1, 0, 3, 2 ) );
 }
-#endif
 
 FORCEINLINE fltx4 AddSIMD( const fltx4 & a, const fltx4 & b )				// a+b
 {
