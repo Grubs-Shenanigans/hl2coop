@@ -1423,6 +1423,9 @@ BEGIN_NETWORK_TABLE_NOBASE( CTFGameRules, DT_TFGameRules )
 	RecvPropInt( RECVINFO( m_halloweenScenario ) ),
 	RecvPropBool( RECVINFO( m_bHelltowerPlayersInHell ) ),
 	RecvPropBool( RECVINFO( m_bIsUsingSpells ) ),
+#ifdef BDSBASE
+	RecvPropFloat(RECVINFO(m_flGravityMultiplier)),
+#endif
 	RecvPropBool( RECVINFO( m_bCompetitiveMode ), 0, RecvProxy_CompetitiveMode ),
 	RecvPropInt( RECVINFO( m_nMatchGroupType ) ),
 	RecvPropBool( RECVINFO( m_bMatchEnded ) ),
@@ -1493,6 +1496,9 @@ BEGIN_NETWORK_TABLE_NOBASE( CTFGameRules, DT_TFGameRules )
 	SendPropInt( SENDINFO( m_halloweenScenario ) ),
 	SendPropBool( SENDINFO( m_bHelltowerPlayersInHell ) ),
 	SendPropBool( SENDINFO( m_bIsUsingSpells ) ),
+#ifdef BDSBASE
+	SendPropFloat(SENDINFO(m_flGravityMultiplier)),
+#endif
 	SendPropBool( SENDINFO( m_bCompetitiveMode ) ),
 	SendPropBool( SENDINFO( m_bPowerupMode ) ),
 	SendPropInt( SENDINFO( m_nMatchGroupType ) ),
