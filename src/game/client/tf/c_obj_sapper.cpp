@@ -42,6 +42,14 @@ void C_ObjectSapper::ClientThink( void )
 	}
 }
 
+#ifdef BDSBASE
+bool C_ObjectSapper::ValidateEntityAttachedToPlayer(bool& bShouldRetry)
+{
+	bShouldRetry = false;
+	return true;
+}
+#endif
+
 float C_ObjectSapper::GetReversesBuildingConstructionSpeed( void )
 {
 	float flReverseSpeed = 0.0f;
