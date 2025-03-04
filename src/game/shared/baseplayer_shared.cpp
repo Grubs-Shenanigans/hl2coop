@@ -265,6 +265,30 @@ void CBasePlayer::ItemPostFrame()
 		return;
 	}
 
+#ifdef BDSBASE
+	if (gpGlobals->curtime < m_flNextAttack)
+	{
+		if (GetActiveWeapon())
+		{
+			GetActiveWeapon()->ItemBusyFrame();
+		}
+	}
+	
+	if (gpGlobals->curtime >= m_flNextAttack)
+	{
+		if (GetActiveWeapon() && (!IsInAVehicle() || UsingStandardWeaponsInVehicle()))
+		{
+#if defined( CLIENT_DLL )
+			// Not predicting this weapon
+			if (GetActiveWeapon()->IsPredicted())
+#endif
+
+			{
+				GetActiveWeapon()->ItemPostFrame();
+			}
+		}
+	}
+#else
     if ( gpGlobals->curtime < m_flNextAttack )
 	{
 		if ( GetActiveWeapon() )
@@ -286,6 +310,7 @@ void CBasePlayer::ItemPostFrame()
 			}
 		}
 	}
+#endif
 
 #if !defined( CLIENT_DLL )
 	ImpulseCommands();
