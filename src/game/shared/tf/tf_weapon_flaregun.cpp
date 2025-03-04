@@ -112,6 +112,43 @@ void CTFFlareGun::DestroySounds( void )
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
+#ifdef BDSBASE
+void CTFFlareGun::PrimaryAttack(void)
+{
+	if (!CanAttack())
+		return;
+
+	BaseClass::PrimaryAttack();
+
+#ifdef CLIENT_DLL
+	m_bReadyToFire = false;
+#endif
+}
+
+bool CTFFlareGun::CanAttack(void)
+{
+	// Get the player owning the weapon.
+	CTFPlayer* pOwner = ToTFPlayer(GetPlayerOwner());
+	if (!pOwner)
+		return false;
+
+	if (m_flChargeBeginTime > 0.0f)
+		return false;
+
+	// Don't attack if we're underwater
+	if (pOwner->GetWaterLevel() >= WL_Eyes)
+	{
+		if (gpGlobals->curtime > m_flLastDenySoundTime)
+		{
+			WeaponSound(SPECIAL2);
+			m_flLastDenySoundTime = gpGlobals->curtime + 1.0f;
+		}
+		return false;
+	}
+
+	return BaseClass::CanAttack();
+}
+#else
 void CTFFlareGun::PrimaryAttack( void )
 {
 	// Get the player owning the weapon.
@@ -140,6 +177,7 @@ void CTFFlareGun::PrimaryAttack( void )
 	m_bReadyToFire = false;
 #endif
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Detonate flare
@@ -149,7 +187,12 @@ void CTFFlareGun::SecondaryAttack( void )
 	if ( GetFlareGunType() != FLAREGUN_DETONATE )
 		return;
 
+#ifdef BDSBASE
+	// Detonator is allowed to detonate even if underwater, but not if base CanAttack fails
+	if (!BaseClass::CanAttack())
+#else
 	if ( !CanAttack() )
+#endif
 		return;
 
 	CTFPlayer *pPlayer = ToTFPlayer( GetOwner() );
@@ -387,8 +430,10 @@ CTFFlareGun_Revenge::CTFFlareGun_Revenge()
 {
 	m_fLastExtinguishTime = 0.0f;
 
+#ifndef BDSBASE
 #ifdef CLIENT_DLL
 	m_nOldRevengeCrits = 0;
+#endif
 #endif
 }
 
@@ -476,6 +521,26 @@ int CTFFlareGun_Revenge::GetCount( void )
 	return 0;
 }
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+CBaseEntity* CTFFlareGun_Revenge::FireProjectile(CTFPlayer* pPlayer)
+{
+	CBaseEntity* pProjectile = BaseClass::FireProjectile(pPlayer);
+
+	// Lower the revenge crit count
+	// Do this after the attack, so that we know if we are doing custom damage
+	CTFPlayer* pOwner = ToTFPlayer(GetPlayerOwner());
+	if (pOwner)
+	{
+		int iNewRevengeCrits = MAX(pOwner->m_Shared.GetRevengeCrits() - 1, 0);
+		pOwner->m_Shared.SetRevengeCrits(iNewRevengeCrits);
+	}
+
+	return pProjectile;
+}
+#else
 void CTFFlareGun_Revenge::PrimaryAttack()
 {
 	if ( !CanAttack() )
@@ -491,6 +556,7 @@ void CTFFlareGun_Revenge::PrimaryAttack()
 		pOwner->m_Shared.SetRevengeCrits( iNewRevengeCrits );
 	}
 }
+#endif
 
 void CTFFlareGun_Revenge::SecondaryAttack( void )
 {
@@ -546,12 +612,22 @@ void CTFFlareGun_Revenge::ChargePostFrame( void )
 				{
 					m_fLastExtinguishTime = gpGlobals->curtime;
 
+#ifdef BDSBASE
+#ifdef CLIENT_DLL
+					DoAbsorbEffect();
+#endif
+#endif
+
 #ifdef GAME_DLL
 					// Make sure the team isn't burning themselves to earn crits
 					if ( pBurner && pBurner->GetTeamNumber() != pOwner->GetTeamNumber() )
 					{
 						// Grant revenge crits
+#ifdef BDSBASE
+						pOwner->m_Shared.IncrementRevengeCrits();
+#else
 						pOwner->m_Shared.SetRevengeCrits( pOwner->m_Shared.GetRevengeCrits() + 1 );
+#endif
 
 						// Return health to the Pyro.
 						int iRestoreHealthOnExtinguish = 0;
@@ -603,6 +679,7 @@ bool CTFFlareGun_Revenge::ExtinguishPlayerInternal( CTFPlayer *pTarget, CTFPlaye
 }
 
 #ifdef CLIENT_DLL
+#ifndef BDSBASE
 void CTFFlareGun_Revenge::OnDataChanged( DataUpdateType_t type )
 {
 	BaseClass::OnDataChanged( type );
@@ -618,9 +695,11 @@ void CTFFlareGun_Revenge::OnDataChanged( DataUpdateType_t type )
 		m_nOldRevengeCrits = pOwner->m_Shared.GetRevengeCrits();
 	}
 }
+#endif
 
 void CTFFlareGun_Revenge::DoAbsorbEffect( void )
 {
+	// Flaregun/manmelter don't define this???
 	WeaponSound( SPECIAL1 );
 
 	CTFPlayer *pPlayer = ToTFPlayer( GetPlayerOwner() );

@@ -41,6 +41,10 @@ public:
 
 	virtual bool	CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget = NULL ) OVERRIDE;
 
+#ifdef BDSBASE
+	virtual CBaseEntity* FireProjectile(CTFPlayer* pPlayer) OVERRIDE;
+#endif
+
 	virtual void	PrimaryAttack( void );
 	virtual	float	GetWeaponSpread( void );
 

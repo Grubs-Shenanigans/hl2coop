@@ -129,6 +129,23 @@ void CTFShotgun_Revenge::Precache()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#ifdef BDSBASE
+CBaseEntity* CTFShotgun_Revenge::FireProjectile(CTFPlayer* pPlayer)
+{
+	CBaseEntity* pProjectile = BaseClass::FireProjectile(pPlayer);
+
+	// Lower the revenge crit count
+	// Do this after the attack, so that we know if we are doing custom damage
+	CTFPlayer* pOwner = ToTFPlayer(GetPlayerOwner());
+	if (pOwner)
+	{
+		int iNewRevengeCrits = MAX(pOwner->m_Shared.GetRevengeCrits() - 1, 0);
+		pOwner->m_Shared.SetRevengeCrits(iNewRevengeCrits);
+	}
+
+	return pProjectile;
+}
+#else
 void CTFShotgun_Revenge::PrimaryAttack()
 {
 	if ( !CanAttack() )
@@ -144,6 +161,7 @@ void CTFShotgun_Revenge::PrimaryAttack()
 		pOwner->m_Shared.SetRevengeCrits( iRevengeCrits-1 );
 	}
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose:

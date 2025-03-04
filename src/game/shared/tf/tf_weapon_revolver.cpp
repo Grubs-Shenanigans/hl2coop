@@ -117,6 +117,27 @@ bool CTFRevolver::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget /*
 	return true;
 }
 
+#ifdef BDSBASE
+CBaseEntity* CTFRevolver::FireProjectile(CTFPlayer* pPlayer)
+{
+	CBaseEntity* pProjectile = BaseClass::FireProjectile(pPlayer);
+
+	if (SapperKillsCollectCrits())
+	{
+		// Lower the revenge crit count
+		// Do this after the attack, so that we know if we are doing custom damage
+		CTFPlayer* pOwner = ToTFPlayer(GetPlayerOwner());
+		if (pOwner)
+		{
+			int iNewRevengeCrits = MAX(pOwner->m_Shared.GetRevengeCrits() - 1, 0);
+			pOwner->m_Shared.SetRevengeCrits(iNewRevengeCrits);
+		}
+	}
+
+	return pProjectile;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
@@ -156,6 +177,7 @@ void CTFRevolver::PrimaryAttack( void )
 
 	m_flLastAccuracyCheck = gpGlobals->curtime;
 
+#ifndef BDSBASE
 	if ( SapperKillsCollectCrits() )
 	{
 		// Do this after the attack, so that we know if we are doing custom damage
@@ -169,6 +191,7 @@ void CTFRevolver::PrimaryAttack( void )
 			}
 		}
 	}
+#endif
 #ifdef GAME_DLL
 	// Lower bonus for each attack
 	int iExtraDamageOnHitPenalty = 0;

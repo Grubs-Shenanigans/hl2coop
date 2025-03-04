@@ -52,6 +52,9 @@ public:
 	virtual void	DestroySounds( void );
 
 	virtual int		GetWeaponID( void ) const			{ return TF_WEAPON_FLAREGUN; }
+#ifdef BDSBASE
+	virtual bool	CanAttack(void) OVERRIDE;
+#endif
 	virtual void	PrimaryAttack();
 	virtual void	SecondaryAttack();
 
@@ -141,14 +144,20 @@ public:
 
 	const char* GetMuzzleFlashParticleEffect( void ) { return "drg_manmelter_muzzleflash"; }
 
+#ifdef BDSBASE
+	virtual CBaseEntity* FireProjectile(CTFPlayer* pPlayer) OVERRIDE;
+#else
 	virtual void PrimaryAttack();
+#endif
 	virtual void SecondaryAttack( void );
 	virtual void ChargePostFrame( void );
 	virtual const char* GetChargeEffect( void ) const { return "drg_manmelter_vacuum"; }
 	virtual const char* ReadyToFireSound( void ) const { return "Weapon_SniperRailgun.NonScoped"; }
 
 #ifdef CLIENT_DLL
+#ifndef BDSBASE
 	virtual void OnDataChanged( DataUpdateType_t type );
+#endif
 	void DoAbsorbEffect( void );
 #endif
 
@@ -157,8 +166,10 @@ private:
 
 	CNetworkVar( float, m_fLastExtinguishTime );
 
+#ifndef BDSBASE
 #ifdef CLIENT_DLL
 	int m_nOldRevengeCrits;
+#endif
 #endif
 
 };
