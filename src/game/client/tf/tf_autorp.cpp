@@ -547,7 +547,11 @@ void CTFAutoRP::ModifySpeech( const char *pszInText, char *pszOutText, int iOutL
 				{
 					szStoredWord[0] = toupper( szStoredWord[0] );
 				}
+#ifdef BDSBASE
+				else if (pszCurWord[0] >= 'a' && pszCurWord[0] <= 'z')
+#else
 				else if ( pszCurWord[0] >= 'a' && pszCurWord[0] <= 'a' )
+#endif
 				{
 					szStoredWord[0] = tolower( szStoredWord[0] );
 				}
