@@ -47,9 +47,18 @@ ActionResult< CTFBot >	CTFBotUseItem::Update( CTFBot *me, float interval )
 	{
 		if ( m_cooldownTimer.IsElapsed() )
 		{
+#ifdef BDSBASE
+			if (me->GetNextAttack() <= gpGlobals->curtime)
+			{
+				// use it
+				me->PressFireButton();
+				m_cooldownTimer.Invalidate();
+			}
+#else
 			// use it
 			me->PressFireButton();
 			m_cooldownTimer.Invalidate();
+#endif
 		}
 	}
 	else // used
