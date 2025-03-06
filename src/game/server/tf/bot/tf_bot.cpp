@@ -254,8 +254,8 @@ const char *GetRandomBotName( void )
 		"This Sucks On Ice",
 		"SEDUCE ME!",
 		"Bloody Hell",
-		"Explode",
-		"Kill",
+		"explode",
+		"kill",
 		"sv_cheats 1",
 		"ch_createairboat",
 		"ch_createjeep",
@@ -264,7 +264,7 @@ const char *GetRandomBotName( void )
 		"Waterproof",
 		"Fireproof",
 
-		// names from PR #892
+		// names from PR #892 (except sv_cheats 1)
 		"The Japanese Mafia",
 		"Giant Cluster of Stickies",
 		"2Fort Cow",
@@ -275,7 +275,6 @@ const char *GetRandomBotName( void )
 		"Respect The Sightline",
 		"Miss Pauling",
 		"Professional Bread Teleporter",
-		"sv_cheats 1",
 		"Fruit Shop Owner",
 		"pablo.gonzales.2007",
 		"The Observer",
