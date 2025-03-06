@@ -2477,6 +2477,33 @@ void CTFWeaponBase::ItemPostFrame( void )
 	{
 		FireFullClipAtOnce();
 	}
+
+#ifdef BDSBASE
+#ifdef CLIENT_DLL
+	ITFChargeUpWeapon* pChargeupWeapon = dynamic_cast<ITFChargeUpWeapon*>(this);
+	if (pChargeupWeapon && pChargeupWeapon->CanCharge())
+	{
+		float flChargeMaxTime = pChargeupWeapon->GetChargeMaxTime();
+
+		if (flChargeMaxTime != 0)
+		{
+			float flChargeBeginTime = pChargeupWeapon->GetChargeBeginTime();
+
+			if (flChargeBeginTime > 0)
+			{
+				float flTimeCharged = MAX(0, gpGlobals->curtime - flChargeBeginTime);
+				float flPercentCharged = MIN(1.0, flTimeCharged / flChargeMaxTime);
+
+				pChargeupWeapon->SetPercentProgress(flPercentCharged);
+			}
+			else
+			{
+				pChargeupWeapon->SetPercentProgress(0.f);
+			}
+		}
+	}
+#endif
+#endif
 }
 
 
