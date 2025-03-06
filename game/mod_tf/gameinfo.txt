@@ -20,6 +20,8 @@
 
 	DependsOnAppID 			440
 
+	DiscordAppID			1347077140306464838
+
 	FileSystem
 	{
 		SteamAppId				243750
