@@ -373,6 +373,9 @@ public:
 	void 					HintMessage( const char *pMessage ) { if (Hints()) Hints()->HintMessage( pMessage ); }
 
 	virtual	IMaterial *GetHeadLabelMaterial( void );
+#ifdef BDSBASE
+	virtual bool			ShouldShowHeadLabel() { return !IsPlayerDead(); }
+#endif
 
 	// Fog
 	fogparams_t				*GetFogParams( void ) { return &m_CurrentFog; }

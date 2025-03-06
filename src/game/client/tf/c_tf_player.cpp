@@ -9483,7 +9483,21 @@ IMaterial *C_TFPlayer::GetHeadLabelMaterial( void )
 	if ( g_pHeadLabelMaterial[0] == NULL )
 		SetupHeadLabelMaterials();
 
-	if ( GetTeamNumber() == TF_TEAM_RED )
+#ifdef BDSBASE
+	int nTeam;
+	if (m_Shared.InCond(TF_COND_DISGUISED) && IsEnemyPlayer())
+	{
+		nTeam = m_Shared.GetDisguiseTeam();
+	}
+	else
+	{
+		nTeam = GetTeamNumber();
+	}
+
+	if (nTeam == TF_TEAM_RED)
+#else
+	if (GetTeamNumber() == TF_TEAM_RED)
+#endif
 	{
 		return g_pHeadLabelMaterial[TF_PLAYER_HEAD_LABEL_RED];
 	}
@@ -9494,6 +9508,13 @@ IMaterial *C_TFPlayer::GetHeadLabelMaterial( void )
 
 	return BaseClass::GetHeadLabelMaterial();
 }
+
+#ifdef BDSBASE
+bool C_TFPlayer::ShouldShowHeadLabel()
+{
+	return BaseClass::ShouldShowHeadLabel() && (!m_Shared.IsStealthed() || !IsEnemyPlayer());
+}
+#endif
 
 void SetupHeadLabelMaterials( void )
 {
