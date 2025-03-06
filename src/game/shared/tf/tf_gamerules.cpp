@@ -704,6 +704,7 @@ ConVar mp_spectators_restricted( "mp_spectators_restricted", "0", FCVAR_NONE, "P
 ConVar tf_test_special_ducks( "tf_test_special_ducks", "1", FCVAR_DEVELOPMENTONLY );
 
 ConVar tf_mm_abandoned_players_per_team_max( "tf_mm_abandoned_players_per_team_max", "1", FCVAR_DEVELOPMENTONLY );
+
 #endif // GAME_DLL
 ConVar tf_mm_next_map_vote_time( "tf_mm_next_map_vote_time", "30", FCVAR_REPLICATED );
 
@@ -712,6 +713,10 @@ static float g_fEternaweenAutodisableTime = 0.0f;
 
 ConVar tf_spec_xray( "tf_spec_xray", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Allows spectators to see player glows. 1 = same team, 2 = both teams" );
 ConVar tf_spawn_glows_duration( "tf_spawn_glows_duration", "10", FCVAR_NOTIFY | FCVAR_REPLICATED, "How long should teammates glow after respawning\n" );
+
+#ifdef BDSBASE
+ConVar tf_allow_pyroland("tf_allow_pyroland", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable Pyroland filters on the current map.");
+#endif
 
 #ifdef GAME_DLL
 void cc_tf_forced_holiday_changed( IConVar *pConVar, const char *pOldString, float flOldValue )
@@ -1620,7 +1625,7 @@ CTFGameRulesProxy::CTFGameRulesProxy()
 	m_bOvertimeAllowedForCTF = true;
 	m_bRopesHolidayLightsAllowed = true;
 #ifdef BDSBASE
-	m_bSupportsPyroland = false;
+	m_bSupportsPyroland = tf_allow_pyroland.GetBool();
 #endif
 }
 
@@ -3385,7 +3390,7 @@ CTFGameRules::CTFGameRules()
 	m_bRopesHolidayLightsAllowed.Set( true );
 
 #ifdef BDSBASE
-	m_bSupportsPyroland.Set(false);
+	m_bSupportsPyroland.Set(tf_allow_pyroland.GetBool());
 #endif
 
 //=============================================================================
