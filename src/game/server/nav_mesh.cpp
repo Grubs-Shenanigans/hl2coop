@@ -3137,7 +3137,6 @@ HSCRIPT CNavMesh::ScriptGetNavAreaByID( int areaID )
 		return ToHScript(area);
 	}
 #endif
-	return NULL;
 #else
 	CNavArea* area = GetNavAreaByID(areaID);
 	if (area)
@@ -3145,6 +3144,8 @@ HSCRIPT CNavMesh::ScriptGetNavAreaByID( int areaID )
 		return ToHScript(area);
 	}
 #endif
+
+	return NULL;
 }
 
 //--------------------------------------------------------------------------------------------------------
@@ -3158,7 +3159,6 @@ HSCRIPT CNavMesh::ScriptGetNavArea( const Vector &pos, float beneathLimt )
 		return ToHScript(area);
 	}
 #endif
-	return NULL;
 #else
 	CNavArea* area = GetNavArea(pos, beneathLimt);
 	if (area)
@@ -3166,6 +3166,8 @@ HSCRIPT CNavMesh::ScriptGetNavArea( const Vector &pos, float beneathLimt )
 		return ToHScript(area);
 	}
 #endif
+
+	return NULL;
 }
 
 //--------------------------------------------------------------------------------------------------------
@@ -3179,7 +3181,6 @@ HSCRIPT CNavMesh::ScriptGetNearestNavArea( const Vector &pos, float maxDist, boo
 		return ToHScript( area );
 	}
 #endif
-	return NULL;
 #else
 	CNavArea* area = GetNearestNavArea(pos, false, maxDist, checkLOS, checkGround);
 	if (area)
@@ -3187,6 +3188,8 @@ HSCRIPT CNavMesh::ScriptGetNearestNavArea( const Vector &pos, float maxDist, boo
 		return ToHScript(area);
 	}
 #endif
+
+	return NULL;
 }
 
 
