@@ -651,7 +651,11 @@ BEGIN_ENT_SCRIPTDESC( CTFPlayer, CBaseMultiplayerPlayer , "Team Fortress 2 Playe
 	DEFINE_SCRIPTFUNC( AddCurrency, "Kaching! Give the player some cash for game modes with upgrades, ie. MvM" )
 	DEFINE_SCRIPTFUNC( RemoveCurrency, "Take away money from a player for reasons such as ie. spending." )
 
-	DEFINE_SCRIPTFUNC( IgnitePlayer, "" )
+#ifdef BDSBASE
+	DEFINE_SCRIPTFUNC_WRAPPED(IgnitePlayer, "")
+#else
+	DEFINE_SCRIPTFUNC(IgnitePlayer, "")
+#endif
 	DEFINE_SCRIPTFUNC( SetCustomModel, "" )
 	DEFINE_SCRIPTFUNC( SetCustomModelWithClassAnimations, "" )
 	DEFINE_SCRIPTFUNC( SetCustomModelOffset, "" )
@@ -20319,12 +20323,25 @@ static ConCommand sv_debug_stuck_particles( "sv_debug_stuck_particles", DebugPar
 //-----------------------------------------------------------------------------
 // Purpose: Debug concommand to set the player on fire
 //-----------------------------------------------------------------------------
+#ifdef BDSBASE
+void TestIgnitePlayer(const CCommand& args)
+{
+	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
+	if (!pPlayer)
+		return;
+
+	float flBurningTime = args.ArgC() >= 2 ? atof(args[1]) : TF_BURNING_FLAME_LIFE;
+	pPlayer->m_Shared.Burn(pPlayer, pPlayer->GetActiveTFWeapon(), flBurningTime);
+}
+static ConCommand cc_IgnitePlayer("tf_ignite_player", TestIgnitePlayer, "Sets you on fire", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY);
+#else
 void IgnitePlayer()
 {
-	CTFPlayer *pPlayer = ToTFPlayer( ToTFPlayer( UTIL_PlayerByIndex( 1 ) ) );
-	pPlayer->m_Shared.Burn( pPlayer, pPlayer->GetActiveTFWeapon() );
+	CTFPlayer* pPlayer = ToTFPlayer(ToTFPlayer(UTIL_PlayerByIndex(1)));
+	pPlayer->m_Shared.Burn(pPlayer, pPlayer->GetActiveTFWeapon());
 }
-static ConCommand cc_IgnitePlayer( "tf_ignite_player", IgnitePlayer, "Sets you on fire", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
+static ConCommand cc_IgnitePlayer("tf_ignite_player", IgnitePlayer, "Sets you on fire", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY);
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -20718,27 +20735,45 @@ void CTFPlayer::Internal_HandleMapEvent( inputdata_t &inputdata )
 	BaseClass::Internal_HandleMapEvent( inputdata );
 }
 
+#ifdef BDSBASE
+void CTFPlayer::InputIgnitePlayer(inputdata_t& inputdata)
+{
+	// doomsday uses this input for the exhaust area at end of round
+	// (it should probably be changed to use trigger_ignite)
+	if (FStrEq("sd_doomsday", STRING(gpGlobals->mapname)))
+	{
+		CTFPlayer* pRecentDamager = TFGameRules()->GetRecentDamager(this, 0, 5.0);
+		if (pRecentDamager && (pRecentDamager->GetTeamNumber() != GetTeamNumber()))
+		{
+			pRecentDamager->AwardAchievement(ACHIEVEMENT_TF_MAPS_DOOMSDAY_PUSH_INTO_EXHAUST);
+		}
+	}
+
+	m_Shared.Burn(this, NULL, inputdata.value.Float() > 0 ? inputdata.value.Float() : TF_BURNING_FLAME_LIFE);
+}
+#else
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void CTFPlayer::IgnitePlayer()
 {
-	if ( FStrEq( "sd_doomsday", STRING( gpGlobals->mapname ) ) )
+	if (FStrEq("sd_doomsday", STRING(gpGlobals->mapname)))
 	{
-		CTFPlayer *pRecentDamager = TFGameRules()->GetRecentDamager( this, 0, 5.0 );
-		if ( pRecentDamager && ( pRecentDamager->GetTeamNumber() != GetTeamNumber() ) )
+		CTFPlayer* pRecentDamager = TFGameRules()->GetRecentDamager(this, 0, 5.0);
+		if (pRecentDamager && (pRecentDamager->GetTeamNumber() != GetTeamNumber()))
 		{
-			pRecentDamager->AwardAchievement( ACHIEVEMENT_TF_MAPS_DOOMSDAY_PUSH_INTO_EXHAUST );
+			pRecentDamager->AwardAchievement(ACHIEVEMENT_TF_MAPS_DOOMSDAY_PUSH_INTO_EXHAUST);
 		}
 	}
 
-	m_Shared.Burn( this, NULL );
+	m_Shared.Burn(this, NULL);
 }
 
-void CTFPlayer::InputIgnitePlayer( inputdata_t &inputdata )
+void CTFPlayer::InputIgnitePlayer(inputdata_t& inputdata)
 {
 	IgnitePlayer();
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -23148,3 +23183,12 @@ void CTFPlayer::ScriptStunPlayer( float flTime, float flReductionAmount, int iSt
 {
 	m_Shared.StunPlayer( flTime, flReductionAmount, iStunFlags, ScriptToEntClass< CTFPlayer >( hAttacker ) );
 }
+
+#ifdef BDSBASE
+void CTFPlayer::ScriptIgnitePlayer(float flBurningTime, HSCRIPT hAttacker /* = NULL */, HSCRIPT hWeapon /* = NULL */)
+{
+	CTFPlayer* pAttacker = ScriptToEntClass< CTFPlayer >(hAttacker);
+	CTFWeaponBase* pWeapon = ScriptToEntClass< CTFWeaponBase >(hWeapon);
+	m_Shared.Burn(pAttacker ? pAttacker : this, pWeapon, flBurningTime);
+}
+#endif

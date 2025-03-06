@@ -523,7 +523,9 @@ public:
 
 	void PlayerUse( void );
 
+#ifndef BDSBASE
 	void IgnitePlayer();
+#endif
 	void SetCustomModel( const char *pszModel );
 	void SetCustomModelWithClassAnimations( const char *pszModel );
 	void SetCustomModelOffset( const Vector &offset );
@@ -829,6 +831,9 @@ public:
 	bool ScriptIsBotOfType(int nType) const { return this->IsBotOfType(nType); }
 
 	void ScriptStunPlayer( float flTime, float flReductionAmount, int iStunFlags = TF_STUN_MOVEMENT, HSCRIPT hAttacker = NULL );
+#ifdef BDSBASE
+	void ScriptIgnitePlayer(float flBurningTime, HSCRIPT hAttacker = NULL, HSCRIPT hWeapon = NULL);
+#endif
 
 private:
 	void				GetReadyToTauntWithPartner( void );
