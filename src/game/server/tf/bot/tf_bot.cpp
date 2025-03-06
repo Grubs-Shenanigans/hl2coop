@@ -62,7 +62,11 @@ ConVar tf_bot_suspect_spy_forget_cooldown( "tf_bot_suspect_spy_forget_cooldown",
 
 ConVar tf_bot_debug_tags( "tf_bot_debug_tags", "0", FCVAR_CHEAT, "ent_text will only show tags on bots" );
 
-ConVar tf_bot_spawn_use_preset_roster( "tf_bot_spawn_use_preset_roster", "1", FCVAR_CHEAT, "Bot will choose class from a preset class table." );
+#ifdef BDSBASE
+ConVar tf_bot_spawn_use_preset_roster("tf_bot_spawn_use_preset_roster", "0", FCVAR_NONE, "Bot will choose class from a preset class table.");
+#else
+ConVar tf_bot_spawn_use_preset_roster("tf_bot_spawn_use_preset_roster", "1", FCVAR_CHEAT, "Bot will choose class from a preset class table.");
+#endif
 
 extern ConVar tf_bot_sniper_spot_max_count;
 extern ConVar tf_bot_fire_weapon_min_time;
@@ -872,6 +876,8 @@ bool CTFBot::GetWeightDesiredClassToSpawn( CUtlVector< ETFClass > &vecClassToSpa
 		return false;
 	}
 
+	// These rosters assume a maximum team size of 12.
+	// If the team size goes beyond 12, the limits will scale accordingly. 
 	struct ClassSelectionInfo
 	{
 		ETFClass m_class;
@@ -976,9 +982,24 @@ bool CTFBot::GetWeightDesiredClassToSpawn( CUtlVector< ETFClass > &vecClassToSpa
 		}
 	}
 
+#ifdef BDSBASE
+	float maxLimitScale = 1.0f;
+	if (currentRoster.m_teamSize > 12)
+	{
+		maxLimitScale = currentRoster.m_teamSize / 12.0f;
+	}
+#endif
+
 	// build vector of classes we can pick from
 	CUtlVector< ETFClass > desiredClassVector;
 	CUtlVector< ETFClass > allowedClassForBotRosterVector;
+
+#ifdef BDSBASE
+	// Avoid massive variance in class selection on large team sizes.
+	// Using a soft cap which can be exceeded if the team size is absolutely gigantic (e.g. 1v99)
+	int classLimitSoftCap = 8;
+	int classLimitHardCap = (int)MAX(ceil(0.15f * currentRoster.m_teamSize), classLimitSoftCap);
+#endif
 
 	bool bHasRequiredClass = false;
 	int nCurrentMinRequiredClass = INT_MAX;
@@ -1021,8 +1042,14 @@ bool CTFBot::GetWeightDesiredClassToSpawn( CUtlVector< ETFClass > &vecClassToSpa
 			continue;
 		}
 
-		int maxLimit = desiredClassInfo->m_maxLimit[ (int)clamp( GetDifficulty(), CTFBot::EASY, CTFBot::EXPERT ) ];
-		if ( maxLimit > NoLimit && currentRoster.m_count[ desiredClassInfo->m_class ] >= maxLimit )
+		int maxLimit = desiredClassInfo->m_maxLimit[(int)clamp(GetDifficulty(), CTFBot::EASY, CTFBot::EXPERT)];
+
+#ifdef BDSBASE
+		if ((maxLimit > NoLimit && currentRoster.m_count[desiredClassInfo->m_class] >= maxLimit * maxLimitScale) ||
+			currentRoster.m_count[desiredClassInfo->m_class] >= classLimitHardCap)
+#else
+		if (maxLimit > NoLimit && currentRoster.m_count[desiredClassInfo->m_class] >= maxLimit)
+#endif
 		{
 			// at or above limit for this class
 			continue;
@@ -1181,22 +1208,47 @@ ETFClass CTFBot::GetPresetClassToSpawn() const
 	CCountClassMembers currentRoster( this, GetTeamNumber() );
 	ForEachPlayer( currentRoster );
 
+#ifdef BDSBASE
+	// go through the roster multiple times if we have more than 12 players.
+	// this will not affect bots 1-12 as we return immediately upon finding a valid class.
+	int rosterCount = 1 + ((currentRoster.m_teamSize - 1) / 12);
+#endif
 	int classCount[TF_LAST_NORMAL_CLASS];
 	V_memset( classCount, 0, sizeof( classCount ) );
-	for ( int i=0; i<12; ++i )
+#ifdef BDSBASE
+	for (int r = 1; r <= rosterCount; ++r)
+	{
+		for (int i = 0; i < 12; ++i)
+		{
+			ETFClass iClass = desiredRoster[i];
+
+			if (currentRoster.m_count[iClass] > classCount[iClass] * r)
+			{
+				// if we have enough of this class, skip it
+				classCount[iClass]++;
+			}
+			else
+			{
+				return iClass;
+			}
+		}
+	}
+#else
+	for (int i = 0; i < 12; ++i)
 	{
 		ETFClass iClass = desiredRoster[i];
 
-		if ( currentRoster.m_count[ iClass ] > classCount[ iClass ] )
+		if (currentRoster.m_count[iClass] > classCount[iClass])
 		{
 			// if we have enough of this class, skip it
-			classCount[ iClass ]++;
+			classCount[iClass]++;
 		}
 		else
 		{
 			return iClass;
 		}
 	}
+#endif
 
 	AssertMsg( 0, "This return shouldn't happen." );
 	return TF_CLASS_UNDEFINED;
@@ -1316,7 +1368,9 @@ CTFBot::CTFBot()
 	m_attributeFlags = 0;
 	m_homeArea = NULL;
 	m_squad = NULL;
+#ifndef BDSBASE
 	m_didReselectClass = false;
+#endif
 	m_enemySentry = NULL;
 	m_spotWhereEnemySentryLastInjuredMe = vec3_origin;
 	m_isLookingAroundForEnemies = true;
@@ -1901,6 +1955,11 @@ void CTFBot::Event_Killed( const CTakeDamageInfo &info )
 			RememberEnemySentry( sentrygun, GetAbsOrigin() );
 		}
 	}
+
+#ifdef BDSBASE
+	// moved from CTFBot::Spawn so we don't enter an infinite class-reeval loop.
+	m_didReselectClass = false;
+#endif
 
 	StopIdleSound();
 }

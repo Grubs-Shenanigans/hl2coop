@@ -373,6 +373,10 @@ public:
 	void ScriptSetMissionTarget( HSCRIPT hTarget ) { this->SetMissionTarget( ToEnt( hTarget ) ); }
 	HSCRIPT ScriptGetMissionTarget( void ) const { return ToHScript( this->GetMissionTarget() ); }
 
+#ifdef BDSBASE
+	bool GetDidReselectClass(void) const;
+#endif
+
 	void SetTeleportWhere( const CUtlStringList& teleportWhereName );
 	const CUtlStringList& GetTeleportWhere();
 	void ClearTeleportWhere();
@@ -627,6 +631,13 @@ inline CBaseEntity *CTFBot::GetMissionTarget( void ) const
 {
 	return m_missionTarget;
 }
+
+#ifdef BDSBASE
+inline bool CTFBot::GetDidReselectClass(void) const
+{
+	return m_didReselectClass;
+}
+#endif
 
 inline float CTFBot::GetSquadFormationError( void ) const
 {
