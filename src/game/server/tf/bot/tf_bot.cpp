@@ -249,7 +249,7 @@ const char *GetRandomBotName( void )
 
 		// names from PR #699
 		"No Bones",
-		"Im Not Real",
+		"I'm Not Real",
 		"Sexy Mann",
 		"This Sucks On Ice",
 		"SEDUCE ME!",
@@ -259,10 +259,10 @@ const char *GetRandomBotName( void )
 		"sv_cheats 1",
 		"ch_createairboat",
 		"ch_createjeep",
-		"WHO TOUCH SASHA!?",
+		"WHO TOUCHED SASHA!?",
 		"Bulletproof",
 		"Waterproof",
-		"Fire Proof",
+		"Fireproof",
 
 		// names from PR #892
 		"The Japanese Mafia",
