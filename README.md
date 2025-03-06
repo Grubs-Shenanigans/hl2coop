@@ -16,6 +16,7 @@ This base is specific to multiplayer mod projects.
     - NOTE: You may need to do some tinkering to make these singleplayer projects work well with the new SDK base. There are some bugs and crashes that won't be addressed by this base.
 - NPC NextBot sensing support from FIREFIGHT RELOADED.
 - Integrated Python binaries (on Windows) for more simple buiding.
+- Implemented Discord RPC support. Mod authors can change the DiscordAppId parameter in their gameinfo.txt file for more personalized icons. Mods can also use the DiscordAllowMapIcons option to allow map specific icons. Mod icons must be named "ModImage" and map icons must be named the map name.
 
 ## Setup:
 Read Autumn's setup guide at README_FROG.md for detailed setup.

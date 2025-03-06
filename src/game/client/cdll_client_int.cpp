@@ -347,6 +347,7 @@ static ConVar s_cl_class("cl_class", "default", FCVAR_USERINFO|FCVAR_ARCHIVE, "D
 #ifdef WIN32
 // Discord RPC
 static ConVar cl_discord_appid("cl_discord_appid", "1347077140306464838", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT);
+static ConVar cl_discord_mapicon("cl_discord_mapicon", "0", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT);
 static int64_t startTimestamp = time(0);
 
 static ConVar cl_discord("cl_discord", "1", FCVAR_ARCHIVE);
@@ -1792,7 +1793,29 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 			discordPresence.state = "In-Game";
 			sprintf(buffer, "Map: %s", pMapName);
 			discordPresence.details = buffer;
-			discordPresence.largeImageKey = "ModImage";
+
+			bool useMapIcon = false;
+
+			KeyValuesAD pKVGameInfo("GameInfo");
+			if (pKVGameInfo->LoadFromFile(g_pFullFileSystem, "gameinfo.txt", "MOD"))
+			{
+				useMapIcon = pKVGameInfo->GetBool("DiscordAllowMapIcons", cl_discord_mapicon.GetBool());
+			}
+			else
+			{
+				useMapIcon = cl_discord_mapicon.GetBool();
+			}
+
+			if (useMapIcon)
+			{
+				discordPresence.largeImageKey = pMapName;
+				discordPresence.smallImageKey = "ModImage";
+			}
+			else
+			{
+				discordPresence.largeImageKey = "ModImage";
+			}
+
 			Discord_UpdatePresence(&discordPresence);
 		}
 	}
