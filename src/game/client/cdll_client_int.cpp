@@ -348,6 +348,8 @@ static ConVar s_cl_class("cl_class", "default", FCVAR_USERINFO|FCVAR_ARCHIVE, "D
 // Discord RPC
 static ConVar cl_discord_appid("cl_discord_appid", "1347077140306464838", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT);
 static int64_t startTimestamp = time(0);
+
+static ConVar cl_discord("cl_discord", "1", FCVAR_ARCHIVE);
 #endif
 #endif
 
@@ -1173,45 +1175,48 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 
 #ifdef BDSBASE
 #ifdef WIN32
-	const char* discordID = "";
-
-	// try loading discord id from the gameinfo first
-	KeyValuesAD pKVGameInfo("GameInfo");
-	if (pKVGameInfo->LoadFromFile(g_pFullFileSystem, "gameinfo.txt", "MOD"))
+	if (cl_discord.GetBool())
 	{
-		discordID = pKVGameInfo->GetString("DiscordAppID", cl_discord_appid.GetString());
-	}
-	else
-	{
-		discordID = cl_discord_appid.GetString();
-	}
+		const char* discordID = "";
 
-	// Discord RPC
-	DiscordEventHandlers handlers;
-	memset(&handlers, 0, sizeof(handlers));
+		// try loading discord id from the gameinfo first
+		KeyValuesAD pKVGameInfo("GameInfo");
+		if (pKVGameInfo->LoadFromFile(g_pFullFileSystem, "gameinfo.txt", "MOD"))
+		{
+			discordID = pKVGameInfo->GetString("DiscordAppID", cl_discord_appid.GetString());
+		}
+		else
+		{
+			discordID = cl_discord_appid.GetString();
+		}
 
-	handlers.ready = HandleDiscordReady;
-	handlers.disconnected = HandleDiscordDisconnected;
-	handlers.errored = HandleDiscordError;
-	handlers.joinGame = HandleDiscordJoin;
-	handlers.spectateGame = HandleDiscordSpectate;
-	handlers.joinRequest = HandleDiscordJoinRequest;
+		// Discord RPC
+		DiscordEventHandlers handlers;
+		memset(&handlers, 0, sizeof(handlers));
 
-	char appid[255];
-	sprintf(appid, "%d", engine->GetAppID());
+		handlers.ready = HandleDiscordReady;
+		handlers.disconnected = HandleDiscordDisconnected;
+		handlers.errored = HandleDiscordError;
+		handlers.joinGame = HandleDiscordJoin;
+		handlers.spectateGame = HandleDiscordSpectate;
+		handlers.joinRequest = HandleDiscordJoinRequest;
 
-	Discord_Initialize(discordID, &handlers, 1, appid);
+		char appid[255];
+		sprintf(appid, "%d", engine->GetAppID());
 
-	if (!g_bTextMode)
-	{
-		DiscordRichPresence discordPresence;
-		memset(&discordPresence, 0, sizeof(discordPresence));
+		Discord_Initialize(discordID, &handlers, 1, appid);
 
-		discordPresence.state = "In-Game";
-		discordPresence.details = "Main Menu";
-		discordPresence.startTimestamp = startTimestamp;
-		discordPresence.largeImageKey = "ModImage";
-		Discord_UpdatePresence(&discordPresence);
+		if (!g_bTextMode)
+		{
+			DiscordRichPresence discordPresence;
+			memset(&discordPresence, 0, sizeof(discordPresence));
+
+			discordPresence.state = "In-Game";
+			discordPresence.details = "Main Menu";
+			discordPresence.startTimestamp = startTimestamp;
+			discordPresence.largeImageKey = "ModImage";
+			Discord_UpdatePresence(&discordPresence);
+		}
 	}
 #endif
 #endif
@@ -1347,8 +1352,11 @@ void CHLClient::Shutdown( void )
 
 #ifdef BDSBASE
 #ifdef WIN32
-	// Discord RPC
-	Discord_Shutdown();
+	if (cl_discord.GetBool())
+	{
+		// Discord RPC
+		Discord_Shutdown();
+	}
 #endif
 #endif
 	
@@ -1772,18 +1780,21 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 
 #ifdef BDSBASE
 #ifdef WIN32
-	// Discord RPC
-	if (!g_bTextMode)
+	if (cl_discord.GetBool())
 	{
-		DiscordRichPresence discordPresence;
-		memset(&discordPresence, 0, sizeof(discordPresence));
+		// Discord RPC
+		if (!g_bTextMode)
+		{
+			DiscordRichPresence discordPresence;
+			memset(&discordPresence, 0, sizeof(discordPresence));
 
-		char buffer[256];
-		discordPresence.state = "In-Game";
-		sprintf(buffer, "Map: %s", pMapName);
-		discordPresence.details = buffer;
-		discordPresence.largeImageKey = "ModImage";
-		Discord_UpdatePresence(&discordPresence);
+			char buffer[256];
+			discordPresence.state = "In-Game";
+			sprintf(buffer, "Map: %s", pMapName);
+			discordPresence.details = buffer;
+			discordPresence.largeImageKey = "ModImage";
+			Discord_UpdatePresence(&discordPresence);
+		}
 	}
 #endif
 #endif
@@ -1878,17 +1889,20 @@ void CHLClient::LevelShutdown( void )
 
 #ifdef BDSBASE
 #ifdef WIN32
-	// Discord RPC
-	if (!g_bTextMode)
+	if (cl_discord.GetBool())
 	{
-		DiscordRichPresence discordPresence;
-		memset(&discordPresence, 0, sizeof(discordPresence));
+		// Discord RPC
+		if (!g_bTextMode)
+		{
+			DiscordRichPresence discordPresence;
+			memset(&discordPresence, 0, sizeof(discordPresence));
 
-		discordPresence.state = "In-Game";
-		discordPresence.details = "Main Menu";
-		discordPresence.startTimestamp = startTimestamp;
-		discordPresence.largeImageKey = "ModImage";
-		Discord_UpdatePresence(&discordPresence);
+			discordPresence.state = "In-Game";
+			discordPresence.details = "Main Menu";
+			discordPresence.startTimestamp = startTimestamp;
+			discordPresence.largeImageKey = "ModImage";
+			Discord_UpdatePresence(&discordPresence);
+		}
 	}
 #endif
 #endif
