@@ -119,8 +119,14 @@ void CHudFlameRocketChargeMeter::OnTick( void )
 	CTFWeaponBase *pWpn = pPlayer->GetActiveTFWeapon();
 	ITFChargeUpWeapon *pChargeupWeapon = dynamic_cast< ITFChargeUpWeapon *>( pWpn );
 
-	if ( !pWpn || !pChargeupWeapon )
-		return;
+#ifdef BDSBASE
+    if ( !pWpn || !pChargeupWeapon || !m_pChargeMeter || !pChargeupWeapon->GetChargeMaxTime() )
+        return;
+    
+    m_pChargeMeter->SetProgress( pChargeupWeapon->GetPercentProgress() );
+#else
+    if ( !pWpn || !pChargeupWeapon )
+        return;
 
 	if ( m_pChargeMeter )
 	{
@@ -143,4 +149,5 @@ void CHudFlameRocketChargeMeter::OnTick( void )
 			}
 		}
 	}
+#endif
 }

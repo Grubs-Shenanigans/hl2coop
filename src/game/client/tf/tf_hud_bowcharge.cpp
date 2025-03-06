@@ -229,29 +229,36 @@ void CHudBowChargeMeter::OnTick( void )
 	CTFWeaponBase *pWpn = pPlayer->GetActiveTFWeapon();
 	ITFChargeUpWeapon *pChargeupWeapon = dynamic_cast< ITFChargeUpWeapon *>( pWpn );
 
-	if ( !pWpn || !pChargeupWeapon )
+#ifdef BDSBASE
+	if (!pWpn || !pChargeupWeapon || !m_pChargeMeter || !pChargeupWeapon->GetChargeMaxTime())
 		return;
 
-	if ( m_pChargeMeter )
+	m_pChargeMeter->SetProgress(pChargeupWeapon->GetPercentProgress());
+#else
+	if (!pWpn || !pChargeupWeapon)
+		return;
+
+	if (m_pChargeMeter)
 	{
 		float flChargeMaxTime = pChargeupWeapon->GetChargeMaxTime();
 
-		if ( flChargeMaxTime != 0 )
+		if (flChargeMaxTime != 0)
 		{
 			float flChargeBeginTime = pChargeupWeapon->GetChargeBeginTime();
 
-			if ( flChargeBeginTime > 0 )
+			if (flChargeBeginTime > 0)
 			{
-				float flTimeCharged = MAX( 0, gpGlobals->curtime - flChargeBeginTime );
-				flTimeCharged = MIN( flTimeCharged, 1.f );
-				float flPercentCharged = MIN( 1.0, flTimeCharged / flChargeMaxTime );
+				float flTimeCharged = MAX(0, gpGlobals->curtime - flChargeBeginTime);
+				flTimeCharged = MIN(flTimeCharged, 1.f);
+				float flPercentCharged = MIN(1.0, flTimeCharged / flChargeMaxTime);
 
-				m_pChargeMeter->SetProgress( flPercentCharged );
+				m_pChargeMeter->SetProgress(flPercentCharged);
 			}
 			else
 			{
-				m_pChargeMeter->SetProgress( 0.0f );
+				m_pChargeMeter->SetProgress(0.0f);
 			}
 		}
 	}
+#endif
 }
