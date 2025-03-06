@@ -37,6 +37,14 @@ ConVar tf_halloween_bot_quit_range( "tf_halloween_bot_quit_range", "2000", FCVAR
 //-----------------------------------------------------------------------------------------------------
 LINK_ENTITY_TO_CLASS( headless_hatman, CHeadlessHatman );
 
+#ifdef BDSBASE
+BEGIN_DATADESC(CHeadlessHatman)
+
+DEFINE_KEYFIELD(m_bMallet, FIELD_BOOLEAN, "mallet"),
+
+END_DATADESC();
+#endif
+
 IMPLEMENT_SERVERCLASS_ST( CHeadlessHatman, DT_HeadlessHatman )
 END_SEND_TABLE()
 
@@ -47,6 +55,9 @@ CHeadlessHatman::CHeadlessHatman()
 	m_intention = new CHeadlessHatmanIntention( this );
 	m_locomotor = new CHeadlessHatmanLocomotion( this );
 	m_body = new CHeadlessHatmanBody( this );
+#ifdef BDSBASE
+	m_bMallet = TFGameRules() && TFGameRules()->IsHalloweenScenario(CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY);
+#endif
 }
 
 
@@ -69,16 +80,24 @@ void CHeadlessHatman::PrecacheHeadlessHatman()
 	int model = PrecacheModel( "models/bots/headless_hatman.mdl" );
 	PrecacheGibsForModel( model );
 
-	if ( TFGameRules() && TFGameRules()->IsHalloweenScenario( CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY ) )
+#ifdef BDSBASE
+	//Precache all since now it's a keyvalue
+	PrecacheModel("models/weapons/c_models/c_big_mallet/c_big_mallet.mdl");
+	PrecacheParticleSystem("hammer_impact_button");
+	PrecacheScriptSound("Halloween.HammerImpact");
+	PrecacheModel("models/weapons/c_models/c_bigaxe/c_bigaxe.mdl");
+#else
+	if (TFGameRules() && TFGameRules()->IsHalloweenScenario(CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY))
 	{
-		PrecacheModel( "models/weapons/c_models/c_big_mallet/c_big_mallet.mdl" );
-		PrecacheParticleSystem( "hammer_impact_button" );
-		PrecacheScriptSound( "Halloween.HammerImpact" );
+		PrecacheModel("models/weapons/c_models/c_big_mallet/c_big_mallet.mdl");
+		PrecacheParticleSystem("hammer_impact_button");
+		PrecacheScriptSound("Halloween.HammerImpact");
 	}
 	else
 	{
-		PrecacheModel( "models/weapons/c_models/c_bigaxe/c_bigaxe.mdl" );
+		PrecacheModel("models/weapons/c_models/c_bigaxe/c_bigaxe.mdl");
 	}
+#endif
 
 	PrecacheScriptSound( "Halloween.HeadlessBossSpawn" );
 	PrecacheScriptSound( "Halloween.HeadlessBossSpawnRumble" );
@@ -188,7 +207,11 @@ void CHeadlessHatman::Update( void )
 //---------------------------------------------------------------------------------------------
 const char *CHeadlessHatman::GetWeaponModel() const
 {
-	if ( TFGameRules() && TFGameRules()->IsHalloweenScenario( CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY ) )
+#ifdef BDSBASE
+	if (m_bMallet)
+#else
+	if (TFGameRules() && TFGameRules()->IsHalloweenScenario(CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY))
+#endif
 	{
 		return "models/weapons/c_models/c_big_mallet/c_big_mallet.mdl";
 	}
