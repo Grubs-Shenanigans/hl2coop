@@ -502,6 +502,11 @@ protected:
 	float			m_flStepSoundTime;
 	bool			m_IsFootprintOnLeft;
 
+#ifdef BDSBASE
+public:
+	bool			m_bTyping;
+#endif
+
 private:
 	// Make sure no one calls this...
 	C_BasePlayer& operator=( const C_BasePlayer& src );

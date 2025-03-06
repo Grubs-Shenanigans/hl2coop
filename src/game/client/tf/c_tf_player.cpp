@@ -220,6 +220,9 @@ ConVar tf_taunt_first_person( "tf_taunt_first_person", "0", FCVAR_NONE, "1 = tau
 ConVar tf_romevision_opt_in( "tf_romevision_opt_in", "0", FCVAR_ARCHIVE, "Enable Romevision in Mann vs. Machine mode when available." );
 ConVar tf_romevision_skip_prompt( "tf_romevision_skip_prompt", "0", FCVAR_ARCHIVE, "If nonzero, skip the prompt about sharing Romevision." );
 
+#ifdef BDSBASE
+ConVar tf_chat_particle("tf_chat_particle", "1", FCVAR_ARCHIVE, "Show typing bubble above player heads");
+#endif
 
 #define BDAY_HAT_MODEL		"models/effects/bday_hat.mdl"
 #define BOMB_HAT_MODEL		"models/props_lakeside_event/bomb_temp_hat.mdl"
@@ -3826,6 +3829,9 @@ C_TFPlayer::C_TFPlayer() :
 	m_flBurnEffectStartTime = 0;
 	m_pDisguisingEffect = NULL;
 	m_pSaveMeEffect = NULL;
+#ifdef BDSBASE
+	m_pTypingEffect = NULL;
+#endif
 	m_pTauntWithMeEffect = NULL;
 	m_hOldObserverTarget = NULL;
 	m_iOldObserverMode = OBS_MODE_NONE;
@@ -4483,6 +4489,10 @@ void C_TFPlayer::OnDataChanged( DataUpdateType_t updateType )
 		// Player has triggered a save me command
 		CreateSaveMeEffect();
 	}
+
+#ifdef BDSBASE
+	UpdateTypingEffect();
+#endif
 
 	// To better support old demos, which have some screwed up flags, we just ignore various things if we're a SourceTV client.
 	if ( !IsHLTV() )
@@ -8134,6 +8144,34 @@ void C_TFPlayer::StopSaveMeEffect( bool bForceRemoveInstantly /*= false*/ )
 	}
 }
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void C_TFPlayer::UpdateTypingEffect()
+{
+	if (tf_chat_particle.GetBool()
+		&& m_bTyping
+		&& !GetClientVoiceMgr()->IsPlayerSpeaking(entindex())
+		&& IsAlive()
+		&& !InFirstPersonView()
+		&& (!m_Shared.IsStealthed() || !IsEnemyPlayer()))
+	{
+		if (!m_pTypingEffect)
+		{
+			m_pTypingEffect = ParticleProp()->Create("speech_typing", PATTACH_POINT_FOLLOW, "head");
+		}
+	}
+	else
+	{
+		if (m_pTypingEffect)
+		{
+			ParticleProp()->StopEmissionAndDestroyImmediately(m_pTypingEffect);
+			m_pTypingEffect = NULL;
+		}
+	}
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

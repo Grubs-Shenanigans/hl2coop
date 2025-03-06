@@ -1095,6 +1095,11 @@ protected:
 	CUtlVector<CHandle<CEconWearable > >	m_hMyWearables;
 #endif
 
+#ifdef BDSBASE
+public:
+	CNetworkVar(bool, m_bTyping);
+#endif
+
 private:
 
 // Replicated to all clients

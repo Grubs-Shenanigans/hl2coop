@@ -3062,6 +3062,9 @@ void CTFPlayer::PrecacheTFPlayer()
 	PrecacheParticleSystem( "speech_taunt_all" );
 	PrecacheParticleSystem( "speech_taunt_red" );
 	PrecacheParticleSystem( "speech_taunt_blue" );
+#ifdef BDSBASE
+	PrecacheParticleSystem("speech_typing");
+#endif
 	PrecacheParticleSystem( "player_recent_teleport_blue" );
 	PrecacheParticleSystem( "player_recent_teleport_red" );
 	PrecacheParticleSystem( "particle_nemesis_red" );

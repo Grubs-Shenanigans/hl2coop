@@ -423,6 +423,16 @@ bool ClientModeShared::CreateMove( float flInputSampleTime, CUserCmd *cmd )
 	if(!pPlayer)
 		return true;
 
+#ifdef BDSBASE
+	// for whatever reason the original implementation of #824 simulates a keybind. 
+	// In my implementation, m_bTyping will be a part of the base player code, which will be handled
+	// in the TF player classes.
+	if (m_pChatElement && m_pChatElement->GetMessageMode() != MM_NONE)
+		pPlayer->m_bTyping = true;
+	else
+		pPlayer->m_bTyping = false;
+#endif
+
 	// Let the player at it
 	return pPlayer->CreateMove( flInputSampleTime, cmd );
 }

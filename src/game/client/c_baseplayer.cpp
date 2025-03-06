@@ -308,6 +308,10 @@ END_RECV_TABLE()
 
 		RecvPropString( RECVINFO(m_szLastPlaceName) ),
 
+#ifdef BDSBASE
+		RecvPropBool(RECVINFO(m_bTyping)),
+#endif
+
 #if defined USES_ECON_ITEMS
 		RecvPropUtlVector( RECVINFO_UTLVECTOR( m_hMyWearables ), MAX_WEARABLES_SENT_FROM_SERVER,	RecvPropEHandle(NULL, 0, 0) ),
 #endif
@@ -452,6 +456,10 @@ C_BasePlayer::C_BasePlayer() : m_iv_vecViewOffset( "C_BasePlayer::m_iv_vecViewOf
 	m_flNextAchievementAnnounceTime = 0;
 
 	m_bFiredWeapon = false;
+
+#ifdef BDSBASE
+	m_bTyping = false;
+#endif
 
 	m_nForceVisionFilterFlags = 0;
 	m_nLocalPlayerVisionFlags = 0;

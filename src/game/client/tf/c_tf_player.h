@@ -230,6 +230,10 @@ public:
 	void CreateSaveMeEffect( MedicCallerType nType = CALLER_TYPE_NORMAL );
 	void StopSaveMeEffect( bool bForceRemoveInstantly = false );
 
+#ifdef BDSBASE
+	void UpdateTypingEffect();
+#endif
+
 	void CreateTauntWithMeEffect();
 	void StopTauntWithMeEffect();
 
@@ -596,6 +600,9 @@ private:
 
 	// Medic callout particle effect
 	CNewParticleEffect	*m_pSaveMeEffect;
+#ifdef BDSBASE
+	CNewParticleEffect* m_pTypingEffect;
+#endif
 	CNewParticleEffect	*m_pTauntWithMeEffect;
 
 	bool m_bUpdateObjectHudState;
