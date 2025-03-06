@@ -235,6 +235,60 @@ const char *GetRandomBotName( void )
 		"Kill Me",
 		"Glorified Toaster with Legs",
 
+#ifdef BDSBASE
+		//cut valve names
+		"John Spartan",
+		"Leeloo Dallas Multipass",
+		"Sho'nuff",
+		"Bruce Leroy",
+		"CAN YOUUUUUUUUU DIG IT?!?!?!?!",
+		"Big Gulp, Huh?",
+		"Stupid Hot Dog",
+		"I'm your huckleberry",
+		"The Crocketeer",
+
+		// names from PR #699
+		"No Bones",
+		"Im Not Real",
+		"Sexy Mann",
+		"This Sucks On Ice",
+		"SEDUCE ME!",
+		"Bloody Hell",
+		"Explode",
+		"Kill",
+		"sv_cheats 1",
+		"ch_createairboat",
+		"ch_createjeep",
+		"WHO TOUCH SASHA!?",
+		"Bulletproof",
+		"Waterproof",
+		"Fire Proof",
+
+		// names from PR #892
+		"The Japanese Mafia",
+		"Giant Cluster of Stickies",
+		"2Fort Cow",
+		"Queuing for Casual...",
+		"F1 Bot",
+		"Golden Frying Pan",
+		"This Server is VAC Secured",
+		"Respect The Sightline",
+		"Miss Pauling",
+		"Professional Bread Teleporter",
+		"sv_cheats 1",
+		"Fruit Shop Owner",
+		"pablo.gonzales.2007",
+		"The Observer",
+		"King of Australia",
+		"Blockhead",
+		"Pootis",
+		"DOOR STUCK!",
+		"Wheatley",
+		"BOT Connor",
+		"Scout's Father",
+		"coconut.jpg",
+#endif
+
 		NULL
 	};
 	static int nameCount = 0;
