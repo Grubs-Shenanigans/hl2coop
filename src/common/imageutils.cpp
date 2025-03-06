@@ -713,6 +713,9 @@ unsigned char *ImgUtl_ReadBMPAsRGBA( const char *bmpPath, int &width, int &heigh
 		}
 		else
 		{
+#ifdef BDSBASE
+			fclose(fp);
+#endif
 			errcode = CE_ERROR_PARSING_SOURCE;
 		}
 		return NULL;
