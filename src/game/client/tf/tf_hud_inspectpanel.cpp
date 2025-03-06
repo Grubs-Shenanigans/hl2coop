@@ -239,8 +239,13 @@ C_TFPlayer *CHudInspectPanel::GetInspectTarget( C_TFPlayer *pLocalTFPlayer )
 			// Get the player under our crosshair
 			pTargetPlayer = ToTFPlayer( pEntity );
 
+			// Preventing players from identifying a cloaked enemy spy through inspection
 			// Fix up if it's a spy disguised as my team
-			if ( pLocalTFPlayer->m_Shared.IsSpyDisguisedAsMyTeam( pTargetPlayer ) )
+#ifdef BDSBASE
+			if (pLocalTFPlayer->m_Shared.IsSpyDisguisedAsMyTeam(pTargetPlayer) && !pTargetPlayer->m_Shared.IsStealthed())
+#else
+			if (pLocalTFPlayer->m_Shared.IsSpyDisguisedAsMyTeam(pTargetPlayer))
+#endif
 			{
 				// Get the player that the spy is disguised as
 				C_TFPlayer *pDisguiseTarget = pTargetPlayer->m_Shared.GetDisguiseTarget();
