@@ -152,7 +152,11 @@ bool CWarDefinition::CWarSideDefinition_t::BInitFromKV( const char* pszContainin
 	SCHEMA_INIT_CHECK( m_pszLocalizedName != NULL, "war definition %s side %s missing side localization name", pszContainingWarName, pKVSide->GetName() );
 
 	m_pszLeaderboardName = pKVSide->GetString( "leaderboard_name", NULL );
-	SCHEMA_INIT_CHECK( m_pszLocalizedName != NULL, "war definition %s side %s missing side leaderboard name", pszContainingWarName, pKVSide->GetName() );
+#ifdef BDSBASE
+	SCHEMA_INIT_CHECK(m_pszLeaderboardName != NULL, "war definition %s side %s missing side leaderboard name", pszContainingWarName, pKVSide->GetName());
+#else
+	SCHEMA_INIT_CHECK(m_pszLocalizedName != NULL, "war definition %s side %s missing side leaderboard name", pszContainingWarName, pKVSide->GetName());
+#endif
 
 	//TODO BRETT: Grab the leaderboard now?
 	return SCHEMA_INIT_SUCCESS();
