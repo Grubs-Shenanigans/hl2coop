@@ -266,6 +266,13 @@ void CTFPlayerDestructionLogic::EvaluatePlayerCount()
 	CollectPlayers( &vecAllPlayers );
 
 	m_nMaxPoints = Max( m_nMinPoints, m_nPointsPerPlayer * vecAllPlayers.Count() );
+
+#ifdef BDSBASE
+	if (m_nRedScore.Get() >= m_nMaxPoints || m_nBlueScore.Get() >= m_nMaxPoints)
+	{
+		m_nMaxPoints = Max(m_nRedScore.Get(), m_nBlueScore.Get()) + 1;
+	}
+#endif
 }
 
 void CTFPlayerDestructionLogic::InputScoreRedPoints( inputdata_t& inputdata )
