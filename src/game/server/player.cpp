@@ -8129,7 +8129,11 @@ void CMovementSpeedMod::InputSpeedMod(inputdata_t &data)
 
 void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const void *pStruct, const void *pVarData, DVariant *pOut, int iElement, int objectID)
 {
-	int mask = (1<<PLAYER_FLAG_BITS) - 1;
+#ifdef BDSBASE
+	int mask = static_cast<unsigned>(1 << PLAYER_FLAG_BITS) - 1;
+#else
+	int mask = (1 << PLAYER_FLAG_BITS) - 1;
+#endif
 	int data = *(int *)pVarData;
 
 	pOut->m_Int = ( data & mask );
