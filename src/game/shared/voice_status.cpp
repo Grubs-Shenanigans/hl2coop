@@ -44,6 +44,9 @@ extern int cam_thirdperson;
 
 ConVar voice_modenable( "voice_modenable", "1", FCVAR_ARCHIVE | FCVAR_CLIENTCMD_CAN_EXECUTE, "Enable/disable voice in this mod." );
 ConVar voice_clientdebug( "voice_clientdebug", "0" );
+#ifdef BDSBASE
+ConVar voicelabel_legacybehavior("voicelabel_legacybehavior", "0", FCVAR_REPLICATED | FCVAR_NOTIFY);
+#endif
 
 // ---------------------------------------------------------------------- //
 // The voice manager for the client.
@@ -232,7 +235,9 @@ void CVoiceStatus::DrawHeadLabels()
 
 		// Don't show an icon for dead or spectating players (ie: invisible entities).
 #ifdef BDSBASE
-		if (!pPlayer->ShouldShowHeadLabel())
+		bool shouldShowHeadLabel = (voicelabel_legacybehavior.GetBool() ? pPlayer->IsPlayerDead() : !pPlayer->ShouldShowHeadLabel());
+
+		if (shouldShowHeadLabel)
 #else
 		if (pPlayer->IsPlayerDead())
 #endif
