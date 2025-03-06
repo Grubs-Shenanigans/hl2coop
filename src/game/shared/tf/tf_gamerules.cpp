@@ -1446,6 +1446,9 @@ BEGIN_NETWORK_TABLE_NOBASE( CTFGameRules, DT_TFGameRules )
 	RecvPropInt( RECVINFO( m_nForceEscortPushLogic ) ),
 
 	RecvPropBool( RECVINFO( m_bRopesHolidayLightsAllowed ) ),
+#ifdef BDSBASE
+	RecvPropBool(RECVINFO(m_bSupportsPyroland)),
+#endif
 #else
 
 	SendPropInt( SENDINFO( m_nGameType ), 4, SPROP_UNSIGNED ),
@@ -1518,6 +1521,9 @@ BEGIN_NETWORK_TABLE_NOBASE( CTFGameRules, DT_TFGameRules )
 	SendPropInt( SENDINFO( m_nForceEscortPushLogic ) ),
 
 	SendPropBool( SENDINFO( m_bRopesHolidayLightsAllowed ) ),
+#ifdef BDSBASE
+	SendPropBool(SENDINFO(m_bSupportsPyroland)),
+#endif
 #endif
 END_NETWORK_TABLE()
 
@@ -1562,6 +1568,9 @@ BEGIN_DATADESC( CTFGameRulesProxy )
 
 	DEFINE_KEYFIELD( m_bOvertimeAllowedForCTF, FIELD_BOOLEAN, "ctf_overtime" ),
 	DEFINE_KEYFIELD( m_bRopesHolidayLightsAllowed, FIELD_BOOLEAN, "ropes_holiday_lights_allowed" ),
+#ifdef BDSBASE
+	DEFINE_KEYFIELD(m_bSupportsPyroland, FIELD_BOOLEAN, "pyroland_allowed"),
+#endif
 
 	// Inputs.
 	DEFINE_INPUTFUNC( FIELD_FLOAT, "SetRedTeamRespawnWaveTime", InputSetRedTeamRespawnWaveTime ),
@@ -1610,6 +1619,9 @@ CTFGameRulesProxy::CTFGameRulesProxy()
 	m_nHudType = TF_HUDTYPE_UNDEFINED;
 	m_bOvertimeAllowedForCTF = true;
 	m_bRopesHolidayLightsAllowed = true;
+#ifdef BDSBASE
+	m_bSupportsPyroland = false;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1872,6 +1884,10 @@ void CTFGameRulesProxy::Activate()
 	TFGameRules()->SetOvertimeAllowedForCTF( m_bOvertimeAllowedForCTF );
 
 	TFGameRules()->SetRopesHolidayLightsAllowed( m_bRopesHolidayLightsAllowed );
+
+#ifdef BDSBASE
+	TFGameRules()->SetPyrovisionAllowed(m_bSupportsPyroland);
+#endif
 
 	ListenForGameEvent( "teamplay_round_win" );
 
@@ -3367,6 +3383,10 @@ CTFGameRules::CTFGameRules()
 	m_iGlobalAttributeCacheVersion = 0;
 
 	m_bRopesHolidayLightsAllowed.Set( true );
+
+#ifdef BDSBASE
+	m_bSupportsPyroland.Set(false);
+#endif
 
 //=============================================================================
 // HPE_BEGIN
@@ -17090,7 +17110,12 @@ bool CTFGameRules::IsHolidayActive( /*EHoliday*/ int eHoliday ) const
 void CTFGameRules::SetUpVisionFilterKeyValues( void )
 {
 	m_pkvVisionFilterShadersMapWhitelist = new KeyValues( "VisionFilterShadersMapWhitelist" );
-	m_pkvVisionFilterShadersMapWhitelist->LoadFromFile( g_pFullFileSystem, "cfg/mtp.cfg", "MOD" );
+#ifdef BDSBASE
+	if (!m_bSupportsPyroland)
+		m_pkvVisionFilterShadersMapWhitelist->LoadFromFile(g_pFullFileSystem, "cfg/mtp.cfg", "MOD");
+#else
+	m_pkvVisionFilterShadersMapWhitelist->LoadFromFile(g_pFullFileSystem, "cfg/mtp.cfg", "MOD");
+#endif
 
 	m_pkvVisionFilterTranslations = new KeyValues( "VisionFilterTranslations" );
 
@@ -17423,7 +17448,11 @@ bool CTFGameRules::AllowWeatherParticles( void )
 
 bool CTFGameRules::AllowMapVisionFilterShaders( void )
 {
-	if ( !m_pkvVisionFilterShadersMapWhitelist )
+#ifdef BDSBASE
+	if (!m_pkvVisionFilterShadersMapWhitelist && !m_bSupportsPyroland)
+#else
+	if (!m_pkvVisionFilterShadersMapWhitelist)
+#endif
 		return false;
 
 	const char *pMapName = engine->GetLevelName();
@@ -17432,10 +17461,19 @@ bool CTFGameRules::AllowMapVisionFilterShaders( void )
 		pMapName++;
 	}
 
-	if ( !pMapName )
+#ifdef BDSBASE
+	if (!pMapName && !m_bSupportsPyroland)
+#else
+	if (!pMapName)
+#endif
 		return false;
 
 	pMapName++;
+
+#ifdef BDSBASE
+	if (m_bSupportsPyroland)
+		return true;
+#endif
 
 	return  m_pkvVisionFilterShadersMapWhitelist->GetInt( pMapName, 0 ) != 0;
 }
