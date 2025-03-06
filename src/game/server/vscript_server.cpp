@@ -1027,6 +1027,13 @@ static float MaxClients()
 	return gpGlobals->maxClients;
 }
 
+#ifdef BDSBASE
+static int GetEntityCount()
+{
+	return engine->GetEntityCount();
+}
+#endif
+
 static float FrameTime()
 {
 	return gpGlobals->frametime;
@@ -2664,6 +2671,10 @@ bool VScriptServerInit()
 
 				ScriptRegisterFunctionNamed( g_pScriptVM, ScriptTraceLine, "TraceLine", "given 2 points & ent to ignore, return fraction along line that hits world or models" );
 				ScriptRegisterFunctionNamed( g_pScriptVM, ScriptTraceLinePlayersIncluded, "TraceLinePlayersIncluded", "given 2 points & ent to ignore, return fraction along line that hits world, models, players or npcs" );
+
+#ifdef BDSBASE
+				ScriptRegisterFunction(g_pScriptVM, GetEntityCount, "Returns the number of used edict slots");
+#endif
 
 				ScriptRegisterFunction( g_pScriptVM, FrameTime, "Get the time spent on the server in the last frame" );
 				ScriptRegisterFunction( g_pScriptVM, MaxClients, "Get the current number of max clients set by the maxplayers command." );
