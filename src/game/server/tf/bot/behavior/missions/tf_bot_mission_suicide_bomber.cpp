@@ -163,7 +163,7 @@ void CTFBotMissionSuicideBomber::OnEnd( CTFBot *me, Action< CTFBot > *nextAction
 {
 }
 
-
+#ifndef BDSBASE
 //---------------------------------------------------------------------------------------------
 EventDesiredResult< CTFBot > CTFBotMissionSuicideBomber::OnKilled( CTFBot *me, const CTakeDamageInfo &info )
 {
@@ -190,7 +190,7 @@ EventDesiredResult< CTFBot > CTFBotMissionSuicideBomber::OnKilled( CTFBot *me, c
 
 	return TryContinue();
 }
-
+#endif
 
 //---------------------------------------------------------------------------------------------
 EventDesiredResult< CTFBot > CTFBotMissionSuicideBomber::OnStuck( CTFBot *me )

@@ -8946,14 +8946,16 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			CTFBot *bot = ToTFBot( this );
 			if ( bot )
 			{
-				if ( bot->HasMission( CTFBot::MISSION_DESTROY_SENTRIES ) )
+#ifndef BDSBASE
+				if (bot->HasMission(CTFBot::MISSION_DESTROY_SENTRIES))
 				{
-					if ( ( m_iHealth - info.GetDamage() ) <= 0 )
+					if ((m_iHealth - info.GetDamage()) <= 0)
 					{
 						m_iHealth = 1;
 						return 0;
 					}
 				}
+#endif
 
 				// Sentry Busters hurt teammates when they explode.
 				// Force damage value when the victim is a giant.
@@ -9307,6 +9309,25 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	{
 		return 0;
 	}
+
+#ifdef BDSBASE
+	// Don't let Sentry Busters die until they've done their spin-up
+	if (IsBot())
+	{
+		if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
+		{
+			CTFBot* bot = ToTFBot(this);
+			if (bot && bot->HasMission(CTFBot::MISSION_DESTROY_SENTRIES))
+			{
+				// Round to nearest like in OnTakeDamage_Alive
+				if ((m_iHealth - (info.GetDamage() + 0.5f)) <= 0)
+				{
+					info.SetDamage(m_iHealth - 1);
+				}
+			}
+		}
+	}
+#endif
 
 	// If player has Reflect Powerup, reflect damage to attacker. 
 	// We do this here, after damage modify rules to ensure distance falloff calculations have already been made before we pass that damage back to the attacker

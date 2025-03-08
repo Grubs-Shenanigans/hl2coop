@@ -18,7 +18,9 @@ public:
 	virtual void					OnEnd( CTFBot *me, Action< CTFBot > *nextAction );
 
 	virtual EventDesiredResult< CTFBot > OnStuck( CTFBot *me );
+#ifndef BDSBASE
 	virtual EventDesiredResult< CTFBot > OnKilled( CTFBot *me, const CTakeDamageInfo &info );
+#endif
 
 	virtual QueryResultType ShouldAttack( const INextBot *me, const CKnownEntity *them ) const;	// should we attack "them"?
 
