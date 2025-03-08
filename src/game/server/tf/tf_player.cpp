@@ -2860,6 +2860,9 @@ void CTFPlayer::PrecacheMvM()
 	PrecacheScriptSound( "MVM.DeployBombGiant" );
 	PrecacheScriptSound( "Weapon_Upgrade.ExplosiveHeadshot" );
 	PrecacheScriptSound( "Spy.MVM_Chuckle" );
+#ifdef BDSBASE
+	PrecacheScriptSound("Spy.MVM_TeaseVictim");
+#endif
 	PrecacheScriptSound( "MVM.Robot_Engineer_Spawn" );
 	PrecacheScriptSound( "MVM.Robot_Teleporter_Deliver" );
 	PrecacheScriptSound( "MVM.MoneyPickup" );
