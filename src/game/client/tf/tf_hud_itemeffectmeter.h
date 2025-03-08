@@ -113,6 +113,11 @@ protected:
 
 	int					m_nState;
 
+#ifdef BDSBASE
+	Color				m_ProgressBar_FgColor;
+	Color				m_ProgressBar_FlashColor;
+#endif
+
 	CPanelAnimationVarAliasType( float, m_iXOffset, "x_offset", "0", "proportional_float" );
 };
 
