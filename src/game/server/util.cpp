@@ -2154,11 +2154,17 @@ void UTIL_SetClientVisibilityPVS( edict_t *pClient, const unsigned char *pvs, in
 
 		g_CheckClient.m_bClientPVSIsExpanded = false;
 
-		unsigned *pFrom = (unsigned *)pvs;
-		unsigned *pMask = (unsigned *)g_CheckClient.m_checkPVS;
-		unsigned *pTo = (unsigned *)g_CheckClient.m_checkVisibilityPVS;
-
+#ifdef BDSBASE
+		size_t* pFrom = (size_t*)pvs;
+		size_t* pMask = (size_t*)g_CheckClient.m_checkPVS;
+		size_t* pTo = (size_t*)g_CheckClient.m_checkVisibilityPVS;
+		int limit = pvssize / static_cast<int>(sizeof(size_t));
+#else
+		unsigned* pFrom = (unsigned*)pvs;
+		unsigned* pMask = (unsigned*)g_CheckClient.m_checkPVS;
+		unsigned* pTo = (unsigned*)g_CheckClient.m_checkVisibilityPVS;
 		int limit = pvssize / 4;
+#endif
 		int i;
 
 		for ( i = 0; i < limit; i++ )
@@ -2171,10 +2177,18 @@ void UTIL_SetClientVisibilityPVS( edict_t *pClient, const unsigned char *pvs, in
 			}
 		}
 
+#ifdef BDSBASE
+		int remainder = pvssize % static_cast<int>(sizeof(size_t));
+#else
 		int remainder = pvssize % 4;
+#endif
 		for ( i = 0; i < remainder; i++ )
 		{
-			((unsigned char *)&pTo[limit])[i] = ((unsigned char *)&pFrom[limit])[i] & !((unsigned char *)&pMask[limit])[i];
+#ifdef BDSBASE
+			((unsigned char*)&pTo[limit])[i] = ((unsigned char*)&pFrom[limit])[i] & ~((unsigned char*)&pMask[limit])[i];
+#else
+			((unsigned char*)&pTo[limit])[i] = ((unsigned char*)&pFrom[limit])[i] & !((unsigned char*)&pMask[limit])[i];
+#endif
 
 			if ( ((unsigned char *)&pFrom[limit])[i] != 0)
 			{
