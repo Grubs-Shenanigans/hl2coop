@@ -139,6 +139,9 @@ protected:
 	// simultaneously.
 	bool			CheckInterval( IntervalType_t type );
 
+#ifdef BDSBASE
+	float 			GetPlayerGravity(void);
+#endif
 
 	// Decompoosed gravity
 	void			StartGravity( void );
@@ -180,6 +183,7 @@ protected:
 	// Does not change the entities velocity at all
 	void			PushEntity( Vector& push, trace_t *pTrace );
 
+#ifndef BDSBASE
 	// Slide off of the impacting object
 	// returns the blocked flags:
 	// 0x01 == floor
@@ -187,7 +191,8 @@ protected:
 	//
 	// redirectCoeff - multiplier on the clipped velocity to apply along their new direction. 0 -> stomp into-normal
 	//                 velocity, 1 -> redirect it all along new vector.
-	int				ClipVelocity( Vector& in, Vector& normal, Vector& out, float overbounce, float redirectCoeff = 0.f );
+	int				ClipVelocity(Vector& in, Vector& normal, Vector& out, float overbounce, float redirectCoeff = 0.f);
+#endif
 
 	// If pmove.origin is in a solid position,
 	// try nudging slightly on all axis to
@@ -257,6 +262,17 @@ protected:
 
 
 protected:
+
+#ifdef BDSBASE
+	// Slide off of the impacting object
+	// returns the blocked flags:
+	// 0x01 == floor
+	// 0x02 == step / wall
+	//
+	// redirectCoeff - multiplier on the clipped velocity to apply along their new direction. 0 -> stomp into-normal
+	//                 velocity, 1 -> redirect it all along new vector.
+	int				ClipVelocity(Vector& in, Vector& normal, Vector& out, float overbounce, float redirectCoeff = 0.f);
+#endif
 
 	// Performs the collision resolution for fliers.
 	void			PerformFlyCollisionResolution( trace_t &pm, Vector &move );

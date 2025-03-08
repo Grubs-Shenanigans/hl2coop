@@ -86,6 +86,11 @@ ConVar tf_movement_lost_footing_restick( "tf_movement_lost_footing_restick", "50
 ConVar tf_movement_lost_footing_friction( "tf_movement_lost_footing_friction", "0.1", FCVAR_REPLICATED | FCVAR_CHEAT,
                                           "Ground friction for players who have lost their footing" );
 
+#ifdef BDSBASE
+ConVar tf_movement_predict_ramp_slide("tf_movement_predict_ramp_slide", "1", FCVAR_REPLICATED | FCVAR_CHEAT,
+					"Prevent players from sometimes stopping up on a ramp instead of sliding up it" );
+#endif
+
 extern ConVar cl_forwardspeed;
 extern ConVar cl_backspeed;
 extern ConVar cl_sidespeed;
@@ -139,6 +144,9 @@ public:
 	void			VehicleMove( void );
 	bool			HighMaxSpeedMove( void );
 	virtual float	GetAirSpeedCap( void );
+#ifdef BDSBASE
+	float 			GetSpeedRedirectCoefficient(void);
+#endif
 
 	virtual void	TracePlayerBBox( const Vector& start, const Vector& end, unsigned int fMask, int collisionGroup, trace_t& pm );
 	virtual CBaseHandle	TestPlayerPosition( const Vector& pos, int collisionGroup, trace_t& pm );
@@ -2142,6 +2150,19 @@ float CTFGameMovement::GetAirSpeedCap( void )
 	}
 }
 
+#ifdef BDSBASE
+float CTFGameMovement::GetSpeedRedirectCoefficient(void)
+{
+	float flRedirectCoeff = 0.f;
+	if (m_pTFPlayer->m_Shared.InCond(TF_COND_AIR_CURRENT))
+	{
+		flRedirectCoeff = Clamp(1.f - tf_movement_aircurrent_friction_mult.GetFloat(), 0.f, 1.f);
+	}
+
+	return flRedirectCoeff;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -2197,11 +2218,15 @@ void CTFGameMovement::AirMove( void )
 	}
 
 	float flAirAccel = sv_airaccelerate.GetFloat();
+#ifndef BDSBASE
 	float flWallSlideCoeff = 0.f;
+#endif
 	if ( m_pTFPlayer->m_Shared.InCond( TF_COND_AIR_CURRENT ) )
 	{
 		flAirAccel *= tf_movement_aircurrent_aircontrol_mult.GetFloat();
+#ifndef BDSBASE
 		flWallSlideCoeff = Clamp( 1.f - tf_movement_aircurrent_friction_mult.GetFloat(), 0.f, 1.f );
+#endif
 	}
 /*
 #ifdef STAGING_ONLY
@@ -2232,7 +2257,11 @@ void CTFGameMovement::AirMove( void )
 	// Add in any base velocity to the current velocity.
 	VectorAdd( mv->m_vecVelocity, player->GetBaseVelocity(), mv->m_vecVelocity );
 
-	int iBlocked = TryPlayerMove( NULL, NULL, flWallSlideCoeff );
+#ifdef BDSBASE
+	int iBlocked = TryPlayerMove(NULL, NULL, GetSpeedRedirectCoefficient());
+#else
+	int iBlocked = TryPlayerMove(NULL, NULL, flWallSlideCoeff);
+#endif
 
 	// TryPlayerMove uses '2' to indictate wall colision wtf
 	if ( iBlocked & 2 )
@@ -2432,6 +2461,26 @@ void CTFGameMovement::CategorizePosition( void )
 
 	trace_t trace;
 	TracePlayerBBox( vecStartPos, vecEndPos, PlayerSolidMask(), COLLISION_GROUP_PLAYER_MOVEMENT, trace );
+
+#ifdef BDSBASE
+	// The player's movement sometimes stop while being within 2 units above a shallow ramp.
+	// Normally this will cause the player to get grounded and stop up, even if they had
+	// enough speed to slide up it by slamming into it. This can be remedied by predicting
+	// what the player's clipped velocity would have been had they not been grounded and hit
+	// the ramp on the next tick. If the predicted vertical velocity is positive enough they
+	// can be allowed to stay airborne so they can slide up the ramp as expected.
+	if (tf_movement_predict_ramp_slide.GetBool() && player->GetGroundEntity() == NULL && trace.fraction < 1.0f && trace.plane.normal.z < 1.0f)
+	{
+		Vector vecVelocityNext = mv->m_vecVelocity;
+
+		vecVelocityNext.z -= GetPlayerGravity() * gpGlobals->frametime;
+
+		ClipVelocity(vecVelocityNext, trace.plane.normal, vecVelocityNext, 1.0f, GetSpeedRedirectCoefficient());
+
+		if (vecVelocityNext.z > 250.0f)
+			return;
+	}
+#endif
 
 	bool bInAir = false;
 	float flGroundFrictionMult = 1.f;
