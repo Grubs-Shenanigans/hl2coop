@@ -31,6 +31,10 @@
 
 DECLARE_HUDELEMENT( CHudInspectPanel );
 
+#ifdef BDSBASE
+extern ConVar tf_mvm_allow_upgrade_inspect;
+#endif
+
 static float s_flLastInspectDownTime = 0.f;
 
 void InspectDown()
@@ -171,7 +175,11 @@ void CHudInspectPanel::UserCmd_InspectTarget( void )
 			// Inspect a player
 			else if ( pTargetPlayer && ( pTargetPlayer->GetTeamNumber() != TF_TEAM_PVE_INVADERS ) )
 			{
-				if ( !GetClientModeTFNormal()->BIsFriendOrPartyMember( pTargetPlayer ) )
+#ifdef BDSBASE
+				if (tf_mvm_allow_upgrade_inspect.GetInt() == 0 || (tf_mvm_allow_upgrade_inspect.GetInt() == -1 && !GetClientModeTFNormal()->BIsFriendOrPartyMember(pTargetPlayer)))
+#else
+				if (!GetClientModeTFNormal()->BIsFriendOrPartyMember(pTargetPlayer))
+#endif
 				{
 					internalCenterPrint->Print( "#TF_Invalid_Inspect_Target" );
 					return;
