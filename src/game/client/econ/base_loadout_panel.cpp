@@ -137,7 +137,11 @@ void CBaseLoadoutPanel::SetBorderForItem( CItemModelPanel *pItemPanel, bool bMou
 		{
 			iRarity = pItemPanel->GetItem()->GetItemQuality() ;
 
+#ifdef BDSBASE
+			uint8 nRarity = pItemPanel->GetItem()->GetRarity(); // FIX: This will ensure that border colors are drawn for War Painted weapons. Item rarities are not stored on base paintkit weapon schema entries
+#else
 			uint8 nRarity = pItemPanel->GetItem()->GetItemDefinition()->GetRarity();
+#endif
 			if ( ( nRarity != k_unItemRarity_Any ) && ( iRarity != AE_SELFMADE ) && ( iRarity != AE_UNUSUAL ) )
 			{
 				// translate this quality to rarity
