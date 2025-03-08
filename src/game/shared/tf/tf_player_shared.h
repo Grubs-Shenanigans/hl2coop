@@ -560,9 +560,13 @@ public:
 
 	// Stuns
 	stun_struct_t *GetActiveStunInfo( void ) const;
+#ifdef BDSBASE
+	void	StunPlayer(float flTime, float flReductionAmount, int iStunFlags = TF_STUN_MOVEMENT, CTFPlayer* pAttacker = NULL);
+#else
 #ifdef GAME_DLL
-	void	StunPlayer( float flTime, float flReductionAmount, int iStunFlags = TF_STUN_MOVEMENT, CTFPlayer* pAttacker = NULL );
+	void	StunPlayer(float flTime, float flReductionAmount, int iStunFlags = TF_STUN_MOVEMENT, CTFPlayer* pAttacker = NULL);
 #endif // GAME_DLL
+#endif
 	float	GetAmountStunned( int iStunFlags );
 	bool	IsLoserStateStunned( void ) const;
 	bool	IsControlStunned( void );

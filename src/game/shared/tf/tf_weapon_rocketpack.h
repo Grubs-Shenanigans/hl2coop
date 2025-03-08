@@ -71,11 +71,18 @@ private:
 	bool				IsTransitionCompleted( void ) const;
 	void				WaitToLaunch( void );
 
+#ifdef BDSBASE
+	void				RocketLaunchPlayer(CTFPlayer* pPlayer, const Vector& vecForce, bool bIsPassenger);
+	Vector				CalcRocketForceFromPlayer(CTFPlayer* pPlayer);
+#endif
+
 #ifdef GAME_DLL
 	void				SetEnabled( bool bEnabled );
 	void				PassengerDelayLaunchThink( void );
-	void				RocketLaunchPlayer( CTFPlayer *pPlayer, const Vector& vecForce, bool bIsPassenger );
-	Vector				CalcRocketForceFromPlayer( CTFPlayer *pPlayer );
+#ifndef BDSBASE
+	void				RocketLaunchPlayer(CTFPlayer* pPlayer, const Vector& vecForce, bool bIsPassenger);
+	Vector				CalcRocketForceFromPlayer(CTFPlayer* pPlayer);
+#endif
 #else
 	void				CleanupParticles( void );
 #endif // GAME_DLL

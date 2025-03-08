@@ -126,7 +126,9 @@
 #include "tf_revive.h"
 #include "tf_logic_halloween_2014.h"
 #include "tf_logic_player_destruction.h"
+#ifndef BDSBASE
 #include "tf_weapon_rocketpack.h"
+#endif
 #include "tf_weapon_slap.h"
 #include "func_croc.h"
 #include "tf_weapon_bonesaw.h"
@@ -1480,6 +1482,7 @@ void CTFPlayer::TFPlayerThink()
 	else
 	{
 		m_iLeftGroundHealth = -1;
+#ifndef BDSBASE
 		if ( GetFlags() & FL_ONGROUND )
 		{
 			// Airborne conditions end on ground contact
@@ -1509,6 +1512,7 @@ void CTFPlayer::TFPlayerThink()
 				}
 			}
 		}
+#endif
 
 		if ( m_iBlastJumpState )
 		{
