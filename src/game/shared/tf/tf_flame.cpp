@@ -464,7 +464,7 @@ void CTFFlameManager::Touch(CBaseEntity* pOther)
 		return;
 
 	// find the first point that collide with this ent
-	FOR_EACH_VEC(GetPointVec(), i)
+	FOR_EACH_VEC_BACK(GetPointVec(), i)
 	{
 		int iPoint = i;
 
