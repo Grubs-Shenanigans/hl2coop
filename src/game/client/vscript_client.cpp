@@ -185,6 +185,11 @@ bool VScriptClientInit()
 				{
 					g_pScriptVM->Run( g_Script_vscript_client );
 				}
+                
+#ifdef BDSBASE
+				// ignore map-packed serverspawn files, allows server owners to run scripts before the map
+				VScriptRunScript("serverspawn", false);
+#endif
 
 				VScriptRunScript( "mapspawn", false );
 

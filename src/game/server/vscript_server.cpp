@@ -4477,6 +4477,11 @@ REGISTER_SCRIPT_CONST_TABLE( Server )
 				}
 				g_VScriptGameEventListener.Init();
 
+#ifdef BDSBASE
+				// ignore map-packed serverspawn files, allows server owners to run scripts before the map
+				VScriptRunScript("serverspawn", false);
+#endif
+
 				VScriptRunScript( "mapspawn", false );
 
 				if ( script_connect_debugger_on_mapspawn.GetBool() )

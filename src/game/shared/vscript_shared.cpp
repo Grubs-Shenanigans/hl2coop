@@ -102,7 +102,21 @@ HSCRIPT VScriptCompileScript( const char *pszScriptName, bool bWarnMissing )
 	}
 	else
 	{
-		bool bResult = filesystem->ReadFile( scriptPath, "GAME", bufferScript );
+#ifdef BDSBASE
+		bool bResult = false;
+
+		// ignore map-packed serverspawn files, allows server owners to run scripts before the map
+		if (V_strcmp(pszScriptName, "serverspawn") == 0 || V_strcmp(pszScriptName, CFmtStr("serverspawn%s", pszVMExtension)) == 0)
+		{
+			bResult = filesystem->ReadFile(scriptPath, "MOD", bufferScript);
+		}
+		else
+		{
+			bResult = filesystem->ReadFile(scriptPath, "GAME", bufferScript);
+		}
+#else
+		bool bResult = filesystem->ReadFile(scriptPath, "GAME", bufferScript);
+#endif
 
 		if( !bResult )
 		{
