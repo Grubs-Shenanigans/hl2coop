@@ -1252,30 +1252,30 @@ bool CWeaponMedigun::FindAndHealTargets( void )
 
 			if ( pTFPlayer && weapon_medigun_charge_rate.GetFloat() )
 			{
-#ifdef GAME_DLL
-				int iBoostMax = floor( pTFPlayer->m_Shared.GetMaxBuffedHealth() * 0.95);
+#ifdef BDSBASE
+				int iBoostMax = floor(pTFPlayer->m_Shared.GetMaxBuffedHealth() * 0.95);
 				float flChargeModifier = 1.f;
 
 				bool bTargetOverhealBlocked = false;
 				float flMod = 1.f;
-				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pTFPlayer, flMod, mult_patient_overheal_penalty );
-				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pTFPlayer->GetActiveTFWeapon(), flMod, mult_patient_overheal_penalty_active );
-				if ( flMod <= 0.f )
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFPlayer, flMod, mult_patient_overheal_penalty);
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFPlayer->GetActiveTFWeapon(), flMod, mult_patient_overheal_penalty_active);
+				if (flMod <= 0.f)
 				{
-					if ( pTFPlayer->GetHealth() >= pTFPlayer->GetMaxHealth() )
+					if (pTFPlayer->GetHealth() >= pTFPlayer->GetMaxHealth())
 					{
 						bTargetOverhealBlocked = true;
 					}
 				}
 
 				// Reduced charge for healing fully healed guys
-				if ( ( bTargetOverhealBlocked || ( pNewTarget->GetHealth() >= iBoostMax ) ) && ( TFGameRules() && !(TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer() ) ) )
+				if ((bTargetOverhealBlocked || (pNewTarget->GetHealth() >= iBoostMax)) && (TFGameRules() && !(TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer())))
 				{
 					flChargeModifier *= 0.5f;
 				}
 
 				int iTotalHealers = pTFPlayer->m_Shared.GetNumHealers();
-				if ( iTotalHealers > 1 )
+				if (iTotalHealers > 1)
 				{
 					flChargeModifier /= (float)iTotalHealers;
 				}
@@ -1283,18 +1283,18 @@ bool CWeaponMedigun::FindAndHealTargets( void )
 				// The resist medigun has a uber charge rate
 				flChargeAmount *= flChargeModifier;
 
-				if ( TFGameRules() && TFGameRules()->IsPowerupMode() )
+				if (TFGameRules() && TFGameRules()->IsPowerupMode())
 				{
 					bool bMedicIsPoweredUp = pOwner->m_Shared.GetCarryingRuneType() != RUNE_NONE && pOwner->m_Shared.GetCarryingRuneType() != RUNE_HASTE && pOwner->m_Shared.GetCarryingRuneType() != RUNE_AGILITY;
-					if ( bMedicIsPoweredUp && pTFPlayer->m_Shared.GetCarryingRuneType() == RUNE_NONE ) //medic is powered up but target isn't
+					if (bMedicIsPoweredUp && pTFPlayer->m_Shared.GetCarryingRuneType() == RUNE_NONE) //medic is powered up but target isn't
 					{
 						flChargeAmount *= 0.75f;
 					}
-					else if ( !bMedicIsPoweredUp && pTFPlayer->m_Shared.GetCarryingRuneType() != RUNE_NONE ) //target is powered up but medic isn't
+					else if (!bMedicIsPoweredUp && pTFPlayer->m_Shared.GetCarryingRuneType() != RUNE_NONE) //target is powered up but medic isn't
 					{
 						flChargeAmount *= 0.50f;
 					}
-					else if ( bMedicIsPoweredUp && pTFPlayer->m_Shared.GetCarryingRuneType() != RUNE_NONE ) //both players are powered up
+					else if (bMedicIsPoweredUp && pTFPlayer->m_Shared.GetCarryingRuneType() != RUNE_NONE) //both players are powered up
 					{
 						flChargeAmount *= 0.25f;
 					}
@@ -1302,39 +1302,122 @@ bool CWeaponMedigun::FindAndHealTargets( void )
 						flChargeAmount *= 1.0f;
 				}
 
-				if ( pNewTarget->GetHealth() >= pNewTarget->GetMaxHealth() && ( TFGameRules() && !(TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer() ) ) )
+				if (pNewTarget->GetHealth() >= pNewTarget->GetMaxHealth() && (TFGameRules() && !(TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer())))
 				{
-					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pOwner, flChargeAmount, mult_medigun_overheal_uberchargerate );
+					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pOwner, flChargeAmount, mult_medigun_overheal_uberchargerate);
 				}
 
-				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pOwner, flChargeAmount, mult_medigun_uberchargerate );
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pOwner, flChargeAmount, mult_medigun_uberchargerate);
 
-
+#ifdef GAME_DLL
 				// Apply any bonus our target gives us.
-				if ( pTarget )
+				if (pTarget)
 				{
-					bool bInRespawnRoom = 
-						PointInRespawnRoom( pTarget, WorldSpaceCenter() ) ||
-						PointInRespawnRoom( pOwner, WorldSpaceCenter() );
+					bool bInRespawnRoom =
+						PointInRespawnRoom(pTarget, WorldSpaceCenter()) ||
+						PointInRespawnRoom(pOwner, WorldSpaceCenter());
 
-					if ( !bInRespawnRoom )
+					if (!bInRespawnRoom)
 					{
-						CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pTarget, flChargeAmount, mult_uberchargerate_for_healer );
+						CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTarget, flChargeAmount, mult_uberchargerate_for_healer);
 					}
 				}
-				if ( TFGameRules() )
+#endif
+				if (TFGameRules())
 				{
-					if ( TFGameRules()->IsQuickBuildTime() )
+					if (TFGameRules()->IsQuickBuildTime())
 					{
 						flChargeAmount *= 4.f;
 					}
-					else if ( TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer() )
+					else if (TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer())
+					{
+						flChargeAmount *= 3.f;
+					}
+				}
+#else
+#ifdef GAME_DLL
+				int iBoostMax = floor(pTFPlayer->m_Shared.GetMaxBuffedHealth() * 0.95);
+				float flChargeModifier = 1.f;
+
+				bool bTargetOverhealBlocked = false;
+				float flMod = 1.f;
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFPlayer, flMod, mult_patient_overheal_penalty);
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFPlayer->GetActiveTFWeapon(), flMod, mult_patient_overheal_penalty_active);
+				if (flMod <= 0.f)
+				{
+					if (pTFPlayer->GetHealth() >= pTFPlayer->GetMaxHealth())
+					{
+						bTargetOverhealBlocked = true;
+					}
+				}
+
+				// Reduced charge for healing fully healed guys
+				if ((bTargetOverhealBlocked || (pNewTarget->GetHealth() >= iBoostMax)) && (TFGameRules() && !(TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer())))
+				{
+					flChargeModifier *= 0.5f;
+				}
+
+				int iTotalHealers = pTFPlayer->m_Shared.GetNumHealers();
+				if (iTotalHealers > 1)
+				{
+					flChargeModifier /= (float)iTotalHealers;
+				}
+
+				// The resist medigun has a uber charge rate
+				flChargeAmount *= flChargeModifier;
+
+				if (TFGameRules() && TFGameRules()->IsPowerupMode())
+				{
+					bool bMedicIsPoweredUp = pOwner->m_Shared.GetCarryingRuneType() != RUNE_NONE && pOwner->m_Shared.GetCarryingRuneType() != RUNE_HASTE && pOwner->m_Shared.GetCarryingRuneType() != RUNE_AGILITY;
+					if (bMedicIsPoweredUp && pTFPlayer->m_Shared.GetCarryingRuneType() == RUNE_NONE) //medic is powered up but target isn't
+					{
+						flChargeAmount *= 0.75f;
+					}
+					else if (!bMedicIsPoweredUp && pTFPlayer->m_Shared.GetCarryingRuneType() != RUNE_NONE) //target is powered up but medic isn't
+					{
+						flChargeAmount *= 0.50f;
+					}
+					else if (bMedicIsPoweredUp && pTFPlayer->m_Shared.GetCarryingRuneType() != RUNE_NONE) //both players are powered up
+					{
+						flChargeAmount *= 0.25f;
+					}
+					else
+						flChargeAmount *= 1.0f;
+				}
+
+				if (pNewTarget->GetHealth() >= pNewTarget->GetMaxHealth() && (TFGameRules() && !(TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer())))
+				{
+					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pOwner, flChargeAmount, mult_medigun_overheal_uberchargerate);
+				}
+
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pOwner, flChargeAmount, mult_medigun_uberchargerate);
+
+
+				// Apply any bonus our target gives us.
+				if (pTarget)
+				{
+					bool bInRespawnRoom =
+						PointInRespawnRoom(pTarget, WorldSpaceCenter()) ||
+						PointInRespawnRoom(pOwner, WorldSpaceCenter());
+
+					if (!bInRespawnRoom)
+					{
+						CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTarget, flChargeAmount, mult_uberchargerate_for_healer);
+					}
+				}
+				if (TFGameRules())
+				{
+					if (TFGameRules()->IsQuickBuildTime())
+					{
+						flChargeAmount *= 4.f;
+					}
+					else if (TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer())
 					{
 						flChargeAmount *= 3.f;
 					}
 				}
 #endif
-
+#endif
 				float flNewLevel = MIN( m_flChargeLevel + flChargeAmount, 1.0 );
 
 				float flMinChargeAmount = GetMinChargeAmount();
