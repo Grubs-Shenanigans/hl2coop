@@ -833,7 +833,11 @@ void CAchievementMgr::SaveGlobalState( bool bAsync )
 {
 	VPROF_BUDGET( "CAchievementMgr::SaveGlobalState", "Achievements" );
 
-	KeyValues *pKV = new KeyValues("GameState" );
+#ifdef BDSBASE
+	KeyValuesAD pKV("GameState");
+#else
+	KeyValues* pKV = new KeyValues("GameState");
+#endif
 	FOR_EACH_MAP( m_mapAchievement, i )
 	{
 		CBaseAchievement *pAchievement = m_mapAchievement[i];

@@ -2607,7 +2607,11 @@ void UTIL_LoadActivityRemapFile( const char *filename, const char *section, CUtl
 		return;
 	}
 
-	KeyValues *pkvFile = new KeyValues( section );
+#ifdef BDSBASE
+	KeyValuesAD pkvFile(section);
+#else
+	KeyValues* pkvFile = new KeyValues(section);
+#endif
 
 	if ( pkvFile->LoadFromFile( filesystem, filename, NULL ) )
 	{

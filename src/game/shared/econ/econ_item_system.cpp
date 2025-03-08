@@ -176,11 +176,22 @@ void CEconItemSystem::ReloadWhitelist( void )
 	}
 
 	// If we didn't find a file, we're done.
-	if ( !bFoundWhitelist )
+#ifdef BDSBASE
+	if (!bFoundWhitelist)
+	{
+		pWhitelistKV->deleteThis();
 		return;
+	}
+#else
+	if (!bFoundWhitelist)
+		return;
+#endif
 
 	// Otherwise, go through the KVs and turn on the matching items.
 	Msg("Parsing item whitelist (default: %s)\n", bDefault ? "allowed" : "disallowed" );
+#ifdef BDSBASE
+	KeyValues* ownerWhitelistKV = pWhitelistKV;
+#endif
 	pWhitelistKV = pWhitelistKV->GetFirstSubKey();
 	while ( pWhitelistKV )
 	{
@@ -204,6 +215,10 @@ void CEconItemSystem::ReloadWhitelist( void )
 		pWhitelistKV = pWhitelistKV->GetNextKey();
 	}
 	Msg("Finished.\n");
+
+#ifdef BDSBASE
+	ownerWhitelistKV->deleteThis();
+#endif
 }
 
 #ifdef GAME_DLL

@@ -777,7 +777,11 @@ void CHudMainMenuOverride::LoadCharacterImageFile( void )
 //-----------------------------------------------------------------------------
 void CHudMainMenuOverride::LoadMenuEntries( void )
 {
-	KeyValues *datafile = new KeyValues("GameMenu");
+#ifdef BDSBASE
+	KeyValuesAD datafile("GameMenu");
+#else
+	KeyValues* datafile = new KeyValues("GameMenu");
+#endif
 	datafile->UsesEscapeSequences( true );	// VGUI uses escape sequences
 	bool bLoaded = datafile->LoadFromFile( g_pFullFileSystem, "Resource/GameMenu.res", "custom_mod" );
 	if ( !bLoaded )
@@ -2274,7 +2278,11 @@ public:
 
 		//V_strcpy_safe( uilanguage, "german" );
 
-		KeyValues *pEntriesKV = new KeyValues( "motd_entries");
+#ifdef BDSBASE
+		KeyValuesAD pEntriesKV("motd_entries");
+#else
+		KeyValues* pEntriesKV = new KeyValues("motd_entries");
+#endif
 
 		// Try and load the cache file. If we fail, we'll just create a new one.
 		if ( !pMMPanel->ReloadedAllMOTDs() )
