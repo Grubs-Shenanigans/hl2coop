@@ -10366,6 +10366,10 @@ void GetVectorColorForParticleSystem ( int iSystem, bool bIsBlueTeam, bool bUseC
 	if ( bIsBlueTeam && g_KillStreakEffectsBase[iSystem].m_bHasTeamColor )
 	{
 		Assert( iSystem > 0 && iSystem < ARRAYSIZE( g_KillStreakEffectsBlue ) );
+#ifdef BDSBASE
+		if (iSystem < 0 || iSystem >= ARRAYSIZE(g_KillStreakEffectsBlue))
+			return;
+#endif
 		params = g_KillStreakEffectsBlue[iSystem];
 	}
 	

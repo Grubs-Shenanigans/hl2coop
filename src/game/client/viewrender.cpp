@@ -4673,7 +4673,11 @@ void CRendering3dView::DrawTranslucentRenderables( bool bInSkybox, bool bShadowD
 				DetailObjectSystem()->RenderTranslucentDetailObjects( CurrentViewOrigin(), CurrentViewForward(), CurrentViewRight(), CurrentViewUp(), nDetailLeafCount, pDetailLeafList );
 
 				// Draw translucent renderables in the leaf interspersed with detail props
-				for( ;pEntities[iCurTranslucentEntity].m_iWorldListInfoLeaf == iThisLeaf && iCurTranslucentEntity >= 0; --iCurTranslucentEntity )
+#ifdef BDSBASE
+				for (; iCurTranslucentEntity >= 0 && pEntities[iCurTranslucentEntity].m_iWorldListInfoLeaf == iThisLeaf; --iCurTranslucentEntity)
+#else
+				for (; pEntities[iCurTranslucentEntity].m_iWorldListInfoLeaf == iThisLeaf && iCurTranslucentEntity >= 0; --iCurTranslucentEntity)
+#endif
 				{
 					IClientRenderable *pRenderable = pEntities[iCurTranslucentEntity].m_pRenderable;
 
@@ -4719,7 +4723,11 @@ void CRendering3dView::DrawTranslucentRenderables( bool bInSkybox, bool bShadowD
 				// Therefore no fixup on nDetailLeafCount is required as in the above section
 				DetailObjectSystem()->RenderTranslucentDetailObjects( CurrentViewOrigin(), CurrentViewForward(), CurrentViewRight(), CurrentViewUp(), nDetailLeafCount, pDetailLeafList );
 
-				for( ;pEntities[iCurTranslucentEntity].m_iWorldListInfoLeaf == iThisLeaf && iCurTranslucentEntity >= 0; --iCurTranslucentEntity )
+#ifdef BDSBASE
+				for (; iCurTranslucentEntity >= 0 && pEntities[iCurTranslucentEntity].m_iWorldListInfoLeaf == iThisLeaf; --iCurTranslucentEntity)
+#else
+				for (; pEntities[iCurTranslucentEntity].m_iWorldListInfoLeaf == iThisLeaf && iCurTranslucentEntity >= 0; --iCurTranslucentEntity)
+#endif
 				{
 					IClientRenderable *pRenderable = pEntities[iCurTranslucentEntity].m_pRenderable;
 

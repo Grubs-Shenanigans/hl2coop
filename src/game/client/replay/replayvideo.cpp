@@ -32,7 +32,11 @@ static ReplayCodec_t s_Codecs[] =
 {
 	{ VideoEncodeCodec::WEBM_CODEC, "#Replay_Codec_WEBM" },
 };
-static int s_nNumCodecs = ARRAYSIZE( s_Codecs );
+#ifdef BDSBASE
+static constexpr int s_nNumCodecs = ARRAYSIZE(s_Codecs);
+#else
+static int s_nNumCodecs = ARRAYSIZE(s_Codecs);
+#endif
 
 //-----------------------------------------------------------------------------
 
@@ -52,7 +56,11 @@ static ReplayCodec_t s_Codecs[] =
 	{ VideoEncodeCodec::MJPEG_A_CODEC, "#Replay_Codec_MJPEGA" },
 	{ VideoEncodeCodec::H264_CODEC, "#Replay_Codec_H264" },
 };
-static int s_nNumCodecs = ARRAYSIZE( s_Codecs );
+#ifdef BDSBASE
+static constexpr int s_nNumCodecs = ARRAYSIZE(s_Codecs);
+#else
+static int s_nNumCodecs = ARRAYSIZE(s_Codecs);
+#endif
 
 //-----------------------------------------------------------------------------
 
@@ -125,8 +133,13 @@ const ReplayCodec_t &ReplayVideo_GetCodec( int i )
 
 int ReplayVideo_FindCodecPresetFromCodec( VideoEncodeCodec_t nCodecId )
 {
-	AssertMsg( nCodecId < VideoEncodeCodec::CODEC_COUNT, "Codec ID out of range!" );
-	for ( int i = 0; i < VideoEncodeCodec::CODEC_COUNT; ++i )
+#ifdef BDSBASE
+	AssertMsg(nCodecId < s_nNumCodecs, "Codec ID out of range!");
+	for (int i = 0; i < s_nNumCodecs; ++i)
+#else
+	AssertMsg(nCodecId < VideoEncodeCodec::CODEC_COUNT, "Codec ID out of range!");
+	for (int i = 0; i < VideoEncodeCodec::CODEC_COUNT; ++i)
+#endif
 	{
 		if ( s_Codecs[ i ].m_nCodecId == nCodecId )
 			return i;
