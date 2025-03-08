@@ -68,9 +68,6 @@ public:
 
 	static CTFFlameManager* Create( CBaseEntity *pOwner, bool bIsAdditionalManager = false );
 	virtual bool AddPoint( int iCurrentTick ) OVERRIDE;
-#ifdef BDSBASE
-	virtual void Touch(CBaseEntity* pOther) OVERRIDE;
-#endif
 	void HookAttributes();
 	void UpdateDamage( int iDmgType, float flDamage, float flBurnFrequency, bool bCritFromBehind );
 	bool BCanBurnEntityThisFrame( CBaseEntity *pEnt ) const;

@@ -108,7 +108,11 @@ void CTFPointManager::Touch( CBaseEntity *pOther )
 		return;
 
 	// find the first point that collide with this ent
-	FOR_EACH_VEC( m_vecPoints, iPoint )
+#ifdef BDSBASE
+	FOR_EACH_VEC_BACK(m_vecPoints, iPoint)
+#else
+	FOR_EACH_VEC(m_vecPoints, iPoint)
+#endif
 	{
 		tf_point_t *pPoint = m_vecPoints[iPoint];
 
