@@ -6011,8 +6011,15 @@ void CTFPlayer::HandleAnimEvent( animevent_t *pEvent )
 		char szAttrName[128];
 		float flVal;
 		float flDuration;
-		if ( sscanf( pEvent->options, "%s %f %f", szAttrName, &flVal, &flDuration ) == 3 )
+#ifdef BDSBASE
+		if (sscanf(pEvent->options, "%127s %f %f", szAttrName, &flVal, &flDuration) == 3)
+#else
+		if (sscanf(pEvent->options, "%s %f %f", szAttrName, &flVal, &flDuration) == 3)
+#endif
 		{
+#ifdef BDSBASE
+			szAttrName[ARRAYSIZE(szAttrName) - 1] = '\0';
+#endif
 			Assert( flDuration > 0.f );
 			AddCustomAttribute( szAttrName, flVal, flDuration );
 		}
