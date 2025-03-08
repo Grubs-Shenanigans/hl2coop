@@ -16793,6 +16793,19 @@ bool CTFGameRules::TeamMayCapturePoint( int iTeam, int iPointIndex )
 	if ( !tf_caplinear.GetBool() )
 		return true; 
 
+#ifdef BDSBASE
+	if (IsInWaitingForPlayers())
+		return false;
+
+	// Is the point locked?
+	if (ObjectiveResource()->GetCPLocked(iPointIndex))
+		return false;
+
+	// Does this point allow our team to cap it?
+	if (!ObjectiveResource()->TeamCanCapPoint(iPointIndex, iTeam))
+		return false;
+#endif
+
 	// Any previous points necessary?
 	int iPointNeeded = ObjectiveResource()->GetPreviousPointForPoint( iPointIndex, iTeam, 0 );
 
@@ -16800,12 +16813,14 @@ bool CTFGameRules::TeamMayCapturePoint( int iTeam, int iPointIndex )
 	if ( iPointNeeded == iPointIndex )
 		return true;
 
-	if ( IsInKothMode() && IsInWaitingForPlayers() )
+#ifndef BDSBASE
+	if (IsInKothMode() && IsInWaitingForPlayers())
 		return false;
 
 	// Is the point locked?
-	if ( ObjectiveResource()->GetCPLocked( iPointIndex ) )
+	if (ObjectiveResource()->GetCPLocked(iPointIndex))
 		return false;
+#endif
 
 	// No required points specified? Require all previous points.
 	if ( iPointNeeded == -1 )
