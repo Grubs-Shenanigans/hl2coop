@@ -602,7 +602,11 @@ public:
 		// Find the commentary file
 		char szFullName[512];
 		Q_snprintf(szFullName,sizeof(szFullName), "maps/%s_commentary.txt", STRING( gpGlobals->mapname ));
-		KeyValues *pkvFile = new KeyValues( "Commentary" );
+#ifdef BDSBASE
+		KeyValuesAD pkvFile("Commentary");
+#else
+		KeyValues* pkvFile = new KeyValues("Commentary");
+#endif
 		if ( pkvFile->LoadFromFile( filesystem, szFullName, "MOD" ) )
 		{
 			Msg( "Commentary: Loading commentary data from %s. \n", szFullName );

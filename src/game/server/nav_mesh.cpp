@@ -97,6 +97,9 @@ CNavMesh::~CNavMesh()
 		delete [] m_placeName[i];
 	}
 
+#ifdef BDSBASE
+	delete[] m_placeName;
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------------------
