@@ -1065,6 +1065,11 @@ void CTFSpellBook::CreateSpellJar( const Vector &position, const QAngle &angles,
 //-----------------------------------------------------------------------------
 void CTFSpellBook::RollNewSpell( int iTier, bool bForceReroll /*= false*/ )
 {
+#ifdef BDSBASE
+	if (!TFGameRules()->IsUsingSpells())
+		return;
+#endif
+
 	// do not do anything if we already have a spell for low tier, always roll for high tier
 	if ( m_iSpellCharges > 0 && iTier == 0 && !bForceReroll )
 		return;
