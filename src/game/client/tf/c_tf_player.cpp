@@ -514,6 +514,10 @@ ConVar cl_ragdoll_physics_enable( "cl_ragdoll_physics_enable", "1", 0, "Enable/d
 ConVar cl_ragdoll_fade_time( "cl_ragdoll_fade_time", "15", FCVAR_CLIENTDLL );
 ConVar cl_ragdoll_forcefade( "cl_ragdoll_forcefade", "0", FCVAR_CLIENTDLL );
 ConVar cl_ragdoll_pronecheck_distance( "cl_ragdoll_pronecheck_distance", "64", FCVAR_GAMEDLL );
+#ifdef BDSBASE
+ConVar cl_ragdoll_burn_anim_enable("cl_ragdoll_burn_anim_enable", "0", FCVAR_ARCHIVE, "Enable/disable burning death animations.");
+ConVar cl_ragdoll_burn_anim_mode("cl_ragdoll_burn_anim_mode", "1", FCVAR_ARCHIVE, "0 = ragdoll normally, 1 = burn to ash");
+#endif
 
 IMPLEMENT_CLIENTCLASS_DT_NOBASE( C_TFRagdoll, DT_TFRagdoll, CTFRagdoll )
 	RecvPropVector( RECVINFO(m_vecRagdollOrigin) ),
@@ -830,6 +834,25 @@ void C_TFRagdoll::CreateTFRagdoll()
 			{
 				iDeathSeq = -1;
 			}
+
+#ifdef BDSBASE
+			// we want to end this particular animation with us becoming ash
+			if (iDeathSeq > -1 && iDeathSeq == LookupSequence("primary_death_burning"))
+			{
+				// offer the option to disable these because they are a little silly
+				if (!cl_ragdoll_burn_anim_enable.GetBool())
+				{
+					iDeathSeq = -1;
+				}
+				else
+				{
+					if (cl_ragdoll_burn_anim_mode.GetInt() == 1)
+					{
+						m_bBecomeAsh = 1;
+					}
+				}
+			}
+#endif
 		}
 	}
 
@@ -940,8 +963,21 @@ void C_TFRagdoll::CreateTFRagdoll()
 
 	if ( m_bBecomeAsh && !m_bDissolving && !m_bGib )
 	{
-		ParticleProp()->Create( "drg_fiery_death", PATTACH_ABSORIGIN_FOLLOW );
+#ifdef BDSBASE
+		// the death animation has a varying sequence at which it plays
+		if (iDeathSeq > -1 && iDeathSeq == LookupSequence("primary_death_burning"))
+		{
+			m_flTimeToDissolve = SequenceDuration(LookupSequence("primary_death_burning"));
+		}
+		else
+		{
+			ParticleProp()->Create("drg_fiery_death", PATTACH_ABSORIGIN_FOLLOW);
+			m_flTimeToDissolve = 0.5f;
+		}
+#else
+		ParticleProp()->Create("drg_fiery_death", PATTACH_ABSORIGIN_FOLLOW);
 		m_flTimeToDissolve = 0.5f;
+#endif
 	}
 
 	if ( pPlayer->HasBombinomiconEffectOnDeath() && !m_bGib && !m_bDissolving )
@@ -1034,6 +1070,14 @@ float C_TFRagdoll::FrameAdvance( float flInterval )
 
 	if ( !m_bRagdollOn && IsSequenceFinished() && m_bDeathAnim )
 	{
+#ifdef BDSBASE
+		// If we're using the burning death animation, we want to add our ash effect at the end of the sequence.
+		if (m_bBecomeAsh)
+		{
+			ParticleProp()->Create("drg_fiery_death", PATTACH_ABSORIGIN_FOLLOW);
+		}
+#endif
+
 		m_nRenderFX = kRenderFxRagdoll;
 
 		matrix3x4_t boneDelta0[MAXSTUDIOBONES];
