@@ -4124,7 +4124,9 @@ void CGameMovement::FixPlayerCrouchStuck( bool upward )
 }
 
 #ifdef BDSBASE
+#ifdef POSIX
 [[gnu::optimize("no-associative-math")]]
+#endif
 #endif
 bool CGameMovement::CanUnduck()
 {
@@ -4163,7 +4165,9 @@ bool CGameMovement::CanUnduck()
 }
 
 #ifdef BDSBASE
+#ifdef POSIX
 [[gnu::optimize("no-associative-math")]]
+#endif
 #endif
 //-----------------------------------------------------------------------------
 // Purpose: Stop ducking
@@ -4234,7 +4238,9 @@ void CGameMovement::UpdateDuckJumpEyeOffset( void )
 }
 
 #ifdef BDSBASE
+#ifdef POSIX
 [[gnu::optimize("no-associative-math")]]
+#endif
 #endif
 //-----------------------------------------------------------------------------
 // Purpose:
@@ -4273,7 +4279,9 @@ void CGameMovement::FinishUnDuckJump( trace_t &trace )
 }
 
 #ifdef BDSBASE
+#ifdef POSIX
 [[gnu::optimize("no-associative-math")]]
+#endif
 #endif
 //-----------------------------------------------------------------------------
 // Purpose: Finish ducking
@@ -4321,7 +4329,9 @@ void CGameMovement::FinishDuck( void )
 }
 
 #ifdef BDSBASE
+#ifdef POSIX
 [[gnu::optimize("no-associative-math")]]
+#endif
 #endif
 //-----------------------------------------------------------------------------
 // Purpose:
