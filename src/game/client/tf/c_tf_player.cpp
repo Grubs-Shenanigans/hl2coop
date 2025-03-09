@@ -10304,6 +10304,12 @@ bool C_TFPlayer::CanUseFirstPersonCommand( void )
 		if ( pLocalPlayer->m_Shared.InCond( TF_COND_PHASE ) || 
 			 pLocalPlayer->m_Shared.InCond( TF_COND_TAUNTING ) || 
 			 pLocalPlayer->m_Shared.IsControlStunned() ||
+#ifdef BDSBASE
+			pLocalPlayer->m_Shared.InCond(TF_COND_HALLOWEEN_TINY) ||
+			pLocalPlayer->m_Shared.InCond(TF_COND_HALLOWEEN_KART) ||
+			pLocalPlayer->m_Shared.InCond(TF_COND_HALLOWEEN_KART_DASH) ||
+			pLocalPlayer->m_Shared.InCond(TF_COND_HALLOWEEN_KART_CAGE) ||
+#endif
 			 pLocalPlayer->m_Shared.InCond( TF_COND_HALLOWEEN_GHOST_MODE ) )
 		{
 			return false;
