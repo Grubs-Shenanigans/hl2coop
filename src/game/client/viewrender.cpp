@@ -2115,16 +2115,28 @@ void CViewRender::RenderView( const CViewSetup &viewRender, int nClearFlags, int
 	{
 		// We know they were running at least 8.0 when the game started...we check the 
 		// value in ClientDLL_Init()...so they must be messing with their DirectX settings.
-		if ( ( Q_stricmp( COM_GetModDirectory(), "tf" ) == 0 ) || ( Q_stricmp( COM_GetModDirectory(), "tf_beta" ) == 0 ) )
+#ifdef BDSBASE
+#ifdef TF_CLIENT_DLL
+		static bool bFirstTime = true;
+		if (bFirstTime)
+		{
+			bFirstTime = false;
+			Msg("This game has a minimum requirement of DirectX 8.0 to run properly.\n");
+		}
+		return;
+#endif
+#else
+		if ((Q_stricmp(COM_GetModDirectory(), "tf") == 0) || (Q_stricmp(COM_GetModDirectory(), "tf_beta") == 0))
 		{
 			static bool bFirstTime = true;
-			if ( bFirstTime )
+			if (bFirstTime)
 			{
 				bFirstTime = false;
-				Msg( "This game has a minimum requirement of DirectX 8.0 to run properly.\n" );
+				Msg("This game has a minimum requirement of DirectX 8.0 to run properly.\n");
 			}
 			return;
 		}
+#endif
 	}
 
 	CMatRenderContextPtr pRenderContext( materials );
