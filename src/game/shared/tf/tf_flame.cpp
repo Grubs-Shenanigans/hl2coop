@@ -704,11 +704,19 @@ void CTFFlameManager::OnCollide( CBaseEntity *pEnt, int iPointIndex )
 
 		// Does he have the bow?
 		CTFWeaponBase *pWpn = pPlayer->GetActiveTFWeapon();
-		if ( pWpn && pWpn->GetWeaponID() == TF_WEAPON_COMPOUND_BOW )
+#ifdef BDSBASE
+		if (!pWpn || pWpn->GetWeaponID() != TF_WEAPON_COMPOUND_BOW)
+			return;
+
+		CTFCompoundBow* pBow = static_cast<CTFCompoundBow*>(pWpn);
+		pBow->SetArrowAlight(true);
+#else
+		if (pWpn && pWpn->GetWeaponID() == TF_WEAPON_COMPOUND_BOW)
 		{
-			CTFCompoundBow *pBow = static_cast<CTFCompoundBow*>( pWpn );
-			pBow->SetArrowAlight( true );
+			CTFCompoundBow* pBow = static_cast<CTFCompoundBow*>(pWpn);
+			pBow->SetArrowAlight(true);
 		}
+#endif
 	}
 	else
 	{
