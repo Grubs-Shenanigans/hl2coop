@@ -384,6 +384,10 @@ public:
 	bool IsPropHater() const;
 	CBaseEntity *Physcannon_GetHeldProp() const;
 
+#ifdef BDSBASE
+	static const char* GetRandomPlayerModel(int team = TEAM_UNASSIGNED);
+#endif
+
 private:
 	CHL2MPBotLocomotion	*m_locomotor;
 	CHL2MPBotBody			*m_body;
