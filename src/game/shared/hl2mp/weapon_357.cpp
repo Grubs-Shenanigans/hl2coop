@@ -11,6 +11,9 @@
 
 #ifdef CLIENT_DLL
 	#include "c_hl2mp_player.h"
+#ifdef BDSBASE
+	#include <prediction.h>
+#endif
 #else
 	#include "hl2mp_player.h"
 #endif
@@ -134,14 +137,29 @@ void CWeapon357::PrimaryAttack( void )
 	pPlayer->FireBullets( info );
 
 	//Disorient the player
+
+#ifdef BDSBASE
+#ifdef CLIENT_DLL
+	if (prediction->IsFirstTimePredicted())
+	{
+		QAngle angles;
+		engine->GetViewAngles(angles);
+		angles.x += random->RandomInt(-1, 1);
+		angles.y += random->RandomInt(-1, 1);
+		angles.z += 0.0f;
+		engine->SetViewAngles(angles);
+	}
+#endif // CLIENT_DLL
+#else
 	QAngle angles = pPlayer->GetLocalAngles();
 
-	angles.x += random->RandomInt( -1, 1 );
-	angles.y += random->RandomInt( -1, 1 );
+	angles.x += random->RandomInt(-1, 1);
+	angles.y += random->RandomInt(-1, 1);
 	angles.z = 0;
 
 #ifndef CLIENT_DLL
-	pPlayer->SnapEyeAngles( angles );
+	pPlayer->SnapEyeAngles(angles);
+#endif
 #endif
 
 	pPlayer->ViewPunch( QAngle( -8, random->RandomFloat( -2, 2 ), 0 ) );
