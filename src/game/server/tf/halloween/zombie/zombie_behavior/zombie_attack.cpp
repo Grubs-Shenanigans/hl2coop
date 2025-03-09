@@ -225,11 +225,19 @@ ActionResult< CZombie >	CZombieAttack::Update( CZombie *me, float interval )
 		const float zombieAttackRange = me->GetAttackRange();
 		if ( me->IsRangeLessThan( m_attackTarget, zombieAttackRange ) )
 		{
-			if ( me->GetSkeletonType() == 1 && m_specialAttackTimer.IsElapsed() )
+#ifdef BDSBASE
+			if (!me->m_bIsOldZombie && me->GetSkeletonType() == 1 && m_specialAttackTimer.IsElapsed())
 			{
-				m_specialAttackTimer.Start( RandomFloat( 5.f, 10.f ) );
-				return SuspendFor( new CZombieSpecialAttack, "Do Special Attack!" );
+				m_specialAttackTimer.Start(RandomFloat(5.f, 10.f));
+				return SuspendFor(new CZombieSpecialAttack, "Do Special Attack!");
 			}
+#else
+			if (me->GetSkeletonType() == 1 && m_specialAttackTimer.IsElapsed())
+			{
+				m_specialAttackTimer.Start(RandomFloat(5.f, 10.f));
+				return SuspendFor(new CZombieSpecialAttack, "Do Special Attack!");
+			}
+#endif
 
 			if ( m_attackTimer.IsElapsed() )
 			{
@@ -241,7 +249,14 @@ ActionResult< CZombie >	CZombieAttack::Update( CZombie *me, float interval )
 				// hit!
 				CBaseEntity *pAttacker = me->GetOwnerEntity() ? me->GetOwnerEntity() : me;
 				CTakeDamageInfo info( pAttacker, pAttacker, me->GetAttackDamage(), DMG_SLASH );
-				info.SetDamageCustom( TF_DMG_CUSTOM_SPELL_SKELETON );
+#ifdef BDSBASE
+				if (!me->m_bIsOldZombie)
+				{
+					info.SetDamageCustom(TF_DMG_CUSTOM_SPELL_SKELETON);
+				}
+#else
+				info.SetDamageCustom(TF_DMG_CUSTOM_SPELL_SKELETON);
+#endif
 				CalculateMeleeDamageForce( &info, toVictim, me->WorldSpaceCenter(), 5.0f );
 				m_attackTarget->TakeDamage( info );
 			}

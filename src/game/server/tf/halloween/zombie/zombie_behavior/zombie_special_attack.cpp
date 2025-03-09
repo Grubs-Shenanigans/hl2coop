@@ -14,6 +14,13 @@
 
 ActionResult< CZombie >	CZombieSpecialAttack::OnStart( CZombie *me, Action< CZombie > *priorAction )
 {
+#ifdef BDSBASE
+	if (me->m_bIsOldZombie)
+	{
+		return Done();
+	}
+#endif
+
 	me->GetBodyInterface()->StartActivity( ACT_SPECIAL_ATTACK1 );
 
 	m_stompTimer.Start( 1 );
