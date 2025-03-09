@@ -1042,6 +1042,9 @@ private:
 	CHandle<CTFWeaponBase>	m_hBurnWeapon;
 	float					m_flFlameBurnTime;
 	float					m_flAfterburnDuration;
+#ifdef BDSBASE
+	float					m_flAfterburnMaxDuration;		// Maximum afterburn duration
+#endif
 
 	// Bleeding
 	struct bleed_struct_t

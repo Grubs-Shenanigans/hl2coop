@@ -2902,11 +2902,19 @@ void CTFPlayerShared::ConditionGameRulesThink( void )
 #endif // DEBUG
 
 				// which degree are we burning?
-				if ( m_flAfterburnDuration >= tf_afterburn_duration_ratio_third_degree * tf_afterburn_max_duration )
+#ifdef BDSBASE
+				if (m_flAfterburnDuration >= tf_afterburn_duration_ratio_third_degree * m_flAfterburnMaxDuration)
+#else
+				if (m_flAfterburnDuration >= tf_afterburn_duration_ratio_third_degree * tf_afterburn_max_duration)
+#endif
 				{
 					flBurnDamage *= tf_afterburn_mult_third_degree;
 				}
-				else if ( m_flAfterburnDuration >= tf_afterburn_duration_ratio_second_degree * tf_afterburn_max_duration )
+#ifdef BDSBASE
+				else if (m_flAfterburnDuration >= tf_afterburn_duration_ratio_second_degree * m_flAfterburnMaxDuration)
+#else
+				else if (m_flAfterburnDuration >= tf_afterburn_duration_ratio_second_degree * tf_afterburn_max_duration)
+#endif
 				{
 					flBurnDamage *= tf_afterburn_mult_second_degree;
 				}
@@ -6649,12 +6657,24 @@ void CTFPlayerShared::Burn( CTFPlayer *pAttacker, CTFWeaponBase *pWeapon, float 
 	static float s_flReachMaxAfterburnTime = 0.f;
 #endif // DEBUG
 
+#ifdef BDSBASE
+	// Cache mult_wpn_burntime instead of calling hook every time
+	float flMultWpnBurntime = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, flMultWpnBurntime, mult_wpn_burntime);
+#endif
+
 	if ( !InCond( TF_COND_BURNING ) )
 	{
 		// Start burning
 		AddCond( TF_COND_BURNING, -1.f, pAttacker );
 		m_flFlameBurnTime = gpGlobals->curtime + TF_BURNING_FREQUENCY;
+#ifdef BDSBASE
+		m_flAfterburnMaxDuration = tf_afterburn_max_duration * flMultWpnBurntime;	// Updated only when starting to burn
+#endif
 		m_flAfterburnDuration = pWeapon ? pWeapon->GetInitialAfterburnDuration() : 0.f;
+#ifdef BDSBASE
+		m_flAfterburnDuration *= flMultWpnBurntime;
+#endif
 		
 		// Reduces direct healing effectiveness
 		AddCond( TF_COND_HEALING_DEBUFF, m_flAfterburnDuration, pAttacker );
@@ -6737,7 +6757,9 @@ void CTFPlayerShared::Burn( CTFPlayer *pAttacker, CTFWeaponBase *pWeapon, float 
 		flFlameLife = flBurningTime;
 	}
 	
-	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flFlameLife, mult_wpn_burntime );
+#ifndef BDSBASE
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, flFlameLife, mult_wpn_burntime);
+#endif
 
 	// flame immunity will always have a fixed duration
 	if ( bAfterburnImmunity )
@@ -6747,21 +6769,37 @@ void CTFPlayerShared::Burn( CTFPlayer *pAttacker, CTFWeaponBase *pWeapon, float 
 	// otherwise stack the duration
 	else
 	{
+#ifdef BDSBASE
+		m_flAfterburnDuration += flFlameLife * flMultWpnBurntime;
+#else
 		m_flAfterburnDuration += flFlameLife;
+#endif
 	}
 
-	m_flAfterburnDuration = Clamp( m_flAfterburnDuration, 0.f, tf_afterburn_max_duration );
+#ifdef BDSBASE
+	m_flAfterburnDuration = Clamp(m_flAfterburnDuration, 0.f, m_flAfterburnMaxDuration);
+#else
+	m_flAfterburnDuration = Clamp(m_flAfterburnDuration, 0.f, tf_afterburn_max_duration);
+#endif
 
 #ifdef DEBUG
 	if ( tf_afterburn_debug.GetBool() )
 	{
 		engine->Con_NPrintf( 1, "Added afterburn duration = %f", m_flAfterburnDuration );
 
-		if ( s_flReachMaxAfterburnTime == 0.f && m_flAfterburnDuration == tf_afterburn_max_duration )
+#ifdef BDSBASE
+		if (s_flReachMaxAfterburnTime == 0.f && m_flAfterburnDuration == flAfterburnMaxDuration)
 		{
 			s_flReachMaxAfterburnTime = gpGlobals->curtime;
-			DevMsg( "took %f seconds to reach max afterburn duration\n", s_flReachMaxAfterburnTime - s_flStartAfterburnTime );
+			DevMsg("took %f seconds to reach max afterburn duration %f s\n", s_flReachMaxAfterburnTime - s_flStartAfterburnTime, flAfterburnMaxDuration);
 		}
+#else
+		if (s_flReachMaxAfterburnTime == 0.f && m_flAfterburnDuration == tf_afterburn_max_duration)
+		{
+			s_flReachMaxAfterburnTime = gpGlobals->curtime;
+			DevMsg("took %f seconds to reach max afterburn duration\n", s_flReachMaxAfterburnTime - s_flStartAfterburnTime);
+		}
+#endif
 	}
 #endif // DEBUG
 
