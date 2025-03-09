@@ -5930,7 +5930,11 @@ void CTFGameRules::RadiusDamage( const CTakeDamageInfo &info, const Vector &vecS
 //-----------------------------------------------------------------------------
 bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity *pVictimBaseEntity, bool bAllowDamage )
 {
-	info.SetDamageForForceCalc( info.GetDamage() );
+#ifdef BDSBASE
+	if (!info.GetDamageForForceCalc()) info.SetDamageForForceCalc(info.GetDamage());
+#else
+	info.SetDamageForForceCalc(info.GetDamage());
+#endif
 	bool bDebug = tf_debug_damage.GetBool();
 
 	CTFPlayer *pVictim = ToTFPlayer( pVictimBaseEntity );
