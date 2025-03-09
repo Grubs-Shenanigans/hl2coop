@@ -50,6 +50,9 @@ END_PREDICTION_DATA()
 LINK_ENTITY_TO_CLASS( tf_weapon_knife, CTFKnife );
 PRECACHE_WEAPON_REGISTER( tf_weapon_knife );
 
+#ifdef BDSBASE
+extern ConVar tf_mvm_disguise_on_backstab_mode;
+#endif
 
 //=============================================================================
 //
@@ -246,8 +249,11 @@ void CTFKnife::PrimaryAttack( void )
 	if ( ShouldDisguiseOnBackstab() && bSuccessfulBackstab && !pPlayer->HasTheFlag( ignoreTypes, ARRAYSIZE( ignoreTypes ) ) )
 	{
 		// Different rules in MvM when stabbing bots
-		bool bDropDisguise = m_hBackstabVictim->IsBot() && ( ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() ) 
-			);
+#ifdef BDSBASE
+		bool bDropDisguise = m_hBackstabVictim->IsBot() && ((TFGameRules() && TFGameRules()->IsMannVsMachineMode() && !tf_mvm_disguise_on_backstab_mode.GetBool()));
+#else
+		bool bDropDisguise = m_hBackstabVictim->IsBot() && ((TFGameRules() && TFGameRules()->IsMannVsMachineMode()));
+#endif
 		if ( bDropDisguise )
 		{
 			// Remove the disguise first, otherwise this attribute is overpowered

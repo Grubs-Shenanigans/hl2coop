@@ -99,6 +99,7 @@ class CMannVsMachineUpgrades;
 extern ConVar tf_mvm_defenders_team_size;
 #ifdef BDSBASE
 extern ConVar tf_mvm_max_invaders;
+extern ConVar tf_mvm_disguise_on_backstab_mode;
 #endif
 
 const int kLadder_TeamSize_6v6 = 6;
