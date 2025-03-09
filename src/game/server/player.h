@@ -777,6 +777,9 @@ public:
 	void	NotePlayerTalked() { m_fLastPlayerTalkTime = gpGlobals->curtime; }
 	float	LastTimePlayerTalked() const { return m_fLastPlayerTalkTime; }
 	bool	ArePlayerTalkMessagesAvailable();
+#ifdef BDSBASE
+	void	DecrementPlayerChatBuckets();
+#endif
 
 	void	DisableButtons( int nButtons );
 	void	EnableButtons( int nButtons );
@@ -838,6 +841,12 @@ private:
 
 	int					DetermineSimulationTicks( void );
 	void				AdjustPlayerTimeBase( int simulation_ticks );
+
+#ifdef BDSBASE
+	// Player spamming way too much, add a penalty
+	float m_flChatPenaltyMultiplier;
+	float m_flLastPenaltyDecayTime;
+#endif
 
 public:
 	

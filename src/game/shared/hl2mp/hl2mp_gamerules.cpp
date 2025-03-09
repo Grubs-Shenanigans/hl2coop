@@ -1249,9 +1249,16 @@ const char *CHL2MPRules::GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer )
 	}
 
 	const char *pszFormat = NULL;
+#ifdef BDSBASE
+	bool bIsDead = (pPlayer->m_lifeState != LIFE_ALIVE);
+#endif
 
 	// team only
-	if ( bTeamOnly == TRUE )
+#ifdef BDSBASE
+	if (bTeamOnly)
+#else
+	if (bTeamOnly == TRUE)
+#endif
 	{
 		if ( pPlayer->GetTeamNumber() == TEAM_SPECTATOR )
 		{
@@ -1262,11 +1269,33 @@ const char *CHL2MPRules::GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer )
 			const char *chatLocation = GetChatLocation( bTeamOnly, pPlayer );
 			if ( chatLocation && *chatLocation )
 			{
+#ifdef BDSBASE
+				if (bIsDead)
+				{
+					pszFormat = "HL2MP_Chat_Team_Loc_Dead";
+				}
+				else
+				{
+					pszFormat = "HL2MP_Chat_Team_Loc";
+				}
+#else
 				pszFormat = "HL2MP_Chat_Team_Loc";
+#endif
 			}
 			else
 			{
+#ifdef BDSBASE
+				if (bIsDead)
+				{
+					pszFormat = "HL2MP_Chat_Team_Dead";
+				}
+				else
+				{
+					pszFormat = "HL2MP_Chat_Team";
+				}
+#else
 				pszFormat = "HL2MP_Chat_Team";
+#endif
 			}
 		}
 	}
@@ -1275,7 +1304,18 @@ const char *CHL2MPRules::GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer )
 	{
 		if ( pPlayer->GetTeamNumber() != TEAM_SPECTATOR )
 		{
-			pszFormat = "HL2MP_Chat_All";	
+#ifdef BDSBASE
+			if (bIsDead)
+			{
+				pszFormat = "HL2MP_Chat_AllDead";
+			}
+			else
+			{
+				pszFormat = "HL2MP_Chat_All";
+			}
+#else
+			pszFormat = "HL2MP_Chat_All";
+#endif	
 		}
 		else
 		{
