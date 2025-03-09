@@ -27,9 +27,6 @@ ConVar tf_max_active_zombie( "tf_max_active_zombie", "30", FCVAR_CHEAT );
 // NPC Zombie versions of the players
 //-----------------------------------------------------------------------------------------------------
 LINK_ENTITY_TO_CLASS( tf_zombie, CZombie );
-#ifdef BDSBASE
-LINK_ENTITY_TO_CLASS(tf_zombie_old, CZombie);
-#endif
 
 IMPLEMENT_SERVERCLASS_ST( CZombie, DT_Zombie )
 	SendPropFloat( SENDINFO( m_flHeadScale ) ),
@@ -135,58 +132,17 @@ void CZombie::Precache()
 	bool bAllowPrecache = CBaseEntity::IsPrecacheAllowed();
 	CBaseEntity::SetAllowPrecache( true );
 
-#ifdef BDSBASE
-	if (FClassnameIs(this, "tf_zombie_old"))
-	{
-		PrecacheModel("models/player/items/scout/scout_zombie.mdl");
-		PrecacheModel("models/player/items/sniper/sniper_zombie.mdl");
-		PrecacheModel("models/player/items/soldier/soldier_zombie.mdl");
-		PrecacheModel("models/player/items/demo/demo_zombie.mdl");
-		PrecacheModel("models/player/items/medic/medic_zombie.mdl");
-		PrecacheModel("models/player/items/heavy/heavy_zombie.mdl");
-		PrecacheModel("models/player/items/pyro/pyro_zombie.mdl");
-		PrecacheModel("models/player/items/spy/spy_zombie.mdl");
-		PrecacheModel("models/player/items/engineer/engineer_zombie.mdl");
-		return;
-	}
-	else
-	{
-		PrecacheZombie();
-	}
-#else
 	PrecacheZombie();
-#endif
 
 	CBaseEntity::SetAllowPrecache( bAllowPrecache );
 }
 
 
 //-----------------------------------------------------------------------------------------------------
-void CZombie::Spawn(void)
+void CZombie::Spawn( void )
 {
 	Precache();
 
-#ifdef BDSBASE
-	int which = RandomInt(TF_CLASS_SCOUT, TF_CLASS_ENGINEER);
-	const char* name = g_aRawPlayerClassNamesShort[which];
-
-	if (FClassnameIs(this, "tf_zombie_old"))
-	{
-		m_bIsOldZombie = true;
-
-		if (FStrEq(name, "spy"))
-		{
-			m_bSpy = true;
-		}
-
-		SetModel(CFmtStr("models/player/%s.mdl", name));
-	}
-	else
-	{
-		m_bIsOldZombie = false;
-		SetModel(SKELETON_MODEL);
-	}
-#else
 	/*int which = RandomInt( TF_CLASS_SCOUT, TF_CLASS_ENGINEER );
 	const char *name = g_aRawPlayerClassNamesShort[ which ];
 
@@ -197,53 +153,22 @@ void CZombie::Spawn(void)
 
 	//SetModel( CFmtStr( "models/player/%s.mdl", name ) );
 
-	SetModel(SKELETON_MODEL);
-#endif
+	SetModel( SKELETON_MODEL );
 
 	BaseClass::Spawn();
 
 	const int health = 50;
-	SetHealth(health);
-	SetMaxHealth(health);
-	AddFlag(FL_NPC);
-
+	SetHealth( health );
+	SetMaxHealth( health );
+	AddFlag( FL_NPC );
+	
 	QAngle qAngle = vec3_angle;
-	qAngle[YAW] = RandomFloat(0, 360);
-	SetAbsAngles(qAngle);
+	qAngle[YAW] = RandomFloat( 0, 360 );
+	SetAbsAngles( qAngle );
 
 	// Spawn Pos
-	GetBodyInterface()->StartActivity(ACT_TRANSITION);
+	GetBodyInterface()->StartActivity( ACT_TRANSITION );
 
-#ifdef BDSBASE
-	if (m_bIsOldZombie)
-	{
-		int iSkinIndex = GetTeamNumber() == TF_TEAM_RED ? 0 : 1;
-
-		m_zombieParts = (CBaseAnimating *)CreateEntityByName( "prop_dynamic" );
-		if ( m_zombieParts )
-		{
-			m_zombieParts->SetModel( CFmtStr( "models/player/items/%s/%s_zombie.mdl", name, name ) );
-			m_zombieParts->m_nSkin = iSkinIndex;
-
-			// bonemerge into our model
-			m_zombieParts->FollowEntity( this, true );
-		}
-
-		if ( m_bSpy )
-		{
-			// Spy has a bunch of extra skins used to adjust the mask
-			iSkinIndex += 22;
-		}
-		else
-		{
-			// 4: red zombie
-			// 5: blue zombie
-			// 6: red zombie invuln
-			// 7: blue zombie invuln
-			iSkinIndex += 4;
-		}
-	}
-#else
 	//int iSkinIndex = GetTeamNumber() == TF_TEAM_RED ? 0 : 1;
 
 	//m_zombieParts = (CBaseAnimating *)CreateEntityByName( "prop_dynamic" );
@@ -269,42 +194,8 @@ void CZombie::Spawn(void)
 	//	// 7: blue zombie invuln
 	//	iSkinIndex += 4;
 	//}
-#endif
 
-#ifdef BDSBASE
-	else
-	{
-		switch (GetTeamNumber())
-		{
-		case TF_TEAM_RED:
-			m_nSkin = 0;
-			break;
-		case TF_TEAM_BLUE:
-			m_nSkin = 1;
-			break;
-		default:
-		{
-			m_nSkin = 2;
-			// make sure I'm on TF_TEAM_HALLOWEEN
-			ChangeTeam(TF_TEAM_HALLOWEEN);
-		}
-		}
-
-		// force kill oldest skeletons in the level (except skeleton king) to keep the number of skeletons under the max active
-		int nForceKill = IZombieAutoList::AutoList().Count() - tf_max_active_zombie.GetInt();
-		for (int i = 0; i < IZombieAutoList::AutoList().Count() && nForceKill > 0; ++i)
-		{
-			CZombie* pZombie = static_cast<CZombie*>(IZombieAutoList::AutoList()[i]);
-			if (pZombie->GetSkeletonType() != SKELETON_KING)
-			{
-				pZombie->ForceSuicide();
-				nForceKill--;
-			}
-		}
-		Assert(nForceKill <= 0);
-	}
-#else
-	switch (GetTeamNumber())
+	switch ( GetTeamNumber() )
 	{
 	case TF_TEAM_RED:
 		m_nSkin = 0;
@@ -313,26 +204,25 @@ void CZombie::Spawn(void)
 		m_nSkin = 1;
 		break;
 	default:
-	{
-		m_nSkin = 2;
-		// make sure I'm on TF_TEAM_HALLOWEEN
-		ChangeTeam(TF_TEAM_HALLOWEEN);
-	}
+		{
+			m_nSkin = 2;
+			// make sure I'm on TF_TEAM_HALLOWEEN
+			ChangeTeam( TF_TEAM_HALLOWEEN );
+		}
 	}
 
 	// force kill oldest skeletons in the level (except skeleton king) to keep the number of skeletons under the max active
 	int nForceKill = IZombieAutoList::AutoList().Count() - tf_max_active_zombie.GetInt();
-	for (int i = 0; i < IZombieAutoList::AutoList().Count() && nForceKill > 0; ++i)
+	for ( int i=0; i<IZombieAutoList::AutoList().Count() && nForceKill > 0; ++i )
 	{
-		CZombie* pZombie = static_cast<CZombie*>(IZombieAutoList::AutoList()[i]);
-		if (pZombie->GetSkeletonType() != SKELETON_KING)
+		CZombie *pZombie = static_cast< CZombie* >( IZombieAutoList::AutoList()[i] );
+		if ( pZombie->GetSkeletonType() != SKELETON_KING )
 		{
 			pZombie->ForceSuicide();
 			nForceKill--;
 		}
 	}
-	Assert(nForceKill <= 0);
-#endif
+	Assert( nForceKill <= 0 );
 }
 
 
@@ -347,15 +237,8 @@ int CZombie::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		AddGesture( ACT_MP_GESTURE_FLINCH_CHEST );
 	}
 
-#ifdef BDSBASE
-	if (m_bIsOldZombie)
-	{
-		return BaseClass::OnTakeDamage_Alive(info);
-	}
-#endif
-
 	const char* pszEffectName;
-	if (GetTeamNumber() == TF_TEAM_HALLOWEEN)
+	if ( GetTeamNumber() == TF_TEAM_HALLOWEEN )
 	{
 		pszEffectName = "spell_skeleton_goop_green";
 	}
@@ -366,22 +249,22 @@ int CZombie::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 
 	if (info.GetAttacker() && info.GetAttacker()->IsPlayer())
 	{
-		int idx = m_vecRecentDamagers.FindPredicate([&info](const RecentDamager_t& recent)
-			{
-				return recent.m_hEnt == info.GetAttacker();
-			});
+		int idx = m_vecRecentDamagers.FindPredicate([&info]( const RecentDamager_t& recent)
+		{
+			return recent.m_hEnt == info.GetAttacker();
+		} );
 
 		if (idx == m_vecRecentDamagers.InvalidIndex())
 		{
 			idx = m_vecRecentDamagers.AddToTail();
 		}
 
-		RecentDamager_t& recentDamager = m_vecRecentDamagers[idx];
+		RecentDamager_t& recentDamager = m_vecRecentDamagers[ idx ];
 		recentDamager.m_flDamageTime = gpGlobals->curtime;
 		recentDamager.m_hEnt = info.GetAttacker();
 	}
 
-	DispatchParticleEffect(pszEffectName, info.GetDamagePosition(), GetAbsAngles());
+	DispatchParticleEffect( pszEffectName, info.GetDamagePosition(), GetAbsAngles() );
 
 	return BaseClass::OnTakeDamage_Alive( info );
 }
@@ -390,15 +273,6 @@ int CZombie::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 //-----------------------------------------------------------------------------------------------------
 void CZombie::Event_Killed( const CTakeDamageInfo &info )
 {
-#ifdef BDSBASE
-	if (m_bIsOldZombie)
-	{
-		FireDeathOutput(info.GetInflictor());
-		BaseClass::Event_Killed(info);
-		return;
-	}
-#endif
-
 	EmitSound( "Halloween.skeleton_break" );
 
 
@@ -447,14 +321,6 @@ void CZombie::Event_Killed( const CTakeDamageInfo &info )
 //-----------------------------------------------------------------------------------------------------
 void CZombie::UpdateOnRemove()
 {
-#ifdef BDSBASE
-	if (m_bIsOldZombie)
-	{
-		BaseClass::UpdateOnRemove();
-		return;
-	}
-#endif
-
 	CPVSFilter filter( GetAbsOrigin() );
 	UserMessageBegin( filter, "BreakModel" );
 		WRITE_SHORT( GetModelIndex() );
@@ -508,13 +374,6 @@ void CZombie::FireDeathOutput( CBaseEntity *pCulprit )
 
 bool CZombie::ShouldSuicide() const
 {
-#ifdef BDSBASE
-	if (m_bIsOldZombie)
-	{
-		return false;
-	}
-#endif
-
 	// out of life time
 	if ( m_lifeTimer.HasStarted() && m_lifeTimer.IsElapsed() )
 		return true;
@@ -530,14 +389,6 @@ bool CZombie::ShouldSuicide() const
 //-----------------------------------------------------------------------------------------------------
 void CZombie::SetSkeletonType( SkeletonType_t nType )
 {
-#ifdef BDSBASE
-	if (m_bIsOldZombie)
-	{
-		m_nType = SKELETON_NORMAL;
-		return;
-	}
-#endif
-
 	m_nType = nType;
 	// Skeleton King?
 	if ( nType == SKELETON_KING )
@@ -576,13 +427,6 @@ void CZombie::SetSkeletonType( SkeletonType_t nType )
 //-----------------------------------------------------------------------------------------------------
 void CZombie::AddHat( const char *pszModel )
 {
-#ifdef BDSBASE
-	if (m_bIsOldZombie)
-	{
-		return;
-	}
-#endif
-
 	if ( !m_hHat )
 	{
 		int iHead = LookupBone( "bip_head" );
@@ -636,13 +480,6 @@ public:
 			return Done();
 		}
 
-#ifdef BDSBASE
-		if (me->m_bIsOldZombie)
-		{
-			return Continue();
-		}
-#endif
-
 		if ( ShouldLaugh( me ) )
 		{
 			Laugh( me );
@@ -653,13 +490,6 @@ public:
 
 	virtual EventDesiredResult< CZombie > OnKilled( CZombie *me, const CTakeDamageInfo &info )
 	{
-#ifdef BDSBASE
-		if (me->m_bIsOldZombie)
-		{
-			return TryDone();
-		}
-#endif
-
 		// bonemerged models don't ragdoll
 		//UTIL_Remove( me->m_zombieParts );
 
@@ -693,13 +523,6 @@ private:
 
 	bool ShouldLaugh( CZombie *me )
 	{
-#ifdef BDSBASE
-		if (me->m_bIsOldZombie)
-		{
-			return false;
-		}
-#endif
-
 		if ( !m_laughTimer.HasStarted() )
 		{
 			switch ( me->GetSkeletonType() )
@@ -734,13 +557,6 @@ private:
 
 	void Laugh( CZombie *me )
 	{
-#ifdef BDSBASE
-		if (me->m_bIsOldZombie)
-		{
-			return;
-		}
-#endif
-
 		const char *pszSoundName;
 		switch ( me->GetSkeletonType() )
 		{

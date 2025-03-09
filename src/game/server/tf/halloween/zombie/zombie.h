@@ -100,10 +100,6 @@ public:
 	float GetAttackDamage() const { return m_flAttackDamage; }
 
 	void FireDeathOutput( CBaseEntity *pCulprit );
-#ifdef BDSBASE
-public:
-	bool m_bIsOldZombie;
-#endif
 private:
 	CZombieIntention *m_intention;
 	CZombieLocomotion *m_locomotor;

@@ -12,14 +12,7 @@
 
 ActionResult< CZombie >	CZombieSpawn::OnStart( CZombie *me, Action< CZombie > *priorAction )
 {
-#ifdef BDSBASE
-	if (!me->m_bIsOldZombie)
-	{
-		me->GetBodyInterface()->StartActivity(ACT_TRANSITION);
-	}
-#else
-	me->GetBodyInterface()->StartActivity(ACT_TRANSITION);
-#endif
+	me->GetBodyInterface()->StartActivity( ACT_TRANSITION );
 
 	return Continue();
 }
