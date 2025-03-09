@@ -3426,8 +3426,16 @@ void CBaseObject::RotateBuildAngles( void )
 void CBaseObject::UpdateDisabledState( void )
 {
 	const bool bShouldBeEnabled = !m_bHasSapper
-							   && !m_bPlasmaDisable
-							   && (!TFGameRules()->RoundHasBeenWon() || TFGameRules()->GetWinningTeam() == GetTeamNumber());
+
+#ifdef BDSBASE
+									&& !m_bPlasmaDisable
+									&& (GetType() != OBJ_SENTRYGUN
+										|| !TFGameRules()->RoundHasBeenWon()
+										|| TFGameRules()->GetWinningTeam() == GetTeamNumber() );
+#else
+									&& !m_bPlasmaDisable
+									&& (!TFGameRules()->RoundHasBeenWon() || TFGameRules()->GetWinningTeam() == GetTeamNumber());
+#endif
 
 	SetDisabled( !bShouldBeEnabled );
 }

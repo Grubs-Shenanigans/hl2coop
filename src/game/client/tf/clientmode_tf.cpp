@@ -531,6 +531,9 @@ void ClientModeTFNormal::Shutdown()
 	{
 		RemoveFilesInPath( "materials/temp" );
 		RemoveFilesInPath( "download/user_custom" );
+#ifdef BDSBASE
+		RemoveFilesInPath("sound/temp");
+#endif
 	}
 
 	DestroyStatsSummaryPanel();
