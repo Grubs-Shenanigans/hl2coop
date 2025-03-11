@@ -12,6 +12,23 @@
 class IBody;
 class INextBotEntityFilter;
 
+#ifdef BDSBASE
+class IKnownEntity;
+
+inline HSCRIPT ToHScript(const CKnownEntity* pKnownEntity)
+{
+	if (!pKnownEntity)
+		return NULL;
+
+	// Return the underlying entity instead of the knowledge wrapper
+	return ToHScript(pKnownEntity->GetEntity());
+}
+
+inline CKnownEntity* ToKnownEntity(HSCRIPT hScript)
+{
+	return NULL;
+}
+#endif
 
 //----------------------------------------------------------------------------------------------------------------
 /**
@@ -107,6 +124,25 @@ public:
 	/// @todo: Implement LookAt system
 	virtual bool IsLookingAt( const Vector &pos, float cosTolerance = 0.95f ) const;					// are we looking at the given position
 	virtual bool IsLookingAt( const CBaseCombatCharacter *actor, float cosTolerance = 0.95f ) const;	// are we looking at the given actor
+
+#ifdef BDSBASE
+	HSCRIPT ScriptGetPrimaryKnownThreat(bool onlyVisibleThreats = false) const { return ToHScript(this->GetPrimaryKnownThreat(onlyVisibleThreats)); }
+	HSCRIPT ScriptGetClosestKnown(int team = TEAM_ANY) const { return ToHScript(this->GetClosestKnown(team)); }
+	HSCRIPT ScriptGetKnown(HSCRIPT hEntity) const { return ToHScript(this->GetKnown(ToEnt(hEntity))); }
+	void ScriptAddKnownEntity(HSCRIPT hEntity) { this->AddKnownEntity(ToEnt(hEntity)); }
+	void ScriptForgetEntity(HSCRIPT hEntity) { this->ForgetEntity(ToEnt(hEntity)); }
+	bool ScriptIsAbleToSee(const Vector& pos, bool checkFOV) const
+	{
+		return this->IsAbleToSee(pos, checkFOV ? USE_FOV : DISREGARD_FOV);
+	}
+	bool ScriptIsIgnored(HSCRIPT hEntity) const { return this->IsIgnored(ToEnt(hEntity)); }
+	bool ScriptIsVisibleEntityNoticed(HSCRIPT hEntity) const { return this->IsVisibleEntityNoticed(ToEnt(hEntity)); }
+	bool ScriptIsInFieldOfView(const Vector& pos) const { return this->IsInFieldOfView(pos); }
+	bool ScriptIsEntityInFieldOfView(HSCRIPT hEntity) const { return this->IsInFieldOfView(ToEnt(hEntity)); }
+	bool ScriptIsLookingAt(const Vector& pos, float cosTolerance = 0.95f) const { return this->IsLookingAt(pos, cosTolerance); }
+	//- Script access to vision functions ------------------------------------------------------------------
+	DECLARE_ENT_SCRIPTDESC();
+#endif
 
 private:
 	CountdownTimer m_scanTimer;			// for throttling update rate
