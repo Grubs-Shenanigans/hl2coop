@@ -265,3 +265,84 @@ void InstallGameRules()
 {
 	CreateGameRulesObject( "CTFGameRules" );
 }
+
+#ifdef BDSBASE
+//------------------------------------------------------------------------------
+// helper function for kill commands with custom ragdolls
+//------------------------------------------------------------------------------
+void kill_helper(const CCommand& args, int m_iCustomRagdoll)
+{
+	if (args.ArgC() > 1 && sv_cheats->GetBool())
+	{
+		// Find the matching netname
+		for (int i = 1; i <= gpGlobals->maxClients; i++)
+		{
+			CTFPlayer* pPlayer = ToTFPlayer(UTIL_PlayerByIndex(i));
+			if (pPlayer)
+			{
+				if (Q_strstr(pPlayer->GetPlayerName(), args[1]))
+				{
+					pPlayer->CommitSuicideWithCustomRagdoll(m_iCustomRagdoll);
+				}
+			}
+		}
+	}
+	else
+	{
+		CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
+		if (pPlayer)
+		{
+			pPlayer->CommitSuicideWithCustomRagdoll(m_iCustomRagdoll);
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+CON_COMMAND(tf_burn, "Kills the player and sets their corpse on fire")
+{
+	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_BURN);
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+CON_COMMAND(tf_freeze, "Kills the player and turns their corpse into an ice statue")
+{
+	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_FREEZE);
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+CON_COMMAND(tf_incinerate, "Kills the player and incinerates their corpse")
+{
+	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_INCINERATE);
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+CON_COMMAND(tf_disintegrate, "Kills the player and disintegrates their corpse")
+{
+	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_DISINTEGRATE);
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+CON_COMMAND(tf_disintegrate_and_gib, "Kills the player, disintegrates and gib their corpse")
+{
+	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_DISINTEGRATE_AND_GIB);
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+CON_COMMAND(tf_mistify, "Kills the player and turns them into bloody mist")
+{
+	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_MISTIFY);
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+CON_COMMAND(tf_midas_touch, "Kills the player and turns their corpse to gold")
+{
+	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_TURN_TO_GOLD);
+}
+#endif

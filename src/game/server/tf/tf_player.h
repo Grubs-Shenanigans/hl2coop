@@ -66,6 +66,20 @@ enum EAmmoSource
 	kAmmoSource_ResourceMeter,			// it regenerated after a cooldown
 };
 
+#ifdef BDSBASE
+enum KillbindCustomRagdollTypes_t
+{
+	TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_NONE = 0,
+	TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_BURN,
+	TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_FREEZE,
+	TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_INCINERATE,
+	TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_DISINTEGRATE,
+	TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_DISINTEGRATE_AND_GIB,
+	TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_MISTIFY,
+	TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_TURN_TO_GOLD,
+};
+#endif
+
 //=============================================================================
 //
 // TF Player
@@ -134,6 +148,9 @@ public:
 	virtual void		PlayerRunCommand( CUserCmd *ucmd, IMoveHelper *moveHelper );
 
 	virtual void		CommitSuicide( bool bExplode = false, bool bForce = false );
+#ifdef BDSBASE
+	virtual void		CommitSuicideWithCustomRagdoll(int m_iCustomRagdoll = 0);
+#endif
 
 	// Combats
 	virtual void		TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
