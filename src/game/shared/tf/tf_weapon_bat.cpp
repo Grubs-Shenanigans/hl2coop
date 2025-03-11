@@ -771,6 +771,12 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 		{
 			pPlayer->m_Shared.StunPlayer( flStunDuration, flStunAmount, iStunFlags, pOwner );
 
+#ifdef BDSBASE
+#ifdef GAME_DLL
+			pOwner->SpeakConceptIfAllowed(MP_CONCEPT_STUNNED_TARGET);
+#endif
+#endif
+
 			if ( pPlayer->GetUserID() == m_iOriginalOwnerID )
 			{
 				// We just stunned a scout with their own ball.
