@@ -268,11 +268,14 @@ void InstallGameRules()
 
 #ifdef BDSBASE
 //------------------------------------------------------------------------------
-// helper function for kill commands with custom ragdolls
+// kill commands with custom ragdolls
 //------------------------------------------------------------------------------
-void kill_helper(const CCommand& args, int m_iCustomRagdoll)
+CON_COMMAND(tf_kill, "Kills the player in multiple entertaining ways. If none is selected, the normal kill behavior will be used. Usage: tf_kill <ragdoll death type> [player name]\nDeath Type List:\n0 = Normal\n1 = Burn\n2 = Freeze\n3 = Incinerate\n4 = Disintegrate\n5 = Disintegrate and Gib\n6 = Mistify\n7 = Turn to Gold")
 {
-	if (args.ArgC() > 1 && sv_cheats->GetBool())
+	int iRagdollType = atoi(args[1]);
+	const char* cPlayerName = args[2];
+
+	if (args.ArgC() > 2 && sv_cheats->GetBool())
 	{
 		// Find the matching netname
 		for (int i = 1; i <= gpGlobals->maxClients; i++)
@@ -280,11 +283,19 @@ void kill_helper(const CCommand& args, int m_iCustomRagdoll)
 			CTFPlayer* pPlayer = ToTFPlayer(UTIL_PlayerByIndex(i));
 			if (pPlayer)
 			{
-				if (Q_strstr(pPlayer->GetPlayerName(), args[1]))
+				if (Q_strstr(pPlayer->GetPlayerName(), cPlayerName))
 				{
-					pPlayer->CommitSuicideWithCustomRagdoll(m_iCustomRagdoll);
+					pPlayer->CommitSuicideWithCustomRagdoll(iRagdollType);
 				}
 			}
+		}
+	}
+	else if (args.ArgC() > 1)
+	{
+		CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
+		if (pPlayer)
+		{
+			pPlayer->CommitSuicideWithCustomRagdoll(iRagdollType);
 		}
 	}
 	else
@@ -292,57 +303,8 @@ void kill_helper(const CCommand& args, int m_iCustomRagdoll)
 		CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
 		if (pPlayer)
 		{
-			pPlayer->CommitSuicideWithCustomRagdoll(m_iCustomRagdoll);
+			pPlayer->CommitSuicideWithCustomRagdoll(TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_NONE);
 		}
 	}
-}
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-CON_COMMAND(tf_burn, "Kills the player and sets their corpse on fire")
-{
-	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_BURN);
-}
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-CON_COMMAND(tf_freeze, "Kills the player and turns their corpse into an ice statue")
-{
-	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_FREEZE);
-}
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-CON_COMMAND(tf_incinerate, "Kills the player and incinerates their corpse")
-{
-	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_INCINERATE);
-}
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-CON_COMMAND(tf_disintegrate, "Kills the player and disintegrates their corpse")
-{
-	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_DISINTEGRATE);
-}
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-CON_COMMAND(tf_disintegrate_and_gib, "Kills the player, disintegrates and gib their corpse")
-{
-	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_DISINTEGRATE_AND_GIB);
-}
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-CON_COMMAND(tf_mistify, "Kills the player and turns them into bloody mist")
-{
-	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_MISTIFY);
-}
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-CON_COMMAND(tf_midas_touch, "Kills the player and turns their corpse to gold")
-{
-	kill_helper(args, TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_TURN_TO_GOLD);
 }
 #endif
