@@ -2110,11 +2110,7 @@ bool CTFFlameThrower::EffectMeterShouldFlash( void )
 //-----------------------------------------------------------------------------
 Vector CTFFlameThrower::GetMuzzlePosHelper( bool bVisualPos )
 {
-#ifdef BDSBASE
-	Vector vecMuzzlePos = vec3_origin;
-#else
 	Vector vecMuzzlePos;
-#endif
 	CTFPlayer *pOwner = GetTFPlayerOwner();
 	if ( pOwner ) 
 	{
