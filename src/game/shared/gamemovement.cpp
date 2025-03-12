@@ -60,7 +60,7 @@ ConVar option_duck_method("option_duck_method", "1", FCVAR_REPLICATED|FCVAR_ARCH
 
 #ifdef BDSBASE
 ConVar sv_bhop("sv_bhop", "0", FCVAR_REPLICATED | FCVAR_NOTIFY);
-ConVar sv_bhop_mode("sv_bhop_mode", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "1 = orangebox accelerated backhopping, 2 = 2006 bhopping");
+ConVar sv_bhop_mode("sv_bhop_mode", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "1 = 2006 bhopping, 2 = orangebox accelerated backhopping");
 #endif
 
 // [MD] I'll remove this eventually. For now, I want the ability to A/B the optimizations.
@@ -2518,7 +2518,7 @@ bool CGameMovement::CheckJumpButton( void )
 
 	if (canBHop)
 	{
-		if (sv_bhop_mode.GetInt() == 2)
+		if (sv_bhop_mode.GetInt() == 1)
 		{
 			CHLMoveData* pMoveData = (CHLMoveData*)mv;
 			Vector vecForward;
