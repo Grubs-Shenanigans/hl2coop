@@ -61,11 +61,6 @@ ConVar  tf_parachute_maxspeed_onfire_z( "tf_parachute_maxspeed_onfire_z", "10.0f
 ConVar  tf_parachute_aircontrol( "tf_parachute_aircontrol", "2.5f", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Multiplier for how much air control players have when Parachute is deployed" );
 ConVar	tf_parachute_deploy_toggle_allowed( "tf_parachute_deploy_toggle_allowed", "0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
 
-#ifdef BDSBASE
-ConVar 	sv_enablebunnyhopping("sv_enablebunnyhopping", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Removes speed cap from bunnyhopping.");
-ConVar 	sv_autobunnyhopping("sv_autobunnyhopping", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Players will automatically jump while holding space.");
-#endif
-
 ConVar  tf_halloween_kart_aircontrol( "tf_halloween_kart_aircontrol", "1.2f", FCVAR_CHEAT | FCVAR_REPLICATED, "Multiplier for how much air control players have when in Kart Mode" );
 ConVar	tf_ghost_up_speed( "tf_ghost_up_speed", "300.f", FCVAR_CHEAT | FCVAR_REPLICATED, "Speed that ghost go upward while holding jump key" );
 ConVar	tf_ghost_xy_speed( "tf_ghost_xy_speed", "300.f", FCVAR_CHEAT | FCVAR_REPLICATED );
@@ -95,6 +90,11 @@ extern ConVar cl_forwardspeed;
 extern ConVar cl_backspeed;
 extern ConVar cl_sidespeed;
 extern ConVar mp_tournament_readymode_countdown;
+
+#ifdef BDSBASE
+extern ConVar sv_bhop;
+extern ConVar sv_bhop_mode;
+#endif
 
 #ifdef BDSBASE
 ConVar tf_maxspeed_limit("tf_maxspeed_limit", "520.f", FCVAR_CHEAT | FCVAR_REPLICATED);
@@ -1119,11 +1119,6 @@ void CTFGameMovement::PreventBunnyJumping()
 	if ( m_pTFPlayer->m_Shared.InCond( TF_COND_HALLOWEEN_KART ) )
 		return;
 
-#ifdef BDSBASE
-	if (sv_enablebunnyhopping.GetBool())
-		return;
-#endif
-
 	// Speed at which bunny jumping is limited
 	float maxscaledspeed = BUNNYJUMP_MAX_SPEED_FACTOR * player->m_flMaxspeed;
 	if ( maxscaledspeed <= 0.0f )
@@ -1204,25 +1199,25 @@ void CTFGameMovement::ToggleParachute()
 bool CTFGameMovement::CheckJumpButton()
 {
 	// Are we dead?  Then we cannot jump.
-	if ( player->pl.deadflag )
+	if (player->pl.deadflag)
 		return false;
 
 	// Check to see if we are in water.
-	if ( !CheckWaterJumpButton() )
+	if (!CheckWaterJumpButton())
 		return false;
 
-	if ( m_pTFPlayer->GetGrapplingHookTarget() && m_pTFPlayer->GetPlayerClass()->GetClassIndex() != TF_CLASS_HEAVYWEAPONS )
+	if (m_pTFPlayer->GetGrapplingHookTarget() && m_pTFPlayer->GetPlayerClass()->GetClassIndex() != TF_CLASS_HEAVYWEAPONS)
 	{
 		float flStartZ = mv->m_vecVelocity[2];
 		mv->m_vecVelocity[2] += tf_grapplinghook_jump_up_speed.GetFloat();
 
 		// Powered up flag carriers get a jump height penalty except Agility
-		if ( m_pTFPlayer->m_Shared.GetCarryingRuneType() != RUNE_AGILITY && m_pTFPlayer->m_Shared.GetCarryingRuneType() != RUNE_NONE && m_pTFPlayer->HasTheFlag() )
+		if (m_pTFPlayer->m_Shared.GetCarryingRuneType() != RUNE_AGILITY && m_pTFPlayer->m_Shared.GetCarryingRuneType() != RUNE_NONE && m_pTFPlayer->HasTheFlag())
 		{
 			mv->m_vecVelocity[2] *= 0.80f;
 		}
 
-		if ( mv->m_vecVelocity[2] > GetAirSpeedCap() )
+		if (mv->m_vecVelocity[2] > GetAirSpeedCap())
 			mv->m_vecVelocity[2] = GetAirSpeedCap();
 
 		// Apply gravity.
@@ -1236,7 +1231,7 @@ bool CTFGameMovement::CheckJumpButton()
 	}
 
 	// holding jump key will make ghost fly
-	if ( m_pTFPlayer->m_Shared.InCond( TF_COND_HALLOWEEN_GHOST_MODE ) )
+	if (m_pTFPlayer->m_Shared.InCond(TF_COND_HALLOWEEN_GHOST_MODE))
 	{
 		float flStartZ = mv->m_vecVelocity[2];
 		mv->m_vecVelocity[2] = tf_ghost_up_speed.GetFloat();
@@ -1251,47 +1246,39 @@ bool CTFGameMovement::CheckJumpButton()
 	}
 
 	// Can I jump?
-	if ( !m_pTFPlayer->CanJump() )
+	if (!m_pTFPlayer->CanJump())
 		return false;
 
 	// Check to see if the player is a scout.
-	bool bScout = m_pTFPlayer->GetPlayerClass()->IsClass( TF_CLASS_SCOUT );
+	bool bScout = m_pTFPlayer->GetPlayerClass()->IsClass(TF_CLASS_SCOUT);
 	bool bAirDash = false;
-	bool bOnGround = ( player->GetGroundEntity() != NULL );
+	bool bOnGround = (player->GetGroundEntity() != NULL);
 
 	ToggleParachute();
 
 	// Cannot jump will ducked.
-#ifdef BDSBASE
-	if (player->GetFlags() & FL_DUCKING && !sv_autobunnyhopping.GetBool())
-#else
-	if ( player->GetFlags() & FL_DUCKING )
-#endif
+	if (player->GetFlags() & FL_DUCKING)
 	{
 		// Let a scout do it.
-		bool bAllow = ( bScout && !bOnGround );
+		bool bAllow = (bScout && !bOnGround);
 
-		if ( !bAllow )
+		if (!bAllow)
 			return false;
 	}
 
 	// Cannot jump while in the unduck transition.
-	if ( ( player->m_Local.m_bDucking && (  player->GetFlags() & FL_DUCKING ) ) || ( player->m_Local.m_flDuckJumpTime > 0.0f ) )
+	if ((player->m_Local.m_bDucking && (player->GetFlags() & FL_DUCKING)) || (player->m_Local.m_flDuckJumpTime > 0.0f))
 		return false;
 
 	// Cannot jump again until the jump button has been released.
-#ifdef BDSBASE
-	if (mv->m_nOldButtons & IN_JUMP && (!sv_autobunnyhopping.GetBool() || !bOnGround))
-#else
-	if ( mv->m_nOldButtons & IN_JUMP )
-#endif
+	if (mv->m_nOldButtons & IN_JUMP)
 		return false;
 
 	// In air, so ignore jumps 
 	// (unless you are a scout or ghost or parachute
-	if ( !bOnGround )
+	if (!bOnGround)
 	{
-		if ( m_pTFPlayer->CanAirDash() )
+		if (m_pTFPlayer->CanAirDash())
 		{
 			bAirDash = true;
 		}
@@ -1303,15 +1290,22 @@ bool CTFGameMovement::CheckJumpButton()
 	}
 
 	// Check for an air dash.
-	if ( bAirDash )
+	if (bAirDash)
 	{
- 		AirDash();
+		AirDash();
 		// Reset air duck for Scouts on AirDash.
-		m_pTFPlayer->m_Shared.SetAirDucked( 0 );
+		m_pTFPlayer->m_Shared.SetAirDucked(0);
 		return true;
 	}
 
+#ifdef BDSBASE
+	if (!sv_bhop.GetBool())
+	{
+		PreventBunnyJumping();
+	}
+#else
 	PreventBunnyJumping();
+#endif
 
 	// Start jump animation and player sound (specific TF animation and flags).
 	m_pTFPlayer->DoAnimationEvent( PLAYERANIMEVENT_JUMP );
@@ -1385,6 +1379,53 @@ bool CTFGameMovement::CheckJumpButton()
 	{
 		mv->m_vecVelocity[2] += flMul;  // 2 * gravity * jump_height * ground_factor
 	}
+
+#ifdef BDSBASE
+	bool canBHop = ((sv_bhop.GetBool()) ? true : (gpGlobals->maxClients == 1));
+
+	if (canBHop)
+	{
+		if (sv_bhop_mode.GetInt() == 1)
+		{
+			Vector vecForward;
+			AngleVectors(mv->m_vecViewAngles, &vecForward);
+			vecForward.z = 0;
+			VectorNormalize(vecForward);
+			for (int iAxis = 0; iAxis < 2; ++iAxis)
+			{
+				vecForward[iAxis] *= (mv->m_flForwardMove * 0.1f);
+				//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardsprintscale.GetFloat() );
+			}
+			VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
+		}
+		else
+		{
+			Vector vecForward;
+			AngleVectors(mv->m_vecViewAngles, &vecForward);
+			vecForward.z = 0;
+			VectorNormalize(vecForward);
+
+			// We give a certain percentage of the current forward movement as a bonus to the jump speed.  That bonus is clipped
+			// to not accumulate over time.
+			float flSpeedBoostPerc = 0.1f;
+			float flSpeedAddition = fabs(mv->m_flForwardMove * flSpeedBoostPerc);
+			float flMaxSpeed = mv->m_flMaxSpeed + (mv->m_flMaxSpeed * flSpeedBoostPerc);
+			float flNewSpeed = (flSpeedAddition + mv->m_vecVelocity.Length2D());
+
+			// If we're over the maximum, we want to only boost as much as will get us to the goal speed
+			if (flNewSpeed > flMaxSpeed)
+			{
+				flSpeedAddition -= flNewSpeed - flMaxSpeed;
+			}
+
+			if (mv->m_flForwardMove < 0.0f)
+				flSpeedAddition *= -1.0f;
+
+			// Add it on
+			VectorAdd((vecForward * flSpeedAddition), mv->m_vecVelocity, mv->m_vecVelocity);
+		}
+	}
+#endif
 
 	// Apply gravity.
 	FinishGravity();
