@@ -289,9 +289,20 @@ bool CHL2GameMovement::ContinueForcedMove()
 // Purpose: Returns true if the player is on a ladder
 // Input  : &trace - ignored
 //-----------------------------------------------------------------------------
-bool CHL2GameMovement::OnLadder( trace_t &trace )
+bool CHL2GameMovement::OnLadder(trace_t& trace)
 {
-	return ( GetLadder() != NULL ) ? true : false;
+#ifdef BDSBASE
+#if defined(HL2_DLL)
+	if (GetLadder() == nullptr)
+		return BaseClass::OnLadder(trace);
+	else
+		return true;
+#else
+	return (GetLadder() != NULL) ? true : false;
+#endif
+#else
+	return (GetLadder() != NULL) ? true : false;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -565,6 +576,17 @@ void CHL2GameMovement::ReduceTimers( void )
 //-----------------------------------------------------------------------------
 void CHL2GameMovement::FullLadderMove()
 {
+#ifdef BDSBASE
+	// MY CODE Old Ladder
+#if defined(HL2_DLL)
+	if (GetLadder() == nullptr)
+	{
+		BaseClass::FullLadderMove();
+		return;
+	}
+#endif
+	////////////////////////
+#endif
 	CFuncLadder *ladder = GetLadder();
 	Assert( ladder );
 	if ( !ladder )
@@ -938,7 +960,17 @@ bool CHL2GameMovement::LadderMove( void )
 	if ( player->GetMoveType() == MOVETYPE_NOCLIP )
 	{
 		SetLadder( NULL );
+#ifdef BDSBASE
+		// MY CODE Old Ladder
+#if defined(HL2_DLL)
+		return BaseClass::LadderMove();
+#else
 		return false;
+#endif
+		/////////////////
+#else
+		return false;
+#endif
 	}
 
 	// If being forced to mount/dismount continue to act like we are on the ladder
@@ -1005,7 +1037,17 @@ bool CHL2GameMovement::LadderMove( void )
 			}
 		}
 
+#ifdef BDSBASE
+		// MY CODE Old Ladder
+#if defined(HL2_DLL)
+		return BaseClass::LadderMove();
+#else
 		return false;
+#endif
+		/////////////////
+#else
+		return false;
+#endif
 	}
 
 	if ( !ladder && 
@@ -1019,7 +1061,17 @@ bool CHL2GameMovement::LadderMove( void )
 	ladder = GetLadder();
 	if ( !ladder )
 	{
+#ifdef BDSBASE
+		// MY CODE Old Ladder
+#if defined(HL2_DLL)
+		return BaseClass::LadderMove();
+#else
 		return false;
+#endif
+		/////////////////
+#else
+		return false;
+#endif
 	}
 
 	// Don't play the deny sound
@@ -1083,7 +1135,17 @@ bool CHL2GameMovement::LadderMove( void )
 		{
 			mv->m_vecVelocity.z = mv->m_vecVelocity.z + 50;
 		}
+#ifdef BDSBASE
+		// MY CODE Old Ladder
+#if defined(HL2_DLL)
+		return BaseClass::LadderMove();
+#else
 		return false;
+#endif
+		/////////////////
+#else
+		return false;
+#endif
 	}
 
 	if ( forwardSpeed != 0 || rightSpeed != 0 )
@@ -1115,7 +1177,17 @@ bool CHL2GameMovement::LadderMove( void )
 			player->SetMoveType( MOVETYPE_WALK );
 			// Remove from ladder
 			SetLadder( NULL );
+#ifdef BDSBASE
+			// MY CODE Old Ladder
+#if defined(HL2_DLL)
+			return BaseClass::LadderMove();
+#else
 			return false;
+#endif
+			/////////////////
+#else
+			return false;
+#endif
 		}
 
 		bool ishorizontal = fabs( topPosition.z - bottomPosition.z ) < 64.0f ? true : false;
