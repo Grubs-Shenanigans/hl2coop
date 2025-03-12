@@ -2525,21 +2525,10 @@ bool CGameMovement::CheckJumpButton( void )
 			AngleVectors(mv->m_vecViewAngles, &vecForward);
 			vecForward.z = 0;
 			VectorNormalize(vecForward);
-			if (!pMoveData->m_bIsSprinting && !player->m_Local.m_bDucked)
+			for (int iAxis = 0; iAxis < 2; ++iAxis)
 			{
-				for (int iAxis = 0; iAxis < 2; ++iAxis)
-				{
-					vecForward[iAxis] *= (mv->m_flForwardMove * 0.5f);
-					//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardscale.GetFloat() );
-				}
-			}
-			else
-			{
-				for (int iAxis = 0; iAxis < 2; ++iAxis)
-				{
-					vecForward[iAxis] *= (mv->m_flForwardMove * 0.1f);
-					//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardsprintscale.GetFloat() );
-				}
+				vecForward[iAxis] *= (mv->m_flForwardMove * 0.1f);
+				//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardsprintscale.GetFloat() );
 			}
 			VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
 		}
@@ -2553,7 +2542,7 @@ bool CGameMovement::CheckJumpButton( void )
 
 			// We give a certain percentage of the current forward movement as a bonus to the jump speed.  That bonus is clipped
 			// to not accumulate over time.
-			float flSpeedBoostPerc = (!pMoveData->m_bIsSprinting && !player->m_Local.m_bDucked) ? 0.5f : 0.1f;
+			float flSpeedBoostPerc = 0.1f;
 			float flSpeedAddition = fabs(mv->m_flForwardMove * flSpeedBoostPerc);
 			float flMaxSpeed = mv->m_flMaxSpeed + (mv->m_flMaxSpeed * flSpeedBoostPerc);
 			float flNewSpeed = (flSpeedAddition + mv->m_vecVelocity.Length2D());
