@@ -80,11 +80,18 @@ bool ShouldHealthBarBeVisible( CBaseEntity *pTarget, CTFPlayer *pLocalPlayer )
 	if ( !pTarget || !pLocalPlayer )
 		return false;
 
-	if ( tf_hud_target_id_disable_floating_health.GetBool() )
+#ifndef BDSBASE
+	if (tf_hud_target_id_disable_floating_health.GetBool())
 		return false;
+#endif
 
 	if ( pTarget->IsHealthBarVisible() )
 		return true;
+
+#ifdef BDSBASE
+	if (tf_hud_target_id_disable_floating_health.GetBool())
+		return false;
+#endif
 
 	if ( !pTarget->IsPlayer() )
 		return false;
@@ -475,7 +482,11 @@ bool CTargetID::IsValidIDTarget( int nEntIndex, float flOldTargetRetainFOV, floa
 
 				//Recreate the floating health icon if there isn't one, we're not a spectator, and 
 				// we're not a spy or this was a robot from Robot Destruction-Mode
-				if ( !m_pFloatingHealthIcon && !bSpectator && ( !bSpy || bHealthBarVisible ) && !DrawHealthIcon() )
+#ifdef BDSBASE
+				if (!m_pFloatingHealthIcon && !bSpectator && (!bSpy || bHealthBarVisible) && (!DrawHealthIcon() || pEnt->IsHealthBarVisible()))
+#else
+				if (!m_pFloatingHealthIcon && !bSpectator && (!bSpy || bHealthBarVisible) && !DrawHealthIcon())
+#endif
 				{
 					m_pFloatingHealthIcon = CFloatingHealthIcon::AddFloatingHealthIcon( pEnt );
 				}
@@ -796,19 +807,32 @@ void CTargetID::UpdateID( void )
 
 			bool bInSameTeam = pLocalTFPlayer->InSameDisguisedTeam( pEnt );
 			bool bSpy = pLocalTFPlayer->IsPlayerClass( TF_CLASS_SPY );
-			bool bMedic = pLocalTFPlayer->IsPlayerClass( TF_CLASS_MEDIC );
-			bool bHeavy = pLocalTFPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS );
+#ifndef BDSBASE
+			bool bMedic = pLocalTFPlayer->IsPlayerClass(TF_CLASS_MEDIC);
+			bool bHeavy = pLocalTFPlayer->IsPlayerClass(TF_CLASS_HEAVYWEAPONS);
+#else
+			int iSeeEnemyHealth = 0;
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pLocalTFPlayer, iSeeEnemyHealth, see_enemy_health)
+#endif
 
 			// See if the player wants to fill in the data string
 			bool bIsAmmoData = false;
 			bool bIsKillStreakData = false;
 			pPlayer->GetTargetIDDataString( bDisguisedTarget, sDataString, sizeof(sDataString), bIsAmmoData, bIsKillStreakData );
-			if ( pLocalTFPlayer->GetTeamNumber() == TEAM_SPECTATOR || bInSameTeam || bSpy || bDisguisedEnemy || bMedic || bHeavy )
+#ifdef BDSBASE
+			if (pLocalTFPlayer->GetTeamNumber() == TEAM_SPECTATOR || bInSameTeam)
+#else
+			if (pLocalTFPlayer->GetTeamNumber() == TEAM_SPECTATOR || bInSameTeam || bSpy || bDisguisedEnemy || bMedic || bHeavy)
+#endif
 			{
 				printFormatString = "#TF_playerid_sameteam";
 				bShowHealth = true;
 			}
-			else if ( pLocalTFPlayer->m_Shared.GetState() == TF_STATE_DYING )
+#ifdef BDSBASE
+			else if (bSpy || iSeeEnemyHealth || pLocalTFPlayer->m_Shared.GetState() == TF_STATE_DYING)
+#else
+			else if (pLocalTFPlayer->m_Shared.GetState() == TF_STATE_DYING)
+#endif
 			{
 				// We're looking at an enemy who killed us.
 				printFormatString = "#TF_playerid_diffteam";
