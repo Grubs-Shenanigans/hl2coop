@@ -22,6 +22,8 @@ $Games
 	"SDK"
 	"TF"
     //BDS PROJECTS GO HERE
+    "GREYMOD"
+    "SURVIVOR2"
 }
 
 $Include "vpc_scripts\projects.vgc"
