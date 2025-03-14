@@ -826,6 +826,11 @@ public:
 		}
 	}
 
+#ifdef BDSBASE
+	float GetLadderCooldownTime() const { return m_flLadderCooldownTime; }
+	void SetLadderCooldownTime(float cooldownTime) { m_flLadderCooldownTime = cooldownTime; }
+#endif
+
 private:
 	// How much of a movement time buffer can we process from this user?
 	int				m_nMovementTicksForUserCmdProcessingRemaining;
@@ -843,6 +848,7 @@ private:
 	void				AdjustPlayerTimeBase( int simulation_ticks );
 
 #ifdef BDSBASE
+	float				m_flLadderCooldownTime;
 	// Player spamming way too much, add a penalty
 	float m_flChatPenaltyMultiplier;
 	float m_flLastPenaltyDecayTime;
