@@ -172,6 +172,13 @@ public:
 	bool CanSprint( void );
 	void EnableSprint( bool bEnable);
 
+#ifdef BDSBASE
+	bool IsNewSprinting() const
+	{
+		return m_HL2Local.m_bNewSprinting;
+	}
+#endif
+
 	bool CanZoom( CBaseEntity *pRequester );
 	void ToggleZoom(void);
 	void StartZooming( void );

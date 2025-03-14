@@ -98,6 +98,13 @@ public:
 	bool SuitPower_RemoveDevice( const CSuitPowerDevice& device );
 	bool SuitPower_ShouldRecharge( void );
 	float SuitPower_GetCurrentPercentage( void ) { return m_HL2Local.m_flSuitPower; }
+
+#ifdef BDSBASE
+	bool IsNewSprinting() const
+	{
+		return m_HL2Local.m_bNewSprinting;
+	}
+#endif
 	
 	bool	CanSprint( void );
 	void	StartSprinting( void );

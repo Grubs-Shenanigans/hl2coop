@@ -14,6 +14,13 @@
 #include "decals.h"
 #include "coordsize.h"
 #include "rumble_shared.h"
+#ifdef BDSBASE
+#ifdef GAME_DLL
+#include "hl2_player.h"
+#else
+#include "c_hl2mp_player.h"
+#endif
+#endif
 #ifdef CLIENT_DLL
 #include "prediction.h"
 #endif
@@ -4364,8 +4371,10 @@ void CGameMovement::FinishUnDuckJump( trace_t &trace )
 //-----------------------------------------------------------------------------
 void CGameMovement::FinishDuck( void )
 {
-	if ( player->GetFlags() & FL_DUCKING )
+#ifndef BDSBASE
+	if (player->GetFlags() & FL_DUCKING)
 		return;
+#endif
 
 	player->AddFlag( FL_DUCKING );
 	player->m_Local.m_bDucked = true;
@@ -4462,14 +4471,45 @@ void CGameMovement::SetDuckedEyeOffset( float duckFraction )
 //-----------------------------------------------------------------------------
 void CGameMovement::HandleDuckingSpeedCrop( void )
 {
-	if ( !( m_iSpeedCropped & SPEED_CROPPED_DUCK ) && ( player->GetFlags() & FL_DUCKING ) && ( player->GetGroundEntity() != NULL ) )
+#ifdef BDSBASE
+#if defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
+#ifdef GAME_DLL
+	CHL2_Player* pHL2Player = dynamic_cast<CHL2_Player*>(player);
+#else
+	C_HL2MP_Player* pHL2Player = dynamic_cast<C_HL2MP_Player*>(player);
+#endif
+#endif
+
+	if ((m_iSpeedCropped & SPEED_CROPPED_DUCK) ||
+		!(player->GetFlags() & FL_DUCKING) ||
+		(player->GetGroundEntity() == NULL))
+	{
+		return;
+	}
+
+#if defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
+	// Let sprint happen during unducking if requested
+	if (pHL2Player && pHL2Player->IsNewSprinting())
+	{
+		return; // No speed crop if sprinting.
+	}
+#endif
+
+	float frac = 0.33333333f;
+	mv->m_flForwardMove *= frac;
+	mv->m_flSideMove *= frac;
+	mv->m_flUpMove *= frac;
+	m_iSpeedCropped |= SPEED_CROPPED_DUCK;
+#else
+	if (!(m_iSpeedCropped & SPEED_CROPPED_DUCK) && (player->GetFlags() & FL_DUCKING) && (player->GetGroundEntity() != NULL))
 	{
 		float frac = 0.33333333f;
-		mv->m_flForwardMove	*= frac;
-		mv->m_flSideMove	*= frac;
-		mv->m_flUpMove		*= frac;
-		m_iSpeedCropped		|= SPEED_CROPPED_DUCK;
+		mv->m_flForwardMove *= frac;
+		mv->m_flSideMove *= frac;
+		mv->m_flUpMove *= frac;
+		m_iSpeedCropped |= SPEED_CROPPED_DUCK;
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
