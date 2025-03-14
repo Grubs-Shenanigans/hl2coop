@@ -747,8 +747,26 @@ void CFire::Spawn( void )
 
 int CFire::UpdateTransmitState()
 {
+#ifdef BDSBASE
+#ifndef TF_CLIENT_DLL
 	// Don't want to be FL_EDICT_DONTSEND because our fire entity may make us transmit.
-	return SetTransmitState( FL_EDICT_ALWAYS );
+	static ConVarRef r_classic_fire("r_classic_fire");
+	if (r_classic_fire.GetBool())
+	{
+		return SetTransmitState(FL_EDICT_PVSCHECK);
+	}
+	else
+	{
+		return SetTransmitState(FL_EDICT_ALWAYS);
+	}
+#else
+	// Don't want to be FL_EDICT_DONTSEND because our fire entity may make us transmit.
+	return SetTransmitState(FL_EDICT_ALWAYS);
+#endif
+#else
+	// Don't want to be FL_EDICT_DONTSEND because our fire entity may make us transmit.
+	return SetTransmitState(FL_EDICT_ALWAYS);
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -809,7 +827,19 @@ void CFire::SpawnEffect( fireType_e type, float scale )
 	UTIL_SetOrigin( pEffect, GetAbsOrigin() );
 	pEffect->Spawn();
 	pEffect->SetParent( this );
-	pEffect->Scale( m_flFireSize, m_flFireSize, 0 );
+#ifdef BDSBASE
+#ifndef TF_CLIENT_DLL
+	static ConVarRef r_classic_fire("r_classic_fire");
+	if (!r_classic_fire.GetBool())
+	{
+		pEffect->Scale(m_flFireSize, m_flFireSize, 0);
+	}
+#else
+	pEffect->Scale(m_flFireSize, m_flFireSize, 0);
+#endif
+#else
+	pEffect->Scale(m_flFireSize, m_flFireSize, 0);
+#endif
 	//Start it going
 	pEffect->Enable( ( m_spawnflags & SF_FIRE_START_ON ) );
 	m_hEffect = pEffect;

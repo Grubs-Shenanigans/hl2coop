@@ -38,6 +38,13 @@ END_DATADESC()
 
 IMPLEMENT_SERVERCLASS_ST( CEntityFlame, DT_EntityFlame )
 	SendPropEHandle( SENDINFO( m_hEntAttached ) ),
+#ifdef BDSBASE
+#ifndef TF_CLIENT_DLL
+	SendPropFloat(SENDINFO(m_flSize), 16, SPROP_NOSCALE),
+	SendPropInt(SENDINFO(m_bUseHitboxes), 1, SPROP_UNSIGNED),
+	SendPropTime(SENDINFO(m_flLifetime))
+#endif
+#endif
 END_SEND_TABLE()
 
 LINK_ENTITY_TO_CLASS( entityflame, CEntityFlame );
@@ -230,8 +237,23 @@ float CEntityFlame::GetHitboxFireScale( void )
 //-----------------------------------------------------------------------------
 void CEntityFlame::FlameThink( void )
 {
+#ifdef BDSBASE
+#ifndef TF_CLIENT_DLL
+	static ConVarRef r_classic_fire("r_classic_fire");
+
+	if (!r_classic_fire.GetBool())
+	{
+		// Assure that this function will be ticked again even if we early-out in the if below.
+		SetNextThink(gpGlobals->curtime + FLAME_DAMAGE_INTERVAL);
+	}
+#else
 	// Assure that this function will be ticked again even if we early-out in the if below.
-	SetNextThink( gpGlobals->curtime + FLAME_DAMAGE_INTERVAL );
+	SetNextThink(gpGlobals->curtime + FLAME_DAMAGE_INTERVAL);
+#endif
+#else
+	// Assure that this function will be ticked again even if we early-out in the if below.
+	SetNextThink(gpGlobals->curtime + FLAME_DAMAGE_INTERVAL);
+#endif
 
 	if ( m_hEntAttached )
 	{
@@ -322,6 +344,14 @@ void CEntityFlame::FlameThink( void )
 
 	FireSystem_AddHeatInRadius( GetAbsOrigin(), m_flSize/2, 2.0f );
 
+#ifdef BDSBASE
+#ifndef TF_CLIENT_DLL
+	if (r_classic_fire.GetBool())
+	{
+		SetNextThink(gpGlobals->curtime + FLAME_DAMAGE_INTERVAL);
+	}
+#endif
+#endif
 }  
 
 
