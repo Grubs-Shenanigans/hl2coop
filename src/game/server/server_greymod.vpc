@@ -8,7 +8,7 @@ $Macro SRCDIR		"..\.."
 $Macro GAMENAME 	"greymod"
 
 $Include "$SRCDIR\game\server\server_base.vpc"
-$Include "$SRCDIR\vpc_scripts\source_replay.vpc"
+$Include "$SRCDIR\game\server\server_replay_base.vpc"
 $Include "$SRCDIR\game\server\server_econ_base.vpc"
 $include "$SRCDIR\game\shared\tf\tf_gcmessages_include.vpc"
 $include "$SRCDIR\game\shared\tf\tf_proto_def_messages_include.vpc"
@@ -26,15 +26,6 @@ $Configuration
 
 $Project "Server (TF)"
 {
-    $Folder "Replay"
-	{
-		$File	"gamedll_replay.cpp"
-		$File	"$SRCDIR\common\replay\ireplaysessionrecorder.h"
-
-		$File	"$SRCDIR\game\shared\replay_gamestats_shared.cpp"	[$BUILD_REPLAY]
-		$File	"$SRCDIR\game\shared\replay_gamestats_shared.h"	[$BUILD_REPLAY]
-	}
-
 	$Folder	"Source Files"
 	{
 		-$File	"AI_ConCommands.cpp"
