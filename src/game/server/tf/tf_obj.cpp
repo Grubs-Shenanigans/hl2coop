@@ -1237,7 +1237,11 @@ bool CBaseObject::FindSnapToBuildPos( CBaseObject *pObjectOverride )
 			{
 				CBaseObject *pObject = pTeam->GetObject(i);
 				Assert( pObject );
-				if ( pObject && !pObject->IsPlacing() )
+#ifdef BDSBASE
+				if (pObject && !pObject->IsPlacing() && !pObject->HasSpawnFlags(SF_BASEOBJ_NO_ATTACH))
+#else
+				if (pObject && !pObject->IsPlacing())
+#endif
 				{
 					if ( FindNearestBuildPoint( pObject, pPlayer, flNearestPoint, vecNearestBuildPoint ) )
 					{
@@ -1250,7 +1254,11 @@ bool CBaseObject::FindSnapToBuildPos( CBaseObject *pObjectOverride )
 	}
 	else
 	{
-		if ( !pObjectOverride->IsPlacing() )
+#ifdef BDSBASE
+		if (!pObjectOverride->IsPlacing() && !pObjectOverride->HasSpawnFlags(SF_BASEOBJ_NO_ATTACH))
+#else
+		if (!pObjectOverride->IsPlacing())
+#endif
 		{
 			if ( FindNearestBuildPoint( pObjectOverride, pPlayer, flNearestPoint, vecNearestBuildPoint, true ) )
 			{
@@ -2845,7 +2853,11 @@ void CBaseObject::DoWrenchHitEffect( Vector hitLoc, bool bRepairHit, bool bUpgra
 //-----------------------------------------------------------------------------
 bool CBaseObject::CheckUpgradeOnHit( CTFPlayer *pPlayer )
 {
-	if ( !CanBeUpgraded() )
+#ifdef BDSBASE
+	if (!CanUpgradeOnHit())
+#else
+	if (!CanBeUpgraded())
+#endif
 		return false;
 
 	if ( m_bCarryDeploy )
@@ -2918,6 +2930,14 @@ bool CBaseObject::CheckUpgradeOnHit( CTFPlayer *pPlayer )
 //-----------------------------------------------------------------------------
 bool CBaseObject::CanBeUpgraded( CTFPlayer *pPlayer )
 {
+#ifdef BDSBASE
+	// map says can't upgrade (not limiting to m_bMapPlaced for mods to use)
+	if (HasSpawnFlags(SF_BASEOBJ_NO_UPGRADE))
+	{
+		return false;
+	}
+#endif
+
 	// Already upgrading
 	if ( IsUpgrading() )
 		return false;
@@ -3425,19 +3445,20 @@ void CBaseObject::RotateBuildAngles( void )
 //-----------------------------------------------------------------------------
 void CBaseObject::UpdateDisabledState( void )
 {
-	const bool bShouldBeEnabled = !m_bHasSapper
-
 #ifdef BDSBASE
-									&& !m_bPlasmaDisable
-									&& (GetType() != OBJ_SENTRYGUN
-										|| !TFGameRules()->RoundHasBeenWon()
-										|| TFGameRules()->GetWinningTeam() == GetTeamNumber() );
+	const bool bPlayerDisabled = !HasSpawnFlags(SF_BASEOBJ_NO_DISABLE)
+		&& (m_bHasSapper || m_bPlasmaDisable);
+	const bool bGameDisabled = !HasSpawnFlags(SF_BASEOBJ_NO_LOSERSTATE)
+		&& (GetType() == OBJ_SENTRYGUN && TFGameRules()->RoundHasBeenWon() && TFGameRules()->GetWinningTeam() != GetTeamNumber());
+
+	SetDisabled(bPlayerDisabled || bGameDisabled);
 #else
+	const bool bShouldBeEnabled = !m_bHasSapper
 									&& !m_bPlasmaDisable
 									&& (!TFGameRules()->RoundHasBeenWon() || TFGameRules()->GetWinningTeam() == GetTeamNumber());
-#endif
 
-	SetDisabled( !bShouldBeEnabled );
+	SetDisabled(!bShouldBeEnabled);
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -3761,6 +3782,10 @@ void CBaseObject::DoReverseBuild( void )
 //-----------------------------------------------------------------------------
 float CBaseObject::GetReversesBuildingConstructionSpeed( void )
 {
+#ifdef BDSBASE
+	if (m_takedamage == DAMAGE_NO)
+		return 0.0f;
+#endif
 	CObjectSapper *pSapper = GetSapper();
 	if ( !pSapper )
 		return 0.0f;

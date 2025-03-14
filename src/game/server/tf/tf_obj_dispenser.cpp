@@ -193,7 +193,9 @@ void CObjectDispenser::FirstSpawn()
 		bShouldBeMini ? MINI_DISPENSER_MINS : DISPENSER_MINS,
 		bShouldBeMini ? MINI_DISPENSER_MAXS : DISPENSER_MAXS );
 
+#ifndef BDSBASE
 	m_takedamage = DAMAGE_YES;
+#endif
 	m_iAmmoMetal = 0;
 
 	int iHealth = GetMaxHealthForCurrentLevel();

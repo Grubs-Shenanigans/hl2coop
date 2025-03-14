@@ -479,7 +479,11 @@ int C_BaseObject::DrawModel( int flags )
 
 float C_BaseObject::GetReversesBuildingConstructionSpeed( void )
 {
-	if ( HasSapper() )
+#ifdef BDSBASE
+	if (HasSapper() && m_takedamage != DAMAGE_NO)
+#else
+	if (HasSapper())
+#endif
 	{
 		C_ObjectSapper *pSapper = dynamic_cast< C_ObjectSapper* >( FirstMoveChild() );
 		if ( pSapper )

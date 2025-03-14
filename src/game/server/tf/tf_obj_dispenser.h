@@ -24,8 +24,13 @@ class CTFPlayer;
 #define DISPENSER_MINI_AMMO_RATE	0.2 
 #define DISPENSER_MINI_AMMO_THINK	0.5
 
+#ifdef BDSBASE
+#define SF_DISPENSER_IGNORE_LOS						SF_BASEOBJ_LEGACY_1
+#define SF_DISPENSER_DONT_HEAL_DISGUISED_SPIES		SF_BASEOBJ_LEGACY_2
+#else
 #define SF_DISPENSER_IGNORE_LOS					(SF_BASEOBJ_INVULN<<1)
 #define SF_DISPENSER_DONT_HEAL_DISGUISED_SPIES	(SF_BASEOBJ_INVULN<<2)	
+#endif
 
 // ------------------------------------------------------------------------ //
 // Repair Trigger
