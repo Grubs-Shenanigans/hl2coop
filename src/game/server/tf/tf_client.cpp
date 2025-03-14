@@ -270,12 +270,14 @@ void InstallGameRules()
 //------------------------------------------------------------------------------
 // kill commands with custom ragdolls
 //------------------------------------------------------------------------------
-CON_COMMAND(tf_kill, "Kills the player in multiple entertaining ways. If none is selected, the normal kill behavior will be used. Usage: tf_kill <ragdoll death type> [player name]\nDeath Type List:\n0 = Normal\n1 = Burn\n2 = Freeze\n3 = Incinerate\n4 = Disintegrate\n5 = Disintegrate and Gib\n6 = Mistify\n7 = Turn to Gold")
+ConVar tf_kill_enable_custom_ragdolls("tf_kill_enable_custom_ragdolls", "0", FCVAR_REPLICATED, "Allow players to use custom ragdolls with tf_kill");
+
+CON_COMMAND(tf_kill, "Kills the player in multiple entertaining ways. If none is selected, the normal kill behavior will be used. Usage: tf_kill <ragdoll death type> [player name]\nDeath Type List:\n0 = Normal\n1 = Burn\n2 = Freeze\n3 = Incinerate\n4 = Disintegrate\n5 = Disintegrate and Gib\n6 = Mistify\n7 = Decapitate\n8 = Cloak\n9 = Turn to Gold")
 {
 	int iRagdollType = atoi(args[1]);
 	const char* cPlayerName = args[2];
 
-	if (args.ArgC() > 2 && sv_cheats->GetBool())
+	if (args.ArgC() > 2 && sv_cheats->GetBool() && tf_kill_enable_custom_ragdolls.GetBool())
 	{
 		// Find the matching netname
 		for (int i = 1; i <= gpGlobals->maxClients; i++)
@@ -290,7 +292,7 @@ CON_COMMAND(tf_kill, "Kills the player in multiple entertaining ways. If none is
 			}
 		}
 	}
-	else if (args.ArgC() > 1)
+	else if (args.ArgC() > 1 && tf_kill_enable_custom_ragdolls.GetBool())
 	{
 		CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
 		if (pPlayer)

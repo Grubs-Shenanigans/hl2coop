@@ -10354,6 +10354,13 @@ void CTFPlayer::CommitSuicideWithCustomRagdoll(int m_iCustomRagdoll /*= 0*/)
 			pRagdoll->m_bCritOnHardHit = true;
 			pRagdoll->m_bGib = true;
 			break;
+		case TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_DECAPITATE:
+			pRagdoll->m_iDamageCustom = TF_DMG_CUSTOM_HEADSHOT_DECAPITATION;
+			break;
+		case TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_CLOAK:
+			pRagdoll->m_bCloaked = true;
+			// Cosmetics don't remain uncloaked, but it appears to be default behavior
+			break;
 		case TF_KILLBIND_CUSTOM_RAGDOLL_TYPE_TURN_TO_GOLD:
 			pRagdoll->m_bGoldRagdoll = true;
 			break;
