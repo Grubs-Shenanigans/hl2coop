@@ -97,7 +97,8 @@ extern ConVar sv_bhop_mode;
 #endif
 
 #ifdef BDSBASE
-ConVar tf_maxspeed_limit("tf_maxspeed_limit", "520.f", FCVAR_CHEAT | FCVAR_REPLICATED);
+// we use sv_maxspeed now.
+extern ConVar sv_maxspeed;
 #else
 #define TF_MAX_SPEED   (400 * 1.3)	// 400 is Scout max speed, and we allow up to 3% movement bonus.
 #endif
@@ -330,7 +331,7 @@ void CTFGameMovement::ProcessMovement( CBasePlayer *pBasePlayer, CMoveData *pMov
 
 	// The max speed is currently set to the scout - if this changes we need to change this!
 #ifdef BDSBASE
-	mv->m_flMaxSpeed = tf_maxspeed_limit.GetFloat();
+	mv->m_flMaxSpeed = sv_maxspeed.GetFloat();
 #else
 	mv->m_flMaxSpeed = TF_MAX_SPEED;
 #endif

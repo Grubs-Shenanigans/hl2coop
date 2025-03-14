@@ -56,11 +56,19 @@ ConVar	sv_specspeed("sv_specspeed", "3", FCVAR_ARCHIVE | FCVAR_NOTIFY | FCVAR_RE
 ConVar	sv_specnoclip("sv_specnoclip", "1", FCVAR_ARCHIVE | FCVAR_NOTIFY | FCVAR_REPLICATED);
 #endif
 
-#if defined( CSTRIKE_DLL ) || defined( HL1MP_DLL )
-ConVar	sv_maxspeed		( "sv_maxspeed", "320", FCVAR_NOTIFY | FCVAR_REPLICATED);
+#ifdef BDSBASE
+#if defined( TF_CLIENT_DLL ) || defined( TF_DLL )
+ConVar	sv_maxspeed("sv_maxspeed", "520", FCVAR_NOTIFY | FCVAR_CHEAT | FCVAR_REPLICATED);
 #else
-ConVar	sv_maxspeed		( "sv_maxspeed", "320", FCVAR_NOTIFY | FCVAR_REPLICATED);
+ConVar	sv_maxspeed("sv_maxspeed", "320", FCVAR_NOTIFY | FCVAR_CHEAT | FCVAR_REPLICATED);
+#endif
+#else
+#if defined( CSTRIKE_DLL ) || defined( HL1MP_DLL )
+ConVar	sv_maxspeed("sv_maxspeed", "320", FCVAR_NOTIFY | FCVAR_REPLICATED);
+#else
+ConVar	sv_maxspeed("sv_maxspeed", "320", FCVAR_NOTIFY | FCVAR_REPLICATED);
 #endif // CSTRIKE_DLL
+#endif
 
 #ifdef _XBOX
 	ConVar	sv_accelerate	( "sv_accelerate", "7", FCVAR_NOTIFY | FCVAR_REPLICATED);
