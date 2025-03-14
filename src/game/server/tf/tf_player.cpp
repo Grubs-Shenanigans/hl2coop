@@ -19574,27 +19574,62 @@ void CTFPlayer::ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet )
 	if ( pAreaTrigger )
 	{
 		CTeamControlPoint *pCP = pAreaTrigger->GetControlPoint();
-		if ( pCP )
+		if (pCP)
 		{
-			if ( pCP->GetOwner() == GetTeamNumber() )
-			{
 #ifdef BDSBASE
-				if (TeamplayGameRules()->TeamMayCapturePoint(GetEnemyTeam(GetTeamNumber()), pCP->GetPointIndex()))
-				{
-					criteriaSet.AppendCriteria("OnFriendlyControlPoint", "1");
+			const int iPlayerTeam = GetTeamNumber();
+			const int iEnemyTeam = GetEnemyTeam(GetTeamNumber());
+			const int iPointOwner = pCP->GetOwner();
+			const int iPointIndex = pCP->GetPointIndex();
+
+			if (iPointOwner == iPlayerTeam)
+#else
+			if (pCP->GetOwner() == GetTeamNumber())
+#endif
+			{
+				criteriaSet.AppendCriteria("OnFriendlyControlPoint", "1");
+			}
+#ifdef BDSBASE
+			else
+			{
+				criteriaSet.AppendCriteria("OnEnemyOrNeutralControlPoint", "1");
+			}
+
+			// A point is only considered cappable if:
+			// a. Our team is ever allowed to capture it, we specifically are currently allowed to capture it,
+			//    and it is owned by either the other team or neither team.
+			// or
+			// b. The other team is ever allowed to capture it, and either we own it or neither team owns it.
+			bool bIsPointCappable = (
+				TeamplayGameRules()->TeamMayCapturePoint(iPlayerTeam, iPointIndex) &&
+				TeamplayGameRules()->PlayerMayCapturePoint(this, iPointIndex) &&
+				(iPointOwner == iEnemyTeam || iPointOwner == TEAM_UNASSIGNED)
+				) || (
+					TeamplayGameRules()->TeamMayCapturePoint(iEnemyTeam, iPointIndex) &&
+					(iPointOwner == iPlayerTeam || iPointOwner == TEAM_UNASSIGNED)
+					);
+
+			// If the current map is round-based, make sure the point is part of the current one.
+			CTeamControlPointMaster* pMaster = g_hControlPointMasters.Count() ? g_hControlPointMasters[0] : NULL;
+			if (pMaster)
+			{
+				bIsPointCappable = bIsPointCappable && pMaster->IsInRound(pCP);
+			}
+
+			if (bIsPointCappable)
+			{
+				criteriaSet.AppendCriteria("OnCappableControlPoint", "1");
 			}
 #else
-				criteriaSet.AppendCriteria("OnFriendlyControlPoint", "1");
-#endif
-			}
-			else 
+			else
 			{
-				if ( TeamplayGameRules()->TeamMayCapturePoint( GetTeamNumber(), pCP->GetPointIndex() ) && 
-					 TeamplayGameRules()->PlayerMayCapturePoint( this, pCP->GetPointIndex() ) )
+				if (TeamplayGameRules()->TeamMayCapturePoint(GetTeamNumber(), pCP->GetPointIndex()) &&
+					TeamplayGameRules()->PlayerMayCapturePoint(this, pCP->GetPointIndex()))
 				{
-					criteriaSet.AppendCriteria( "OnCappableControlPoint", "1" );
+					criteriaSet.AppendCriteria("OnCappableControlPoint", "1");
 				}
 			}
+#endif
 		}
 	}
 

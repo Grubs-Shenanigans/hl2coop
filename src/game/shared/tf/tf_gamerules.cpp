@@ -16803,7 +16803,8 @@ bool CTFGameRules::TeamMayCapturePoint( int iTeam, int iPointIndex )
 		return true; 
 
 #ifdef BDSBASE
-	if (IsInWaitingForPlayers())
+	// Are points currently able to be captured?
+	if (!PointsMayBeCaptured())
 		return false;
 
 	// Is the point locked?
