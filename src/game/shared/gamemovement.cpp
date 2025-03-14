@@ -2529,6 +2529,7 @@ bool CGameMovement::CheckJumpButton( void )
 	{
 		if (sv_bhop_mode.GetInt() == 1)
 		{
+			CHLMoveData* pMoveData = (CHLMoveData*)mv;
 			Vector vecForward;
 			AngleVectors(mv->m_vecViewAngles, &vecForward);
 			vecForward.z = 0;
@@ -2542,6 +2543,7 @@ bool CGameMovement::CheckJumpButton( void )
 		}
 		else
 		{
+			CHLMoveData* pMoveData = (CHLMoveData*)mv;
 			Vector vecForward;
 			AngleVectors(mv->m_vecViewAngles, &vecForward);
 			vecForward.z = 0;
