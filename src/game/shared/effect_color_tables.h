@@ -45,6 +45,13 @@ static colorentry_t bloodcolors[] =
 	{ BLOOD_COLOR_YELLOW,	195,	195,	0	},
 	{ BLOOD_COLOR_MECH,		20,		20,		20	},
 	{ BLOOD_COLOR_GREEN,	195,	195,	0	},
+#ifdef BDSBASE
+#if defined( HL2_EPISODIC )
+	{ BLOOD_COLOR_ANTLION,	195,	195,	0	},
+	{ BLOOD_COLOR_ZOMBIE,	195,	195,	0	},
+	{ BLOOD_COLOR_ANTLION_WORKER,	195,	195,	0	},
+#endif
+#endif
 };
 
 #endif // EFFECT_COLOR_TABLES_H

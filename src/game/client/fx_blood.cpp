@@ -25,6 +25,12 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#ifdef BDSBASE
+#ifndef TF_CLIENT_DLL
+ConVar r_classic_blood("r_classic_blood", "0", FCVAR_ARCHIVE);
+#endif
+#endif
+
 CLIENTEFFECT_REGISTER_BEGIN( PrecacheEffectBloodSpray )
 CLIENTEFFECT_MATERIAL( "effects/blood_core" )
 CLIENTEFFECT_MATERIAL( "effects/blood_gore" )
@@ -503,18 +509,51 @@ void BloodImpactCallback( const CEffectData & data )
 {
 	bool bFoundBlood = false;
 
-	// Find which sort of blood we are
-	for ( int i = 0; i < ARRAYSIZE( bloodCallbacks ); i++ )
+#ifdef BDSBASE
+#ifndef TF_CLIENT_DLL
+	if (!r_classic_blood.GetBool())
 	{
-		if ( bloodCallbacks[i].nColor == data.m_nColor )
+		// Find which sort of blood we are
+		for (int i = 0; i < ARRAYSIZE(bloodCallbacks); i++)
+		{
+			if (bloodCallbacks[i].nColor == data.m_nColor)
+			{
+				QAngle	vecAngles;
+				VectorAngles(-data.m_vNormal, vecAngles);
+				DispatchParticleEffect(bloodCallbacks[i].lpszParticleSystemName, data.m_vOrigin, vecAngles);
+				bFoundBlood = true;
+				break;
+			}
+		}
+	}
+#else
+	// Find which sort of blood we are
+	for (int i = 0; i < ARRAYSIZE(bloodCallbacks); i++)
+	{
+		if (bloodCallbacks[i].nColor == data.m_nColor)
 		{
 			QAngle	vecAngles;
-			VectorAngles( -data.m_vNormal, vecAngles );
-			DispatchParticleEffect( bloodCallbacks[i].lpszParticleSystemName, data.m_vOrigin, vecAngles );
+			VectorAngles(-data.m_vNormal, vecAngles);
+			DispatchParticleEffect(bloodCallbacks[i].lpszParticleSystemName, data.m_vOrigin, vecAngles);
 			bFoundBlood = true;
 			break;
 		}
 	}
+#endif
+#else
+	// Find which sort of blood we are
+	for (int i = 0; i < ARRAYSIZE(bloodCallbacks); i++)
+	{
+		if (bloodCallbacks[i].nColor == data.m_nColor)
+		{
+			QAngle	vecAngles;
+			VectorAngles(-data.m_vNormal, vecAngles);
+			DispatchParticleEffect(bloodCallbacks[i].lpszParticleSystemName, data.m_vOrigin, vecAngles);
+			bFoundBlood = true;
+			break;
+		}
+	}
+#endif
 
 	if ( bFoundBlood == false )
 	{
