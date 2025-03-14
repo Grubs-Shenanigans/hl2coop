@@ -727,7 +727,7 @@ void C_FireSmoke::UpdateFlames( void )
 			//NOTENOTE: Sprite renderer assumes a scale of 0.0 means 1.0
 			if (m_bFadingOut == false)
 			{
-				m_entFlames[i].SetScale(max(0.000001, newScale));
+				m_entFlames[i].SetScale(max(0.000001f, newScale));
 			}
 			else
 			{
@@ -762,7 +762,7 @@ void C_FireSmoke::UpdateFlames( void )
 				//NOTENOTE: Sprite renderer assumes a scale of 0.0 means 1.0
 				if (m_bFadingOut == false)
 				{
-					m_entFlamesFromAbove[i].SetScale(max(0.000001, newScale));
+					m_entFlamesFromAbove[i].SetScale(max(0.000001f, newScale));
 				}
 				else
 				{
