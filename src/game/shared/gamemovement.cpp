@@ -15,10 +15,12 @@
 #include "coordsize.h"
 #include "rumble_shared.h"
 #ifdef BDSBASE
+#if defined( HL2MP )
 #ifdef GAME_DLL
 #include "hl2_player.h"
 #else
 #include "c_hl2mp_player.h"
+#endif
 #endif
 #endif
 #ifdef CLIENT_DLL
@@ -4472,7 +4474,7 @@ void CGameMovement::SetDuckedEyeOffset( float duckFraction )
 void CGameMovement::HandleDuckingSpeedCrop( void )
 {
 #ifdef BDSBASE
-#if defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
+#if defined( HL2MP )
 #ifdef GAME_DLL
 	CHL2_Player* pHL2Player = dynamic_cast<CHL2_Player*>(player);
 #else
