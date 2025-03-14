@@ -293,46 +293,10 @@ public:
 	EHANDLE				m_hEntAttached;		// The entity that we are burning (attached to).
 	EHANDLE				m_hOldAttached;
 
-#ifdef BDSBASE
-#ifndef TF_CLIENT_DLL
-	virtual void	CleanUpRagdollOnRemove(void);
-	virtual RenderGroup_t GetRenderGroup();
-	bool			m_bUseHitboxes;
-	bool			m_bCreatedClientside;
-
-	C_FireSmoke* m_pFireSmoke[NUM_HITBOX_FIRES];
-#endif
-#endif
-
 protected:
 
 	void	CreateEffect( void );
 	void	StopEffect( void );
-
-#ifdef BDSBASE
-#ifndef TF_CLIENT_DLL
-	void AttachToHitBoxes(void);
-	void UpdateHitBoxFlames(void);
-	void DeleteHitBoxFlames(void);
-
-	float			m_flSize;
-	CSmartPtr<CEmberEffect> m_pEmitter;
-	TimedEvent		m_ParticleSpawn;
-	bool			m_bAttachedToHitboxes;
-	float			m_flLifetime;
-	bool			m_bStartedFading;
-
-	const model_t* m_pCachedModel;				// Holds the model pointer to detect when it changes
-
-	Vector			m_vecLastPosition;
-
-	PMaterialHandle	m_MaterialHandle[NUM_FLAMELETS];
-
-	// For attaching to the hitboxes of an animating model.
-	Vector m_vecFireOrigin[NUM_HITBOX_FIRES];
-	int m_nHitbox[NUM_HITBOX_FIRES];
-#endif
-#endif
 };
 
 #endif //C_FIRE_SMOKE_H
