@@ -7,7 +7,8 @@ This will feature sources for some currently updated and future Bitl Development
 This base is specific to multiplayer mod projects.
 
 ## Projects using this base:
-- TBA
+- SURVIVOR II
+- Grey's Revenge
 
 ## Features:
 - Restored game project generator scripts. No more having to generate every project!

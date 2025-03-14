@@ -6788,10 +6788,10 @@ void CTFPlayerShared::Burn( CTFPlayer *pAttacker, CTFWeaponBase *pWeapon, float 
 		engine->Con_NPrintf( 1, "Added afterburn duration = %f", m_flAfterburnDuration );
 
 #ifdef BDSBASE
-		if (s_flReachMaxAfterburnTime == 0.f && m_flAfterburnDuration == flAfterburnMaxDuration)
+		if (s_flReachMaxAfterburnTime == 0.f && m_flAfterburnDuration == m_flAfterburnMaxDuration)
 		{
 			s_flReachMaxAfterburnTime = gpGlobals->curtime;
-			DevMsg("took %f seconds to reach max afterburn duration %f s\n", s_flReachMaxAfterburnTime - s_flStartAfterburnTime, flAfterburnMaxDuration);
+			DevMsg("took %f seconds to reach max afterburn duration %f s\n", s_flReachMaxAfterburnTime - s_flStartAfterburnTime, m_flAfterburnMaxDuration);
 		}
 #else
 		if (s_flReachMaxAfterburnTime == 0.f && m_flAfterburnDuration == tf_afterburn_max_duration)
