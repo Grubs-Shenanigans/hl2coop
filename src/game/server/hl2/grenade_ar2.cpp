@@ -17,6 +17,10 @@
 #include "engine/IEngineSound.h"
 #include "world.h"
 
+#ifdef BDSBASE
+#include "particle_parse.h"
+#endif
+
 #ifdef PORTAL
 	#include "portal_util_shared.h"
 #endif
@@ -91,6 +95,7 @@ void CGrenadeAR2::Spawn( void )
 
 	m_fSpawnTime = gpGlobals->curtime;
 
+#ifndef BDSBASE
 	// -------------
 	// Smoke trail.
 	// -------------
@@ -115,6 +120,7 @@ void CGrenadeAR2::Spawn( void )
 			m_hSmokeTrail->FollowEntity(this);
 		}
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -127,6 +133,9 @@ void CGrenadeAR2::Spawn( void )
 void CGrenadeAR2::GrenadeAR2Think( void )
 {
 	SetNextThink( gpGlobals->curtime + 0.05f );
+#ifdef BDSBASE
+	DispatchParticleEffect("Rocket_Smoke_Trail", PATTACH_ABSORIGIN_FOLLOW, this, true, true);
+#endif
 
 	if (!m_bIsLive)
 	{
@@ -244,6 +253,9 @@ void CGrenadeAR2::Detonate(void)
 void CGrenadeAR2::Precache( void )
 {
 	PrecacheModel("models/Weapons/ar2_grenade.mdl"); 
+#ifdef BDSBASE
+	PrecacheParticleSystem("Rocket_Smoke_Trail");
+#endif
 }
 
 
