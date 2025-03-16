@@ -45,8 +45,11 @@ public:
 	void Spawn( void );
 
 	// Filter out damage messages that don't contain blast damage (impervious to other forms of attack)
+#ifndef BDSBASE
 	int	OnTakeDamage( const CTakeDamageInfo &info );
-	void Event_Killed( const CTakeDamageInfo &info );
+#endif
+	void Event_Killed(const CTakeDamageInfo& info);
+
 	void Blocked( CBaseEntity *pOther )
 	{
 		// FIxme, set speed to zero?
@@ -70,18 +73,24 @@ END_DATADESC()
 
 void CFuncTankTrain::Spawn( void )
 {
+#ifdef BDSBASE
+	m_takedamage = DAMAGE_YES;
+#else
 	m_takedamage = true;
+#endif
 	BaseClass::Spawn();
 }
 
+#ifndef BDSBASE
 // Filter out damage messages that don't contain blast damage (impervious to other forms of attack)
-int	CFuncTankTrain::OnTakeDamage( const CTakeDamageInfo &info )
+int	CFuncTankTrain::OnTakeDamage(const CTakeDamageInfo& info)
 {
-	if ( ! (info.GetDamageType() & DMG_BLAST) )
+	if (!(info.GetDamageType() & DMG_BLAST))
 		return 0;
 
-	return BaseClass::OnTakeDamage( info );
+	return BaseClass::OnTakeDamage(info);
 }
+#endif
 
 
 //-----------------------------------------------------------------------------
