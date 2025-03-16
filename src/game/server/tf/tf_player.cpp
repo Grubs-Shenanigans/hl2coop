@@ -10312,7 +10312,11 @@ void CTFPlayer::CommitSuicide( bool bExplode /* = false */, bool bForce /*= fals
 		return;
 
 	m_bSuicideExplode = bExplode;
+#ifdef BDSBASE
+	m_iSuicideCustomKillFlags = (EPlayerSuicideFlag_LockScore | TF_DMG_CUSTOM_SUICIDE);
+#else
 	m_iSuicideCustomKillFlags = TF_DMG_CUSTOM_SUICIDE;
+#endif
 
 	BaseClass::CommitSuicide( bExplode, bForce );
 }

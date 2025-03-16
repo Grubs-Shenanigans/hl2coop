@@ -1040,7 +1040,12 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 
 	if ( bKill == true )
 	{
+#ifdef BDSBASE
+		SETBITS(m_iSuicideCustomKillFlags, EPlayerSuicideFlag_LockScore);
+		CommitSuicide(false, true);
+#else
 		CommitSuicide();
+#endif
 	}
 }
 
@@ -1065,10 +1070,15 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 		{
 			m_fNextSuicideTime = gpGlobals->curtime;	// allow the suicide to work
 
+#ifdef BDSBASE
+			SETBITS(m_iSuicideCustomKillFlags, EPlayerSuicideFlag_LockScore);
+			CommitSuicide(false, true);
+#else
 			CommitSuicide();
 
 			// add 1 to frags to balance out the 1 subtracted for killing yourself
-			IncrementFragCount( 1 );
+			IncrementFragCount(1);
+#endif
 		}
 
 		ChangeTeam( TEAM_SPECTATOR );
@@ -1362,7 +1372,11 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 	CBaseEntity *pAttacker = info.GetAttacker();
 
-	if ( pAttacker )
+#ifdef BDSBASE
+	if (pAttacker && (pAttacker != this || !FBitSet(m_iSuicideCustomKillFlags, EPlayerSuicideFlag_LockScore)))
+#else
+	if (pAttacker)
+#endif
 	{
 		int iScoreToAdd = 1;
 
