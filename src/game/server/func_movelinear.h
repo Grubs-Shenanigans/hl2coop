@@ -35,6 +35,7 @@ public:
 	void		SetPosition( float flPosition );
 #ifdef BDSBASE
 	void		StopMoving();
+	void		SetParent(CBaseEntity* pParentEntity, int iAttachment);
 #endif
 
 	int			DrawDebugTextOverlays(void);

@@ -84,9 +84,15 @@ void CFuncMoveLinear::Spawn( void )
 		m_flMoveDistance = DotProductAbs( m_vecMoveDir, vecOBB ) - m_flLip;
 	}
 
+#ifdef BDSBASE
+	m_vecPosition1 = GetLocalOrigin() - (m_vecMoveDir * m_flMoveDistance * m_flStartPosition);
+	m_vecPosition2 = m_vecPosition1 + (m_vecMoveDir * m_flMoveDistance);
+	m_vecFinalDest = GetLocalOrigin();
+#else
 	m_vecPosition1 = GetAbsOrigin() - (m_vecMoveDir * m_flMoveDistance * m_flStartPosition);
 	m_vecPosition2 = m_vecPosition1 + (m_vecMoveDir * m_flMoveDistance);
 	m_vecFinalDest = GetAbsOrigin();
+#endif
 
 	SetTouch( NULL );
 
@@ -108,6 +114,20 @@ void CFuncMoveLinear::Spawn( void )
 	CreateVPhysics();
 }
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: Runs a fix atfer the base version clearly dosen't cut it.
+//-----------------------------------------------------------------------------
+void CFuncMoveLinear::SetParent(CBaseEntity* pParentEntity, int iAttachment)
+{
+	BaseClass::SetParent(pParentEntity, iAttachment);
+
+	// Recompute all positions
+	m_vecPosition1 = GetLocalOrigin() - (m_vecMoveDir * m_flMoveDistance * m_flStartPosition);
+	m_vecPosition2 = m_vecPosition1 + (m_vecMoveDir * m_flMoveDistance);
+	m_vecFinalDest = GetLocalOrigin();
+}
+#endif
 
 bool CFuncMoveLinear::ShouldSavePhysics( void )
 {
