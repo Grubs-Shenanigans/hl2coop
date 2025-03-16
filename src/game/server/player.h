@@ -776,6 +776,11 @@ public:
 	float	GetFOVDistanceAdjustFactor(); // shared between client and server
 	float	GetFOVDistanceAdjustFactorForNetworking();
 
+#ifdef BDSBASE
+	bool UsingGameUI() const { return m_bIsUsingGameUI; }
+	void IsUsingGameUI(bool enabled) { m_bIsUsingGameUI = enabled; }
+#endif
+
 	int		GetImpulse( void ) const { return m_nImpulse; }
 
 	// Movement constraints
@@ -927,6 +932,10 @@ public:
 	bool					m_bLagCompensation;	// user wants lag compenstation
 	bool					m_bPredictWeapons; //  user has client side predicted weapons
 	bool					m_bRequestPredict; //  user has client prediction enabled
+
+#ifdef BDSBASE
+	bool					m_bIsUsingGameUI;
+#endif
 	
 	float		GetDeathTime( void ) { return m_flDeathTime; }
 

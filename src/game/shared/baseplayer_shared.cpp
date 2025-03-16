@@ -1099,6 +1099,11 @@ static float EstimatedDistanceSquared(const Vector& point, const CBaseEntity* pE
 
 CBaseEntity* CBasePlayer::FindUseEntity()
 {
+#ifdef GAME_DLL
+	if (UsingGameUI())
+		return NULL;
+#endif
+
 	Vector forward;
 	EyeVectors(&forward, NULL, NULL);
 	Vector searchCenter = EyePosition();
