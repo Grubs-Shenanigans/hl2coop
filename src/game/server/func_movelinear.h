@@ -33,6 +33,9 @@ public:
 	void		StopMoveSound( void );
 	void		Blocked( CBaseEntity *pOther );
 	void		SetPosition( float flPosition );
+#ifdef BDSBASE
+	void		StopMoving();
+#endif
 
 	int			DrawDebugTextOverlays(void);
 
