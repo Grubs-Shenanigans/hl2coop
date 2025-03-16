@@ -294,6 +294,9 @@ public:
 	// (like team members, entities out of our PVS, etc).
 	virtual bool			WantsLagCompensationOnEntity( const CBasePlayer	*pPlayer, const CUserCmd *pCmd, const CBitVec<MAX_EDICTS> *pEntityTransmitBits ) const;
 
+#ifdef BDSBASE
+	void					DelayedSpawn();
+#endif
 	virtual void			Spawn( void );
 	virtual void			Activate( void );
 	virtual void			SharedSpawn(); // Shared between client and server.

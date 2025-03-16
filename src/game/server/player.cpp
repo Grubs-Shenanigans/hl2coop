@@ -5080,6 +5080,13 @@ void CBasePlayer::InitialSpawn( void )
 	gamestats->Event_PlayerConnected( this );
 }
 
+#ifdef BDSBASE
+void CBasePlayer::DelayedSpawn()
+{
+	Spawn();
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Called everytime the player respawns
 //-----------------------------------------------------------------------------
