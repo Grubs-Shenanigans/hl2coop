@@ -2181,7 +2181,15 @@ void CBasePlayer::PlayerDeathThink(void)
 	// wait for all buttons released
 	if (m_lifeState == LIFE_DEAD)
 	{
+#ifdef BDSBASE
+		if (fAnyButtonDown && (gpGlobals->curtime > (m_flDeathTime + 5)))
+		{
+			respawn(this, !IsObserver());// don't copy a corpse if we're in deathcam.
+			return;
+		}
+#else
 		if (fAnyButtonDown)
+#endif
 			return;
 
 		if ( g_pGameRules->FPlayerCanRespawn( this ) )
