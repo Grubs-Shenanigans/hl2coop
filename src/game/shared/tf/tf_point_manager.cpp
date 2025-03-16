@@ -323,18 +323,20 @@ bool CTFPointManager::UpdatePoint( tf_point_t *pPoint, int nIndex, float flDT, V
 	Vector vecNewVelocity = pPoint->m_vecVelocity + vecGravity + GetAdditionalVelocity( pPoint );
 	Vector vecNewPos = pPoint->m_vecPosition + flDT * vecNewVelocity;
 
-	if ( pVecMins )
+#ifndef BDSBASE
+	if (pVecMins)
 	{
 		*pVecMins = vecMins;
 	}
-	if ( pVecMaxs )
+	if (pVecMaxs)
 	{
 		*pVecMaxs = vecMaxs;
 	}
-	if ( pVecNewPos )
+	if (pVecNewPos)
 	{
 		*pVecNewPos = vecNewPos;
 	}
+#endif
 
 	// Create a ray for point to trace
 	Ray_t rayWorld;
@@ -394,6 +396,21 @@ bool CTFPointManager::UpdatePoint( tf_point_t *pPoint, int nIndex, float flDT, V
 	pPoint->m_vecPrevPosition = pPoint->m_vecPosition;
 
 	pPoint->m_vecPosition = vecNewPos;
+
+#ifdef BDSBASE
+	if (pVecMins)
+	{
+		*pVecMins = vecMins;
+	}
+	if (pVecMaxs)
+	{
+		*pVecMaxs = vecMaxs;
+	}
+	if (pVecNewPos)
+	{
+		*pVecNewPos = vecNewPos;
+	}
+#endif
 
 	return true;
 }
