@@ -2753,6 +2753,14 @@ void CPhysicsProp::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t r
 		}
 	}
 
+#ifdef BDSBASE
+	if (pPhysicsObject && (pPhysicsObject->GetGameFlags() & FVPHYSICS_WAS_THROWN))
+	{
+		PhysClearGameFlags(pPhysicsObject, FVPHYSICS_WAS_THROWN);
+	}
+	m_bFirstCollisionAfterLaunch = false;
+#endif
+
 	m_OnPhysGunPickup.FireOutput( pPhysGunUser, this );
 
 	if( reason == PICKED_UP_BY_CANNON )
