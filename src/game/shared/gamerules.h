@@ -319,6 +319,9 @@ public:
 	virtual float FlWeaponRespawnTime( CBaseCombatWeapon *pWeapon ) = 0;// when may this weapon respawn?
 	virtual float FlWeaponTryRespawn( CBaseCombatWeapon *pWeapon ) = 0; // can i respawn now,  and if not, when should i try again?
 	virtual Vector VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon ) = 0;// where in the world should this weapon respawn?
+#ifdef BDSBASE
+	virtual QAngle DefaultWeaponRespawnAngle(CBaseCombatWeapon* pWeapon) = 0;
+#endif
 
 // Item retrieval
 	virtual bool CanHaveItem( CBasePlayer *pPlayer, CItem *pItem ) = 0;// is this player allowed to take this item?

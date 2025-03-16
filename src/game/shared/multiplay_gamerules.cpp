@@ -954,6 +954,13 @@ ConVarRef suitcharger( "sk_suitcharger" );
 		return pWeapon->GetAbsOrigin();
 	}
 
+#ifdef BDSBASE
+	QAngle CMultiplayRules::DefaultWeaponRespawnAngle(CBaseCombatWeapon* pWeapon)
+	{
+		return pWeapon->GetAbsAngles();
+	}
+#endif
+
 	//=========================================================
 	// WeaponShouldRespawn - any conditions inhibiting the
 	// respawning of this weapon?

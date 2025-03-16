@@ -236,7 +236,11 @@ CBaseEntity* CBaseCombatWeapon::Respawn( void )
 {
 	// make a copy of this weapon that is invisible and inaccessible to players (no touch function). The weapon spawn/respawn code
 	// will decide when to make the weapon visible and touchable.
-	CBaseEntity *pNewWeapon = CBaseEntity::Create( GetClassname(), g_pGameRules->VecWeaponRespawnSpot( this ), GetLocalAngles(), GetOwnerEntity() );
+#ifdef BDSBASE
+	CBaseEntity* pNewWeapon = CBaseEntity::Create(GetClassname(), g_pGameRules->VecWeaponRespawnSpot(this), g_pGameRules->DefaultWeaponRespawnAngle(this), GetOwnerEntity());
+#else
+	CBaseEntity* pNewWeapon = CBaseEntity::Create(GetClassname(), g_pGameRules->VecWeaponRespawnSpot(this), GetLocalAngles(), GetOwnerEntity());
+#endif
 
 	if ( pNewWeapon )
 	{

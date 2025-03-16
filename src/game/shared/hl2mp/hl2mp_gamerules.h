@@ -103,6 +103,9 @@ public:
 	virtual float FlWeaponRespawnTime( CBaseCombatWeapon *pWeapon );
 	virtual float FlWeaponTryRespawn( CBaseCombatWeapon *pWeapon );
 	virtual Vector VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon );
+#ifdef BDSBASE
+	virtual QAngle DefaultWeaponRespawnAngle(CBaseCombatWeapon* pWeapon);
+#endif
 	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
 	virtual void Think( void );
 	virtual void CreateStandardEntities( void );
