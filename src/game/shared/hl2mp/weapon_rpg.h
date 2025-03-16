@@ -233,6 +233,10 @@ public:
 	void			GetWeaponAttachment( int attachmentId, Vector &outVector, Vector *dir = NULL );
 	void			DrawEffects( void );
 //	void			DrawLaserDot( void );
+#ifdef BDSBASE
+	bool			IsPredictingMissile() const { return m_bClientPredictingMissile; }
+	void			SetPredictingMissile(bool enabled) { m_bClientPredictingMissile = enabled; }
+#endif
 
 	CMaterialReference	m_hSpriteMaterial;	// Used for the laser glint
 	CMaterialReference	m_hBeamMaterial;	// Used for the laser beam
@@ -262,6 +266,12 @@ protected:
 private:
 	
 	CWeaponRPG( const CWeaponRPG & );
+
+#ifdef BDSBASE
+#ifdef CLIENT_DLL
+	bool m_bClientPredictingMissile; // Tracks if the client should treat a missile as active
+#endif
+#endif
 };
 
 #endif // WEAPON_RPG_H

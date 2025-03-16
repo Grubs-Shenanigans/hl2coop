@@ -1286,6 +1286,14 @@ void RecvProxy_MissileDied( const CRecvProxyData *pData, void *pStruct, void *pO
 	{
 		if ( pRPG->GetOwner() && pRPG->GetOwner()->GetActiveWeapon() == pRPG )
 		{
+#ifdef BDSBASE
+			if (pRPG->IsPredictingMissile())
+			{
+				pRPG->SetPredictingMissile(false);
+				return; // Ignore this frame's `NotifyRocketDied()`
+			}
+#endif
+
 			pRPG->NotifyRocketDied();
 		}
 	}
@@ -1486,6 +1494,10 @@ void CWeaponRPG::PrimaryAttack( void )
 	pMissile->SetDamage( GetHL2MPWpnData().m_iPlayerDamage );
 
 	m_hMissile = pMissile;
+#else
+#ifdef BDSBASE
+	SetPredictingMissile(true);
+#endif
 #endif
 
 	DecrementAmmo( GetOwner() );
