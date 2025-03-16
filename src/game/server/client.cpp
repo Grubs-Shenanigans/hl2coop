@@ -1111,6 +1111,7 @@ void CC_Player_TestDispatchEffect( const CCommand &args )
 
 static ConCommand test_dispatcheffect("test_dispatcheffect", CC_Player_TestDispatchEffect, "Test a clientside dispatch effect.\n\tUsage: test_dispatcheffect <effect name> <distance away> <flags> <magnitude> <scale>\n\tDefaults are: <distance 1024> <flags 0> <magnitude 0> <scale 0>\n", FCVAR_CHEAT);
 
+#ifndef BDSBASE
 #ifdef HL2_DLL
 //-----------------------------------------------------------------------------
 // Purpose: Quickly switch to the physics cannon, or back to previous item
@@ -1143,6 +1144,7 @@ void CC_Player_PhysSwap( void )
 	}
 }
 static ConCommand physswap("phys_swap", CC_Player_PhysSwap, "Automatically swaps the current weapon for the physcannon and back again." );
+#endif
 #endif
 
 //-----------------------------------------------------------------------------
