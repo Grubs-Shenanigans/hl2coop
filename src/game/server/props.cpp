@@ -65,6 +65,10 @@ ConVar g_debug_doors( "g_debug_doors", "0" );
 ConVar breakable_disable_gib_limit( "breakable_disable_gib_limit", "0" );
 ConVar breakable_multiplayer( "breakable_multiplayer", "1" );
 
+#ifdef BDSBASE
+ConVar sv_stuck_prop_disable_collisions("sv_stuck_prop_disable_collisions", "0", FCVAR_NOTIFY, "If non-zero, props like saw blades, harpoons, etc that stick to a wall will not collide with players");
+#endif
+
 // AI Interaction for being hit by a physics object
 int g_interactionHitByPlayerThrownPhysObj = 0;
 int	g_interactionPlayerPuntedHeavyObject = 0;
@@ -655,7 +659,14 @@ void CBreakableProp::StickAtPosition( const Vector &stickPosition, const Vector 
 
 	VPhysicsGetObject()->EnableMotion( false );
 	AddSpawnFlags( SF_PHYSPROP_ENABLE_ON_PHYSCANNON );
-	SetCollisionGroup( COLLISION_GROUP_DEBRIS );
+#ifdef BDSBASE
+	if (sv_stuck_prop_disable_collisions.GetBool())
+		SetCollisionGroup(COLLISION_GROUP_DEBRIS);
+	else
+		SetCollisionGroup(COLLISION_GROUP_INTERACTIVE);
+#else
+	SetCollisionGroup(COLLISION_GROUP_DEBRIS);
+#endif
 }
 
 //-----------------------------------------------------------------------------
