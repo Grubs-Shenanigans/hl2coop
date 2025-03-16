@@ -2191,10 +2191,6 @@ int CChangeLevel::ChangeList( levellist_t *pLevelList, int maxList )
 	return count;
 }
 
-#ifdef BDSBASE
-ConVar sv_trigger_push_useoriginfix("sv_trigger_push_useoriginfix", "0", FCVAR_NOTIFY);
-#endif
-
 //-----------------------------------------------------------------------------
 // Purpose: A trigger that pushes the player, NPCs, or objects.
 //-----------------------------------------------------------------------------
@@ -2214,11 +2210,17 @@ public:
 	
 	float m_flAlternateTicksFix; // Scale factor to apply to the push speed when running with alternate ticks
 	float m_flPushSpeed;
+#ifdef BDSBASE
+	bool m_bFixLift;
+#endif
 };
 
 BEGIN_DATADESC( CTriggerPush )
 	DEFINE_KEYFIELD( m_vecPushDir, FIELD_VECTOR, "pushdir" ),
 	DEFINE_KEYFIELD( m_flAlternateTicksFix, FIELD_FLOAT, "alternateticksfix" ),
+#ifdef BDSBASE
+	DEFINE_KEYFIELD(m_bFixLift, FIELD_BOOLEAN, "liftfix"),
+#endif
 	//DEFINE_FIELD( m_flPushSpeed, FIELD_FLOAT ),
 END_DATADESC()
 
@@ -2346,7 +2348,7 @@ void CTriggerPush::Touch( CBaseEntity *pOther )
 				pOther->SetGroundEntity(NULL);
 				Vector origin = pOther->GetAbsOrigin();
 #ifdef BDSBASE
-				if (sv_trigger_push_useoriginfix.GetBool())
+				if (m_bFixLift)
 				{
 					origin.z += 16.0f;
 				}
