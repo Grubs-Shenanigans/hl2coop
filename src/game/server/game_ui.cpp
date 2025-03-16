@@ -288,6 +288,15 @@ void CGameUI::Think( void )
 		m_nLastButtonState = pPlayer->m_nButtons;
 	}
 
+#ifdef BDSBASE
+	if (!pPlayer->IsAlive())
+	{
+		pPlayer->RemoveFlag(FL_ONTRAIN);
+		Deactivate(pPlayer);
+		return;
+	}
+#endif
+
 	// ------------------------------------------------
 	// Check that toucher is facing the UI within
 	// the field of view tolerance.  If not disconnect
