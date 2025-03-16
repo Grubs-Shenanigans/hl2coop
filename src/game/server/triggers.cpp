@@ -2191,6 +2191,9 @@ int CChangeLevel::ChangeList( levellist_t *pLevelList, int maxList )
 	return count;
 }
 
+#ifdef BDSBASE
+ConVar sv_trigger_push_useoriginfix("sv_trigger_push_useoriginfix", "0", FCVAR_NOTIFY);
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: A trigger that pushes the player, NPCs, or objects.
@@ -2338,11 +2341,22 @@ void CTriggerPush::Touch( CBaseEntity *pOther )
 			{
 				vecPush = vecPush + pOther->GetBaseVelocity();
 			}
-			if ( vecPush.z > 0 && (pOther->GetFlags() & FL_ONGROUND) )
+			if (vecPush.z > 0 && (pOther->GetFlags() & FL_ONGROUND))
 			{
-				pOther->SetGroundEntity( NULL );
+				pOther->SetGroundEntity(NULL);
 				Vector origin = pOther->GetAbsOrigin();
+#ifdef BDSBASE
+				if (sv_trigger_push_useoriginfix.GetBool())
+				{
+					origin.z += 16.0f;
+				}
+				else
+				{
+					origin.z += 1.0f;
+				}
+#else
 				origin.z += 1.0f;
+#endif
 				pOther->SetAbsOrigin( origin );
 			}
 
