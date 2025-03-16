@@ -1574,6 +1574,21 @@ CPhysMagnet::~CPhysMagnet( void )
 //-----------------------------------------------------------------------------
 void CPhysMagnet::Spawn( void )
 {
+#ifdef BDSBASE
+	char* szModel = (char*)STRING(GetModelName());
+
+	if (!szModel || !*szModel)
+	{
+		Warning("%s at %.0f, %.0f, %0.f missing modelname!\n",
+			GetClassname(),
+			GetAbsOrigin().x,
+			GetAbsOrigin().y,
+			GetAbsOrigin().z);
+		UTIL_Remove(this);
+		return;
+	}
+#endif
+
 	Precache();
 
 	SetMoveType( MOVETYPE_NONE );
