@@ -885,6 +885,11 @@ void CBasePlayer::DeathSound( const CTakeDamageInfo &info )
 
 int CBasePlayer::TakeHealth( float flHealth, int bitsDamageType )
 {
+#ifdef BDSBASE
+	if (!IsAlive())
+		return 0;
+#endif
+
 	// clear out any damage types we healed.
 	// UNDONE: generic health should not heal any
 	// UNDONE: time-based damage
