@@ -359,9 +359,17 @@ void CMissile::ShotDown( void )
 //-----------------------------------------------------------------------------
 void CMissile::DoExplosion( void )
 {
+#ifdef BDSBASE
+	Vector explosionOrigin = WorldSpaceCenter();
+
 	// Explode
-	ExplosionCreate( GetAbsOrigin(), GetAbsAngles(), GetOwnerEntity(), GetDamage(), GetDamage() * 2, 
+	ExplosionCreate(explosionOrigin, GetAbsAngles(), GetOwnerEntity(), GetDamage(), GetDamage() * 2,
 		SF_ENVEXPLOSION_NOSPARKS | SF_ENVEXPLOSION_NODLIGHTS | SF_ENVEXPLOSION_NOSMOKE, 0.0f, this);
+#else
+	// Explode
+	ExplosionCreate(GetAbsOrigin(), GetAbsAngles(), GetOwnerEntity(), GetDamage(), GetDamage() * 2,
+		SF_ENVEXPLOSION_NOSPARKS | SF_ENVEXPLOSION_NODLIGHTS | SF_ENVEXPLOSION_NOSMOKE, 0.0f, this);
+#endif
 }
 
 
@@ -452,7 +460,9 @@ void CMissile::IgniteThink( void )
 {
 	SetMoveType( MOVETYPE_FLY );
 	SetModel("models/weapons/w_missile.mdl");
-	UTIL_SetSize( this, vec3_origin, vec3_origin );
+#ifndef BDSBASE
+	UTIL_SetSize(this, vec3_origin, vec3_origin);
+#endif
  	RemoveSolidFlags( FSOLID_NOT_SOLID );
 
 #ifdef BDSBASE
