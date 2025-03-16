@@ -2348,7 +2348,11 @@ void CWeaponPhysCannon::ItemPostFrame()
 		}
 	}
 	
-	if (( pOwner->m_nButtons & IN_ATTACK2 ) == 0 )
+#ifdef BDSBASE
+	if ((pOwner->m_nButtons & IN_ATTACK2) == 0 && CanPerformSecondaryAttack())
+#else
+	if ((pOwner->m_nButtons & IN_ATTACK2) == 0)
+#endif
 	{
 		m_nAttack2Debounce = 0;
 	}
