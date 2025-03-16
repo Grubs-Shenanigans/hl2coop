@@ -455,6 +455,10 @@ void CMissile::IgniteThink( void )
 	UTIL_SetSize( this, vec3_origin, vec3_origin );
  	RemoveSolidFlags( FSOLID_NOT_SOLID );
 
+#ifdef BDSBASE
+	AddEFlags(EFL_NO_WATER_VELOCITY_CHANGE);
+#endif
+
 	//TODO: Play opening sound
 
 	Vector vecForward;
