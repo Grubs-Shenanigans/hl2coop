@@ -43,10 +43,17 @@ extern CUtlMemoryPool g_EntityListPool;
 
 #define SF_DECAL_NOTINDEATHMATCH		2048
 
+#ifdef BDSBASE
+class CDecal : public CServerOnlyPointEntity
+{
+public:
+	DECLARE_CLASS(CDecal, CServerOnlyPointEntity);
+#else
 class CDecal : public CPointEntity
 {
 public:
-	DECLARE_CLASS( CDecal, CPointEntity );
+	DECLARE_CLASS(CDecal, CPointEntity);
+#endif
 
 	void	Spawn( void );
 	bool	KeyValue( const char *szKeyName, const char *szValue );

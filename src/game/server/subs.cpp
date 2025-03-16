@@ -22,10 +22,17 @@ void CPointEntity::Spawn( void )
 }
 
 
+#ifdef BDSBASE
+class CNullEntity : public CServerOnlyEntity
+{
+public:
+	DECLARE_CLASS(CNullEntity, CServerOnlyEntity);
+#else
 class CNullEntity : public CBaseEntity
 {
 public:
-	DECLARE_CLASS( CNullEntity, CBaseEntity );
+	DECLARE_CLASS(CNullEntity, CBaseEntity);
+#endif
 
 	void Spawn( void );
 };
