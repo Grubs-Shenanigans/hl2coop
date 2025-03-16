@@ -950,11 +950,17 @@ void CAmbientGeneric::SendSound( SoundFlags_t flags)
 		{
 			UTIL_EmitAmbientSound( pSoundSource->GetSoundSourceIndex(), pSoundSource->GetAbsOrigin(), m_szSoundFile,
 						0, SNDLVL_NONE, flags, 0);
+#ifdef BDSBASE
+			m_fActive = false;
+#endif
 		}
 		else
 		{
 			UTIL_EmitAmbientSound( pSoundSource->GetSoundSourceIndex(), pSoundSource->GetAbsOrigin(), m_szSoundFile,
 				(m_dpv.vol * 0.01), m_iSoundLevel, flags, m_dpv.pitch);
+#ifdef BDSBASE
+			m_fActive = true;
+#endif
 		}
 	}	
 	else
@@ -964,6 +970,9 @@ void CAmbientGeneric::SendSound( SoundFlags_t flags)
 		{
 			UTIL_EmitAmbientSound( m_nSoundSourceEntIndex, GetAbsOrigin(), m_szSoundFile,
 					0, SNDLVL_NONE, flags, 0);
+#ifdef BDSBASE
+			m_fActive = false;
+#endif
 		}
 	}
 }
