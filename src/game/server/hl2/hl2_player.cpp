@@ -598,9 +598,16 @@ void CHL2_Player::HandleSpeedChanges( CMoveData *mv )
 
 void CHL2_Player::ReduceTimers( CMoveData *mv )
 {
+#ifdef BDSBASE
+	bool bPlayerNotMoving = mv->m_vecVelocity.Length() < 0.1f;
+#endif
 	bool bSprinting = mv->m_flClientMaxSpeed == HL2_SPRINT_SPEED;
 
-	if ( bSprinting )
+#ifdef BDSBASE
+	if (bSprinting && !bPlayerNotMoving)
+#else
+	if (bSprinting)
+#endif
 	{
 		SuitPower_AddDevice( SuitDeviceSprint );
 	}
