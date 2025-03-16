@@ -2311,7 +2311,11 @@ bool CBasePlayer::StartObserverMode(int mode)
 	
     AddSolidFlags( FSOLID_NOT_SOLID );
 
-	SetObserverMode( mode );
+#ifdef BDSBASE
+	SetObserverMode(OBS_MODE_ROAMING);
+#else
+	SetObserverMode(mode);
+#endif
 
 	if ( gpGlobals->eLoadType != MapLoad_Background )
 	{
@@ -4668,6 +4672,31 @@ void CBasePlayer::PostThink()
 		ClientSettingsChanged();
 	}
 
+#ifdef BDSBASE
+	if (IsObserver() && !IsHLTV())
+	{
+		if (m_iObserverMode == OBS_MODE_POI || m_iObserverMode == OBS_MODE_FIXED)
+		{
+			// Remove a pointless second third person view
+			m_iObserverMode = OBS_MODE_ROAMING;
+		}
+
+		if (m_iObserverLastMode == OBS_MODE_ROAMING)
+		{
+			SetMoveType(MOVETYPE_OBSERVER);
+		}
+
+		if (m_iObserverMode != OBS_MODE_IN_EYE)
+		{
+			m_Local.m_iHideHUD = HIDEHUD_CROSSHAIR;
+		}
+		else
+		{
+			m_Local.m_iHideHUD &= ~HIDEHUD_CROSSHAIR;
+		}
+	}
+#endif
+
 	m_vecSmoothedVelocity = m_vecSmoothedVelocity * SMOOTHING_FACTOR + GetAbsVelocity() * ( 1 - SMOOTHING_FACTOR );
 
 	if ( !g_fGameOver && !m_iPlayerLocked )
@@ -6646,6 +6675,12 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 		else
 		{
 			// switch to next spec mode if no parameter given
+#ifdef BDSBASE
+			CBaseEntity* target = FindNextObserverTarget(false);
+
+			if (!target)
+				return true;
+#endif
  			mode = GetObserverMode() + 1;
 			
 			if ( mode > LAST_PLAYER_OBSERVERMODE )
@@ -6687,6 +6722,12 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 			{
 				SetObserverTarget( target );
 			}
+#ifdef BDSBASE
+			else
+			{
+				SetObserverMode(OBS_MODE_ROAMING);
+			}
+#endif
 		}
 		else if ( GetObserverMode() == OBS_MODE_FREEZECAM )
 		{
@@ -6705,6 +6746,12 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 			{
 				SetObserverTarget( target );
 			}
+#ifdef BDSBASE
+			else
+			{
+				SetObserverMode(OBS_MODE_ROAMING);
+			}
+#endif
 		}
 		else if ( GetObserverMode() == OBS_MODE_FREEZECAM )
 		{
@@ -6723,6 +6770,12 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 			{
 				SetObserverTarget( target );
 			}
+#ifdef BDSBASE
+			else
+			{
+				SetObserverMode(OBS_MODE_ROAMING);
+			}
+#endif
 		}
 
 		return true;

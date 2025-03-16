@@ -152,6 +152,9 @@ public:
 	void	CheckAllPlayersReady( void );
 
 	virtual bool IsConnectedUserInfoChangeAllowed( CBasePlayer *pPlayer );
+#ifdef BDSBASE
+	void ObserverTargetFix();
+#endif
 	
 private:
 	
