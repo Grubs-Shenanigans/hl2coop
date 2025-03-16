@@ -63,6 +63,13 @@ void FinishClientPutInServer( CHL2MP_Player *pPlayer )
 		ClientPrint( pPlayer, HUD_PRINTTALK, "You are on team %s1\n", pPlayer->GetTeam()->GetName() );
 	}
 
+#ifdef BDSBASE
+	if (pPlayer->GetTeamNumber() == TEAM_SPECTATOR)
+	{
+		pPlayer->RemoveAllItems(true);
+	}
+#endif
+
 	const ConVar *hostname = cvar->FindVar( "hostname" );
 	const char *title = (hostname) ? hostname->GetString() : "MESSAGE OF THE DAY";
 

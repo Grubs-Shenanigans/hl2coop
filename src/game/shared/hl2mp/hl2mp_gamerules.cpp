@@ -1068,7 +1068,12 @@ void CHL2MPRules::RestartGame()
 #ifdef BDSBASE
 		pPlayer->LadderRespawnFix();
 #endif
-		respawn( pPlayer, false );
+#ifdef BDSBASE
+		if (pPlayer->GetTeamNumber() != TEAM_SPECTATOR)
+			respawn(pPlayer, false);
+#else
+		respawn(pPlayer, false);
+#endif
 		pPlayer->Reset();
 	}
 

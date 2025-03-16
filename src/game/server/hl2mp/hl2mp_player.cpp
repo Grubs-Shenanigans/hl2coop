@@ -1035,6 +1035,11 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 	{
 		RemoveAllItems( true );
 
+#ifdef BDSBASE
+		if (FlashlightIsOn())
+			FlashlightTurnOff();
+#endif
+
 		State_Transition( STATE_OBSERVER_MODE );
 	}
 
