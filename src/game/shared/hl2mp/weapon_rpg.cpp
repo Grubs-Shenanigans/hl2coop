@@ -1796,11 +1796,23 @@ void CWeaponRPG::CreateLaserPointer( void )
 
 	CBaseCombatCharacter *pOwner = GetOwner();
 	
-	if ( pOwner == NULL )
+#ifdef BDSBASE
+	if (!pOwner)
 		return;
 
-	if ( pOwner->GetAmmoCount(m_iPrimaryAmmoType) <= 0 )
+	// Third rocket guidance fix
+	CMissile* pMissile = dynamic_cast<CMissile*>(m_hMissile.Get());
+
+	// Let me still be guided if I am the owner's child
+	if (!pMissile && pOwner->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
 		return;
+#else
+	if (pOwner == NULL)
+		return;
+
+	if (pOwner->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
+		return;
+#endif
 
 	m_hLaserDot = CLaserDot::Create( GetAbsOrigin(), GetOwner() );
 	m_hLaserDot->TurnOff();
