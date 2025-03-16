@@ -133,7 +133,25 @@ void CGameUI::InputDeactivate( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 void CGameUI::Deactivate( CBaseEntity *pActivator )
 {
-	CBasePlayer *pPlayer = m_player;
+#ifdef BDSBASE
+	if (!pActivator)
+	{
+		// Announce that the player is no longer controlling through us
+		m_playerOff.FireOutput(NULL, this, 0);
+
+		// Clear out the axis controls
+		m_xaxis.Set(0, NULL, this);
+		m_yaxis.Set(0, NULL, this);
+		m_attackaxis.Set(0, NULL, this);
+		m_attack2axis.Set(0, NULL, this);
+		m_nLastButtonState = 0;
+		m_player = NULL;
+		SetNextThink(TICK_NEVER_THINK);
+		return;
+	}
+#endif
+
+	CBasePlayer* pPlayer = m_player;
 
 	AssertMsg(pPlayer, "CGameUI deactivated without a player!");
 
@@ -148,7 +166,11 @@ void CGameUI::Deactivate( CBaseEntity *pActivator )
 		// Re-enable player motion
 		if ( FBitSet( m_spawnflags, SF_GAMEUI_FREEZE_PLAYER ) )
 		{
-			m_player->RemoveFlag( FL_ATCONTROLS );
+#ifdef BDSBASE
+			pPlayer->RemoveFlag(FL_ATCONTROLS);
+#else
+			m_player->RemoveFlag(FL_ATCONTROLS);
+#endif
 		}
 
 		// Restore weapons
@@ -159,7 +181,11 @@ void CGameUI::Deactivate( CBaseEntity *pActivator )
 
 			if ( m_hSaveWeapon.Get() )
 			{
-				m_player->Weapon_Switch( m_hSaveWeapon.Get() );
+#ifdef BDSBASE
+				pPlayer->Weapon_Switch(m_hSaveWeapon.Get());
+#else
+				m_player->Weapon_Switch(m_hSaveWeapon.Get());
+#endif
 				m_hSaveWeapon = NULL;
 			}
 
