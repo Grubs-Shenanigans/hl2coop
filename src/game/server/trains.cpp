@@ -1694,11 +1694,22 @@ void CFuncTrackTrain::Blocked( CBaseEntity *pOther )
 	}
 	else
 	{
+#ifdef BDSBASE
+		if (pOther->GetMoveType() != MOVETYPE_VPHYSICS)
+		{
+			Vector vecNewVelocity;
+			vecNewVelocity = pOther->GetAbsOrigin() - GetAbsOrigin();
+			VectorNormalize(vecNewVelocity);
+			vecNewVelocity *= m_flBlockDamage;
+			pOther->SetAbsVelocity(vecNewVelocity);
+		}
+#else
 		Vector vecNewVelocity;
 		vecNewVelocity = pOther->GetAbsOrigin() - GetAbsOrigin();
 		VectorNormalize(vecNewVelocity);
 		vecNewVelocity *= m_flBlockDamage;
-		pOther->SetAbsVelocity( vecNewVelocity );
+		pOther->SetAbsVelocity(vecNewVelocity);
+#endif
 	}
 	if ( HasSpawnFlags(SF_TRACKTRAIN_UNBLOCKABLE_BY_PLAYER) )
 	{
