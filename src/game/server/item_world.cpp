@@ -500,6 +500,9 @@ CBaseEntity* CItem::Respawn( void )
 {
 	SetTouch( NULL );
 	AddEffects( EF_NODRAW );
+#ifdef BDSBASE
+	AddEFlags(EFL_NO_PHYSCANNON_INTERACTION);
+#endif
 
 	VPhysicsDestroyObject();
 
