@@ -23,6 +23,29 @@ void MapCycleFileChangedCallback( IConVar *var, const char *pOldString, float fl
 		}
 	}
 }
+#ifdef BDSBASE
+void flashlight_changed(IConVar* pConVar, const char* pOldString, float flOldValue)
+{
+	ConVarRef var(pConVar);
+	if (!var.IsValid())
+	{
+		return;
+	}
+
+	if (var.GetInt() == 0)
+	{
+		for (int i = 1; i <= gpGlobals->maxClients; ++i)
+		{
+			CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+
+			if (!pPlayer)
+				return;
+
+			pPlayer->FlashlightTurnOff();
+		}
+	}
+}
+#endif
 
 ConVar	displaysoundlist( "displaysoundlist","0" );
 ConVar  mapcyclefile( "mapcyclefile", "mapcycle.txt", FCVAR_NONE, "Name of the .txt file used to cycle the maps on multiplayer servers ", MapCycleFileChangedCallback );
@@ -36,9 +59,13 @@ ConVar	weaponstay( "mp_weaponstay","0", FCVAR_NOTIFY );
 ConVar	forcerespawn( "mp_forcerespawn","1", FCVAR_NOTIFY );
 ConVar	footsteps( "mp_footsteps","1", FCVAR_NOTIFY );
 #ifdef CSTRIKE
-ConVar	flashlight( "mp_flashlight","1", FCVAR_NOTIFY );
+ConVar	flashlight("mp_flashlight", "1", FCVAR_NOTIFY);
 #else
-ConVar	flashlight( "mp_flashlight","0", FCVAR_NOTIFY );
+#ifdef BDSBASE
+ConVar	flashlight("mp_flashlight", "0", FCVAR_NOTIFY, 0, flashlight_changed);
+#else
+ConVar	flashlight("mp_flashlight", "0", FCVAR_NOTIFY);
+#endif
 #endif
 ConVar	aimcrosshair( "mp_autocrosshair","1", FCVAR_NOTIFY );
 ConVar	decalfrequency( "decalfrequency","10", FCVAR_NOTIFY );
