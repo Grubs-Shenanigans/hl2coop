@@ -308,6 +308,13 @@ public:
 	EHANDLE m_hOldAttachedObject;
 
 	bool	CanPickupObject( CBaseEntity *pTarget );
+#ifdef BDSBASE
+	void KillUsage()
+	{
+		ForceDrop();
+		DestroyEffects();
+	}
+#endif
 protected:
 	enum FindObjectResult_t
 	{

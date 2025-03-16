@@ -18,6 +18,9 @@
 #include "team.h"
 #include "weapon_hl2mpbase.h"
 #include "grenade_satchel.h"
+#ifdef BDSBASE
+#include "hl2mp/weapon_physcannon.h"
+#endif
 #include "eventqueue.h"
 #include "gamestats.h"
 #include "ammodef.h"
@@ -1033,6 +1036,21 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 
 	if ( iTeam == TEAM_SPECTATOR )
 	{
+#ifdef BDSBASE
+		CBaseCombatWeapon* pWeapon = GetActiveWeapon();
+
+		if (pWeapon && !pWeapon->Holster())
+		{
+			CWeaponPhysCannon* pPhysCannon = dynamic_cast<CWeaponPhysCannon*>(pWeapon);
+
+			if (pPhysCannon)
+			{
+				pPhysCannon->KillUsage(); // Make sure to drop everything.
+				pPhysCannon->Delete(); // Get rid of the gun, cause for some reason, it can stay on the screen otherwise.
+			}
+		}
+#endif
+
 		RemoveAllItems( true );
 
 #ifdef BDSBASE
