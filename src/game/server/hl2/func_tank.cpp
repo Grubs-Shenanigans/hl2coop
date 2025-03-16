@@ -910,6 +910,31 @@ void CFuncTank::Precache( void )
 	}
 }
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+int CFuncTank::UpdateTransmitState()
+{
+	return SetTransmitState(FL_EDICT_FULLCHECK);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+int CFuncTank::ShouldTransmit(const CCheckTransmitInfo* pInfo)
+{
+	// Always transmit to the controlling player.
+	CBaseCombatCharacter* pController = m_hController.Get();
+	if (pController && pController->IsPlayer() && pInfo->m_pClientEnt == pController->edict())
+	{
+		return FL_EDICT_ALWAYS;
+	}
+
+	return BaseClass::ShouldTransmit(pInfo);
+}
+#endif
+
 void CFuncTank::UpdateOnRemove( void )
 {
 	if ( HasController() )
@@ -2680,6 +2705,10 @@ void CFuncTankLaser::Think( void )
 
 void CFuncTankLaser::Fire( int bulletCount, const Vector &barrelEnd, const Vector &forward, CBaseEntity *pAttacker, bool bIgnoreSpread )
 {
+#ifdef BDSBASE
+	CDisablePredictionFiltering disablePred;
+#endif
+
 	int i;
 	trace_t tr;
 
@@ -2995,6 +3024,10 @@ void CFuncTankAirboatGun::DoImpactEffect( trace_t &tr, int nDamageType )
 
 void CFuncTankAirboatGun::Fire( int bulletCount, const Vector &barrelEnd, const Vector &forward, CBaseEntity *pAttacker, bool bIgnoreSpread )
 {
+#ifdef BDSBASE
+	CDisablePredictionFiltering disablePred;
+#endif
+
 	CAmmoDef *pAmmoDef = GetAmmoDef();
 	int ammoType = pAmmoDef->Index( "AirboatGun" );
 
