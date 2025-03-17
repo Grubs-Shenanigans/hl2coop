@@ -10,6 +10,10 @@
 #pragma once
 #endif
 
+#ifdef BDSBASE
+#include "subs.h"
+#endif
+
 class CTeamControlPoint;
 class CTeamControlPointRound;
 
@@ -33,7 +37,11 @@ enum PlayerTeamSpawn_MatchSummary_t
 
 DECLARE_AUTO_LIST( ITFTeamSpawnAutoList );
 
+#ifdef BDSBASE
+class CTFTeamSpawn : public CBaseTeamSpawn, public ITFTeamSpawnAutoList
+#else
 class CTFTeamSpawn : public CServerOnlyPointEntity, public ITFTeamSpawnAutoList
+#endif
 {
 public:
 	DECLARE_CLASS( CTFTeamSpawn, CServerOnlyPointEntity );

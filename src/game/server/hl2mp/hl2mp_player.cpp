@@ -18,13 +18,15 @@
 #include "team.h"
 #include "weapon_hl2mpbase.h"
 #include "grenade_satchel.h"
-#ifdef BDSBASE
-#include "hl2mp/weapon_physcannon.h"
-#endif
 #include "eventqueue.h"
 #include "gamestats.h"
 #include "ammodef.h"
 #include "NextBot.h"
+
+#ifdef BDSBASE
+#include "hl2mp/weapon_physcannon.h"
+#include "subs.h"
+#endif
 
 #include "engine/IEngineSound.h"
 #include "SoundEmitterSystem/isoundemittersystembase.h"
@@ -46,8 +48,13 @@ void DropPrimedFragGrenade( CHL2MP_Player *pPlayer, CBaseCombatWeapon *pGrenade 
 
 LINK_ENTITY_TO_CLASS( player, CHL2MP_Player );
 
-LINK_ENTITY_TO_CLASS( info_player_combine, CPointEntity );
-LINK_ENTITY_TO_CLASS( info_player_rebel, CPointEntity );
+#ifdef BDSBASE
+LINK_ENTITY_TO_CLASS(info_player_combine, CBaseTeamSpawn);
+LINK_ENTITY_TO_CLASS(info_player_rebel, CBaseTeamSpawn);
+#else
+LINK_ENTITY_TO_CLASS(info_player_combine, CPointEntity);
+LINK_ENTITY_TO_CLASS(info_player_rebel, CPointEntity);
+#endif
 
 // specific to the local player
 BEGIN_SEND_TABLE_NOBASE( CHL2MP_Player, DT_HL2MPLocalPlayerExclusive )

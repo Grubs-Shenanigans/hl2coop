@@ -10,6 +10,9 @@
 #include "doors.h"
 #include "entitylist.h"
 #include "globals.h"
+#ifdef BDSBASE
+#include "subs.h"
+#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -45,6 +48,7 @@ void CNullEntity::Spawn( void )
 }
 LINK_ENTITY_TO_CLASS(info_null,CNullEntity);
 
+#ifndef BDSBASE
 class CBaseDMStart : public CPointEntity
 {
 public:
@@ -58,6 +62,7 @@ public:
 
 private:
 };
+#endif
 
 BEGIN_DATADESC( CBaseDMStart )
 
@@ -68,7 +73,11 @@ END_DATADESC()
 
 // These are the new entry points to entities. 
 LINK_ENTITY_TO_CLASS(info_player_deathmatch,CBaseDMStart);
-LINK_ENTITY_TO_CLASS(info_player_start,CPointEntity);
+#ifdef BDSBASE
+LINK_ENTITY_TO_CLASS(info_player_start, CBasePlayerSpawn);
+#else
+LINK_ENTITY_TO_CLASS(info_player_start, CPointEntity);
+#endif
 LINK_ENTITY_TO_CLASS(info_landmark,CPointEntity);
 
 bool CBaseDMStart::IsTriggered( CBaseEntity *pEntity )
