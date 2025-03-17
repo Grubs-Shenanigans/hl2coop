@@ -260,8 +260,14 @@ void CFuncVehicleClip::InputDisable( inputdata_t &data )
 
 //============================= FUNC_CONVEYOR =======================================
 
+#ifdef BDSBASE
+#define SF_CONVEYOR_VISUAL			0x0001
+#define SF_CONVEYOR_NOTSOLID		0x0002
+#define SF_CONVEYOR_START_DISABLED	0x0003
+#else
 #define SF_CONVEYOR_VISUAL		0x0001
 #define SF_CONVEYOR_NOTSOLID	0x0002
+#endif
 
 class CFuncConveyor : public CFuncWall
 {
@@ -293,9 +299,16 @@ LINK_ENTITY_TO_CLASS( func_conveyor, CFuncConveyor );
 BEGIN_DATADESC( CFuncConveyor )
 
 	DEFINE_INPUTFUNC( FIELD_VOID, "ToggleDirection", InputToggleDirection ),
-	DEFINE_INPUTFUNC( FIELD_VOID, "SetSpeed", InputSetSpeed ),
+#ifdef BDSBASE
+	DEFINE_INPUTFUNC(FIELD_FLOAT, "SetSpeed", InputSetSpeed),
+#else
+	DEFINE_INPUTFUNC(FIELD_VOID, "SetSpeed", InputSetSpeed),
+#endif
 
 	DEFINE_KEYFIELD( m_vecMoveDir, FIELD_VECTOR, "movedir" ),
+#ifdef BDSBASE
+	DEFINE_KEYFIELD(m_flSpeed, FIELD_FLOAT, "speed"),
+#endif
 	DEFINE_FIELD( m_flConveyorSpeed, FIELD_FLOAT ),
 
 END_DATADESC()
@@ -328,8 +341,18 @@ void CFuncConveyor::Spawn( void )
 		AddSolidFlags( FSOLID_NOT_SOLID );
 	}
 
-	if ( m_flSpeed == 0 )
+#ifdef BDSBASE
+	if (!HasSpawnFlags(SF_CONVEYOR_VISUAL))
+	{
+		if (m_flSpeed == 0)
+		{
+			m_flSpeed = 100;
+		}
+	}
+#else
+	if (m_flSpeed == 0)
 		m_flSpeed = 100;
+#endif
 
 	UpdateSpeed( m_flSpeed );
 }
