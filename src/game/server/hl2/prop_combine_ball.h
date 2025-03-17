@@ -118,6 +118,9 @@ public:
 private:
 
 	void SetPlayerLaunched( CBasePlayer *pOwner );
+#ifdef BDSBASE
+	bool OnAttemptPhysGunPickup(CBasePlayer*, PhysGunPickup_t) OVERRIDE;
+#endif
 
 	float GetBallHoldDissolveTime();
 	float GetBallHoldSoundRampTime();
