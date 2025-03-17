@@ -3017,6 +3017,11 @@ static ConCommand kdtree_test( "kdtree_test", CC_KDTreeTest, "Tests spatial part
 
 void CC_VoxelTreeView( void )
 {
+#ifdef BDSBASE
+	if (g_pGameRules->IsDeathmatch())
+		return;
+#endif
+
 	Msg( "VoxelTreeView\n" );
 	::partition->RenderAllObjectsInTree( 10.0f );
 }
@@ -3027,7 +3032,21 @@ void CC_VoxelTreePlayerView( void )
 {
 	Msg( "VoxelTreePlayerView\n" );
 
-	CBasePlayer *pPlayer = static_cast<CBasePlayer*>( UTIL_GetLocalPlayer() );
+#ifdef BDSBASE
+	CBasePlayer* pPlayer = NULL;
+
+#ifdef HL2MP
+	pPlayer = UTIL_GetListenServerHost();
+#else
+	pPlayer = static_cast<CBasePlayer*>(UTIL_GetLocalPlayer());
+#endif
+
+	if (!pPlayer || engine->IsDedicatedServer())
+		return;
+#else
+	CBasePlayer* pPlayer = static_cast<CBasePlayer*>(UTIL_GetLocalPlayer());
+#endif
+
 	Vector vecStart = pPlayer->GetAbsOrigin();
 	::partition->RenderObjectsInPlayerLeafs( vecStart - VEC_HULL_MIN_SCALED( pPlayer ), vecStart + VEC_HULL_MAX_SCALED( pPlayer ), 3.0f  );
 }
