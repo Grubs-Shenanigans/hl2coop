@@ -1154,7 +1154,11 @@ void CBaseEntity::VPhysicsUpdate( IPhysicsObject *pPhysics )
 			{
 				if ( CheckEmitReasonablePhysicsSpew() )
 				{
-					Warning( "Ignoring bogus angles (%f,%f,%f) from vphysics! (entity %s)\n", angles.x, angles.y, angles.z, GetDebugName() );
+#ifdef BDSBASE
+					DevWarning("Ignoring bogus angles (%f,%f,%f) from vphysics! (entity %s)\n", angles.x, angles.y, angles.z, GetDebugName());
+#else
+					Warning("Ignoring bogus angles (%f,%f,%f) from vphysics! (entity %s)\n", angles.x, angles.y, angles.z, GetDebugName());
+#endif
 				}
 				angles = vec3_angle;
 			}
@@ -1170,7 +1174,11 @@ void CBaseEntity::VPhysicsUpdate( IPhysicsObject *pPhysics )
 			{
 				if ( CheckEmitReasonablePhysicsSpew() )
 				{
-					Warning( "Ignoring unreasonable position (%f,%f,%f) from vphysics! (entity %s)\n", origin.x, origin.y, origin.z, GetDebugName() );
+#ifdef BDSBASE
+					DevWarning("Ignoring unreasonable position (%f,%f,%f) from vphysics! (entity %s)\n", origin.x, origin.y, origin.z, GetDebugName());
+#else
+					Warning("Ignoring unreasonable position (%f,%f,%f) from vphysics! (entity %s)\n", origin.x, origin.y, origin.z, GetDebugName());
+#endif
 				}
 			}
 

@@ -6946,6 +6946,22 @@ void CBaseEntity::SetLocalOrigin( const Vector& origin )
 	}
 }
 
+#ifdef BDSBASE
+inline float FloatNormalize_floorf_inline(float angle)
+{
+	angle = angle - 360.0f * floorf(angle / 360.0f + 0.5f);
+	if (angle > 180.0f)
+	{
+		angle -= 360.0f;
+	}
+	else if (angle < -180.0f)
+	{
+		angle += 360.0f;
+	}
+	return angle;
+}
+#endif
+
 void CBaseEntity::SetLocalAngles( const QAngle& angles )
 {
 	// NOTE: The angle normalize is a little expensive, but we can save
@@ -6956,6 +6972,16 @@ void CBaseEntity::SetLocalAngles( const QAngle& angles )
 	//        handling things like +/-180 degrees properly. This should be revisited.
 	//QAngle angleNormalize( AngleNormalize( angles.x ), AngleNormalize( angles.y ), AngleNormalize( angles.z ) );
 
+#ifdef BDSBASE
+	QAngle normalizedAngles(FloatNormalize_floorf_inline(angles.x), FloatNormalize_floorf_inline(angles.y), FloatNormalize_floorf_inline(angles.z));
+
+	if (m_angRotation != normalizedAngles)
+	{
+		InvalidatePhysicsRecursive(ANGLES_CHANGED);
+		m_angRotation.SetDirect(normalizedAngles);
+		SetSimulationTime(gpGlobals->curtime);
+	}
+#else
 	// Safety check against NaN's or really huge numbers
 	if ( !IsEntityQAngleReasonable( angles ) )
 	{
@@ -6969,10 +6995,11 @@ void CBaseEntity::SetLocalAngles( const QAngle& angles )
 
 	if (m_angRotation != angles)
 	{
-		InvalidatePhysicsRecursive( ANGLES_CHANGED );
-		m_angRotation.SetDirect( angles );
-		SetSimulationTime( gpGlobals->curtime );
+		InvalidatePhysicsRecursive(ANGLES_CHANGED);
+		m_angRotation.SetDirect(angles);
+		SetSimulationTime(gpGlobals->curtime);
 	}
+#endif
 }
 
 void CBaseEntity::SetLocalVelocity( const Vector &inVecVelocity )
@@ -6983,13 +7010,21 @@ void CBaseEntity::SetLocalVelocity( const Vector &inVecVelocity )
 	switch ( CheckEntityVelocity( vecVelocity ) )
 	{
 		case -1:
-			Warning( "Discarding SetLocalVelocity(%f,%f,%f) on %s\n", vecVelocity.x, vecVelocity.y, vecVelocity.z, GetDebugName() );
+#ifdef BDSBASE
+			DevWarning("Discarding SetLocalVelocity(%f,%f,%f) on %s\n", vecVelocity.x, vecVelocity.y, vecVelocity.z, GetDebugName());
+#else
+			Warning("Discarding SetLocalVelocity(%f,%f,%f) on %s\n", vecVelocity.x, vecVelocity.y, vecVelocity.z, GetDebugName());
+#endif
 			Assert( false );
 			return;
 		case 0:
 			if ( CheckEmitReasonablePhysicsSpew() )
 			{
-				Warning( "Clamping SetLocalVelocity(%f,%f,%f) on %s\n", inVecVelocity.x, inVecVelocity.y, inVecVelocity.z, GetDebugName() );
+#ifdef BDSBASE
+				DevWarning("Clamping SetLocalVelocity(%f,%f,%f) on %s\n", inVecVelocity.x, inVecVelocity.y, inVecVelocity.z, GetDebugName());
+#else
+				Warning("Clamping SetLocalVelocity(%f,%f,%f) on %s\n", inVecVelocity.x, inVecVelocity.y, inVecVelocity.z, GetDebugName());
+#endif
 			}
 			break;
 	}
