@@ -1402,7 +1402,15 @@ Color CBaseHudChat::GetClientColor( int clientIndex )
 	}
 	else if( g_PR )
 	{
+#ifdef BDSBASE
+#ifdef HL2MP
+		return g_ColorYellow;
+#else
 		return g_ColorGrey;
+#endif
+#else
+		return g_ColorGrey;
+#endif
 	}
 
 	return g_ColorYellow;

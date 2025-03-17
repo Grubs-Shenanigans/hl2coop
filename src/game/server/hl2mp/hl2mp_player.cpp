@@ -1030,6 +1030,18 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 
 	BaseClass::ChangeTeam( iTeam );
 
+#ifdef BDSBASE
+	ClearZoomOwner();
+	DetonateTripmines();
+	ClearUseEntity();
+
+	if (FlashlightIsOn())
+		FlashlightTurnOff();
+
+	if (IsInAVehicle())
+		LeaveVehicle();
+#endif
+
 	m_flNextTeamChangeTime = gpGlobals->curtime + TEAM_CHANGE_INTERVAL;
 
 	if ( HL2MPRules()->IsTeamplay() == true )
@@ -1372,11 +1384,18 @@ void CHL2MP_Player::DetonateTripmines( void )
 		if (pSatchel->m_bIsLive && pSatchel->GetThrower() == this )
 		{
 			g_EventQueue.AddEvent( pSatchel, "Explode", 0.20, this, this );
+
+#ifdef BDSBASE
+			// Play sound for pressing the detonator
+			EmitSound("Weapon_SLAM.SatchelDetonate");
+#endif
 		}
 	}
 
+#ifndef BDSBASE
 	// Play sound for pressing the detonator
-	EmitSound( "Weapon_SLAM.SatchelDetonate" );
+	EmitSound("Weapon_SLAM.SatchelDetonate");
+#endif
 }
 
 void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
