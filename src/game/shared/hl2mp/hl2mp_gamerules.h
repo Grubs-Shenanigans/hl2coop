@@ -105,6 +105,7 @@ public:
 	virtual Vector VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon );
 #ifdef BDSBASE
 	virtual QAngle DefaultWeaponRespawnAngle(CBaseCombatWeapon* pWeapon);
+	virtual bool  FlPlayerFallDeathDoesScreenFade(CBasePlayer* pl) { return false; }
 #endif
 	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
 	virtual void Think( void );
