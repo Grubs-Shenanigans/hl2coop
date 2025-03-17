@@ -175,7 +175,9 @@ void C_HL2MP_Player::TraceAttack( const CTakeDamageInfo &info, const Vector &vec
 	{
 		AddMultiDamage( info, this );
 
+#ifndef BDSBASE
 		int blood = BloodColor();
+#endif
 		
 		CBaseEntity *pAttacker = info.GetAttacker();
 

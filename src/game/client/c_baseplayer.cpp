@@ -116,7 +116,7 @@ ConVar	spec_freeze_distance_max( "spec_freeze_distance_max", "200", FCVAR_CHEAT,
 #endif
 
 #ifdef BDSBASE
-static ConVar	cl_ear_ringing("cl_ear_ringing", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED, "");
+static ConVar	cl_ear_ringing("cl_ear_ringing", "1", FCVAR_USERINFO | FCVAR_ARCHIVE | FCVAR_SERVER_CAN_EXECUTE, "");
 #endif
 
 static ConVar	cl_first_person_uses_world_model ( "cl_first_person_uses_world_model", "0", FCVAR_NONE, "Causes the third person model to be drawn instead of the view model" );
