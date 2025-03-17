@@ -63,7 +63,11 @@ inline unsigned int CountTrailingZeros(unsigned int elem)
 
 static BitBufErrorHandler g_BitBufErrorHandler = 0;
 
+#ifdef BDSBASE
+inline unsigned int BitForBitnum(int bitnum)
+#else
 inline int BitForBitnum(int bitnum)
+#endif
 {
 	return GetBitForBitnum(bitnum);
 }
