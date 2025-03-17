@@ -867,6 +867,7 @@ private:
 	// Player spamming way too much, add a penalty
 	float m_flChatPenaltyMultiplier;
 	float m_flLastPenaltyDecayTime;
+	int					iDamageTime;
 #endif
 
 public:

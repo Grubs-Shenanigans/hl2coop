@@ -1468,29 +1468,44 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 //-----------------------------------------------------------------------------
 void CBasePlayer::OnDamagedByExplosion( const CTakeDamageInfo &info )
 {
-	float lastDamage = info.GetDamage();
-
-	float distanceFromPlayer = 9999.0f;
-
-	CBaseEntity *inflictor = info.GetInflictor();
-	if ( inflictor )
+#ifdef BDSBASE
+	int cl_ear_ringing_val = 1;
+	const char *cl_ear_ringing = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_ear_ringing");
+	if (cl_ear_ringing)
 	{
-		Vector delta = GetAbsOrigin() - inflictor->GetAbsOrigin();
-		distanceFromPlayer = delta.Length();
+		cl_ear_ringing_val = atoi(cl_ear_ringing);
 	}
 
-	bool ear_ringing = distanceFromPlayer < MIN_EAR_RINGING_DISTANCE ? true : false;
-	bool shock = lastDamage >= MIN_SHOCK_AND_CONFUSION_DAMAGE;
+	if (cl_ear_ringing_val)
+#endif
+	{
+		float lastDamage = info.GetDamage();
 
-	if ( !shock && !ear_ringing )
-		return;
+		float distanceFromPlayer = 9999.0f;
 
-	int effect = shock ? 
-		random->RandomInt( 35, 37 ) : 
-		random->RandomInt( 32, 34 );
+		CBaseEntity* inflictor = info.GetInflictor();
+		if (inflictor)
+		{
+			Vector delta = GetAbsOrigin() - inflictor->GetAbsOrigin();
+			distanceFromPlayer = delta.Length();
+		}
 
-	CSingleUserRecipientFilter user( this );
-	enginesound->SetPlayerDSP( user, effect, false );
+		bool ear_ringing = distanceFromPlayer < MIN_EAR_RINGING_DISTANCE ? true : false;
+		bool shock = lastDamage >= MIN_SHOCK_AND_CONFUSION_DAMAGE;
+
+		if (!shock && !ear_ringing)
+			return;
+
+		int effect = shock ?
+			random->RandomInt(35, 37) :
+			random->RandomInt(32, 34);
+
+		CSingleUserRecipientFilter user(this);
+		enginesound->SetPlayerDSP(user, effect, false);
+#ifdef BDSBASE
+		iDamageTime = gpGlobals->curtime;
+#endif
+	}
 }
 
 //=========================================================

@@ -13,6 +13,9 @@
 #include "player_command.h"
 #include "movehelper_server.h"
 #include "iservervehicle.h"
+#ifdef BDSBASE
+#include "engine/IEngineSound.h"
+#endif
 #include "tier0/vprof.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -299,6 +302,23 @@ void CPlayerMove::RunThink (CBasePlayer *player, double frametime )
 void CPlayerMove::RunPostThink( CBasePlayer *player )
 {
 	VPROF( "CPlayerMove::RunPostThink" );
+
+#ifdef BDSBASE
+	int cl_ear_ringing_val = 1;
+	const char* cl_ear_ringing = engine->GetClientConVarValue(engine->IndexOfEdict(player->edict()), "cl_ear_ringing");
+	if (cl_ear_ringing)
+	{
+		cl_ear_ringing_val = atoi(cl_ear_ringing);
+	}
+
+	if (cl_ear_ringing_val)
+	{
+		CSingleUserRecipientFilter user(player);
+
+		if (gpGlobals->curtime >= player->iDamageTime + 3)
+			enginesound->SetPlayerDSP(user, 0, false);
+	}
+#endif
 
 	// Run post-think
 	player->PostThink();
