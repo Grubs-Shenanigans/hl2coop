@@ -216,7 +216,18 @@ void CPointAngleSensor::Think(void)
 	if (m_hTargetEntity != NULL)
 	{
 		Vector forward;
+#ifdef BDSBASE
+		if (dynamic_cast<CBasePlayer*>(m_hTargetEntity.Get()) != NULL)
+		{
+			dynamic_cast<CBasePlayer*>(m_hTargetEntity.Get())->EyeVectors(&forward, NULL, NULL);
+		}
+		else
+		{
+			m_hTargetEntity->GetVectors(&forward, NULL, NULL);
+		}
+#else
 		m_hTargetEntity->GetVectors(&forward, NULL, NULL);
+#endif
 		m_TargetDir.Set(forward, this, this);
 
 		if (m_hLookAtEntity != NULL)
