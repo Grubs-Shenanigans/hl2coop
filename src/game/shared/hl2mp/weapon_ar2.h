@@ -45,7 +45,11 @@ public:
 	int		GetMaxBurst( void ) { return 5; }
 	float	GetFireRate( void ) { return 0.1f; }
 
-	bool	CanHolster( void );
+#ifdef BDSBASE
+	bool	CanHolster(void) const;
+#else
+	bool	CanHolster(void);
+#endif
 	bool	Reload( void );
 
 	Activity	GetPrimaryAttackActivity( void );

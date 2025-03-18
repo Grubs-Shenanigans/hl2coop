@@ -194,6 +194,18 @@ void CWeaponAR2::DelayedAttack( void )
 
 	// Register a muzzleflash for the AI
 	pOwner->DoMuzzleFlash();
+
+#ifdef BDSBASE
+#ifndef CLIENT_DLL
+	CEffectData data;
+	data.m_nEntIndex = entindex();
+	data.m_vOrigin = pOwner->Weapon_ShootPosition();
+	data.m_nAttachmentIndex = LookupAttachment("muzzle");
+	data.m_flScale = 1.0f;
+	data.m_fFlags = MUZZLEFLASH_COMBINE;
+	DispatchEffect("MuzzleFlash", data);
+#endif
+#endif
 	
 	WeaponSound( WPN_DOUBLE );
 
@@ -237,11 +249,20 @@ void CWeaponAR2::DelayedAttack( void )
 	// Decrease ammo
 	pOwner->RemoveAmmo( 1, m_iSecondaryAmmoType );
 
+
+#ifdef BDSBASE
+	// Can shoot again immediately
+	pOwner->m_flNextAttack = gpGlobals->curtime + 0.5f;
+
+	// Can blow up after a short delay (so have time to release mouse button)
+	m_flNextSecondaryAttack = m_flNextSecondaryAttack = gpGlobals->curtime + 1.0f;
+#else
 	// Can shoot again immediately
 	m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;
 
 	// Can blow up after a short delay (so have time to release mouse button)
 	m_flNextEmptySoundTime = m_flNextSecondaryAttack = gpGlobals->curtime + 1.0f;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -249,25 +270,46 @@ void CWeaponAR2::DelayedAttack( void )
 //-----------------------------------------------------------------------------
 void CWeaponAR2::SecondaryAttack( void )
 {
-	if ( m_bShotDelayed )
+#ifdef BDSBASE
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+
+	if(pOwner == NULL)
 		return;
 
-	CBasePlayer* pPlayer = ToBasePlayer( GetOwner() );
+	if (m_bShotDelayed)
+		return;
 
-	if ( pPlayer == NULL )
+	if (pOwner->GetWaterLevel() == 3)
+#else
+	if (m_bShotDelayed)
+		return;
+
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer == NULL)
 		return;
 
 	// Cannot fire underwater
-	if ( ( pPlayer->GetAmmoCount( m_iSecondaryAmmoType ) <= 0 ) || ( pPlayer->GetWaterLevel() == 3 ) )
+	if ((pPlayer->GetAmmoCount(m_iSecondaryAmmoType) <= 0) || (pPlayer->GetWaterLevel() == 3))
+#endif
 	{
 		SendWeaponAnim( ACT_VM_DRYFIRE );
 		BaseClass::WeaponSound( EMPTY );
+#ifdef BDSBASE
+		m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+#else
 		m_flNextEmptySoundTime = m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+#endif
 		return;
 	}
 
 	m_bShotDelayed = true;
+#ifdef BDSBASE
+	m_flNextPrimaryAttack = m_flDelayedFire = gpGlobals->curtime + 1.0f;
+	m_flNextSecondaryAttack = m_flDelayedFire = gpGlobals->curtime + 0.5f;
+#else
 	m_flNextEmptySoundTime = m_flNextPrimaryAttack = m_flNextSecondaryAttack = m_flDelayedFire = gpGlobals->curtime + 0.5f;
+#endif
 
 	SendWeaponAnim( ACT_VM_FIDGET );
 	WeaponSound( SPECIAL1 );
@@ -277,7 +319,11 @@ void CWeaponAR2::SecondaryAttack( void )
 // Purpose: Override if we're waiting to release a shot
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CWeaponAR2::CanHolster( void )
+#ifdef BDSBASE
+bool CWeaponAR2::CanHolster(void) const
+#else
+bool CWeaponAR2::CanHolster(void)
+#endif
 {
 	if ( m_bShotDelayed )
 		return false;
