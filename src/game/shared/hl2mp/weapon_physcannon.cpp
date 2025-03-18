@@ -792,6 +792,15 @@ void CPlayerPickupController::Use( CBaseEntity *pActivator, CBaseEntity *pCaller
 		
 		//Adrian: Oops, our object became motion disabled, let go!
 		IPhysicsObject *pPhys = pAttached->VPhysicsGetObject();
+
+#ifdef BDSBASE
+		if (!pPhys)
+		{
+			Shutdown();
+			return;
+		}
+#endif
+
 		if ( pPhys && pPhys->IsMoveable() == false )
 		{
 			Shutdown();
@@ -808,7 +817,11 @@ void CPlayerPickupController::Use( CBaseEntity *pActivator, CBaseEntity *pCaller
 		}
 #endif
 		// +ATTACK will throw phys objects
-		if ( m_pPlayer->m_nButtons & IN_ATTACK )
+#ifdef BDSBASE
+		if (pPhys && m_pPlayer->m_nButtons & IN_ATTACK)
+#else
+		if (m_pPlayer->m_nButtons & IN_ATTACK)
+#endif
 		{
 			Shutdown( true );
 			Vector vecLaunch;
