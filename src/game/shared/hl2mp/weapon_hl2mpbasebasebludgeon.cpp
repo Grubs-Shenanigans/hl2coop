@@ -21,6 +21,9 @@
 	#include "ndebugoverlay.h"
 	#include "te_effect_dispatch.h"
 	#include "ilagcompensationmanager.h"
+#ifdef BDSBASE
+	#include "hl2mp_cvars.h"
+#endif
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -136,6 +139,10 @@ void CBaseHL2MPBludgeonWeapon::Hit( trace_t &traceHit, Activity nHitActivity )
 	
 	//Do view kick
 //	AddViewKick();
+#ifdef BDSBASE
+	if (sv_melee_viewkick.GetBool())
+		AddViewKick();
+#endif
 
 	CBaseEntity	*pHitEntity = traceHit.m_pEnt;
 

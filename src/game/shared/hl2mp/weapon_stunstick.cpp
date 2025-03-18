@@ -78,6 +78,9 @@ public:
 	float		GetRange( void )		{ return STUNSTICK_RANGE; }
 	float		GetFireRate( void )		{ return STUNSTICK_REFIRE; }
 
+#ifdef BDSBASE
+	void		AddViewKick(void);
+#endif
 
 	bool		Deploy( void );
 	bool		Holster( CBaseCombatWeapon *pSwitchingTo = NULL );
@@ -243,6 +246,22 @@ void CWeaponStunStick::ImpactEffect( trace_t &traceHit )
 	//FIXME: need new decals
 	UTIL_ImpactTrace( &traceHit, DMG_CLUB );
 }
+
+#ifdef BDSBASE
+void CWeaponStunStick::AddViewKick(void)
+{
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer == NULL)
+		return;
+
+	QAngle punchAng;
+	punchAng.x = SharedRandomFloat("crowbarpax", 1.0f, 2.0f);
+	punchAng.y = SharedRandomFloat("crowbarpay", -2.0f, -1.0f);
+	punchAng.z = 0.0f;
+	pPlayer->ViewPunch(punchAng);
+}
+#endif
 
 #ifndef CLIENT_DLL
 
