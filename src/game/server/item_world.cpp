@@ -307,8 +307,16 @@ void CItem::FallThink ( void )
 	{
 		SetThink ( NULL );
 
+#ifdef BDSBASE
+		if (GetOriginalSpawnOrigin() == vec3_origin)
+		{
+			m_vOriginalSpawnOrigin = GetAbsOrigin();
+			m_vOriginalSpawnAngles = GetAbsAngles();
+		}
+#else
 		m_vOriginalSpawnOrigin = GetAbsOrigin();
 		m_vOriginalSpawnAngles = GetAbsAngles();
+#endif
 
 		HL2MPRules()->AddLevelDesignerPlacedObject( this );
 	}
