@@ -2951,6 +2951,12 @@ float CBasePlayer::GetHeldObjectMass( IPhysicsObject *pHeldObject )
 	return 0;
 }
 
+#ifdef BDSBASE
+CBaseEntity* CBasePlayer::GetHeldObject(void)
+{
+	return NULL;
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose:	Server side of jumping rules.  Most jumping logic is already
