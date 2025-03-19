@@ -2067,12 +2067,14 @@ void CWeaponPhysCannon::DetachObject( bool playSound, bool wasLaunched )
 	if ( m_bActive == false )
 		return;
 
-	CHL2MP_Player *pOwner = (CHL2MP_Player *)ToBasePlayer( GetOwner() );
-	if( pOwner != NULL )
+#ifndef BDSBASE
+	CHL2MP_Player* pOwner = (CHL2MP_Player*)ToBasePlayer(GetOwner());
+	if (pOwner != NULL)
 	{
-		pOwner->EnableSprint( true );
-		pOwner->SetMaxSpeed( hl2_normspeed.GetFloat() );
+		pOwner->EnableSprint(true);
+		pOwner->SetMaxSpeed(hl2_normspeed.GetFloat());
 	}
+#endif
 
 	CBaseEntity *pObject = m_grabController.GetAttached();
 
@@ -2080,7 +2082,11 @@ void CWeaponPhysCannon::DetachObject( bool playSound, bool wasLaunched )
 
 	if ( pObject != NULL )
 	{
-		Pickup_OnPhysGunDrop( pObject, pOwner, wasLaunched ? LAUNCHED_BY_CANNON : DROPPED_BY_CANNON );
+#ifdef BDSBASE
+		Pickup_OnPhysGunDrop(pObject, GetPlayerOwner(), wasLaunched ? LAUNCHED_BY_CANNON : DROPPED_BY_CANNON);
+#else
+		Pickup_OnPhysGunDrop(pObject, pOwner, wasLaunched ? LAUNCHED_BY_CANNON : DROPPED_BY_CANNON);
+#endif
 	}
 	
 	if ( pObject && m_bResetOwnerEntity == true )

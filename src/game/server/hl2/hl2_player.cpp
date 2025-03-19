@@ -3264,11 +3264,18 @@ void CHL2_Player::ForceDropOfCarriedPhysObjects( CBaseEntity *pOnlyIfHoldingThis
 	}
 #endif
 
+#ifdef BDSBASE
+	if (pOnlyIfHoldingThis == NULL || pOnlyIfHoldingThis == GetUseEntity())
+		ClearUseEntity();
+
+	PhysCannonForceDrop(GetActiveWeapon(), pOnlyIfHoldingThis);
+#else
 	// Drop any objects being handheld.
 	ClearUseEntity();
 
 	// Then force the physcannon to drop anything it's holding, if it's our active weapon
-	PhysCannonForceDrop( GetActiveWeapon(), NULL );
+	PhysCannonForceDrop(GetActiveWeapon(), NULL);
+#endif
 }
 
 void CHL2_Player::InputForceDropPhysObjects( inputdata_t &data )

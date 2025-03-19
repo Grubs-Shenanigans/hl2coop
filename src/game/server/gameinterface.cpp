@@ -91,6 +91,12 @@
 #include "querycache.h"
 #include "player_voice_listener.h"
 
+#ifdef BDSBASE
+#ifdef HL2MP
+#include "hl2mp/weapon_physcannon.h"
+#endif
+#endif
+
 #ifdef TF_DLL
 #include "gc_clientsystem.h"
 #include "econ_item_inventory.h"
@@ -2767,7 +2773,24 @@ void CServerGameClients::ClientDisconnect( edict_t *pEdict )
 	if ( player )
 	{
 #ifdef BDSBASE
-		player->ForceDropOfCarriedPhysObjects(NULL);
+#ifdef HL2MP
+		CBaseCombatWeapon* pWeapon = player->GetActiveWeapon();
+
+		if (pWeapon && !pWeapon->Holster())
+		{
+			CWeaponPhysCannon* physcannon = dynamic_cast<CWeaponPhysCannon*>(pWeapon);
+
+			if (physcannon)
+			{
+				physcannon->KillUsage();
+				physcannon->Delete();
+			}
+		}
+		else
+#endif
+		{
+			player->ForceDropOfCarriedPhysObjects(NULL);
+		}
 #endif
 		if ( !g_fGameOver )
 		{
