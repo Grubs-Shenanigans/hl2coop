@@ -27,6 +27,9 @@
 	#include "props.h"
 	#include "te_effect_dispatch.h"
 	#include "util.h"
+#ifdef BDSBASE
+	#include "basegrenade_shared.h"
+#endif
 #endif
 
 #include "gamerules.h"
@@ -1565,6 +1568,36 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 			DryFire();
 			return;
 		}
+
+#ifdef BDSBASE
+#ifdef GAME_DLL
+		// Peter: Don't let a held frag grenade be punted 
+		// This is to prevent false assumptions from happening
+		CBaseGrenade* pGrenade = dynamic_cast<CBaseGrenade*>(pEntity);
+		if (pGrenade)
+		{
+			bool isHeldByPhyscannon = false;
+
+			for (int i = 1; i <= gpGlobals->maxClients; ++i)
+			{
+				CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+				if (pPlayer && pPlayer->IsAlive())
+				{
+					CWeaponPhysCannon* pPhysCannon = dynamic_cast<CWeaponPhysCannon*>(pPlayer->GetActiveWeapon());
+
+					if (pPhysCannon && pPhysCannon->m_grabController.GetAttached() == pGrenade)
+					{
+						isHeldByPhyscannon = true;
+						break;
+					}
+				}
+			}
+			if (isHeldByPhyscannon)
+				return;
+		}
+#endif // CLIENT_DLL
+#endif
+
 		PuntVPhysics( pEntity, forward, tr );
 	}
 }
