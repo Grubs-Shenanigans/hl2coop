@@ -1472,11 +1472,15 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 void CBasePlayer::OnDamagedByExplosion( const CTakeDamageInfo &info )
 {
 #ifdef BDSBASE
+
 	int cl_ear_ringing_val = 1;
-	const char *cl_ear_ringing = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_ear_ringing");
-	if (cl_ear_ringing)
+	if (IsNetClient())
 	{
-		cl_ear_ringing_val = atoi(cl_ear_ringing);
+		const char* cl_ear_ringing = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_ear_ringing");
+		if (cl_ear_ringing)
+		{
+			cl_ear_ringing_val = atoi(cl_ear_ringing);
+		}
 	}
 
 	if (cl_ear_ringing_val)
