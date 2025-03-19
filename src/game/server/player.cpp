@@ -207,6 +207,9 @@ ConVar  sv_player_display_usercommand_errors( "sv_player_display_usercommand_err
 
 ConVar  player_debug_print_damage( "player_debug_print_damage", "0", FCVAR_CHEAT, "When true, print amount and type of all damage received by player to console." );
 
+#ifdef BDSBASE
+ConVar	sv_player_extinguish_on_death("sv_player_extinguish_on_death", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "");
+#endif
 
 void CC_GiveCurrentAmmo( void )
 {
@@ -2186,6 +2189,13 @@ void CBasePlayer::PlayerDeathThink(void)
 	}
 	
 	StopAnimation();
+
+#ifdef BDSBASE
+	if (sv_player_extinguish_on_death.GetBool())
+	{
+		Extinguish();
+	}
+#endif
 
 	IncrementInterpolationFrame();
 	m_flPlaybackRate = 0.0;
