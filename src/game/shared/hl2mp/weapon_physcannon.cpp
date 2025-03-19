@@ -1144,7 +1144,11 @@ void CWeaponPhysCannon::Drop( const Vector &vecVelocity )
 	ForceDrop();
 
 #ifndef CLIENT_DLL
-	UTIL_Remove( this );
+#ifdef BDSBASE
+	Delete();
+#else
+	UTIL_Remove(this);
+#endif
 #endif
 }
 
