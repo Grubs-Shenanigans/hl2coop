@@ -74,7 +74,11 @@ private:
 	void	RollGrenade( CBasePlayer *pPlayer );
 	void	LobGrenade( CBasePlayer *pPlayer );
 	// check a throw from vecSrc.  If not valid, move the position back along the line to vecEye
-	void	CheckThrowPosition( CBasePlayer *pPlayer, const Vector &vecEye, Vector &vecSrc );
+#ifdef BDSBASE
+	void    CheckThrowPosition(CBasePlayer* pPlayer, const Vector& vecEye, Vector& vecSrc, const QAngle& angles = vec3_angle);
+#else
+	void	CheckThrowPosition(CBasePlayer* pPlayer, const Vector& vecEye, Vector& vecSrc);
+#endif
 
 	CNetworkVar( bool,	m_bRedraw );	//Draw the weapon again after throwing a grenade
 	
@@ -392,12 +396,27 @@ void CWeaponFrag::ItemPostFrame( void )
 }
 
 	// check a throw from vecSrc.  If not valid, move the position back along the line to vecEye
-void CWeaponFrag::CheckThrowPosition( CBasePlayer *pPlayer, const Vector &vecEye, Vector &vecSrc )
+#ifdef BDSBASE
+void CWeaponFrag::CheckThrowPosition(CBasePlayer* pPlayer, const Vector& vecEye, Vector& vecSrc, const QAngle& angles)
 {
+	// Compute an extended AABB that takes into account the requested grenade rotation.
+	// This will prevent grenade from going through nearby solids when model initially intersects with any.
+	matrix3x4_t rotation;
+	AngleMatrix(angles, rotation);
+	Vector mins, maxs;
+	RotateAABB(rotation, -Vector(GRENADE_RADIUS + 2, GRENADE_RADIUS + 2, 2), Vector(GRENADE_RADIUS + 2, GRENADE_RADIUS + 2, GRENADE_RADIUS * 2 + 2), mins, maxs);
+#else
+void CWeaponFrag::CheckThrowPosition(CBasePlayer* pPlayer, const Vector& vecEye, Vector& vecSrc)
+{
+#endif
 	trace_t tr;
 
-	UTIL_TraceHull( vecEye, vecSrc, -Vector(GRENADE_RADIUS+2,GRENADE_RADIUS+2,GRENADE_RADIUS+2), Vector(GRENADE_RADIUS+2,GRENADE_RADIUS+2,GRENADE_RADIUS+2), 
+#ifdef BDSBASE
+	UTIL_TraceHull(vecEye, vecSrc, mins, maxs, pPlayer->PhysicsSolidMaskForEntity(), pPlayer, pPlayer->GetCollisionGroup(), &tr);
+#else
+	UTIL_TraceHull(vecEye, vecSrc, -Vector(GRENADE_RADIUS + 2, GRENADE_RADIUS + 2, GRENADE_RADIUS + 2), Vector(GRENADE_RADIUS + 2, GRENADE_RADIUS + 2, GRENADE_RADIUS + 2),
 		pPlayer->PhysicsSolidMaskForEntity(), pPlayer, pPlayer->GetCollisionGroup(), &tr );
+#endif
 	
 	if ( tr.DidHit() )
 	{
@@ -527,7 +546,10 @@ void CWeaponFrag::RollGrenade( CBasePlayer *pPlayer )
 		CrossProduct( tr.plane.normal, tangent, vecFacing );
 	}
 	vecSrc += (vecFacing * 18.0);
-	CheckThrowPosition( pPlayer, pPlayer->WorldSpaceCenter(), vecSrc );
+
+#ifndef BDSBASE
+	CheckThrowPosition(pPlayer, pPlayer->WorldSpaceCenter(), vecSrc);
+#endif
 
 	Vector vecThrow;
 	pPlayer->GetVelocity( &vecThrow, NULL );
@@ -536,6 +558,9 @@ void CWeaponFrag::RollGrenade( CBasePlayer *pPlayer )
 	QAngle orientation(0,pPlayer->GetLocalAngles().y,-90);
 	// roll it
 	AngularImpulse rotSpeed(0,0,720);
+#ifdef BDSBASE
+	CheckThrowPosition(pPlayer, pPlayer->WorldSpaceCenter(), vecSrc, orientation);
+#endif
 	CBaseGrenade *pGrenade = Fraggrenade_Create( vecSrc, orientation, vecThrow, rotSpeed, pPlayer, GRENADE_TIMER, false );
 
 	if ( pGrenade )
