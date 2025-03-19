@@ -29,6 +29,10 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#ifdef BDSBASE
+ConVar sv_melee_viewkick("sv_melee_viewkick","0",FCVAR_REPLICATED,"Adds melee view kick");
+#endif
+
 IMPLEMENT_NETWORKCLASS_ALIASED( BaseHL2MPBludgeonWeapon, DT_BaseHL2MPBludgeonWeapon )
 
 BEGIN_NETWORK_TABLE( CBaseHL2MPBludgeonWeapon, DT_BaseHL2MPBludgeonWeapon )

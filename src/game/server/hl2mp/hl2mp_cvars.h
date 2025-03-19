@@ -16,8 +16,5 @@
 extern ConVar mp_restartround;
 extern ConVar mp_readyrestart;
 extern ConVar mp_ready_signal;
-#ifdef BDSBASE
-extern ConVar sv_melee_viewkick;
-#endif
 
 #endif //HL2MP_CVARS_H

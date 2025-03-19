@@ -23,11 +23,3 @@ ConVar mp_ready_signal(
 							"ready",
 							FCVAR_GAMEDLL,
 							"Text that each player must speak for the match to begin" );
-
-#ifdef BDSBASE
-ConVar sv_melee_viewkick(
-							"sv_melee_viewkick",
-							"0",
-							FCVAR_REPLICATED,
-							"Adds melee view kick" );
-#endif
