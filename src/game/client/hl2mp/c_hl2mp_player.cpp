@@ -135,6 +135,14 @@ void C_HL2MP_Player::UpdateIDTarget()
 	if ( !IsLocalPlayer() )
 		return;
 
+#ifdef BDSBASE
+	if (!hud_showtargetid.GetBool())
+	{
+		m_iIDEntIndex = 0;
+		return;
+	}
+#endif
+
 	// Clear old target and find a new one
 	m_iIDEntIndex = 0;
 
