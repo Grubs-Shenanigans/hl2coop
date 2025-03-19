@@ -1027,11 +1027,22 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 
 	bool bKill = false;
 
+#ifdef BDSBASE
+	bool bWasSpectator = false;
+#endif
+
 	if ( HL2MPRules()->IsTeamplay() != true && iTeam != TEAM_SPECTATOR )
 	{
 		//don't let them try to join combine or rebels during deathmatch.
 		iTeam = TEAM_UNASSIGNED;
 	}
+
+#ifdef BDSBASE
+	if (GetTeamNumber() == TEAM_SPECTATOR)
+	{
+		bWasSpectator = true;
+	}
+#endif
 
 	if ( HL2MPRules()->IsTeamplay() == true )
 	{
@@ -1065,6 +1076,14 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 	{
 		SetPlayerModel();
 	}
+
+#ifdef BDSBASE
+	if (bWasSpectator)
+	{
+		Spawn();
+		return; // everything is useless afterwards
+	}
+#endif
 
 	if ( iTeam == TEAM_SPECTATOR )
 	{
@@ -1106,16 +1125,44 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 
 bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 {
+#ifdef BDSBASE
+	if (team == TEAM_SPECTATOR && IsHLTV())
+	{
+		ChangeTeam(TEAM_SPECTATOR);
+		ResetDeathCount();
+		ResetFragCount();
+		return true;
+	}
+#endif
+
 	if ( !GetGlobalTeam( team ) || team == 0 )
 	{
 		Warning( "HandleCommand_JoinTeam( %d ) - invalid team index.\n", team );
 		return false;
 	}
 
+#ifdef BDSBASE
+	// Don't do anything if you join your own team
+	if (team == GetTeamNumber())
+	{
+		return false;
+	}
+	// end early
+	if (this->GetTeamNumber() == TEAM_SPECTATOR)
+	{
+		ChangeTeam(team);
+		return true;
+	}
+#endif
+
 	if ( team == TEAM_SPECTATOR )
 	{
 		// Prevent this is the cvar is set
-		if ( !mp_allowspectators.GetInt() && !IsHLTV() )
+#ifdef BDSBASE
+		if (!mp_allowspectators.GetInt())
+#else
+		if (!mp_allowspectators.GetInt() && !IsHLTV())
+#endif
 		{
 			ClientPrint( this, HUD_PRINTCENTER, "#Cannot_Be_Spectator" );
 			return false;
