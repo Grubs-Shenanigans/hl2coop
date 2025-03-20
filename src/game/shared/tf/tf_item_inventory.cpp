@@ -258,6 +258,7 @@ void CTFInventoryManager::GenerateBaseItems( void )
 	}
 
 #ifdef BDSBASE
+#ifdef USE_CUSTOM_SCHEMA
 	const CEconItemSchema::BaseItemDefinitionMap_t& mapItemsSolo = GetItemSchema()->GetSoloItemDefinitionMap();
 	iStart = 0;
 	for (int it = iStart; it != mapItemsSolo.InvalidIndex(); it = mapItemsSolo.NextInorder(it))
@@ -272,6 +273,7 @@ void CTFInventoryManager::GenerateBaseItems( void )
 		pItemView->SetNonSOEconItem(pItem);
 		m_pSoloLoadoutItems.AddToTail(pItemView);
 	}
+#endif
 #endif
 }
 

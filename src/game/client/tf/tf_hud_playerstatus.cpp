@@ -1110,8 +1110,19 @@ void CTFHudPlayerStatus::ApplySchemeSettings( IScheme *pScheme )
 bool CTFHudPlayerStatus::ShouldDraw( void )
 {
 	CTFPlayer *pTFPlayer = CTFPlayer::GetLocalTFPlayer();
-	if ( pTFPlayer && pTFPlayer->m_Shared.InCond( TF_COND_HALLOWEEN_GHOST_MODE ) )
+#ifdef BDSBASE
+	if (pTFPlayer)
+	{
+		if (pTFPlayer->m_Shared.InCond(TF_COND_HALLOWEEN_GHOST_MODE))
+			return false;
+
+		if (pTFPlayer->GetObserverMode() > OBS_MODE_DEATHCAM)
+			return false;
+	}
+#else
+	if (pTFPlayer && pTFPlayer->m_Shared.InCond(TF_COND_HALLOWEEN_GHOST_MODE))
 		return false;
+#endif
 
 	if ( CTFMinigameLogic::GetMinigameLogic() && CTFMinigameLogic::GetMinigameLogic()->GetActiveMinigame() )
 		return false;
