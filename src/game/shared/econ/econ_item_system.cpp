@@ -547,7 +547,11 @@ public:
 		const bool bUseGCCopy = items_game_use_gc_copy.GetBool();
 #else
 #ifdef BDSBASE
+#ifdef USE_LOCAL_SCHEMA
 		const bool bUseGCCopy = false;
+#else
+		const bool bUseGCCopy = true;
+#endif
 #else
 		const bool bUseGCCopy = true;
 #endif

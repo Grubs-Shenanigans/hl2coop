@@ -2306,6 +2306,9 @@ m_bIsPackBundle( false ),
 m_pOwningPackBundle( NULL ),
 m_bIsPackItem( false ),
 m_bBaseItem( false ),
+#ifdef BDSBASE
+m_bSoloItem(false),
+#endif
 m_pszItemLogClassname( NULL ),
 m_pszItemIconClassname( NULL ),
 m_pszDatabaseAuditTable( NULL ),
@@ -3177,6 +3180,14 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	m_bHidden = m_pKVItem->GetInt( "hidden", 0 ) != 0;
 	m_bShouldShowInArmory = m_pKVItem->GetInt( "show_in_armory", 0 ) != 0;
 	m_bBaseItem = m_pKVItem->GetInt( "baseitem", 0 ) != 0;
+#ifdef BDSBASE
+#ifdef USE_CUSTOM_SCHEMA
+	m_bSoloItem = m_pKVItem->GetInt("soloitem", 0) != 0;
+#else
+	//if there's no custom schema, no items can be solo items.
+	m_bSoloItem = false;
+#endif
+#endif
 	m_pszItemLogClassname = m_pKVItem->GetString( "item_logname", NULL );
 	m_pszItemIconClassname = m_pKVItem->GetString( "item_iconname", NULL );
 	m_pszDatabaseAuditTable = m_pKVItem->GetString( "database_audit_table", NULL );
@@ -3805,6 +3816,9 @@ CEconItemSchema::CEconItemSchema( )
 ,	m_mapToolsItems( DefLessFunc(int) )
 ,	m_mapPaintKitTools( DefLessFunc(uint32) )
 ,	m_mapBaseItems( DefLessFunc(int) )
+#ifdef BDSBASE
+,	m_mapSoloItems(DefLessFunc(int))
+#endif
 ,	m_unVersion( 0 )
 #if defined(CLIENT_DLL) || defined(GAME_DLL)
 ,	m_pDefaultItemDefinition( NULL )
@@ -4302,6 +4316,9 @@ void CEconItemSchema::Reset( void )
 	m_mapToolsItems.Purge();
 	m_mapPaintKitTools.Purge();
 	m_mapBaseItems.Purge();
+#ifdef BDSBASE
+	m_mapSoloItems.Purge();
+#endif
 	m_mapRecipes.PurgeAndDeleteElements();
 	m_vecTimedRewards.Purge();
 	m_dictItemSets.PurgeAndDeleteElements();
@@ -4421,7 +4438,15 @@ bool CEconItemSchema::BInitTextBuffer( CUtlBuffer &buffer, CUtlVector<CUtlString
 
 	Reset();
 	m_pKVRawDefinition = new KeyValues( "CEconItemSchema" );
+#ifdef BDSBASE
+#ifdef USE_CUSTOM_SCHEMA
+	if (m_pKVRawDefinition->LoadFromFile(g_pFullFileSystem, "scripts/items/items_custom.txt", "GAME"))
+#else
+	if (m_pKVRawDefinition->LoadFromBuffer(NULL, buffer))
+#endif
+#else
 	if ( m_pKVRawDefinition->LoadFromBuffer( NULL, buffer ) )
+#endif
 	{
 		return BInitSchema( m_pKVRawDefinition, pVecErrors )
 			&& BPostSchemaInit( pVecErrors );
@@ -5283,6 +5308,9 @@ bool CEconItemSchema::BInitItems( KeyValues *pKVItems, CUtlVector<CUtlString> *p
 	m_mapToolsItems.Purge();
 	m_mapPaintKitTools.Purge();
 	m_mapBaseItems.Purge();
+#ifdef BDSBASE
+	m_mapSoloItems.Purge();
+#endif
 	m_vecBundles.Purge();
 	m_mapQuestObjectives.PurgeAndDeleteElements();
 
@@ -5355,6 +5383,13 @@ bool CEconItemSchema::BInitItems( KeyValues *pKVItems, CUtlVector<CUtlString> *p
 				{
 					m_mapBaseItems.Insert( nItemIndex, pItemDef );
 				}
+
+#ifdef BDSBASE
+				if (pItemDef->IsSoloItem())
+				{
+					m_mapSoloItems.Insert(nItemIndex, pItemDef);
+				}
+#endif
 
 				// Cache off bundles for the link phase below.
 				if ( pItemDef->IsBundle() )

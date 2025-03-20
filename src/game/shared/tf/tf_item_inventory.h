@@ -216,10 +216,18 @@ public:
 	int					GetBaseItemCount( )			{ return m_pBaseLoadoutItems.Count(); }
 	CEconItemView*		GetBaseItem( int iIndex )	{ return m_pBaseLoadoutItems[iIndex]; }
 
+#ifdef BDSBASE
+	int					GetSoloItemCount() { return m_pSoloLoadoutItems.Count(); }
+	CEconItemView* GetSoloItem(int iIndex) { return m_pSoloLoadoutItems[iIndex]; }
+#endif
+
 private:
 	// Base items, returned for slots that the player doesn't have anything in
 	CEconItemView				*m_pDefaultItem;
 	CUtlVector<CEconItemView*>	m_pBaseLoadoutItems;
+#ifdef BDSBASE
+	CUtlVector<CEconItemView*>	m_pSoloLoadoutItems;
+#endif
 
 #ifdef CLIENT_DLL
 	// On the client, we have a single inventory for the local player. Stored here, instead of in the
