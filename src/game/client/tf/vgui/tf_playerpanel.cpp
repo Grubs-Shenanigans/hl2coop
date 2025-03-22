@@ -231,7 +231,11 @@ bool CTFPlayerPanel::Update( void )
 			if ( iRespawnWait != m_iPrevRespawnWait )
 			{
 				m_iPrevRespawnWait = iRespawnWait;
-				if ( iRespawnWait < 0 )
+#ifdef BDSBASE
+				if (iRespawnWait < 0 || iRespawnWait >= 1000.0)
+#else
+				if (iRespawnWait < 0)
+#endif
 				{
 					SetDialogVariable( "respawntime", "" );
 				}
