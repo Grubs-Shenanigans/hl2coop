@@ -55,6 +55,10 @@ public:
 
 	virtual int		GetWeaponID( void ) const			{ return TF_WEAPON_ROCKETLAUNCHER; }
 
+#ifdef BDSBASE
+	virtual bool	OwnerCanTaunt(void) OVERRIDE;
+#endif
+
 	virtual void	Misfire( void );
 	virtual CBaseEntity *FireProjectile( CTFPlayer *pPlayer );
 	virtual void	ItemPostFrame( void );

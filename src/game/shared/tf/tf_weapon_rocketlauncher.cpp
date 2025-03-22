@@ -225,6 +225,16 @@ void CTFRocketLauncher::ModifyEmitSoundParams( EmitSound_t &params )
 	}
 }
 
+#ifdef BDSBASE
+bool CTFRocketLauncher::OwnerCanTaunt(void)
+{
+	if (AutoFiresFullClip() && (m_iClip1 > 0))
+		return false;
+
+	return BaseClass::OwnerCanTaunt();
+}
+#endif
+
 void CTFRocketLauncher::Misfire( void )
 {
 	BaseClass::Misfire();
