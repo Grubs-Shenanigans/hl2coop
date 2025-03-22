@@ -5736,7 +5736,11 @@ void CTFGameRules::RadiusDamage( CTFRadiusDamageInfo &info )
 //-----------------------------------------------------------------------------
 void CTFRadiusDamageInfo::CalculateFalloff( void )
 {
-	if ( dmgInfo->GetDamageType() & DMG_RADIUS_MAX )
+#ifdef BDSBASE
+	if (dmgInfo->GetDamageCustom() != TF_DMG_CUSTOM_STICKBOMB_EXPLOSION && dmgInfo->GetDamageType() & DMG_RADIUS_MAX)
+#else
+	if (dmgInfo->GetDamageType() & DMG_RADIUS_MAX)
+#endif
 		flFalloff = 0.f;
 	else if ( dmgInfo->GetDamageType() & DMG_HALF_FALLOFF )
 		flFalloff = 0.5f;
