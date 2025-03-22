@@ -213,6 +213,9 @@ bool C_BaseViewModel::ShouldFlipViewModel()
 	{
 		return pWeapon->m_bFlipViewModel != cl_flipviewmodels.GetBool();
 	}
+#ifdef BDSBASE
+	return cl_flipviewmodels.GetBool(); // hack for scout ball projeciles to have properly flipped viewmodels
+#endif
 #endif
 
 	return false;

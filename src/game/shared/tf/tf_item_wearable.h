@@ -109,6 +109,10 @@ public:
 
 #if defined( CLIENT_DLL )
 	virtual ShadowType_t ShadowCastType( void );
+
+#ifdef BDSBASE
+	virtual int	InternalDrawModel(int flags);
+#endif
 #endif
 };
 

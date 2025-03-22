@@ -302,7 +302,28 @@ int	CTFWearable::InternalDrawModel( int flags )
 		modelrender->ForcedMaterialOverride( *pOwner->GetInvulnMaterialRef() );
 	}
 
+#ifdef BDSBASE
+	CMatRenderContextPtr pRenderContext(materials);
+
+	if (IsViewModelWearable())
+	{
+		CTFWeaponBase* pWeapon = assert_cast<CTFWeaponBase*>(GetWeaponAssociatedWith());
+
+		if (pWeapon)
+		{
+			if (pWeapon->IsViewModelFlipped())
+			{
+				pRenderContext->CullMode(MATERIAL_CULLMODE_CW);
+			}
+		}
+	}
+#endif
+
 	int ret = BaseClass::InternalDrawModel( flags );
+
+#ifdef BDSBASE
+	pRenderContext->CullMode(MATERIAL_CULLMODE_CCW);
+#endif
 
 	if ( bUseInvulnMaterial && (flags & STUDIO_RENDER) )
 	{
@@ -795,6 +816,36 @@ ShadowType_t CTFWearableVM::ShadowCastType( void )
 
 	return SHADOWS_RENDER_TO_TEXTURE;
 }
+
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose:
+//		Allow botkiller attachments and server mod viewmodel VMs to properly flip with the player's weapon.
+//-----------------------------------------------------------------------------
+int CTFWearableVM::InternalDrawModel(int flags)
+{
+	C_TFPlayer* pOwner = ToTFPlayer(GetOwnerEntity());
+
+	CMatRenderContextPtr pRenderContext(materials);
+
+	if (pOwner)
+	{
+		CTFWeaponBase* pWpn = pOwner->GetActiveTFWeapon();
+
+		if (pWpn)
+		{
+			if (pWpn->IsViewModelFlipped())
+				pRenderContext->CullMode(MATERIAL_CULLMODE_CW);
+		}
+	}
+
+	int ret = BaseClass::InternalDrawModel(flags);
+
+	pRenderContext->CullMode(MATERIAL_CULLMODE_CCW);
+
+	return ret;
+}
+#endif
 #endif
 
 
