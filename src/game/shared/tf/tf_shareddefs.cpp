@@ -1060,6 +1060,10 @@ static const char* taunt_attack_name[] =
 	//
 	// INSERT NEW ITEMS HERE TO AVOID BREAKING DEMOS
 	//
+
+#ifdef BDSBASE
+	"TAUNTATK_ALLCLASS_GUITAR_RIFF_EXPLODE",
+#endif
 };
 
 COMPILE_TIME_ASSERT( ARRAYSIZE( taunt_attack_name ) == TAUNTATK_COUNT );
