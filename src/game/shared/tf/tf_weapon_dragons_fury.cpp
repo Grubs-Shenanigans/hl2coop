@@ -245,6 +245,13 @@ bool CTFWeaponFlameBall::HasFullCharge() const
 	return pOwner->m_Shared.GetItemChargeMeter( LOADOUT_POSITION_PRIMARY) >= 100.f;
 }
 
+#ifdef BDSBASE
+bool CTFWeaponFlameBall::CanInspect() const
+{
+	return BaseClass::CanInspect() && HasFullCharge();
+}
+#endif
+
 void CTFWeaponFlameBall::ItemPostFrame( void )
 {
 	CTFPlayer *pOwner = ToTFPlayer( GetPlayerOwner() );

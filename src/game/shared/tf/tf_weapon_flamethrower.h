@@ -112,6 +112,10 @@ public:
 
 	virtual bool	Deploy( void ) OVERRIDE;
 
+#ifdef BDSBASE
+	virtual bool	CanInspect() const OVERRIDE;
+#endif
+
 #if defined( CLIENT_DLL )
 
 	virtual void	OnDataChanged(DataUpdateType_t updateType) OVERRIDE;

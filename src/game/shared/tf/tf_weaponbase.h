@@ -725,6 +725,10 @@ protected:
 	int				m_iCurrentSeed;
 	float			m_flLastRapidFireCritCheckTime;
 
+#ifdef BDSBASE
+	float			m_flTimeFinishReloadSingly;
+#endif
+
 	float			m_flLastDeployTime;
 
 	char			m_szTracerName[MAX_TRACER_NAME];
