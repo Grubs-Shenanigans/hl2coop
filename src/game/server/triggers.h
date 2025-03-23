@@ -211,6 +211,12 @@ public:
 	int		m_damageModel;
 	bool	m_bNoDmgForce;		// Should damage from this trigger impart force on what it's hurting
 
+#ifdef BDSBASE
+#ifdef TF_DLL
+	string_t m_szKillIcon;
+#endif // TF_DLL
+#endif
+
 	enum
 	{
 		DAMAGEMODEL_NORMAL = 0,

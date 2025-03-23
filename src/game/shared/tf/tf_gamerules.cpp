@@ -127,6 +127,10 @@
 	#include "tf_party.h"
 	#include "tf_autobalance.h"
 	#include "player_voice_listener.h"
+#ifdef BDSBASE
+	#include "pointhurt.h"
+	#include "func_croc.h"
+#endif
 #endif
 
 #include "tf_mann_vs_machine_stats.h"
@@ -12302,7 +12306,15 @@ const char *CTFGameRules::GetKillingWeaponName( const CTakeDamageInfo &info, CTF
 		}
 		else
 		{
+#ifdef BDSBASE
+			CFuncCroc* pFuncCroc = dynamic_cast<CFuncCroc*>(pInflictor);
+			if (pFuncCroc)
+			{
+				killer_weapon_name = pFuncCroc->GetKillIcon();
+			}
+#else
 			killer_weapon_name = "crocodile";
+#endif
 		}
 	}
 	else if ( info.GetDamageCustom() == TF_DMG_CUSTOM_BOOTS_STOMP )
@@ -12464,6 +12476,30 @@ const char *CTFGameRules::GetKillingWeaponName( const CTakeDamageInfo &info, CTF
 		{
 			killer_weapon_name = "megaton";
 		}
+#ifdef BDSBASE
+		else
+		{
+			CTriggerHurt* pTriggerHurt = dynamic_cast<CTriggerHurt*>(pInflictor);
+			if (pTriggerHurt)
+			{
+				if (pTriggerHurt->m_szKillIcon != NULL_STRING)
+				{
+					killer_weapon_name = STRING(pTriggerHurt->m_szKillIcon);
+				}
+			}
+			else
+			{
+				CPointHurt* pPointHurt = dynamic_cast<CPointHurt*>(pInflictor);
+				if (pPointHurt)
+				{
+					if (pPointHurt->m_szKillIcon != NULL_STRING)
+					{
+						killer_weapon_name = STRING(pPointHurt->m_szKillIcon);
+					}
+				}
+			}
+		}
+#endif
 	}
 	else if ( pScorer && pInflictor && ( pInflictor == pScorer ) )
 	{
@@ -12552,6 +12588,20 @@ const char *CTFGameRules::GetKillingWeaponName( const CTakeDamageInfo &info, CTF
 						}
 					}
 				}
+#ifdef BDSBASE
+				else
+				{
+					// point_hurt won't set damageCustom to TF_DMG_CUSTOM_TRIGGER_HURT if it can't pass through uber
+					CPointHurt* pPointHurt = dynamic_cast<CPointHurt*>(pInflictor);
+					if (pPointHurt)
+					{
+						if (pPointHurt->m_szKillIcon != NULL_STRING)
+						{
+							killer_weapon_name = STRING(pPointHurt->m_szKillIcon);
+						}
+					}
+				}
+#endif
 			}
 		}
 	}

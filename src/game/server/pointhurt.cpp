@@ -22,6 +22,11 @@ BEGIN_DATADESC( CPointHurt )
 	DEFINE_KEYFIELD( m_flDelay, FIELD_FLOAT, "DamageDelay" ),
 	DEFINE_KEYFIELD( m_bitsDamageType, FIELD_INTEGER, "DamageType" ),
 	DEFINE_KEYFIELD( m_strTarget, FIELD_STRING, "DamageTarget" ),
+#ifdef BDSBASE
+#ifdef TF_DLL
+	DEFINE_KEYFIELD(m_szKillIcon, FIELD_STRING, "KillIcon"),
+#endif // TF_DLL
+#endif
 	
 	// Function Pointers
 	DEFINE_FUNCTION( HurtThink ),

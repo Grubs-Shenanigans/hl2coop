@@ -143,6 +143,9 @@ public:
 #ifdef GAME_DLL
 	DECLARE_DATADESC();
 	void	InputSetStalemateOnTimelimit( inputdata_t &inputdata );
+#ifdef BDSBASE
+	void	InputSetCustomKillIconsFile(inputdata_t& inputdata);
+#endif
 #endif
 
 	//----------------------------------------------------------------------------------
@@ -373,6 +376,10 @@ public:
 
 	void SetStalemateOnTimelimit( bool bStalemate ) { m_bAllowStalemateAtTimelimit = bStalemate; }
 
+#ifdef BDSBASE
+	void SetCustomKillIconsFile(const char* pszCustomKillIconsFile);
+#endif
+
 	bool IsGameUnderTimeLimit( void );
 
 	void HandleTimeLimitChange( void );
@@ -569,6 +576,9 @@ private:
 	bool			m_bOldInWaitingForPlayers;
 	bool			m_bOldInOvertime;
 	bool			m_bOldInSetup;
+#ifdef BDSBASE
+	char			m_pszOldCustomKillIconsFile[MAX_PATH];
+#endif
 #endif // CLIENT_DLL
 
 public:
@@ -577,6 +587,9 @@ public:
 	virtual bool HaveCheatsBeenEnabledDuringLevel( void ) { return m_bCheatsEnabledDuringLevel; }
 
 	float GetPreroundCountdownTime( void ){ return m_flCountdownTime; }
+#ifdef BDSBASE
+	const char* GetCustomKillIconsFile() { return m_pszCustomKillIconsFile.Get(); }
+#endif
 
 protected:
 	CNetworkVar( gamerules_roundstate_t, m_iRoundState );
@@ -600,6 +613,9 @@ protected:
 	CNetworkVar( int, 			m_nRoundsPlayed );
 	CNetworkVar( float,			m_flCountdownTime );
 	CNetworkVar( float,			m_flStateTransitionTime );	// Timer for round states
+#ifdef BDSBASE
+	CNetworkString(m_pszCustomKillIconsFile, MAX_PATH);
+#endif
 public:
 	CNetworkArray( float,		m_TeamRespawnWaveTimes, MAX_TEAMS_ARRAY_SAFE );	// Time between each team's respawn wave
 
