@@ -26,7 +26,9 @@
 #include "tier0/memdbgon.h"
 
 #ifdef BDSBASE
-#ifndef TF_CLIENT_DLL
+#ifdef TF_CLIENT_DLL
+ConVar r_classic_blood("r_classic_blood", "0", FCVAR_DEVELOPMENTONLY);
+#else
 ConVar r_classic_blood("r_classic_blood", "0", FCVAR_ARCHIVE);
 #endif
 #endif
@@ -510,7 +512,6 @@ void BloodImpactCallback( const CEffectData & data )
 	bool bFoundBlood = false;
 
 #ifdef BDSBASE
-#ifndef TF_CLIENT_DLL
 	if (!r_classic_blood.GetBool())
 	{
 		// Find which sort of blood we are
@@ -526,20 +527,6 @@ void BloodImpactCallback( const CEffectData & data )
 			}
 		}
 	}
-#else
-	// Find which sort of blood we are
-	for (int i = 0; i < ARRAYSIZE(bloodCallbacks); i++)
-	{
-		if (bloodCallbacks[i].nColor == data.m_nColor)
-		{
-			QAngle	vecAngles;
-			VectorAngles(-data.m_vNormal, vecAngles);
-			DispatchParticleEffect(bloodCallbacks[i].lpszParticleSystemName, data.m_vOrigin, vecAngles);
-			bFoundBlood = true;
-			break;
-		}
-	}
-#endif
 #else
 	// Find which sort of blood we are
 	for (int i = 0; i < ARRAYSIZE(bloodCallbacks); i++)
