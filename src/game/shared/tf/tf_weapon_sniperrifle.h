@@ -117,6 +117,10 @@ public:
 
 	virtual void WeaponReset( void );
 
+#ifdef BDSBASE
+	virtual bool CanInspect() const OVERRIDE;
+#endif
+
 	virtual bool CanFireCriticalShot( bool bIsHeadshot = false, CBaseEntity *pTarget = NULL ) OVERRIDE;
 
 	virtual void PlayWeaponShootSound( void );
@@ -130,7 +134,11 @@ public:
 	virtual bool ShouldEjectBrass();
 #endif
 
-	bool IsZoomed( void );
+#ifdef BDSBASE
+	bool IsZoomed(void) const;
+#else
+	bool IsZoomed(void);
+#endif
 	bool IsFullyCharged( void ) const;			// have we been zoomed in long enough for our shot to do max damage
 
 	virtual void OnControlStunned( void );

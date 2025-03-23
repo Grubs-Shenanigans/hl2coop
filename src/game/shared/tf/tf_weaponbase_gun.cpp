@@ -1050,6 +1050,12 @@ void CTFWeaponBaseGun::ZoomIn( void )
 	if ( !pPlayer )
 		return;
 
+#ifdef BDSBASE
+	// Stop inspecting and reset our animation.
+	StopInspect();
+	SendWeaponAnim(ACT_VM_IDLE);
+#endif
+
 	// Set the weapon zoom.
 	// TODO: The weapon fov should be gotten from the script file.
 	float fBaseZoom = TF_WEAPON_ZOOM_FOV;

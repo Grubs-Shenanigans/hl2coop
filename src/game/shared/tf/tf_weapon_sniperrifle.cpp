@@ -323,6 +323,16 @@ void CTFSniperRifle::HandleZooms( void )
 	}
 }
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
+bool CTFSniperRifle::CanInspect() const
+{
+	return BaseClass::CanInspect() && !IsZoomed() && m_flChargedDamage == 0.f;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
@@ -560,7 +570,11 @@ void CTFSniperRifle::ZoomIn( void )
 
 
 //-----------------------------------------------------------------------------
-bool CTFSniperRifle::IsZoomed( void )
+#ifdef BDSBASE
+bool CTFSniperRifle::IsZoomed(void) const
+#else
+bool CTFSniperRifle::IsZoomed(void)
+#endif
 {
 	CTFPlayer *pPlayer = GetTFPlayerOwner();
 
@@ -1951,6 +1965,12 @@ void CTFSniperRifleClassic::ItemPostFrame( void )
 			// Create the sniper dot.
 			CreateSniperDot();
 			pPlayer->ClearExpression();	
+
+#ifdef BDSBASE
+			// Stop inspecting and reset our animation.
+			StopInspect();
+			SendWeaponAnim(ACT_VM_IDLE);
+#endif
 #endif
 		}
 

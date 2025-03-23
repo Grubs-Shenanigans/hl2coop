@@ -783,6 +783,9 @@ public:
 
 	virtual bool CanInspect() const { return true; }
 	void HandleInspect();
+#ifdef BDSBASE
+	void StopInspect();
+#endif
 	
 	virtual void HookAttributes( void ) {};
 	virtual void OnUpgraded( void ) { HookAttributes(); }
