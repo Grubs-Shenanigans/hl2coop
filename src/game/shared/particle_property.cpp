@@ -552,6 +552,103 @@ void CParticleProperty::UpdateControlPoint( ParticleEffectList_t *pEffect, int i
 	Vector vecOrigin, vecForward, vecRight, vecUp;
 
 	float flOffset = 0.0f;
+#ifdef BDSBASE
+	bool bUsingUnusual = false;
+
+#ifdef TF_CLIENT_DLL
+
+	CBaseEntity* pWearable = (CBaseEntity*)pPoint->hEntity.Get();
+	if (pWearable && GetAttribInterface(pWearable) && !pWearable->IsPlayer() && V_strcmp(pWearable->GetClassname(), "tf_wearable") == 0)
+	{
+		C_BaseAnimating* pAnimating = pPoint->hEntity->GetBaseAnimating();
+		if (pAnimating)
+		{
+			// Do not use this now. It asks players to use particle from head attachment.
+			// But unusual particles for wearables are made for head attachment already.
+			// CALL_ATTRIB_HOOK_INT_ON_OTHER( pAnimating, bUseHeadOrigin, particle_effect_use_head_origin );
+
+			// Reference from bone_merge_cache
+			CUtlVector<CUtlString> 		BoneNames;
+			CUtlVector<unsigned short> 	ParentBones;
+
+			int nFollowBoneSetupMask = 0;
+			CStudioHdr* pWearableHdr = pAnimating->GetModelPtr();
+			C_BaseAnimating* pFollow = pAnimating->FindFollowedEntity();
+			CStudioHdr* pFollowHdr = (pFollow ? pFollow->GetModelPtr() : NULL);
+
+			bool bIsUnusual = false;
+			bool bIsUnusualStatic = false;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pAnimating, bIsUnusual, set_attached_particle);
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pAnimating, bIsUnusualStatic, set_attached_particle_static);
+			if (pWearableHdr && pFollowHdr && (bIsUnusual || bIsUnusualStatic))
+			{
+				CUtlVector<unsigned char> BoneMergeBits;	// One bit for each bone. The bit is set if the bone gets merged.
+				BoneMergeBits.SetSize(pWearableHdr->numbones() / 8 + 1);
+				memset(BoneMergeBits.Base(), 0, BoneMergeBits.Count());
+
+				mstudiobone_t* pWearableBones = pWearableHdr->pBone(0);
+
+				nFollowBoneSetupMask = BONE_USED_BY_BONE_MERGE;
+				for (int i = 0; i < pWearableHdr->numbones(); i++)
+				{
+					const CUtlString sBoneName = pWearableBones[i].pszName();
+					const int parentBoneIndex = Studio_BoneIndexByName(pFollowHdr, sBoneName);
+					if (parentBoneIndex < 0)
+						continue;
+
+					BoneNames.AddToTail(sBoneName);
+					ParentBones.AddToTail(parentBoneIndex);
+
+					BoneMergeBits[i >> 3] |= (1 << (i & 7));
+
+					if ((pFollowHdr->boneFlags(parentBoneIndex) & BONE_USED_BY_BONE_MERGE) == 0)
+					{
+						nFollowBoneSetupMask = BONE_USED_BY_ANYTHING;
+					}
+}
+
+				if (!ParentBones.Count())
+				{
+					nFollowBoneSetupMask = 0;
+				}
+			}
+			else
+			{
+				nFollowBoneSetupMask = 0;
+			}
+
+			if (pWearableHdr && BoneNames.Count())
+			{
+				pFollow->SetupBones(NULL, -1, nFollowBoneSetupMask, gpGlobals->curtime);
+				const char* const pPriorityBones[] = { "bip_head", "prp_helmet", "prp_hat" };
+				int iBone = -1;
+				bool bFound = false;
+				for (int j = 0; j < ARRAYSIZE(pPriorityBones) && !bFound; j++)
+				{
+					for (int i = 0; i < BoneNames.Count(); i++)
+					{
+						if (BoneNames[i] == pPriorityBones[j])
+						{
+							iBone = i;
+							bFound = true;
+							break;
+						}
+					}
+				}
+
+				bUsingUnusual = true;
+				const matrix3x4_t rootBone = iBone >= 0 ? pFollow->GetBone(ParentBones[iBone]) : pFollow->GetBone(ParentBones[0]);
+				MatrixVectors(rootBone, &vecForward, &vecRight, &vecUp);
+				MatrixPosition(rootBone, vecOrigin);
+
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pAnimating, flOffset, particle_effect_vertical_offset);
+			}
+		}
+	}
+#endif
+
+	if (!bUsingUnusual)
+#else
 	bool bUsingHeadOrigin = false;
 
 #ifdef TF_CLIENT_DLL
@@ -592,6 +689,7 @@ void CParticleProperty::UpdateControlPoint( ParticleEffectList_t *pEffect, int i
 #endif
 
 	if ( !bUsingHeadOrigin )
+#endif
 	{
 		switch ( pPoint->iAttachType )
 		{
