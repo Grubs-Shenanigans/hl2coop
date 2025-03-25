@@ -46,7 +46,7 @@
 ConVar tf_weapon_select_demo_start_delay( "tf_weapon_select_demo_start_delay", "1.0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Delay after spawning to start the weapon bucket demo." );
 ConVar tf_weapon_select_demo_time( "tf_weapon_select_demo_time", "0.5", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Time to pulse each weapon bucket upon spawning as a new class. 0 to turn off." );
 #ifdef BDSBASE
-ConVar tf_weapon_select_empty_space_scale("tf_weapon_select_empty_space_scale", "1.0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Scale empty weapon slot spaces by this amount", true, 0.0f);
+ConVar tf_weapon_select_empty_space_scale("tf_weapon_select_empty_space_scale", "1.0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Scale empty weapon slot spaces by this amount", true, 0.0f, false, 0.0f);
 #endif
 
 //-----------------------------------------------------------------------------
