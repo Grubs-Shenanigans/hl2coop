@@ -46,8 +46,7 @@
 ConVar tf_weapon_select_demo_start_delay( "tf_weapon_select_demo_start_delay", "1.0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Delay after spawning to start the weapon bucket demo." );
 ConVar tf_weapon_select_demo_time( "tf_weapon_select_demo_time", "0.5", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Time to pulse each weapon bucket upon spawning as a new class. 0 to turn off." );
 #ifdef BDSBASE
-ConVar tf_weapon_select_space_reduction("tf_weapon_select_space_reduction", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
-ConVar tf_weapon_select_space_reduction_factor("tf_weapon_select_space_reduction_factor", "2", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+ConVar tf_weapon_select_empty_space_scale("tf_weapon_select_empty_space_scale", "1.0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
 #endif
 
 //-----------------------------------------------------------------------------
@@ -487,14 +486,7 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 					// only include slot if visible OR (any slot above visible AND any slot below visible)
 					if ((iSlotBits >> i) && (iSlotBits & ((1 << (i + 1)) - 1)))
 					{
-						if (tf_weapon_select_space_reduction.GetBool())
-						{
-							rSlot[i].tall = (iSlotBits & (1 << i)) ? m_flSmallBoxTall : m_flSmallBoxTall / tf_weapon_select_space_reduction_factor.GetInt();
-						}
-						else
-						{
-							rSlot[i].tall = m_flSmallBoxTall;
-						}
+						rSlot[i].tall = (iSlotBits & (1 << i)) ? m_flSmallBoxTall : (m_flSmallBoxTall * tf_weapon_select_empty_space_scale.GetFloat());
 						nTotalHeight += rSlot[i].tall + m_flBoxGap;
 					}
 					else
