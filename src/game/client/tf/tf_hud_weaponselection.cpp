@@ -487,7 +487,7 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 					if ((iSlotBits >> i) && (iSlotBits & ((1 << (i + 1)) - 1)))
 					{
 						rSlot[i].tall = (iSlotBits & (1 << i)) ? m_flSmallBoxTall : (m_flSmallBoxTall * tf_weapon_select_empty_space_scale.GetFloat());
-						nTotalHeight += rSlot[i].tall + m_flBoxGap;
+						nTotalHeight += rSlot[i].tall > 0 ? rSlot[i].tall + m_flBoxGap : 0;
 					}
 					else
 					{
@@ -506,7 +506,7 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 				{
 					rSlot[i].y = ypos;
 					// only include boxgap if slot was visible
-					ypos += (rSlot[i].tall + (rSlot[i].tall > 0 ? m_flBoxGap : 0));
+					ypos += rSlot[i].tall > 0 ? rSlot[i].tall + m_flBoxGap : 0;
 				}
 #else
 				rSlot[i].y = ypos;
