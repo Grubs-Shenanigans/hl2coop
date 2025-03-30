@@ -708,7 +708,11 @@ void CPropCombineBall::WhizSoundThink()
 	
 	if ( gpGlobals->maxClients == 1 )
 	{
-		CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+#ifdef BDSBASE
+		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());  //Slightly different location due to OLD/NEW sdk code differences. Unsure if needed.
+#else
+		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE	
 		if ( pPlayer )
 		{
 			Vector vecDelta;

@@ -954,7 +954,12 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 
 	//Msg("Server detected %d objects\n", m_iNumRadarContacts );
 
+	//TDT - Information: Fix pPlayer from sp to mp.
+#ifdef BDSBASE
+	CBasePlayer *pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
 	CBasePlayer *pPlayer = AI_GetSinglePlayer();
+#endif //BDSBASE
 	CSingleUserRecipientFilter filter(pPlayer);
 	UserMessageBegin( filter, "UpdateJalopyRadar" );
 	WRITE_BYTE( 0 ); // end marker
@@ -1129,7 +1134,12 @@ CBaseEntity *CPropJeepEpisodic::OnFailedPhysGunPickup( Vector vPhysgunPos )
 	{
 		// Player's forward direction
 		Vector vecPlayerForward;
+		//TDT - Information: Fix pPlayer from sp to mp.
+#ifdef BDSBASE
+		CBasePlayer *pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin()); 
+#else
 		CBasePlayer *pPlayer = AI_GetSinglePlayer();
+#endif //BDSBASE
 		if ( pPlayer == NULL )
 			return NULL;
 
@@ -1310,6 +1320,14 @@ static void KillBlockingEnemyNPCs( CBasePlayer *pPlayer, CBaseEntity *pVehicleEn
 
 			CTakeDamageInfo dmgInfo( pVehicleEntity, pVehicleEntity, damageForce, contactList[i], 200.0f, DMG_CRUSH|DMG_VEHICLE );
 			npcList[i]->TakeDamage( dmgInfo );
+            
+            //TDT - Null Pointers: Occasionally on hitting an AI the game would crash. This is our fix.
+#ifdef BDSBASE
+			IPhysicsObject*physicsObj = npcList[i]->VPhysicsGetObject();
+			if (physicsObj == NULL)
+				return;
+#endif //BDSBASE
+            
 			pVehiclePhysics->ApplyForceOffset( vehicleForce, contactList[i] );
 			PhysCollisionSound( pVehicleEntity, npcList[i]->VPhysicsGetObject(), CHAN_BODY, pVehiclePhysics->GetMaterialIndex(), npcList[i]->VPhysicsGetObject()->GetMaterialIndex(), gpGlobals->frametime, 200.0f );
 		}

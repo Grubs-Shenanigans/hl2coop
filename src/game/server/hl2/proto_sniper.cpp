@@ -837,7 +837,11 @@ void CProtoSniper::PaintTarget( const Vector &vecTarget, float flPaintTime )
 //-----------------------------------------------------------------------------
 bool CProtoSniper::IsPlayerAllySniper()
 {
-	CBaseEntity *pPlayer = AI_GetSinglePlayer();
+#ifdef BDSBASE
+	CBaseEntity* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+	CBaseEntity* pPlayer = AI_GetSinglePlayer();
+#endif //BDSBASE
 
 	return IRelationType( pPlayer ) == D_LI;
 }
@@ -1395,13 +1399,16 @@ int CProtoSniper::SelectSchedule ( void )
 		return SCHED_RELOAD;
 	}
 
-	if( !AI_GetSinglePlayer()->IsAlive() && m_bKilledPlayer )
+	//TDT - Information: The condition area below when used in mp caused the sniper to fail terribly. Removing it from working with the AI enabled really improves snipers.
+#ifndef BDSBASE
+	if (!AI_GetSinglePlayer()->IsAlive() && m_bKilledPlayer)
 	{
-		if( HasCondition(COND_IN_PVS) )
+		if (HasCondition(COND_IN_PVS))
 		{
 			return SCHED_PSNIPER_PLAYER_DEAD;
 		}
 	}
+#endif //BDSBASE
 	
 	if( HasCondition( COND_HEAR_DANGER ) )
 	{
@@ -2605,10 +2612,18 @@ Vector CProtoSniper::LeadTarget( CBaseEntity *pTarget )
 CBaseEntity *CProtoSniper::PickDeadPlayerTarget()
 {
 	const int iSearchSize = 32;
-	CBaseEntity *pTarget = AI_GetSinglePlayer();
-	CBaseEntity *pEntities[ iSearchSize ];
+#ifdef BDSBASE
+	CBaseEntity* pTarget = UTIL_GetNearestVisiblePlayer(this);
+	CBaseEntity* pEntities[iSearchSize];
 
-	int iNumEntities = UTIL_EntitiesInSphere( pEntities, iSearchSize, AI_GetSinglePlayer()->GetAbsOrigin(), 180.0f, 0 );
+	int iNumEntities = UTIL_EntitiesInSphere(pEntities, iSearchSize, pTarget->GetAbsOrigin(), 180.0f, 0);
+#else
+	CBaseEntity* pTarget = AI_GetSinglePlayer();
+	CBaseEntity* pEntities[iSearchSize];
+
+	int iNumEntities = UTIL_EntitiesInSphere(pEntities, iSearchSize, AI_GetSinglePlayer()->GetAbsOrigin(), 180.0f, 0);
+
+#endif //BDSBASE
 
 	// Not very robust, but doesn't need to be. Randomly select a nearby object in the list that isn't an NPC.
 	if( iNumEntities > 0 )

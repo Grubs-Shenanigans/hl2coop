@@ -162,7 +162,11 @@ void CColorCorrectionVolume::Spawn( void )
 
 bool CColorCorrectionVolume::PassesTriggerFilters( CBaseEntity *pEntity )
 {
-	if( pEntity == UTIL_GetLocalPlayer() )
+#ifdef BDSBASE
+	if (pEntity->IsPlayer())
+#else
+	if (pEntity == UTIL_GetLocalPlayer())
+#endif //BDSBASE
 		return true;
 
 	return false;

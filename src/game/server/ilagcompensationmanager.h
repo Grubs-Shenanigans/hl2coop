@@ -24,6 +24,9 @@ public:
 	virtual void	StartLagCompensation( CBasePlayer *player, CUserCmd *cmd ) = 0;
 	virtual void	FinishLagCompensation( CBasePlayer *player ) = 0;
 	virtual bool	IsCurrentlyDoingLagCompensation() const = 0;
+#ifdef BDSBASE
+	virtual void	RemoveNpcData(int index) = 0;
+#endif //BDSBASE
 };
 
 extern ILagCompensationManager *lagcompensation;

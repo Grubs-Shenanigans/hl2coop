@@ -400,7 +400,11 @@ bool CGib::SUB_AllowedToFade( void )
 			return false;
 	}
 
-	CBasePlayer *pPlayer = ( AI_IsSinglePlayer() ) ? UTIL_GetLocalPlayer() : NULL;
+#ifdef BDSBASE
+	CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
+#else
+	CBasePlayer* pPlayer = (AI_IsSinglePlayer()) ? UTIL_GetLocalPlayer() : NULL;
+#endif //BDSBASE
 
 	if ( pPlayer && pPlayer->FInViewCone( this ) && m_bForceRemove == false )
 	{

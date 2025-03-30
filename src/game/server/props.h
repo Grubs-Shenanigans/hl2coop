@@ -413,9 +413,6 @@ private:
 
 protected:
 	CNetworkVar( bool, m_bAwake );
-#ifdef BDSBASE
-	CBasePlayer* m_pLastHolder = nullptr;
-#endif
 };
 
 

@@ -212,7 +212,11 @@ public:
 					bool bHadGag = pAllyNpc->HasSpawnFlags(SF_NPC_GAG);
 
 					pAllyNpc->AddSpawnFlags(SF_NPC_GAG);
-					pAllyNpc->TargetOrder( UTIL_GetLocalPlayer(), &pAllyNpc, 1 );
+#ifdef BDSBASE
+					pAllyNpc->TargetOrder(UTIL_GetNearestPlayer(pAllyNpc->GetAbsOrigin()), &pAllyNpc, 1);
+#else
+					pAllyNpc->TargetOrder(UTIL_GetLocalPlayer(), &pAllyNpc, 1);
+#endif //BDSBASE
 					if ( !bHadGag )
 						pAllyNpc->RemoveSpawnFlags(SF_NPC_GAG);
 				}
@@ -548,9 +552,15 @@ void CNPC_Citizen::PostNPCInit()
 	}
 	else
 	{
-		if ( ( m_spawnflags & SF_CITIZEN_FOLLOW ) && AI_IsSinglePlayer() )
+#ifdef BDSBASE
+		if ((m_spawnflags & SF_CITIZEN_FOLLOW))
 		{
-			m_FollowBehavior.SetFollowTarget( UTIL_GetLocalPlayer() );
+			m_FollowBehavior.SetFollowTarget(UTIL_GetNearestPlayer(GetAbsOrigin()));
+#else
+		if ((m_spawnflags & SF_CITIZEN_FOLLOW) && AI_IsSinglePlayer())
+		{
+			m_FollowBehavior.SetFollowTarget(UTIL_GetLocalPlayer());
+#endif //BDSBASE
 			m_FollowBehavior.SetParameters( AIF_SIMPLE );
 		}
 	}
@@ -897,7 +907,11 @@ void CNPC_Citizen::GatherConditions()
 	if( IsInPlayerSquad() && hl2_episodic.GetBool() )
 	{
 		// Leave the player squad if someone has made me neutral to player.
-		if( IRelationType(UTIL_GetLocalPlayer()) == D_NU )
+#ifdef BDSBASE
+		if (IRelationType(UTIL_GetNearestPlayer(GetAbsOrigin())) == D_NU)
+#else
+		if (IRelationType(UTIL_GetLocalPlayer()) == D_NU)
+#endif //BDSBASE	
 		{
 			RemoveFromPlayerSquad();
 		}
@@ -930,7 +944,11 @@ void CNPC_Citizen::GatherConditions()
 	// assume the player is 'staring' and wants health.
 	if( CanHeal() )
 	{
-		CBasePlayer *pPlayer = AI_GetSinglePlayer();
+#ifdef BDSBASE
+		CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
+#else
+		CBasePlayer* pPlayer = AI_GetSinglePlayer();
+#endif //BDSBASE
 
 		if ( !pPlayer )
 		{
@@ -983,8 +1001,10 @@ void CNPC_Citizen::GatherConditions()
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::PredictPlayerPush()
 {
-	if ( !AI_IsSinglePlayer() )
+#ifndef BDSBASE
+	if (!AI_IsSinglePlayer())
 		return;
+#endif //BDSBASE
 
 	if ( HasCondition( COND_CIT_PLAYERHEALREQUEST ) )
 		return;
@@ -993,7 +1013,11 @@ void CNPC_Citizen::PredictPlayerPush()
 
 	BaseClass::PredictPlayerPush();
 
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+#ifdef BDSBASE
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 	if ( !bHadPlayerPush && HasCondition( COND_PLAYER_PUSHING ) && 
 		 pPlayer->FInViewCone( this ) && CanHeal() )
 	{
@@ -1439,7 +1463,11 @@ bool CNPC_Citizen::ShouldDeferToFollowBehavior()
 //-----------------------------------------------------------------------------
 int CNPC_Citizen::TranslateSchedule( int scheduleType ) 
 {
-	CBasePlayer *pLocalPlayer = AI_GetSinglePlayer();
+#ifdef BDSBASE
+	CBasePlayer* pLocalPlayer = UTIL_GetNearestVisiblePlayer(this);
+#else
+	CBasePlayer* pLocalPlayer = AI_GetSinglePlayer();
+#endif //BDSBASE
 
 	switch( scheduleType )
 	{
@@ -1453,7 +1481,9 @@ int CNPC_Citizen::TranslateSchedule( int scheduleType )
 
 			if( flDist < 50 * 12 )
 			{
-				AddSpawnFlags( SF_CITIZEN_NOT_COMMANDABLE );
+#ifndef BDSBASE
+				AddSpawnFlags(SF_CITIZEN_NOT_COMMANDABLE);
+#endif //BDSBASE
 				return SCHED_CITIZEN_MOURN_PLAYER;
 			}
 		}
@@ -1492,10 +1522,17 @@ int CNPC_Citizen::TranslateSchedule( int scheduleType )
 					return SCHED_STANDOFF;
 				}
 			}
+#ifdef BDSBASE
+			else if (GetEnemy())
+			{
+				CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetEnemy()->GetAbsOrigin());
+				if (pPlayer && ((GetEnemy()->GetAbsOrigin() -
+#else
 			else
 			{
-				CBasePlayer *pPlayer = AI_GetSinglePlayer();
-				if ( pPlayer && GetEnemy() && ( ( GetEnemy()->GetAbsOrigin() - 
+				CBasePlayer* pPlayer = AI_GetSinglePlayer();
+				if (pPlayer && GetEnemy() && ((GetEnemy()->GetAbsOrigin() -
+#endif //BDSBASE
 					pPlayer->GetAbsOrigin() ).LengthSqr() < RPG_SAFE_DISTANCE * RPG_SAFE_DISTANCE ) )
 				{
 					// Don't fire our RPG at an enemy too close to the player
@@ -1767,7 +1804,11 @@ void CNPC_Citizen::RunTask( const Task_t *pTask )
 					}
 
 					Vector vecEnemyPos = GetEnemy()->BodyTarget(GetAbsOrigin(), false);
-					CBasePlayer *pPlayer = AI_GetSinglePlayer();
+#ifdef BDSBASE
+					CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetEnemy()->GetAbsOrigin());
+#else
+					CBasePlayer* pPlayer = AI_GetSinglePlayer();
+#endif //BDSBASE	
 					if ( pPlayer && ( ( vecEnemyPos - pPlayer->GetAbsOrigin() ).LengthSqr() < RPG_SAFE_DISTANCE * RPG_SAFE_DISTANCE ) )
 					{
 						m_bRPGAvoidPlayer = true;
@@ -2318,8 +2359,10 @@ bool CNPC_Citizen::IsPlayerAlly( CBasePlayer *pPlayer )
 //-----------------------------------------------------------------------------
 bool CNPC_Citizen::CanJoinPlayerSquad()
 {
-	if ( !AI_IsSinglePlayer() )
+#ifndef BDSBASE
+	if (!AI_IsSinglePlayer())
 		return false;
+#endif //BDSBASE
 
 	if ( m_NPCState == NPC_STATE_SCRIPT || m_NPCState == NPC_STATE_PRONE )
 		return false;
@@ -2334,7 +2377,11 @@ bool CNPC_Citizen::CanJoinPlayerSquad()
 	if ( !CanBeUsedAsAFriend() )
 		return false;
 
-	if ( IRelationType( UTIL_GetLocalPlayer() ) != D_LI )
+#ifdef BDSBASE
+	if (IRelationType(UTIL_GetNearestPlayer(GetAbsOrigin())) != D_LI)
+#else
+	if (IRelationType(UTIL_GetLocalPlayer()) != D_LI)
+#endif //BDSBASE	
 		return false;
 
 	return true;
@@ -2361,9 +2408,15 @@ bool CNPC_Citizen::HaveCommandGoal() const
 //-----------------------------------------------------------------------------
 bool CNPC_Citizen::IsCommandMoving()
 {
-	if ( AI_IsSinglePlayer() && IsInPlayerSquad() )
+#ifdef BDSBASE
+	if (IsInPlayerSquad())
 	{
-		if ( m_FollowBehavior.GetFollowTarget() == UTIL_GetLocalPlayer() ||
+		if (m_FollowBehavior.GetFollowTarget() == UTIL_GetNearestPlayer(GetAbsOrigin()) ||
+#else
+	if (AI_IsSinglePlayer() && IsInPlayerSquad())
+	{
+		if (m_FollowBehavior.GetFollowTarget() == UTIL_GetLocalPlayer() ||
+#endif //BDSBASE	
 			 IsFollowingCommandPoint() )
 		{
 			return ( m_FollowBehavior.IsMovingToFollowTarget() );
@@ -2376,10 +2429,17 @@ bool CNPC_Citizen::IsCommandMoving()
 //-----------------------------------------------------------------------------
 bool CNPC_Citizen::ShouldAutoSummon()
 {
-	if ( !AI_IsSinglePlayer() || !IsFollowingCommandPoint() || !IsInPlayerSquad() )
+#ifdef BDSBASE
+	if (!IsFollowingCommandPoint() || !IsInPlayerSquad())
 		return false;
 
-	CHL2_Player *pPlayer = (CHL2_Player *)UTIL_GetLocalPlayer();
+	CHL2_Player* pPlayer = (CHL2_Player*)UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+	if (!AI_IsSinglePlayer() || !IsFollowingCommandPoint() || !IsInPlayerSquad())
+		return false;
+
+	CHL2_Player* pPlayer = (CHL2_Player*)UTIL_GetLocalPlayer();
+#endif //BDSBASE
 	
 	float distMovedSq = ( pPlayer->GetAbsOrigin() - m_vAutoSummonAnchor ).LengthSqr();
 	float moveTolerance = player_squad_autosummon_move_tolerance.GetFloat() * 12;
@@ -2507,7 +2567,11 @@ bool CNPC_Citizen::SpeakCommandResponse( AIConcept_t concept, const char *modifi
 						   CFmtStr( "numselected:%d,"
 									"useradio:%d%s",
 									( GetSquad() ) ? GetSquad()->NumMembers() : 1,
-									ShouldSpeakRadio( AI_GetSinglePlayer() ),
+#ifdef BDSBASE
+									ShouldSpeakRadio(UTIL_GetNearestPlayer(GetAbsOrigin())),
+#else
+									ShouldSpeakRadio(AI_GetSinglePlayer()),
+#endif //BDSBASE
 									( modifiers ) ? CFmtStr(",%s", modifiers).operator const char *() : "" ) );
 }
 
@@ -2550,8 +2614,10 @@ bool CNPC_Citizen::TargetOrder( CBaseEntity *pTarget, CAI_BaseNPC **Allies, int 
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::MoveOrder( const Vector &vecDest, CAI_BaseNPC **Allies, int numAllies )
 {
-	if ( !AI_IsSinglePlayer() )
+#ifndef BDSBASE
+	if (!AI_IsSinglePlayer())
 		return;
+#endif //BDSBASE
 
 	if( hl2_episodic.GetBool() && m_iszDenyCommandConcept != NULL_STRING )
 	{
@@ -2559,7 +2625,11 @@ void CNPC_Citizen::MoveOrder( const Vector &vecDest, CAI_BaseNPC **Allies, int n
 		return;
 	}
 
-	CHL2_Player *pPlayer = (CHL2_Player *)UTIL_GetLocalPlayer();
+#ifdef BDSBASE
+	CHL2_Player* pPlayer = (CHL2_Player*)UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+	CHL2_Player* pPlayer = (CHL2_Player*)UTIL_GetLocalPlayer();
+#endif //BDSBASE
 
 	m_AutoSummonTimer.Set( player_squad_autosummon_time.GetFloat() );
 	m_vAutoSummonAnchor = pPlayer->GetAbsOrigin();
@@ -2643,13 +2713,21 @@ void CNPC_Citizen::CommanderUse( CBaseEntity *pActivator, CBaseEntity *pCaller, 
 
 	// Under these conditions, citizens will refuse to go with the player.
 	// Robin: NPCs should always respond to +USE even if someone else has the semaphore.
-	if ( !AI_IsSinglePlayer() || !CanJoinPlayerSquad() )
+#ifdef BDSBASE
+	if (!CanJoinPlayerSquad())
+#else
+	if (!AI_IsSinglePlayer() || !CanJoinPlayerSquad())
+#endif //BDSBASE
 	{
 		SimpleUse( pActivator, pCaller, useType, value );
 		return;
 	}
 	
-	if ( pActivator == UTIL_GetLocalPlayer() )
+#ifdef BDSBASE
+	if (pActivator == UTIL_GetNearestPlayer(GetAbsOrigin()))
+#else
+	if (pActivator == UTIL_GetLocalPlayer())
+#endif //BDSBASE
 	{
 		// Don't say hi after you've been addressed by the player
 		SetSpokeConcept( TLK_HELLO, NULL );	
@@ -2752,8 +2830,10 @@ void CNPC_Citizen::RemoveFromPlayerSquad()
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::TogglePlayerSquadState()
 {
-	if ( !AI_IsSinglePlayer() )
+#ifndef BDSBASE
+	if (!AI_IsSinglePlayer())
 		return;
+#endif //BDSBASE
 
 	if ( !IsInPlayerSquad() )
 	{
@@ -2763,7 +2843,11 @@ void CNPC_Citizen::TogglePlayerSquadState()
 		{
 			SpeakCommandResponse( TLK_COMMANDED );
 		}
-		else if ( m_FollowBehavior.GetFollowTarget() == UTIL_GetLocalPlayer() )
+#ifdef BDSBASE
+		else if (m_FollowBehavior.GetFollowTarget() == UTIL_GetNearestPlayer(GetAbsOrigin()))
+#else
+		else if (m_FollowBehavior.GetFollowTarget() == UTIL_GetLocalPlayer())
+#endif //BDSBASE	
 		{
 			SpeakCommandResponse( TLK_STARTFOLLOW );
 		}
@@ -2788,11 +2872,16 @@ struct SquadCandidate_t
 
 void CNPC_Citizen::UpdatePlayerSquad()
 {
-	if ( !AI_IsSinglePlayer() )
+#ifdef BDSBASE
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+	if (pPlayer && (pPlayer->GetAbsOrigin().AsVector2D() - GetAbsOrigin().AsVector2D()).LengthSqr() < Square(20 * 12))
+#else
+	if (!AI_IsSinglePlayer())
 		return;
 
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
-	if ( ( pPlayer->GetAbsOrigin().AsVector2D() - GetAbsOrigin().AsVector2D() ).LengthSqr() < Square(20*12) )
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	if ((pPlayer->GetAbsOrigin().AsVector2D() - GetAbsOrigin().AsVector2D()).LengthSqr() < Square(20 * 12))
+#endif //BDSBASE
 		m_flTimeLastCloseToPlayer = gpGlobals->curtime;
 
 	if ( !gm_PlayerSquadEvaluateTimer.Expired() )
@@ -3070,8 +3159,10 @@ int CNPC_Citizen::PlayerSquadCandidateSortFunc( const SquadCandidate_t *pLeft, c
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::FixupPlayerSquad()
 {
-	if ( !AI_IsSinglePlayer() )
+#ifndef BDSBASE
+	if (!AI_IsSinglePlayer())
 		return;
+#endif //BDSBASE
 
 	m_flTimeJoinedPlayerSquad = gpGlobals->curtime;
 	m_bWasInPlayerSquad = true;
@@ -3140,7 +3231,11 @@ void CNPC_Citizen::FixupPlayerSquad()
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::ClearFollowTarget()
 {
-	m_FollowBehavior.SetFollowTarget( NULL );
+#ifdef BDSBASE
+	m_FollowBehavior.SetFollowTarget(UTIL_GetNearestPlayer(GetAbsOrigin()));
+#else
+	m_FollowBehavior.SetFollowTarget(NULL);
+#endif //BDSBASE
 	m_FollowBehavior.SetParameters( AIF_SIMPLE );
 }
 
@@ -3148,8 +3243,10 @@ void CNPC_Citizen::ClearFollowTarget()
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::UpdateFollowCommandPoint()
 {
-	if ( !AI_IsSinglePlayer() )
+#ifndef BDSBASE
+	if (!AI_IsSinglePlayer())
 		return;
+#endif //BDSBASE
 
 	if ( IsInPlayerSquad() )
 	{
@@ -3180,10 +3277,18 @@ void CNPC_Citizen::UpdateFollowCommandPoint()
 		{
 			if ( IsFollowingCommandPoint() )
 				ClearFollowTarget();
-			if ( m_FollowBehavior.GetFollowTarget() != UTIL_GetLocalPlayer() )
+#ifdef BDSBASE
+			CBasePlayer* pNearest = UTIL_GetNearestPlayer(GetAbsOrigin());
+			if (m_FollowBehavior.GetFollowTarget() != pNearest)
 			{
-				DevMsg( "Expected to be following player, but not\n" );
-				m_FollowBehavior.SetFollowTarget( UTIL_GetLocalPlayer() );
+				DevMsg("Switching to following new nearest player\n");
+				m_FollowBehavior.SetFollowTarget(pNearest);
+#else
+			if (m_FollowBehavior.GetFollowTarget() != UTIL_GetLocalPlayer())
+			{
+				DevMsg("Expected to be following player, but not\n");
+				m_FollowBehavior.SetFollowTarget(UTIL_GetLocalPlayer());
+#endif //BDSBASE
 				m_FollowBehavior.SetParameters( AIF_SIMPLE );
 			}
 		}
@@ -3228,8 +3333,10 @@ int __cdecl SquadSortFunc( const SquadMemberInfo_t *pLeft, const SquadMemberInfo
 
 CAI_BaseNPC *CNPC_Citizen::GetSquadCommandRepresentative()
 {
-	if ( !AI_IsSinglePlayer() )
+#ifndef BDSBASE
+	if (!AI_IsSinglePlayer())
 		return NULL;
+#endif //BDSBASE
 
 	if ( IsInPlayerSquad() )
 	{
@@ -3242,7 +3349,11 @@ CAI_BaseNPC *CNPC_Citizen::GetSquadCommandRepresentative()
 			hCurrent = NULL;
 
 			CUtlVectorFixed<SquadMemberInfo_t, MAX_SQUAD_MEMBERS> candidates;
-			CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+#ifdef BDSBASE
+			CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+			CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 
 			if ( pPlayer )
 			{
@@ -3728,7 +3839,11 @@ void	CNPC_Citizen::TossHealthKit(CBaseCombatCharacter *pThrowAt, const Vector &o
 //-----------------------------------------------------------------------------
 void	CNPC_Citizen::InputForceHealthKitToss( inputdata_t &inputdata )
 {
-	TossHealthKit( UTIL_GetLocalPlayer(), Vector(48.0f, 0.0f, 0.0f)  );
+#ifdef BDSBASE
+	TossHealthKit(UTIL_GetNearestPlayer(GetAbsOrigin()), Vector(48.0f, 0.0f, 0.0f));
+#else
+	TossHealthKit(UTIL_GetLocalPlayer(), Vector(48.0f, 0.0f, 0.0f));
+#endif //BDSBASE
 }
 
 #endif
@@ -3751,7 +3866,12 @@ bool CNPC_Citizen::ShouldLookForHealthItem()
 		return false;
 
 	// Player is hurt, don't steal his health.
-	if( AI_IsSinglePlayer() && UTIL_GetLocalPlayer()->GetHealth() <= UTIL_GetLocalPlayer()->GetHealth() * 0.75f )
+#ifdef BDSBASE
+	CBasePlayer* pNearest = UTIL_GetNearestVisiblePlayer(this);
+	if (pNearest && pNearest->GetHealth() <= pNearest->GetMaxHealth() * 0.75f)
+#else
+	if (AI_IsSinglePlayer() && UTIL_GetLocalPlayer()->GetHealth() <= UTIL_GetLocalPlayer()->GetHealth() * 0.75f)
+#endif //BDSBASE
 		return false;
 
 	// Wait till you're standing still.
@@ -4135,7 +4255,9 @@ void CCitizenResponseSystem::InputResponseVitalNPC( inputdata_t &inputdata )
 void CCitizenResponseSystem::ResponseThink()
 {
 	bool bStayActive = false;
-	if ( AI_IsSinglePlayer() )
+#ifndef BDSBASE
+	if (AI_IsSinglePlayer())
+#endif //BDSBASE
 	{
 		for ( int i = 0; i < MAX_CITIZEN_RESPONSES; i++ )
 		{
@@ -4152,9 +4274,14 @@ void CCitizenResponseSystem::ResponseThink()
 					float flNearestDist = (CITIZEN_RESPONSE_DISTANCE * CITIZEN_RESPONSE_DISTANCE);
 					CBaseEntity *pNearestCitizen = NULL;
 					CBaseEntity *pCitizen = NULL;
-					CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+#ifndef BDSBASE
+					CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 					while ( (pCitizen = gEntList.FindEntityByClassname( pCitizen, "npc_citizen" ) ) != NULL)
 					{
+#ifdef BDSBASE
+						CBasePlayer* pPlayer = UTIL_GetNearestPlayer(pCitizen->GetAbsOrigin());
+#endif //BDSBASE	
 						float flDistToPlayer = (pPlayer->WorldSpaceCenter() - pCitizen->WorldSpaceCenter()).LengthSqr();
 						if ( flDistToPlayer < flNearestDist )
 						{

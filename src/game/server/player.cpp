@@ -213,7 +213,11 @@ ConVar	sv_player_extinguish_on_death("sv_player_extinguish_on_death", "0", FCVAR
 
 void CC_GiveCurrentAmmo( void )
 {
-	CBasePlayer *pPlayer = UTIL_PlayerByIndex(1);
+#ifdef BDSBASE
+	CBasePlayer* pPlayer = UTIL_GetCommandClient();
+#else
+	CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
+#endif //BDSBASE
 
 	if( pPlayer )
 	{
@@ -769,22 +773,56 @@ int CBasePlayer::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 }
 
 
-bool CBasePlayer::WantsLagCompensationOnEntity( const CBasePlayer *pPlayer, const CUserCmd *pCmd, const CBitVec<MAX_EDICTS> *pEntityTransmitBits ) const
+#ifdef BDSBASE
+bool CBasePlayer::WantsLagCompensationOnEntity(const CBaseEntity* pEntity, const CUserCmd* pCmd, const CBitVec<MAX_EDICTS>* pEntityTransmitBits) const
 {
-	// Team members shouldn't be adjusted unless friendly fire is on.
-	if ( !friendlyfire.GetInt() && pPlayer->GetTeamNumber() == GetTeamNumber() )
-		return false;
+	//Tony; only check teams in teamplay
+	if (gpGlobals->teamplay)
+	{
+		// Team members shouldn't be adjusted unless friendly fire is on.
+		if (!friendlyfire.GetInt() && pEntity->GetTeamNumber() == GetTeamNumber())
+			return false;
+	}
 
 	// If this entity hasn't been transmitted to us and acked, then don't bother lag compensating it.
-	if ( pEntityTransmitBits && !pEntityTransmitBits->Get( pPlayer->entindex() ) )
+	if (pEntityTransmitBits && !pEntityTransmitBits->Get(pEntity->entindex()))
 		return false;
 
-	const Vector &vMyOrigin = GetAbsOrigin();
-	const Vector &vHisOrigin = pPlayer->GetAbsOrigin();
+	const Vector& vMyOrigin = GetAbsOrigin();
+	const Vector& vHisOrigin = pEntity->GetAbsOrigin();
+
+	// get max distance player could have moved within max lag compensation time, 
+	// multiply by 1.5 to to avoid "dead zones"  (sqrt(2) would be the exact value)
+	//float maxDistance = 1.5 * pPlayer->MaxSpeed() * sv_maxunlag.GetFloat(); 
+	float maxspeed;
+	CBasePlayer* pPlayer = ToBasePlayer((CBaseEntity*)pEntity);
+	if (pPlayer)
+		maxspeed = pPlayer->MaxSpeed();
+	else
+		maxspeed = 600;
+	float maxDistance = 1.5 * maxspeed * sv_maxunlag.GetFloat();
+#else
+bool CBasePlayer::WantsLagCompensationOnEntity(const CBasePlayer * pPlayer, const CUserCmd * pCmd, const CBitVec<MAX_EDICTS> *pEntityTransmitBits) const
+{
+	//Tony; only check teams in teamplay
+	if (gpGlobals->teamplay)
+	{
+		// Team members shouldn't be adjusted unless friendly fire is on.
+		if (!friendlyfire.GetInt() && pPlayer->GetTeamNumber() == GetTeamNumber())
+			return false;
+	}
+
+	// If this entity hasn't been transmitted to us and acked, then don't bother lag compensating it.
+	if (pEntityTransmitBits && !pEntityTransmitBits->Get(pPlayer->entindex()))
+		return false;
+
+	const Vector& vMyOrigin = GetAbsOrigin();
+	const Vector& vHisOrigin = pPlayer->GetAbsOrigin();
 
 	// get max distance player could have moved within max lag compensation time, 
 	// multiply by 1.5 to to avoid "dead zones"  (sqrt(2) would be the exact value)
 	float maxDistance = 1.5 * pPlayer->MaxSpeed() * sv_maxunlag.GetFloat();
+#endif //BDSBASE
 
 	// If the player is within this distance, lag compensate them in case they're running past us.
 	if ( vHisOrigin.DistTo( vMyOrigin ) < maxDistance )
@@ -7991,7 +8029,18 @@ void CStripWeapons::StripWeapons(inputdata_t &data, bool stripSuit)
 	}
 	else if ( !g_pGameRules->IsDeathmatch() )
 	{
+#ifdef BDSBASE
+		for (int i = 1; i <= gpGlobals->maxClients; i++)
+		{
+			CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+			if (pPlayer)
+			{
+				pPlayer->RemoveAllItems(stripSuit);
+			}
+		}
+#else
 		pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 	}
 
 	if ( pPlayer )
@@ -8087,18 +8136,38 @@ void CRevertSaved::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 	SetNextThink( gpGlobals->curtime + LoadTime() );
 	SetThink( &CRevertSaved::LoadThink );
 
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+#ifdef BDSBASE
+	for (int i = 1; i <= gpGlobals->maxClients; i++)
+	{
+		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+		if (!pPlayer)
+			continue;
 
-	if ( pPlayer )
+		if (pPlayer)
+		{
+			//Adrian: Setting this flag so we can't move or save a game.
+			pPlayer->pl.deadflag = true;
+			pPlayer->AddFlag((FL_NOTARGET | FL_FROZEN));
+
+			// clear any pending autosavedangerous
+			g_ServerGameDLL.m_fAutoSaveDangerousTime = 0.0f;
+			g_ServerGameDLL.m_fAutoSaveDangerousMinHealthToCommit = 0.0f;
+		}
+	}
+#else
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+
+	if (pPlayer)
 	{
 		//Adrian: Setting this flag so we can't move or save a game.
 		pPlayer->pl.deadflag = true;
-		pPlayer->AddFlag( (FL_NOTARGET|FL_FROZEN) );
+		pPlayer->AddFlag((FL_NOTARGET | FL_FROZEN));
 
 		// clear any pending autosavedangerous
 		g_ServerGameDLL.m_fAutoSaveDangerousTime = 0.0f;
 		g_ServerGameDLL.m_fAutoSaveDangerousMinHealthToCommit = 0.0f;
 	}
+#endif //BDSBASE
 }
 
 void CRevertSaved::InputReload( inputdata_t &inputdata )
@@ -8149,6 +8218,16 @@ void CRevertSaved::LoadThink( void )
 	{
 		engine->ServerCommand("reload\n");
 	}
+#ifdef BDSBASE
+	//TDT - Information: Here we change level to the map we're already on if a vital ally such as Alyx is killed etc etc etc.
+	else
+	{
+		char* szDefaultMapName = new char[32];
+		Q_strncpy(szDefaultMapName, STRING(gpGlobals->mapname), 32);
+		engine->ChangeLevel(szDefaultMapName, NULL);
+		return;
+	}
+#endif //BDSBASE	
 }
 
 #define SF_SPEED_MOD_SUPPRESS_WEAPONS	(1<<0)	// Take away weapons
@@ -8225,7 +8304,11 @@ void CMovementSpeedMod::InputSpeedMod(inputdata_t &data)
 	}
 	else if ( !g_pGameRules->IsDeathmatch() )
 	{
+#ifdef BDSBASE
+		pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
 		pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 	}
 
 	if ( pPlayer )

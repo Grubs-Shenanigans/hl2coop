@@ -533,7 +533,7 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 			}
 			else
 			{
-				return (CBaseEntity*)UTIL_PlayerByIndex(1);
+				return (CBaseEntity*)UTIL_GetLocalPlayer();
 			}
 #else
 			return (CBaseEntity*)UTIL_PlayerByIndex(1);
@@ -553,7 +553,7 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 			else
 			{
 				// FIXME: error condition?
-				return (CBaseEntity *)UTIL_PlayerByIndex( 1 );
+				return (CBaseEntity*)UTIL_GetLocalPlayer();
 			}
 
 		}
@@ -567,7 +567,11 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 		}
 		else if ( FStrEq( pName, "picker" ) )
 		{
-			return FindPickerEntity( UTIL_PlayerByIndex(1) );
+#ifdef BDSBASE
+			return FindPickerEntity(UTIL_GetLocalPlayer());
+#else
+			return FindPickerEntity(UTIL_PlayerByIndex(1));
+#endif //BDSBASE
 		}
 		else if ( FStrEq( pName, "self" ) )
 		{

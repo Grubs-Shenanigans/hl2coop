@@ -1241,7 +1241,11 @@ bool CBaseFlex::ProcessFlexAnimationSceneEvent( CSceneEventInfo *info, CChoreoSc
 					// only check occasionally
 					else if (info->m_flNext <= gpGlobals->curtime)
 					{
-						CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+#ifdef BDSBASE
+						CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
+#else
+						CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 
 						// if not in view, disable
 						info->m_bHasArrived = (pPlayer && !pPlayer->FInViewCone( this ) );
@@ -2757,7 +2761,11 @@ void CFlexCycler::Think( void )
 	Vector forward, right, up;
 	GetVectors( &forward, &right, &up );
 
-	CBaseEntity *pPlayer = (CBaseEntity *)UTIL_GetLocalPlayer();
+#ifdef BDSBASE
+	CBaseEntity* pPlayer = (CBaseEntity*)UTIL_GetNearestVisiblePlayer(this);
+#else
+	CBaseEntity* pPlayer = (CBaseEntity*)UTIL_GetLocalPlayer();
+#endif //BDSBASE
 	if (pPlayer)
 	{
 		if (pPlayer->GetSmoothedVelocity().Length() != 0 && DotProduct( forward, pPlayer->EyePosition() - EyePosition()) > 0.5)
