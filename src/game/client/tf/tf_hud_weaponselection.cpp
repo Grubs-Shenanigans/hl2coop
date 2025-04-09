@@ -460,12 +460,11 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 		{
 			// calculate where to start drawing
 #ifdef BDSBASE
-			int nTotalHeight = 0;
+			float flTotalHeight = 0.f;
+			float xStartPos = GetWide() - m_flBoxGap - m_flRightMargin;
 #else
 			int nTotalHeight = (nNumSlots - 1) * (m_flSmallBoxTall + m_flBoxGap) + m_flLargeBoxTall;
-#endif
 			int xStartPos = GetWide() - m_flBoxGap - m_flRightMargin;
-#ifndef BDSBASE
 			int ypos = (GetTall() - nTotalHeight) / 2;
 #endif
 			// iterate over all the weapon slots
@@ -476,7 +475,7 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 					rSlot[i].wide = m_flLargeBoxWide;
 					rSlot[i].tall = m_flLargeBoxTall;
 #ifdef BDSBASE
-					nTotalHeight += rSlot[i].tall;
+					flTotalHeight += rSlot[i].tall;
 #endif
 				}
 				else
@@ -487,7 +486,7 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 					if ((iSlotBits >> i) && (iSlotBits & ((1 << (i + 1)) - 1)))
 					{
 						rSlot[i].tall = (iSlotBits & (1 << i)) ? m_flSmallBoxTall : (m_flSmallBoxTall * tf_weapon_select_empty_bucket_scale.GetFloat());
-						nTotalHeight += rSlot[i].tall > 0 ? rSlot[i].tall + m_flBoxGap : 0;
+						flTotalHeight += rSlot[i].tall + (m_flBoxGap * rSlot[i].tall / m_flSmallBoxTall);
 					}
 					else
 					{
@@ -501,12 +500,11 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 				rSlot[i].x = xStartPos - ( rSlot[i].wide + m_flBoxGap );
 #ifdef BDSBASE
 				// now calculate ypos from total height
-				int ypos = (GetTall() - nTotalHeight) / 2;
+				float ypos = (GetTall() - flTotalHeight) / 2;
 				for (int i = 0; i < m_iMaxSlots; i++)
 				{
 					rSlot[i].y = ypos;
-					// only include boxgap if slot was visible
-					ypos += rSlot[i].tall > 0 ? rSlot[i].tall + m_flBoxGap : 0;
+					ypos += rSlot[i].tall + (m_flBoxGap * rSlot[i].tall / m_flSmallBoxTall);
 				}
 #else
 				rSlot[i].y = ypos;
