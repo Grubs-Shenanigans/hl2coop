@@ -460,8 +460,8 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 		{
 			// calculate where to start drawing
 #ifdef BDSBASE
-			float flTotalHeight = 0.f;
 			float xStartPos = GetWide() - m_flBoxGap - m_flRightMargin;
+			float ypos = 0.f;
 #else
 			int nTotalHeight = (nNumSlots - 1) * (m_flSmallBoxTall + m_flBoxGap) + m_flLargeBoxTall;
 			int xStartPos = GetWide() - m_flBoxGap - m_flRightMargin;
@@ -470,13 +470,13 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 			// iterate over all the weapon slots
 			for ( int i = 0; i < m_iMaxSlots; i++ )
 			{
+#ifdef BDSBASE
+				float flHeightScale = 1.f;
+#endif
 				if ( i == nActiveSlot )
 				{
 					rSlot[i].wide = m_flLargeBoxWide;
 					rSlot[i].tall = m_flLargeBoxTall;
-#ifdef BDSBASE
-					flTotalHeight += rSlot[i].tall;
-#endif
 				}
 				else
 				{
@@ -485,32 +485,37 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 					// only include slot if visible OR (any slot above visible AND any slot below visible)
 					if ((iSlotBits >> i) && (iSlotBits & ((1 << (i + 1)) - 1)))
 					{
-						rSlot[i].tall = (iSlotBits & (1 << i)) ? m_flSmallBoxTall : (m_flSmallBoxTall * tf_weapon_select_empty_bucket_scale.GetFloat());
-						flTotalHeight += rSlot[i].tall + (m_flBoxGap * rSlot[i].tall / m_flSmallBoxTall);
+						if ( !( iSlotBits & (1 << i) ) )
+						{
+							flHeightScale = tf_weapon_select_empty_bucket_scale.GetFloat();
+						}
 					}
 					else
 					{
-						rSlot[i].tall = 0;
+						flHeightScale = 0.f;
 					}
+					rSlot[i].tall = m_flSmallBoxTall * flHeightScale;
 #else
 					rSlot[i].tall = m_flSmallBoxTall;
 #endif
 				}
 
 				rSlot[i].x = xStartPos - ( rSlot[i].wide + m_flBoxGap );
-#ifdef BDSBASE
-				// now calculate ypos from total height
-				float ypos = (GetTall() - flTotalHeight) / 2;
-				for (int i = 0; i < m_iMaxSlots; i++)
-				{
-					rSlot[i].y = ypos;
-					ypos += rSlot[i].tall + MIN(m_flBoxGap, m_flBoxGap * rSlot[i].tall / m_flSmallBoxTall);
-				}
-#else
 				rSlot[i].y = ypos;
-				ypos += (rSlot[i].tall + m_flBoxGap);
+#ifdef BDSBASE
+				ypos += ( rSlot[i].tall + ( m_flBoxGap * flHeightScale ) );
+#else
+				ypos += ( rSlot[i].tall + m_flBoxGap );
 #endif
 			}
+#ifdef BDSBASE
+			// now offset ypos using total height
+			ypos = ( GetTall() - ypos + m_flBoxGap ) / 2;
+			for ( int i = 0; i < m_iMaxSlots; i++ )
+			{
+				rSlot[i].y += ypos;
+			}
+#endif
 		}
 		break;
 
