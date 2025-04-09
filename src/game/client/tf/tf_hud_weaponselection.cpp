@@ -504,7 +504,7 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 				for (int i = 0; i < m_iMaxSlots; i++)
 				{
 					rSlot[i].y = ypos;
-					ypos += rSlot[i].tall + (m_flBoxGap * rSlot[i].tall / m_flSmallBoxTall);
+					ypos += rSlot[i].tall + MIN(m_flBoxGap, m_flBoxGap * rSlot[i].tall / m_flSmallBoxTall);
 				}
 #else
 				rSlot[i].y = ypos;
