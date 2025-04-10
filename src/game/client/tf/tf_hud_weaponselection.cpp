@@ -46,8 +46,7 @@
 ConVar tf_weapon_select_demo_start_delay( "tf_weapon_select_demo_start_delay", "1.0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Delay after spawning to start the weapon bucket demo." );
 ConVar tf_weapon_select_demo_time( "tf_weapon_select_demo_time", "0.5", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Time to pulse each weapon bucket upon spawning as a new class. 0 to turn off." );
 #ifdef BDSBASE
-ConVar tf_weapon_select_space_reduction("tf_weapon_select_space_reduction", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
-ConVar tf_weapon_select_space_reduction_factor("tf_weapon_select_space_reduction_factor", "2", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+ConVar tf_weapon_select_empty_bucket_scale("tf_weapon_select_empty_bucket_scale", "1.0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Scale empty weapon bucket spaces by this amount.", true, 0.0f, true, 1.0f);
 #endif
 
 //-----------------------------------------------------------------------------
@@ -461,24 +460,23 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 		{
 			// calculate where to start drawing
 #ifdef BDSBASE
-			int nTotalHeight = 0;
+			float xStartPos = GetWide() - m_flBoxGap - m_flRightMargin;
+			float ypos = 0.f;
 #else
 			int nTotalHeight = (nNumSlots - 1) * (m_flSmallBoxTall + m_flBoxGap) + m_flLargeBoxTall;
-#endif
 			int xStartPos = GetWide() - m_flBoxGap - m_flRightMargin;
-#ifndef BDSBASE
 			int ypos = (GetTall() - nTotalHeight) / 2;
 #endif
 			// iterate over all the weapon slots
 			for ( int i = 0; i < m_iMaxSlots; i++ )
 			{
+#ifdef BDSBASE
+				float flHeightScale = 1.f;
+#endif
 				if ( i == nActiveSlot )
 				{
 					rSlot[i].wide = m_flLargeBoxWide;
 					rSlot[i].tall = m_flLargeBoxTall;
-#ifdef BDSBASE
-					nTotalHeight += rSlot[i].tall;
-#endif
 				}
 				else
 				{
@@ -487,40 +485,37 @@ void CHudWeaponSelection::ComputeSlotLayout( SlotLayout_t *rSlot, int nActiveSlo
 					// only include slot if visible OR (any slot above visible AND any slot below visible)
 					if ((iSlotBits >> i) && (iSlotBits & ((1 << (i + 1)) - 1)))
 					{
-						if (tf_weapon_select_space_reduction.GetBool())
+						if ( !( iSlotBits & (1 << i) ) )
 						{
-							rSlot[i].tall = (iSlotBits & (1 << i)) ? m_flSmallBoxTall : m_flSmallBoxTall / tf_weapon_select_space_reduction_factor.GetInt();
+							flHeightScale = tf_weapon_select_empty_bucket_scale.GetFloat();
 						}
-						else
-						{
-							rSlot[i].tall = m_flSmallBoxTall;
-						}
-						nTotalHeight += rSlot[i].tall + m_flBoxGap;
 					}
 					else
 					{
-						rSlot[i].tall = 0;
+						flHeightScale = 0.f;
 					}
+					rSlot[i].tall = m_flSmallBoxTall * flHeightScale;
 #else
 					rSlot[i].tall = m_flSmallBoxTall;
 #endif
 				}
 
 				rSlot[i].x = xStartPos - ( rSlot[i].wide + m_flBoxGap );
-#ifdef BDSBASE
-				// now calculate ypos from total height
-				int ypos = (GetTall() - nTotalHeight) / 2;
-				for (int i = 0; i < m_iMaxSlots; i++)
-				{
-					rSlot[i].y = ypos;
-					// only include boxgap if slot was visible
-					ypos += (rSlot[i].tall + (rSlot[i].tall > 0 ? m_flBoxGap : 0));
-				}
-#else
 				rSlot[i].y = ypos;
-				ypos += (rSlot[i].tall + m_flBoxGap);
+#ifdef BDSBASE
+				ypos += ( rSlot[i].tall + ( m_flBoxGap * flHeightScale ) );
+#else
+				ypos += ( rSlot[i].tall + m_flBoxGap );
 #endif
 			}
+#ifdef BDSBASE
+			// now offset ypos using total height
+			ypos = ( GetTall() - ypos + m_flBoxGap ) / 2;
+			for ( int i = 0; i < m_iMaxSlots; i++ )
+			{
+				rSlot[i].y += ypos;
+			}
+#endif
 		}
 		break;
 
