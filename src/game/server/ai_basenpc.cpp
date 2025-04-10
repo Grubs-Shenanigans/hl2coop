@@ -11470,7 +11470,6 @@ CAI_BaseNPC::CAI_BaseNPC(void)
 
 #ifdef BDSBASE
 	SetAIIndex(g_AI_Manager.AddAI(this));
-	lagcompensation->RemoveNpcData(GetAIIndex()); // make sure we're not inheriting anyone else's data 
 #else
 	g_AI_Manager.AddAI(this);
 #endif //BDSBASE
@@ -11497,10 +11496,6 @@ CAI_BaseNPC::CAI_BaseNPC(void)
 CAI_BaseNPC::~CAI_BaseNPC(void)
 {
 	g_AI_Manager.RemoveAI( this );
-#ifdef BDSBASE
-	// this should stop a crash occuring when our death immediately creates a new NPC (eg headcrab from zombie) 
-	lagcompensation->RemoveNpcData(GetAIIndex());
-#endif //BDSBASE
 
 	delete m_pLockedBestSound;
 
