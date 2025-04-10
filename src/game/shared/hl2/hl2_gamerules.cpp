@@ -1781,6 +1781,7 @@ bool CHalfLife2::IsAlyxInDarknessMode()
 }
 #endif
 
+#ifndef BDSBASE
 //-----------------------------------------------------------------------------
 // This takes the long way around to see if a prop should emit a DLIGHT when it
 // ignites, to avoid having Alyx-related code in props.cpp.
@@ -1793,6 +1794,7 @@ bool CHalfLife2::ShouldBurningPropsEmitLight()
 	return false;
 #endif // HL2_EPISODIC
 }
+#endif
 
 
 #endif//CLIENT_DLL

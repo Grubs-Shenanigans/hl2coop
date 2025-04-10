@@ -2446,9 +2446,6 @@ void CHL2MPRules::InitDefaultAIRelationships(void)
 }
 #endif //BDSBASE
 
-//TDT - Episodic Issues: Here we add darkness mode so that it now works.
-#ifndef CLIENT_DLL
-
 //-----------------------------------------------------------------------------
 // Returns whether or not Alyx cares about light levels in order to see.
 //-----------------------------------------------------------------------------
@@ -2479,7 +2476,5 @@ bool CHL2MPRules::ShouldBurningPropsEmitLight()
 	return false;
 #endif // HL2_EPISODIC
 }
-
-#endif//CLIENT_DLL
 
 #endif

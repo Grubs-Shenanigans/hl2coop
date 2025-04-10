@@ -16,7 +16,6 @@
 #include "hl2_player.h"
 #include "items.h"
 
-
 #ifdef HL2MP
 #include "hl2mp/weapon_crowbar.h"
 #else
