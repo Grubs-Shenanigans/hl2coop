@@ -959,7 +959,12 @@ void CAmbientGeneric::SendSound( SoundFlags_t flags)
 			UTIL_EmitAmbientSound( pSoundSource->GetSoundSourceIndex(), pSoundSource->GetAbsOrigin(), m_szSoundFile,
 				(m_dpv.vol * 0.01), m_iSoundLevel, flags, m_dpv.pitch);
 #ifdef BDSBASE
-			m_fActive = true;
+			// Only mark active if this is a looping sound.
+			// If not looping, each trigger will cause the sound to play.
+			// If the sound is still playing from a previous trigger press, 
+			// it will be shut off and then restarted.
+			if (m_fLooping)
+				m_fActive = true;
 #endif
 		}
 	}	

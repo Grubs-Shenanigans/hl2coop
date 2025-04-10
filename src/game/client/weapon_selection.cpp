@@ -401,6 +401,7 @@ void CBaseHudWeaponSelection::UserCmd_Slot10(void)
 }
 
 #ifdef BDSBASE
+#ifdef HL2_CLIENT_DLL
 void ClientInstantPhysSwap()
 {
 	C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
@@ -432,6 +433,7 @@ void ClientInstantPhysSwap()
 }
 
 static ConCommand cl_physswap("phys_swap", ClientInstantPhysSwap, "Client-predicted physcannon swap for low-latency switching.");
+#endif
 #endif
 
 //-----------------------------------------------------------------------------
