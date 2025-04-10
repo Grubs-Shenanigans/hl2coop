@@ -88,10 +88,10 @@
 #include "vstdlib/jobthread.h"
 
 #ifdef BDSBASE
-#include "ilagcompensationmanager.h" 
-
+#ifdef HL2MP
 //TDT - Information: Here we include the hl2mp gamerules.
 #include "hl2mp_gamerules.h"
+#endif //BDSBASE
 #endif //BDSBASE
 
 #ifdef HL2_EPISODIC
