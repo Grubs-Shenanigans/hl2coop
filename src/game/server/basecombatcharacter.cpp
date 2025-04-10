@@ -39,6 +39,11 @@
 #include "saverestoretypes.h"
 #include "nav_mesh.h"
 
+//TDT - Episodic Issues: Here we include the hl2mp gamerules so that calls to darkness mode work.
+#ifdef HL2MP
+#include "hl2mp_gamerules.h"
+#endif
+
 #ifndef BDSBASE
 #ifdef TF_DLL
 #include "nav_mesh/tf_nav_area.h"

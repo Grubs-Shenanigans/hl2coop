@@ -14,6 +14,12 @@
 #include "basecombatweapon_shared.h"
 #include "hl2mp_weapon_parse.h"
 
+#ifdef BDSBASE
+#ifndef CLIENT_DLL 
+#include "AI_BaseNPC.h" 
+#endif 
+#endif //BDSBASE
+
 #if defined( CLIENT_DLL )
 	#define CWeaponHL2MPBase C_WeaponHL2MPBase
 	void UTIL_ClipPunchAngleOffset( QAngle &in, const QAngle &punch, const QAngle &clip );

@@ -18,6 +18,11 @@
 #include "ndebugoverlay.h"
 #include "ai_senses.h"
 
+//TDT - Episodic Issues: Here we include the hl2mp gamerules so that calls to darkness mode work.
+#ifdef HL2MP
+	#include "hl2mp_gamerules.h"
+#endif
+
 #ifdef HL2_EPISODIC
 	#include "info_darknessmode_lightsource.h"
 #endif

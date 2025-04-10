@@ -37,6 +37,11 @@
 #include "weapon_flaregun.h"
 #include "env_debughistory.h"
 
+//TDT - Episodic Issues: Here we include the hl2mp gamerules so that calls to darkness mode work.
+#ifdef HL2MP
+	#include "hl2mp_gamerules.h"
+#endif
+
 extern Vector PointOnLineNearestPoint(const Vector& vStartPos, const Vector& vEndPos, const Vector& vPoint);
 
 // memdbgon must be the last include file in a .cpp file!!!

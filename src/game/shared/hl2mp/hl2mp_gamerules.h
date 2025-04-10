@@ -92,6 +92,10 @@ public:
 
 	DECLARE_SERVERCLASS_NOBASE(); // This makes datatables able to access our private vars.
 #endif
+
+	//TDT - Episodic Issues: Here we add darkness mode so that it now works.
+	virtual bool IsAlyxInDarknessMode();
+	virtual bool ShouldBurningPropsEmitLight();
 	
 	CHL2MPRules();
 	virtual ~CHL2MPRules();
@@ -99,6 +103,8 @@ public:
 	virtual void Precache( void );
 	virtual bool ShouldCollide( int collisionGroup0, int collisionGroup1 );
 	virtual bool ClientCommand( CBaseEntity *pEdict, const CCommand &args );
+
+	virtual void InitDefaultAIRelationships(void);
 
 	virtual float FlWeaponRespawnTime( CBaseCombatWeapon *pWeapon );
 	virtual float FlWeaponTryRespawn( CBaseCombatWeapon *pWeapon );

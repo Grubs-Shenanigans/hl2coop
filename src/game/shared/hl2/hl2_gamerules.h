@@ -48,8 +48,10 @@ public:
 #endif
 
 private:
+#ifndef BDSBASE
 	// Rules change for the mega physgun
-	CNetworkVar( bool, m_bMegaPhysgun );
+	CNetworkVar(bool, m_bMegaPhysgun);
+#endif //BDSBASE
 
 #ifdef CLIENT_DLL
 
@@ -75,7 +77,10 @@ private:
 	virtual void			PlayerThink( CBasePlayer *pPlayer );
 	virtual float			GetAmmoDamage( CBaseEntity *pAttacker, CBaseEntity *pVictim, int nAmmoType );
 
+#ifndef BDSBASE
+	//TDT - Episodic Issues: Here we disable this as it's been moved to hl2mp_gamerules so that calls to darkness mode work.
 	virtual bool			ShouldBurningPropsEmitLight();
+#endif //BDSBASE
 public:
 
 	bool AllowDamage( CBaseEntity *pVictim, const CTakeDamageInfo &info );
@@ -84,9 +89,15 @@ public:
 	bool	NPC_ShouldDropHealth( CBasePlayer *pRecipient );
 	void	NPC_DroppedHealth( void );
 	void	NPC_DroppedGrenade( void );
-	bool	MegaPhyscannonActive( void ) { return m_bMegaPhysgun;	}
-	
+
+#ifndef BDSBASE
+	bool	MegaPhyscannonActive(void) { return m_bMegaPhysgun; }
+#endif //BDSBASE
+
+	//TDT - Episodic Issues: Here we disable this as it's been moved to hl2mp_gamerules so that calls to darkness mode work.
+#ifndef BDSBASE
 	virtual bool IsAlyxInDarknessMode();
+#endif //BDSBASE
 
 private:
 

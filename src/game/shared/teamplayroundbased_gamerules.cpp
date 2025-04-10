@@ -411,8 +411,17 @@ CON_COMMAND_F( mp_forcewin, "Forces team to win", FCVAR_CHEAT )
 		int iTeam = TEAM_UNASSIGNED;		
 		if ( args.ArgC() == 1 )
 		{
+#ifndef HL2MP
+			CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
+#else
 			// if no team specified, use player 1's team
-			CBasePlayer *pPlayer = UTIL_PlayerByIndex( 1 );
+#ifdef BDSBASE
+			CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#else
+			CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
+#endif //BDSBASE
+#endif // !HL2MP
+			
 			if ( pPlayer )
 			{
 				iTeam = pPlayer->GetTeamNumber();

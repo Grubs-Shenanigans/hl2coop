@@ -34,6 +34,12 @@ public:
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
+#ifdef BDSBASE
+#ifndef CLIENT_DLL 
+	int		CapabilitiesGet(void) { return bits_CAP_WEAPON_MELEE_ATTACK1; }
+#endif 
+#endif //BDSBASE
+
 	virtual	void	Spawn( void );
 	virtual	void	Precache( void );
 	
