@@ -50,17 +50,9 @@ public:
 
 	const char *GetCrocModel( void );
 
-#ifdef BDSBASE
-	const char* GetKillIcon(void);
-#endif
-
 private:
 
 	string_t m_iszModel;
-
-#ifdef BDSBASE
-	string_t m_iszKillIcon;
-#endif
 
 	COutputEvent m_OnEat;
 	COutputEvent m_OnEatRed;
