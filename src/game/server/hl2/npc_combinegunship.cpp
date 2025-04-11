@@ -2372,7 +2372,7 @@ void CNPC_CombineGunship::UpdateRotorSoundPitch( int iPitch )
 	// Apply the pitch to both sounds. 
 	controller.SoundChangePitch( m_pAirExhaustSound, iPitch, 0.1 );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBaseEntity* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	// FIXME: Doesn't work in multiplayer

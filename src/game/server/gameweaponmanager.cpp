@@ -241,7 +241,7 @@ void CGameWeaponManager::Think()
 
 		if ( gpGlobals->maxClients == 1 )
 		{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 			CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(pCandidate);
 #else
 			CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
@@ -263,7 +263,7 @@ void CGameWeaponManager::Think()
 				fRemovedOne = true;
 			}
 		}
-#ifndef BDSBASE	
+#ifndef BDSBASE_NPC
 		else
 		{
 			fRemovedOne = true;

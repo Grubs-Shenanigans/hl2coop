@@ -14,7 +14,7 @@
 #include "basecombatweapon_shared.h"
 #include "hl2mp_weapon_parse.h"
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL 
 #include "AI_BaseNPC.h" 
 #endif 

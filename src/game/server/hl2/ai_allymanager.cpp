@@ -124,7 +124,7 @@ void CAI_AllyManager::CountAllies( int *pTotal, int *pMedics )
 {
 	(*pTotal) = (*pMedics) = 0;
 
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	if (!AI_IsSinglePlayer())
 	{
 		// @TODO (toml 10-22-04): no MP support right now
@@ -151,7 +151,7 @@ void CAI_AllyManager::CountAllies( int *pTotal, int *pMedics )
 				continue;
 			
 			// They only count if I can use them.
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 			if (ppAIs[i]->IRelationType(UTIL_GetNearestPlayer(ppAIs[i]->GetAbsOrigin())) != D_LI)
 #else
 			if (ppAIs[i]->IRelationType(UTIL_GetLocalPlayer()) != D_LI)
@@ -159,7 +159,7 @@ void CAI_AllyManager::CountAllies( int *pTotal, int *pMedics )
 				continue;
 
 			// Skip distant NPCs
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 			Vector vNearestPlayerPos = UTIL_GetNearestPlayer(ppAIs[i]->GetAbsOrigin())->GetAbsOrigin();
 			if (!ppAIs[i]->IsInPlayerSquad() &&
 				!UTIL_FindClientInPVS(ppAIs[i]->edict()) &&

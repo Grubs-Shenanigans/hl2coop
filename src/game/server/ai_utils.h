@@ -23,14 +23,7 @@
 
 inline CBasePlayer *AI_GetSinglePlayer()
 {
-#ifdef BDSBASE
-	/*
-		if ( gpGlobals->maxClients > 1 )
-		{
-			return NULL;
-		}
-		*/
-#else
+#ifndef BDSBASE_NPC
 	if (gpGlobals->maxClients > 1)
 	{
 		return NULL;

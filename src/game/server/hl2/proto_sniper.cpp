@@ -837,7 +837,7 @@ void CProtoSniper::PaintTarget( const Vector &vecTarget, float flPaintTime )
 //-----------------------------------------------------------------------------
 bool CProtoSniper::IsPlayerAllySniper()
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBaseEntity* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBaseEntity* pPlayer = AI_GetSinglePlayer();
@@ -1400,7 +1400,7 @@ int CProtoSniper::SelectSchedule ( void )
 	}
 
 	//TDT - Information: The condition area below when used in mp caused the sniper to fail terribly. Removing it from working with the AI enabled really improves snipers.
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	if (!AI_GetSinglePlayer()->IsAlive() && m_bKilledPlayer)
 	{
 		if (HasCondition(COND_IN_PVS))
@@ -2612,7 +2612,7 @@ Vector CProtoSniper::LeadTarget( CBaseEntity *pTarget )
 CBaseEntity *CProtoSniper::PickDeadPlayerTarget()
 {
 	const int iSearchSize = 32;
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBaseEntity* pTarget = UTIL_GetNearestVisiblePlayer(this);
 	CBaseEntity* pEntities[iSearchSize];
 

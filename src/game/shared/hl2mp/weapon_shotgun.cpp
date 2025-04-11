@@ -31,7 +31,7 @@ public:
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL
 	int CapabilitiesGet(void) { return bits_CAP_WEAPON_RANGE_ATTACK1; }
 	void Operator_HandleAnimEvent(animevent_t* pEvent, CBaseCombatCharacter* pOperator);
@@ -136,7 +136,7 @@ acttable_t	CWeaponShotgun::m_acttable[] =
 	{ ACT_HL2MP_JUMP,					ACT_HL2MP_JUMP_SHOTGUN,					false },
 	{ ACT_RANGE_ATTACK1,				ACT_RANGE_ATTACK_SHOTGUN,				false },
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	// HL2
 	{ ACT_IDLE,						ACT_IDLE_SMG1,					true },	// FIXME: hook to shotgun unique
 
@@ -188,7 +188,7 @@ acttable_t	CWeaponShotgun::m_acttable[] =
 
 IMPLEMENT_ACTTABLE(CWeaponShotgun);
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *pOperator - 
@@ -471,7 +471,7 @@ void CWeaponShotgun::PrimaryAttack( void )
 	// Fire the bullets, and force the first shot to be perfectly accuracy
 	pPlayer->FireBullets( info );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL
 	// DM: Hellow? NPCs... look here! I'm shooting!
 	pPlayer->SetMuzzleFlashTime(gpGlobals->curtime + 1.0);
@@ -532,7 +532,7 @@ void CWeaponShotgun::SecondaryAttack( void )
 	pPlayer->FireBullets( info );
 	pPlayer->ViewPunch( QAngle(SharedRandomFloat( "shotgunsax", -5, 5 ),0,0) );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL
 	// DM: Hellow? NPCs... look here! I'm shooting!
 	pPlayer->SetMuzzleFlashTime(gpGlobals->curtime + 1.0);

@@ -714,13 +714,18 @@ extern ConVar sv_maxunlag;
 
 #ifdef BDSBASE
 extern ConVar sv_maxspeed;
+#ifdef BDSBASE_NPC
 bool CHL2MP_Player::WantsLagCompensationOnEntity(const CBaseEntity* pEntity, const CUserCmd* pCmd, const CBitVec<MAX_EDICTS>* pEntityTransmitBits) const
+#else
+bool CHL2MP_Player::WantsLagCompensationOnEntity(const CBasePlayer* pPlayer, const CUserCmd* pCmd, const CBitVec<MAX_EDICTS>* pEntityTransmitBits) const
+#endif
 {
 	// No need to lag compensate at all if we're not attacking in this command and
 	// we haven't attacked recently.
 	if (!((pCmd->buttons & IN_ATTACK) || (pCmd->buttons & IN_ATTACK2)) && (pCmd->command_number - m_iLastWeaponFireUsercmd > 5))
 		return false;
 
+#ifdef BDSBASE_NPC
 	// If this entity hasn't been transmitted to us and acked, then don't bother lag compensating it.
 	if (pEntityTransmitBits && !pEntityTransmitBits->Get(pEntity->entindex()))
 		return false;
@@ -757,6 +762,35 @@ bool CHL2MP_Player::WantsLagCompensationOnEntity(const CBaseEntity* pEntity, con
 		return false;
 
 	return true;
+#else
+	// If this entity hasn't been transmitted to us and acked, then don't bother lag compensating it.
+	if (pEntityTransmitBits && !pEntityTransmitBits->Get(pPlayer->entindex()))
+		return false;
+
+	const Vector& vMyOrigin = GetAbsOrigin();
+	const Vector& vHisOrigin = pPlayer->GetAbsOrigin();
+
+	// get max distance player could have moved within max lag compensation time, 
+	// multiply by 1.5 to to avoid "dead zones"  (sqrt(2) would be the exact value)
+	float maxDistance = 1.5 * pPlayer->MaxSpeed() * sv_maxunlag.GetFloat();
+
+	// If the player is within this distance, lag compensate them in case they're running past us.
+	if (vHisOrigin.DistTo(vMyOrigin) < maxDistance)
+		return true;
+
+	// If their origin is not within a 45 degree cone in front of us, no need to lag compensate.
+	Vector vForward;
+	AngleVectors(pCmd->viewangles, &vForward);
+
+	Vector vDiff = vHisOrigin - vMyOrigin;
+	VectorNormalize(vDiff);
+
+	float flCosAngle = 0.707107f;	// 45 degree angle
+	if (vForward.Dot(vDiff) < flCosAngle)
+		return false;
+
+	return true;
+#endif
 }
 #else
 bool CHL2MP_Player::WantsLagCompensationOnEntity(const CBasePlayer* pPlayer, const CUserCmd* pCmd, const CBitVec<MAX_EDICTS>* pEntityTransmitBits) const
@@ -1674,7 +1708,7 @@ CBaseEntity* CHL2MP_Player::EntSelectSpawnPoint( void )
 
 	if ( !pSpot  )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		char szMapName[256];
 		Q_strncpy(szMapName, STRING(gpGlobals->mapname), sizeof(szMapName));
 		Q_strlower(szMapName);

@@ -1890,7 +1890,7 @@ QAngle CNPC_FloorTurret::PreferredCarryAngles( void )
 	static QAngle g_prefAngles;
 
 	Vector vecUserForward;
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = AI_GetSinglePlayer();

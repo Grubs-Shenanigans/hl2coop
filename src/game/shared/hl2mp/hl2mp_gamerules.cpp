@@ -10,7 +10,7 @@
 #include "gameeventdefs.h"
 #include <KeyValues.h>
 #include "ammodef.h"
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #include "hl2_shareddefs.h"
 #endif //BDSBASE
 
@@ -36,8 +36,10 @@
 	#include "voice_gamemgr.h"
 	#include "hl2mp_gameinterface.h"
 	#include "hl2mp_cvars.h"
+#ifdef BDSBASE_NPC
 	//TDT - Episodic Issues: Here we include the globalstate.h file so that darkness mode will work for GLOBAL_ON state.
 	#include "globalstate.h"
+#endif
 
 extern void respawn(CBaseEntity *pEdict, bool fCopyCorpse);
 
@@ -47,10 +49,12 @@ ConVar sv_hl2mp_weapon_respawn_time( "sv_hl2mp_weapon_respawn_time", "20", FCVAR
 ConVar sv_hl2mp_item_respawn_time( "sv_hl2mp_item_respawn_time", "30", FCVAR_GAMEDLL | FCVAR_NOTIFY );
 ConVar sv_report_client_settings("sv_report_client_settings", "0", FCVAR_GAMEDLL | FCVAR_NOTIFY );
 
+#ifdef BDSBASE_NPC
 //TDT - Episodic Issues: Here we add darkness mode so that it now works.
 #ifdef HL2_EPISODIC  
 ConVar  alyx_darkness_force("alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REPLICATED);
 #endif // HL2_EPISODIC
+#endif
 
 extern ConVar mp_chattime;
 
@@ -201,7 +205,7 @@ CHL2MPRules::CHL2MPRules()
 
 		g_Teams.AddToTail( pTeam );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		InitDefaultAIRelationships();
 #endif //BDSBASE
 	}
@@ -987,7 +991,7 @@ bool CHL2MPRules::ShouldCollide( int collisionGroup0, int collisionGroup1 )
 	}
 
 	//TDT - Information: The below is added from hl2_gamerules.cpp and is required.
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		// Prevent the player movement from colliding with spit globs (caused the player to jump on top of globs while in water)
 	if (collisionGroup0 == COLLISION_GROUP_PLAYER_MOVEMENT && collisionGroup1 == HL2COLLISION_GROUP_SPIT)
 		return false;
@@ -1128,7 +1132,7 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("Grenade",			DMG_BURN,					TRACER_NONE,			0,			0,			5,			0,							0 );
 		def.AddAmmoType("slam",				DMG_BURN,					TRACER_NONE,			0,			0,			5,			0,							0 );
 
-#ifdef BDSBASE		
+#ifdef BDSBASE_NPC		
 		def.AddAmmoType("AlyxGun", DMG_BULLET, TRACER_LINE, "sk_plr_dmg_alyxgun", "sk_npc_dmg_alyxgun", "sk_max_alyxgun", BULLET_IMPULSE(200, 1225), 0);
 		def.AddAmmoType("SniperRound", DMG_BULLET | DMG_SNIPER, TRACER_NONE, "sk_plr_dmg_sniper_round", "sk_npc_dmg_sniper_round", "sk_max_sniper_round", BULLET_IMPULSE(650, 6000), 0);
 		def.AddAmmoType("SniperPenetratedRound", DMG_BULLET | DMG_SNIPER, TRACER_NONE, "sk_dmg_sniper_penetrate_plr", "sk_dmg_sniper_penetrate_npc", "sk_max_sniper_round", BULLET_IMPULSE(150, 6000), 0);
@@ -1519,7 +1523,7 @@ const char *CHL2MPRules::GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer )
 	return pszFormat;
 }
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 void CHL2MPRules::InitDefaultAIRelationships(void)
 {
 	int i, j;
@@ -2444,7 +2448,6 @@ void CHL2MPRules::InitDefaultAIRelationships(void)
 	CBaseCombatCharacter::SetDefaultRelationship(CLASS_HACKED_ROLLERMINE, CLASS_PLAYER_ALLY_VITAL, D_LI, 0);
 	CBaseCombatCharacter::SetDefaultRelationship(CLASS_HACKED_ROLLERMINE, CLASS_HACKED_ROLLERMINE, D_LI, 0);
 }
-#endif //BDSBASE
 
 //-----------------------------------------------------------------------------
 // Returns whether or not Alyx cares about light levels in order to see.
@@ -2476,5 +2479,6 @@ bool CHL2MPRules::ShouldBurningPropsEmitLight()
 	return false;
 #endif // HL2_EPISODIC
 }
+#endif //BDSBASE
 
 #endif

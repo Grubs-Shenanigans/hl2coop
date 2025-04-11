@@ -34,7 +34,7 @@ public:
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL 
 	int		CapabilitiesGet(void) { return bits_CAP_WEAPON_MELEE_ATTACK1; }
 #endif 

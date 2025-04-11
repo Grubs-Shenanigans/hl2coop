@@ -340,7 +340,7 @@ void CNPC_Dog::SetPlayerAvoidState( void )
 		physfollower_t *pBone;
 		int i;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CBasePlayer* pLocalPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 		CBasePlayer* pLocalPlayer = AI_GetSinglePlayer();
@@ -836,7 +836,7 @@ void CNPC_Dog::ThrowObject( const char *pAttachmentName )
 			}
 				
 			if (m_hThrowTarget == NULL)
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 				m_hThrowTarget = UTIL_GetNearestVisiblePlayer(this);
 #else
 				m_hThrowTarget = AI_GetSinglePlayer();
@@ -1393,7 +1393,7 @@ void CNPC_Dog::RunTask( const Task_t *pTask )
 
 				SetAim( m_hPhysicsEnt->WorldSpaceCenter() - GetAbsOrigin() );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 				CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 #else
 				CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -1531,7 +1531,7 @@ void CNPC_Dog::SetupThrowTarget( void )
 {
 	if ( m_hThrowTarget == NULL )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		m_hThrowTarget = UTIL_GetNearestVisiblePlayer(this);
 #else
 		m_hThrowTarget = AI_GetSinglePlayer();
@@ -1690,7 +1690,7 @@ void CNPC_Dog::StartTask( const Task_t *pTask )
 		m_flNextSwat = gpGlobals->curtime + pTask->flTaskData;
 
 		if ( m_hThrowTarget == NULL )
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 			m_hThrowTarget = UTIL_GetNearestVisiblePlayer(this);
 #else
 			m_hThrowTarget = AI_GetSinglePlayer();

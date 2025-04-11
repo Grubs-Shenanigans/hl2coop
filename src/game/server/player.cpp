@@ -773,7 +773,7 @@ int CBasePlayer::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 }
 
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 bool CBasePlayer::WantsLagCompensationOnEntity(const CBaseEntity* pEntity, const CUserCmd* pCmd, const CBitVec<MAX_EDICTS>* pEntityTransmitBits) const
 {
 	//Tony; only check teams in teamplay
@@ -8029,7 +8029,7 @@ void CStripWeapons::StripWeapons(inputdata_t &data, bool stripSuit)
 	}
 	else if ( !g_pGameRules->IsDeathmatch() )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		for (int i = 1; i <= gpGlobals->maxClients; i++)
 		{
 			CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
@@ -8136,7 +8136,7 @@ void CRevertSaved::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 	SetNextThink( gpGlobals->curtime + LoadTime() );
 	SetThink( &CRevertSaved::LoadThink );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	for (int i = 1; i <= gpGlobals->maxClients; i++)
 	{
 		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
@@ -8218,7 +8218,7 @@ void CRevertSaved::LoadThink( void )
 	{
 		engine->ServerCommand("reload\n");
 	}
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	//TDT - Information: Here we change level to the map we're already on if a vital ally such as Alyx is killed etc etc etc.
 	else
 	{
@@ -8304,7 +8304,7 @@ void CMovementSpeedMod::InputSpeedMod(inputdata_t &data)
 	}
 	else if ( !g_pGameRules->IsDeathmatch() )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 		pPlayer = UTIL_GetLocalPlayer();

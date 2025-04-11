@@ -595,7 +595,7 @@ void CPropVehiclePrisonerPod::InputEnterVehicle( inputdata_t &inputdata )
 	CBaseCombatCharacter *pPassenger = ToBaseCombatCharacter( inputdata.pActivator );
 	if ( pPassenger == NULL )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		// Activator was not a player, just grab the nearest player. 
 		pPassenger = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
@@ -627,7 +627,7 @@ void CPropVehiclePrisonerPod::InputEnterVehicleImmediate( inputdata_t &inputdata
 	CBaseCombatCharacter *pPassenger = ToBaseCombatCharacter( inputdata.pActivator );
 	if ( pPassenger == NULL )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		// Activator was not a player, just grab the nearest player. 
 		pPassenger = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else

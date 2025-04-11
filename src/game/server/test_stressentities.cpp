@@ -26,7 +26,7 @@ CBaseEntity* MoveToRandomSpot( CBaseEntity *pEnt )
 {
 	if ( pEnt )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		UTIL_SetOrigin(pEnt, GetRandomSpot());
 #else
 		CBasePlayer* pLocalPlayer = UTIL_GetLocalPlayer();

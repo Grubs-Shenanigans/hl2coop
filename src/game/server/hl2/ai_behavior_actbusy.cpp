@@ -502,7 +502,7 @@ CAI_Hint *CAI_ActBusyBehavior::FindCombatActBusyHintNode()
 {
 	Assert( IsCombatActBusy() );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -551,7 +551,7 @@ CAI_Hint *CAI_ActBusyBehavior::FindCombatActBusyTeleportHintNode()
 {
 	Assert( IsCombatActBusy() );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -847,7 +847,7 @@ void CAI_ActBusyBehavior::GatherConditions( void )
 					ClearCondition( COND_SEE_ENEMY );
 					ClearCondition( COND_NEW_ENEMY );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 					CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 					CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
@@ -1180,7 +1180,7 @@ int CAI_ActBusyBehavior::SelectScheduleWhileNotBusy( int iBase )
 		{
 			if( IsCombatActBusy() )
 			{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 				CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(GetOuter());
 				if (m_hActBusyGoal->IsCombatActBusyTeleportAllowed() && m_iNumConsecutivePathFailures >= 2 && !pPlayer->FInViewCone(GetOuter()))
 #else

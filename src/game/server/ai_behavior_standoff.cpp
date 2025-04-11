@@ -726,7 +726,7 @@ Vector CAI_StandoffBehavior::GetStandoffGoalPosition()
 	}
 	else if( PlayerIsLeading() )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		return UTIL_GetNearestPlayer(GetAbsOrigin())->GetAbsOrigin();
 #else
 		return UTIL_GetLocalPlayer()->GetAbsOrigin();
@@ -782,7 +782,7 @@ void CAI_StandoffBehavior::UpdateBattleLines()
 			if ( m_params.fPlayerIsBattleline )
 			{
 				const float DIST_PLAYER_PLANE = 180;
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 				CBaseEntity* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 				CBaseEntity* pPlayer = UTIL_GetLocalPlayer();
@@ -1017,7 +1017,7 @@ void CAI_StandoffBehavior::OnChangeTacticalConstraints()
 
 bool CAI_StandoffBehavior::PlayerIsLeading()
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBaseEntity* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBaseEntity* pPlayer = AI_GetSinglePlayer();
@@ -1029,7 +1029,7 @@ bool CAI_StandoffBehavior::PlayerIsLeading()
 
 CBaseEntity *CAI_StandoffBehavior::GetPlayerLeader()
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBaseEntity* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBaseEntity* pPlayer = AI_GetSinglePlayer();

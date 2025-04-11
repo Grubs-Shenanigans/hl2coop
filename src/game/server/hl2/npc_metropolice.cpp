@@ -497,7 +497,7 @@ void CNPC_MetroPolice::PrescheduleThink( void )
 	m_bPlayerIsNear = false;
 	if ( PlayerIsCriminal() == false )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 		CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
@@ -3903,7 +3903,7 @@ void CNPC_MetroPolice::AnnounceHarrassment( void )
 //-----------------------------------------------------------------------------
 void CNPC_MetroPolice::IncrementPlayerCriminalStatus( void )
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
@@ -3959,7 +3959,7 @@ float CNPC_MetroPolice::GetIdealAccel( void ) const
 //-----------------------------------------------------------------------------
 void CNPC_MetroPolice::AdministerJustice( void )
 {
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	if (!AI_IsSinglePlayer())
 		return;
 #endif //BDSBASE
@@ -3975,7 +3975,7 @@ void CNPC_MetroPolice::AdministerJustice( void )
 		m_flChasePlayerTime = gpGlobals->curtime + RandomFloat( 3, 7 );
 
 		// Attack the target
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 		if (!pPlayer)
 			pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
@@ -4005,7 +4005,7 @@ void CNPC_MetroPolice::AdministerJustice( void )
 				if ( pNPC->HasSpawnFlags( SF_METROPOLICE_ALLOWED_TO_RESPOND ) )
 				{
 					// Is he within site & range?
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 					CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 					if (pPlayer && FVisible(pNPC) && pNPC->FVisible(pPlayer) &&
 #else
@@ -4027,7 +4027,7 @@ void CNPC_MetroPolice::AdministerJustice( void )
 //-----------------------------------------------------------------------------
 int CNPC_MetroPolice::SelectSchedule( void )
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 	if (!GetEnemy() && HasCondition(COND_IN_PVS) && pPlayer && !pPlayer->IsAlive())
 #else
@@ -5004,7 +5004,7 @@ void CNPC_MetroPolice::GatherConditions( void )
 		ClearCondition( COND_METROPOLICE_PLAYER_TOO_CLOSE );
 	}
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
@@ -5141,7 +5141,7 @@ void CNPC_MetroPolice::VPhysicsCollision( int index, gamevcollisionevent_t *pEve
 
 	if ( pEvent->pObjects[otherIndex]->GetGameFlags() & FVPHYSICS_PLAYER_HELD )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CHL2_Player* pPlayer = dynamic_cast<CHL2_Player*>(UTIL_GetNearestPlayer(pHitEntity->GetAbsOrigin()));
 #else
 		CHL2_Player* pPlayer = dynamic_cast<CHL2_Player*>(UTIL_PlayerByIndex(1));

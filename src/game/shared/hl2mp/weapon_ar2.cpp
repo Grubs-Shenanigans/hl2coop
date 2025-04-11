@@ -15,7 +15,7 @@
 	#include "hl2mp_player.h"
 	#include "te_effect_dispatch.h"
 	#include "prop_combine_ball.h"
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	#include "npc_combines.h"
 #endif //BDSBASE
 #endif
@@ -159,7 +159,7 @@ Activity CWeaponAR2::GetPrimaryAttackActivity( void )
 	return ACT_VM_RECOIL3;
 }
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -335,7 +335,9 @@ void CWeaponAR2::DelayedAttack( void )
 
 #ifdef BDSBASE
 #ifndef CLIENT_DLL
+#ifdef BDSBASE_NPC
 	pOwner->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
+#endif
 
 	CEffectData data;
 	data.m_nEntIndex = entindex();

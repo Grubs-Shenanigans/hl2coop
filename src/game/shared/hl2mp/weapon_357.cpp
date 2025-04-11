@@ -17,7 +17,7 @@
 #else
 	#include "hl2mp_player.h"
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	#include "te_effect_dispatch.h"
 #endif //BDSBASE
 #endif
@@ -46,7 +46,7 @@ public:
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	void Operator_HandleAnimEvent(animevent_t* pEvent, CBaseCombatCharacter* pOperator);
 #endif //BDSBASE
 #endif
@@ -85,7 +85,7 @@ acttable_t CWeapon357::m_acttable[] =
 
 IMPLEMENT_ACTTABLE( CWeapon357 );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 void CWeapon357::Operator_HandleAnimEvent(animevent_t* pEvent, CBaseCombatCharacter* pOperator)
 {
 	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
@@ -193,7 +193,7 @@ void CWeapon357::PrimaryAttack( void )
 
 	pPlayer->SnapEyeAngles(angles);
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	pPlayer->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
 	CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), 600, 0.2, GetOwner());
 #endif //BDSBASE

@@ -39,9 +39,11 @@
 #include "saverestoretypes.h"
 #include "nav_mesh.h"
 
+#ifdef BDSBASE_NPC
 //TDT - Episodic Issues: Here we include the hl2mp gamerules so that calls to darkness mode work.
 #ifdef HL2MP
 #include "hl2mp_gamerules.h"
+#endif
 #endif
 
 #ifndef BDSBASE
@@ -1937,7 +1939,7 @@ void CBaseCombatCharacter::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector
 			{
 				// Drop enough ammo to kill 2 of me.
 				// Figure out how much damage one piece of this type of ammo does to this type of enemy.
-#ifdef BDSBASE				
+#ifdef BDSBASE_NPC				
 				float flAmmoDamage = g_pGameRules->GetAmmoDamage(UTIL_GetNearestPlayer(GetAbsOrigin()), this, pWeapon->GetPrimaryAmmoType());
 #else
 				float flAmmoDamage = g_pGameRules->GetAmmoDamage(UTIL_PlayerByIndex(1), this, pWeapon->GetPrimaryAmmoType());
@@ -3324,7 +3326,7 @@ CBaseEntity *CBaseCombatCharacter::FindMissTarget( void )
 	CBaseEntity *pMissCandidates[ MAX_MISS_CANDIDATES ];
 	int numMissCandidates = 0;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 #else
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();

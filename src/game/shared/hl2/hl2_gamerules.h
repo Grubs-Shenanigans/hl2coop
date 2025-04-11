@@ -48,7 +48,7 @@ public:
 #endif
 
 private:
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	// Rules change for the mega physgun
 	CNetworkVar(bool, m_bMegaPhysgun);
 #endif //BDSBASE
@@ -77,7 +77,7 @@ private:
 	virtual void			PlayerThink( CBasePlayer *pPlayer );
 	virtual float			GetAmmoDamage( CBaseEntity *pAttacker, CBaseEntity *pVictim, int nAmmoType );
 
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	//TDT - Episodic Issues: Here we disable this as it's been moved to hl2mp_gamerules so that calls to darkness mode work.
 	virtual bool			ShouldBurningPropsEmitLight();
 #endif //BDSBASE
@@ -90,12 +90,12 @@ public:
 	void	NPC_DroppedHealth( void );
 	void	NPC_DroppedGrenade( void );
 
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	bool	MegaPhyscannonActive(void) { return m_bMegaPhysgun; }
 #endif //BDSBASE
 
 	//TDT - Episodic Issues: Here we disable this as it's been moved to hl2mp_gamerules so that calls to darkness mode work.
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	virtual bool IsAlyxInDarknessMode();
 #endif //BDSBASE
 

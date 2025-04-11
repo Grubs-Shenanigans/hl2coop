@@ -1580,7 +1580,7 @@ void CFuncTank::Think( void )
 		}
 
 #ifdef FUNCTANK_AUTOUSE
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 		CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
@@ -2277,7 +2277,7 @@ void CFuncTank::Fire( int bulletCount, const Vector &barrelEnd, const Vector &fo
 	{
 		if ( IsX360() )
 		{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 			UTIL_GetNearestPlayer(GetAbsOrigin())->RumbleEffect(RUMBLE_AR2, 0, RUMBLE_FLAG_RESTART | RUMBLE_FLAG_RANDOM_AMPLITUDE);
 #else
 			UTIL_PlayerByIndex(1)->RumbleEffect(RUMBLE_AR2, 0, RUMBLE_FLAG_RESTART | RUMBLE_FLAG_RANDOM_AMPLITUDE);
@@ -3528,7 +3528,7 @@ enum
 
 void UTIL_VisualizeCurve( int type, int steps, float bias )
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 #else
 	CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
@@ -4265,7 +4265,7 @@ void CFuncTankCombineCannon::FuncTankPostThink()
 			AddSpawnFlags( SF_TANK_AIM_AT_POS );
 
 			Vector vecTargetPosition = GetTargetPosition();
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 			CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 #else
 			CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -4417,8 +4417,7 @@ void CFuncTankCombineCannon::MakeTracer( const Vector &vecTracerSrc, const trace
 {
 	// If the shot passed near the player, shake the screen.
 	//TDT - Information: Updated for multiplayer.
-#ifdef BDSBASE
-
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 	if (pPlayer == NULL)
 	{
@@ -4440,7 +4439,7 @@ void CFuncTankCombineCannon::MakeTracer( const Vector &vecTracerSrc, const trace
 			// Don't shake the screen if we're hit (within 10 inches), but do shake if a shot otherwise comes within 10 feet.
 			UTIL_ScreenShake( vecNearestPoint, 10, 60, 0.3, 120.0f, SHAKE_START, false );
 		}
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	}
 #endif //BDSBASE
 

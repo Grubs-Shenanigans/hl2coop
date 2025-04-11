@@ -55,7 +55,7 @@ public:
 #ifndef CLIENT_DLL
 	virtual void Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
 	void HandleAnimEventMeleeHit( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	virtual int WeaponMeleeAttack1Condition(float flDot, float flDist);
 #else
 	int WeaponMeleeAttack1Condition(float flDot, float flDist);

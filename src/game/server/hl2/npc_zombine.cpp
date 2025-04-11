@@ -35,9 +35,11 @@
 
 #include "ai_interactions.h"
 
+#ifdef BDSBASE_NPC
 //TDT - Episodic Issues: Here we include the hl2mp gamerules so that calls to darkness mode work.
 #ifdef HL2MP
 	#include "hl2mp_gamerules.h"
+#endif
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!

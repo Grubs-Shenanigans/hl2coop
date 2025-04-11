@@ -1241,7 +1241,7 @@ bool CBaseFlex::ProcessFlexAnimationSceneEvent( CSceneEventInfo *info, CChoreoSc
 					// only check occasionally
 					else if (info->m_flNext <= gpGlobals->curtime)
 					{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 						CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 #else
 						CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
@@ -2761,7 +2761,7 @@ void CFlexCycler::Think( void )
 	Vector forward, right, up;
 	GetVectors( &forward, &right, &up );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBaseEntity* pPlayer = (CBaseEntity*)UTIL_GetNearestVisiblePlayer(this);
 #else
 	CBaseEntity* pPlayer = (CBaseEntity*)UTIL_GetLocalPlayer();

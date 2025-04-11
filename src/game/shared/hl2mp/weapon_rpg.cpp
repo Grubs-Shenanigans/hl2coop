@@ -47,7 +47,7 @@ const char *g_pLaserDotThink = "LaserThinkContext";
 static ConVar sk_apc_missile_damage("sk_apc_missile_damage", "15");
 #define APC_MISSILE_DAMAGE	sk_apc_missile_damage.GetFloat()
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 extern int g_interactionPlayerLaunchedRPG;
 #endif //BDSBASE
 #endif
@@ -130,7 +130,7 @@ BEGIN_DATADESC( CMissile )
 	DEFINE_FIELD( m_flMarkDeadTime,			FIELD_TIME ),
 	DEFINE_FIELD( m_flGracePeriodEndsAt,	FIELD_TIME ),
 	DEFINE_FIELD( m_flDamage,				FIELD_FLOAT ),
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	DEFINE_FIELD(m_bCreateDangerSounds, FIELD_BOOLEAN),
 #endif //BDSBASE
 	
@@ -154,7 +154,7 @@ CMissile::CMissile()
 {
 	m_hRocketTrail = NULL;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	m_bCreateDangerSounds = false; //
 #endif //BDSBASE
 }
@@ -197,7 +197,7 @@ void CMissile::Spawn( void )
 	
 	SetNextThink( gpGlobals->curtime + 0.3f );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	SetDamage(EXPLOSION_DAMAGE);
 #endif //BDSBASE
 
@@ -376,9 +376,15 @@ void CMissile::DoExplosion( void )
 #ifdef BDSBASE
 	Vector explosionOrigin = WorldSpaceCenter();
 
+#ifdef BDSBASE_NPC
 	// Explode
 	ExplosionCreate(explosionOrigin, GetAbsAngles(), GetOwnerEntity(), GetDamage(), CMissile::EXPLOSION_RADIUS,
 		SF_ENVEXPLOSION_NOSPARKS | SF_ENVEXPLOSION_NODLIGHTS | SF_ENVEXPLOSION_NOSMOKE, 0.0f, this);
+#else
+	// Explode
+	ExplosionCreate(explosionOrigin, GetAbsAngles(), GetOwnerEntity(), GetDamage(), GetDamage() * 2,
+		SF_ENVEXPLOSION_NOSPARKS | SF_ENVEXPLOSION_NODLIGHTS | SF_ENVEXPLOSION_NOSMOKE, 0.0f, this);
+#endif
 #else
 	// Explode
 	ExplosionCreate(GetAbsOrigin(), GetAbsAngles(), GetOwnerEntity(), GetDamage(), GetDamage() * 2,
@@ -434,7 +440,7 @@ void CMissile::MissileTouch( CBaseEntity *pOther )
 	
 	// Don't touch triggers (but DO hit weapons)
 	if ( pOther->IsSolidFlagSet(FSOLID_TRIGGER|FSOLID_VOLUME_CONTENTS) && pOther->GetCollisionGroup() != COLLISION_GROUP_WEAPON )
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	{
 		// Some NPCs are triggers that can take damage (like antlion grubs). We should hit them.
 		if ((pOther->m_takedamage == DAMAGE_NO) || (pOther->m_takedamage == DAMAGE_EVENTS_ONLY))
@@ -627,7 +633,7 @@ void CMissile::SeekThink( void )
 			flBestDist	= dotDist;
 		}
 	}
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	if (flBestDist <= (GetAbsVelocity().Length() * 2.5f) && FVisible(pBestDot->GetAbsOrigin()))
 	{
 		// Scare targets
@@ -657,7 +663,7 @@ void CMissile::SeekThink( void )
 	VectorSubtract( targetPos, GetAbsOrigin(), vTargetDir );
 	float flDist = VectorNormalize( vTargetDir );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	if (pLaserDot->GetTargetEntity() != NULL && flDist <= 240.0f) //
 	{
 		// Prevent the missile circling the Strider like a Halo in ep1_c17_06. If the missile gets within 20
@@ -707,7 +713,7 @@ void CMissile::SeekThink( void )
 	// Think as soon as possible
 	SetNextThink( gpGlobals->curtime );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	if (m_bCreateDangerSounds == true)
 	{
 		trace_t tr;
@@ -744,7 +750,7 @@ CMissile *CMissile::Create( const Vector &vecOrigin, const QAngle &vecAngles, ed
 	return pMissile;
 }
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 CUtlVector<CMissile::CustomDetonator_t> CMissile::gm_CustomDetonators;
@@ -968,7 +974,7 @@ BEGIN_DATADESC( CAPCMissile )
 	DEFINE_THINKFUNC( BeginSeekThink ),
 	DEFINE_THINKFUNC( AugerStartThink ),
 	DEFINE_THINKFUNC( ExplodeThink ),
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	DEFINE_THINKFUNC(APCSeekThink),
 #endif //BDSBASE
 
@@ -1016,7 +1022,7 @@ void CAPCMissile::Init()
 	SetTouch( &CAPCMissile::APCMissileTouch );
 	m_flLastHomingSpeed = APC_HOMING_SPEED;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CreateDangerSounds(true);
 
 	if (g_pGameRules->GetAutoAimMode() == AUTOAIM_ON_CONSOLE)
@@ -1096,7 +1102,7 @@ void CAPCMissile::ExplodeDelay( float flDelay )
 void CAPCMissile::BeginSeekThink( void )
 {
  	RemoveSolidFlags( FSOLID_NOT_SOLID );
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	SetThink(&CAPCMissile::APCSeekThink);
 #else
 	SetThink(&CAPCMissile::SeekThink);
@@ -1104,7 +1110,7 @@ void CAPCMissile::BeginSeekThink( void )
 	SetNextThink( gpGlobals->curtime );
 }
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 void CAPCMissile::APCSeekThink(void)
 {
 	BaseClass::SeekThink();
@@ -1471,7 +1477,7 @@ acttable_t	CWeaponRPG::m_acttable[] =
 	{ ACT_HL2MP_GESTURE_RELOAD,			ACT_HL2MP_GESTURE_RELOAD_RPG,		false },
 	{ ACT_HL2MP_JUMP,					ACT_HL2MP_JUMP_RPG,					false },
 	{ ACT_RANGE_ATTACK1,				ACT_RANGE_ATTACK_RPG,				false },
-#ifdef BDSBASE	
+#ifdef BDSBASE_NPC	
 	{ ACT_IDLE_RELAXED,				ACT_IDLE_RPG_RELAXED,			true }, //
 	{ ACT_IDLE_STIMULATED,			ACT_IDLE_ANGRY_RPG,				true }, //
 	{ ACT_IDLE_AGITATED,			ACT_IDLE_ANGRY_RPG,				true }, //
@@ -1500,7 +1506,7 @@ CWeaponRPG::CWeaponRPG()
 	m_bHideGuiding = false;
 	m_bGuiding = false;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	m_hMissile = NULL;
 #endif //BDSBASE
 
@@ -1645,7 +1651,7 @@ void CWeaponRPG::PrimaryAttack( void )
 
 	m_hMissile = pMissile;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	// Register a muzzleflash for the AI
 	pOwner->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
 
@@ -1764,7 +1770,7 @@ void CWeaponRPG::ItemPostFrame( void )
 	}
 
 	// Supress our guiding effects if we're lowered
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	if (GetIdealActivity() == ACT_VM_IDLE_LOWERED || GetIdealActivity() == ACT_VM_RELOAD)
 #else
 	if (GetIdealActivity() == ACT_VM_IDLE_LOWERED)
@@ -1784,7 +1790,7 @@ void CWeaponRPG::ItemPostFrame( void )
 	{
 		StopGuiding();
 	}
-#ifdef BDSBASE	
+#ifdef BDSBASE_NPC	
 	//not yet
 	//if (pPlayer->m_afButtonPressed & IN_ATTACK2)
 	//{
@@ -1811,7 +1817,7 @@ Vector CWeaponRPG::GetLaserPosition( void )
 	return vec3_origin;
 }
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL
 //-----------------------------------------------------------------------------
 // Purpose: NPC RPG users cheat and directly set the laser pointer's origin
@@ -1983,7 +1989,7 @@ void CWeaponRPG::ToggleGuiding( void )
 	}
 }
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -2189,7 +2195,7 @@ bool CWeaponRPG::Reload( void )
 	return true;
 }
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

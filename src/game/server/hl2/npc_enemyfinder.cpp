@@ -344,7 +344,7 @@ void CNPC_EnemyFinder::StartNPC ( void )
 											// the ground just because it's not MOVETYPE_FLY
 	BaseClass::StartNPC();
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	if (m_PlayerFreePass.GetParams().duration > 0.1)
 	{
 		m_PlayerFreePass.SetPassTarget(UTIL_GetNearestPlayer(GetAbsOrigin()));
@@ -422,7 +422,7 @@ bool CNPC_EnemyFinder::ShouldAlwaysThink()
 	if ( BaseClass::ShouldAlwaysThink() )
 		return true;
 		
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = AI_GetSinglePlayer();

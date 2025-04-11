@@ -778,7 +778,7 @@ void UTIL_Tracer( const Vector &vecStart, const Vector &vecEnd, int iEntIndex,
 
 void UTIL_BloodDrips( const Vector &origin, const Vector &direction, int color, int amount )
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	IPredictionSystem::SuppressHostEvents(NULL);
 #endif //BDSBASE
 
@@ -791,7 +791,7 @@ void UTIL_BloodDrips( const Vector &origin, const Vector &direction, int color, 
 	if ( g_Language.GetInt() == LANGUAGE_GERMAN && color == BLOOD_COLOR_RED )
 		color = 0;
 
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	if (g_pGameRules->IsMultiplayer())
 	{
 		// scale up blood effect in multiplayer for better visibility

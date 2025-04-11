@@ -88,7 +88,7 @@ public:
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	int CapabilitiesGet(void) { return bits_CAP_WEAPON_RANGE_ATTACK1; }
 	void Operator_HandleAnimEvent(animevent_t* pEvent, CBaseCombatCharacter* pOperator);
 #endif //BDSBASE
@@ -143,7 +143,7 @@ acttable_t CWeaponPistol::m_acttable[] =
 	{ ACT_HL2MP_GESTURE_RELOAD,			ACT_HL2MP_GESTURE_RELOAD_PISTOL,		false },
 	{ ACT_HL2MP_JUMP,					ACT_HL2MP_JUMP_PISTOL,					false },
 	{ ACT_RANGE_ATTACK1,				ACT_RANGE_ATTACK_PISTOL,				false },
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	// HL2
 	{ ACT_IDLE,						ACT_IDLE_PISTOL,				true },
 	{ ACT_IDLE_ANGRY,				ACT_IDLE_ANGRY_PISTOL,			true },
@@ -159,7 +159,6 @@ acttable_t CWeaponPistol::m_acttable[] =
 	{ ACT_GESTURE_RELOAD,			ACT_GESTURE_RELOAD_PISTOL,		false },
 #endif //BDSBASE
 };
-
 
 IMPLEMENT_ACTTABLE( CWeaponPistol );
 
@@ -181,7 +180,7 @@ CWeaponPistol::CWeaponPistol( void )
 	m_bFiresUnderwater	= true;
 }
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL
 void CWeaponPistol::Operator_HandleAnimEvent(animevent_t* pEvent, CBaseCombatCharacter* pOperator)
 {

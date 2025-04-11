@@ -32,11 +32,11 @@ REGISTER_GAMERULES_CLASS( CHalfLife2 );
 
 BEGIN_NETWORK_TABLE_NOBASE( CHalfLife2, DT_HL2GameRules )
 	#ifdef CLIENT_DLL
-		#ifndef BDSBASE
+		#ifndef BDSBASE_NPC
 		RecvPropBool(RECVINFO(m_bMegaPhysgun)),
 		#endif //BDSBASE
 	#else
-		#ifndef BDSBASE
+		#ifndef BDSBASE_NPC
 		SendPropBool(SENDINFO(m_bMegaPhysgun)),
 		#endif //BDSBASE
 	#endif
@@ -72,7 +72,7 @@ IMPLEMENT_NETWORKCLASS_ALIASED( HalfLife2Proxy, DT_HalfLife2Proxy )
 	END_SEND_TABLE()
 #endif
 
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 ConVar  physcannon_mega_enabled("physcannon_mega_enabled", "0", FCVAR_CHEAT | FCVAR_REPLICATED);
 #endif //BDSBASE
 
@@ -222,7 +222,7 @@ bool CHalfLife2::Damage_IsTimeBased( int iDmgType )
 #else
 
 //TDT - Episodic Issues: Here we disable this as it's been moved to hl2mp_gamerules so that calls to darkness mode work.
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 #ifdef HL2_EPISODIC
 ConVar  alyx_darkness_force("alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REPLICATED);
 #endif // HL2_EPISODIC
@@ -258,7 +258,7 @@ ConVar  alyx_darkness_force("alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REPL
 	//-----------------------------------------------------------------------------
 	CHalfLife2::CHalfLife2()
 	{
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 		m_bMegaPhysgun = false;
 #endif //BDSBASE
 		
@@ -1338,7 +1338,7 @@ ConVar  alyx_darkness_force("alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REPL
 	{
 		BaseClass::Think();
 
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 		if (physcannon_mega_enabled.GetBool() == true)
 		{
 			m_bMegaPhysgun = true;
@@ -1411,7 +1411,7 @@ ConVar  alyx_darkness_force("alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REPL
 		{
 			// A physics object has struck a player ally. Don't allow damage if it
 			// came from any player's physcannon. 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 			for (int i = 1; i <= gpGlobals->maxClients; i++)//
 				//AI Patch Removal: CBasePlayer *pPlayer = UTIL_PlayerByIndex(1);
 			{
@@ -1541,7 +1541,7 @@ bool CHalfLife2::ShouldCollide( int collisionGroup0, int collisionGroup1 )
 		collisionGroup1 = COLLISION_GROUP_NPC;
 	}
 
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	// This is only for the super physcannon
 	if (m_bMegaPhysgun)
 	{
@@ -1764,7 +1764,7 @@ void CHalfLife2::LevelInitPreEntity()
 }
 
 //TDT - Episodic Issues: Here we disable this as it's been moved to hl2mp_gamerules so that calls to darkness mode work.
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 //-----------------------------------------------------------------------------
 // Returns whether or not Alyx cares about light levels in order to see.
 //-----------------------------------------------------------------------------
@@ -1779,9 +1779,7 @@ bool CHalfLife2::IsAlyxInDarknessMode()
 	return false;
 #endif // HL2_EPISODIC
 }
-#endif
 
-#ifndef BDSBASE
 //-----------------------------------------------------------------------------
 // This takes the long way around to see if a prop should emit a DLIGHT when it
 // ignites, to avoid having Alyx-related code in props.cpp.

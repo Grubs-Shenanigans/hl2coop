@@ -708,7 +708,7 @@ void CPropCombineBall::WhizSoundThink()
 	
 	if ( gpGlobals->maxClients == 1 )
 	{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());  //Slightly different location due to OLD/NEW sdk code differences. Unsure if needed.
 #else
 		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();

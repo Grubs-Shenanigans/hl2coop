@@ -92,11 +92,13 @@ public:
 
 	DECLARE_SERVERCLASS_NOBASE(); // This makes datatables able to access our private vars.
 
+#ifdef BDSBASE_NPC
 	//TDT - Episodic Issues: Here we add darkness mode so that it now works.
 	virtual bool IsAlyxInDarknessMode();
 	virtual bool ShouldBurningPropsEmitLight();
 
 	virtual void InitDefaultAIRelationships(void);
+#endif
 #endif
 	
 	CHL2MPRules();

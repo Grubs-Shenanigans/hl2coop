@@ -852,7 +852,7 @@ void CPropCrane::InputUnlock( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 void CPropCrane::InputForcePlayerIn( inputdata_t &inputdata )
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);

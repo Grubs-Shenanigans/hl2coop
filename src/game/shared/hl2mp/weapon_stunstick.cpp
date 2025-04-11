@@ -95,7 +95,7 @@ public:
 	void		Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
 	int			WeaponMeleeAttack1Condition( float flDot, float flDist );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	bool		CanBePickedUpByNPCs(void) { return false; }
 #endif //BDSBASE	
 #endif
@@ -171,7 +171,7 @@ acttable_t	CWeaponStunStick::m_acttable[] =
 	{ ACT_HL2MP_GESTURE_RELOAD,			ACT_HL2MP_GESTURE_RELOAD_MELEE,			false },
 	{ ACT_HL2MP_JUMP,					ACT_HL2MP_JUMP_MELEE,					false },
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	{ ACT_MELEE_ATTACK1,	ACT_MELEE_ATTACK_SWING,	true },
 	{ ACT_IDLE_ANGRY,		ACT_IDLE_ANGRY_MELEE,	true },
 #endif
@@ -387,13 +387,13 @@ void CWeaponStunStick::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseComba
 
 				CBasePlayer *pPlayer = ToBasePlayer( pHurt );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 				CNPC_MetroPolice* pCop = dynamic_cast<CNPC_MetroPolice*>(pOperator);
 #endif //BDSBASE
 
 				bool bFlashed = false;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 				if (pCop != NULL && pPlayer != NULL)
 				{
 					// See if we need to knock out this target
@@ -534,7 +534,7 @@ void CWeaponStunStick::Drop( const Vector &vecVelocity )
 {
 	SetStunState( false );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	BaseClass::Drop(vecVelocity);
 #else
 #ifndef CLIENT_DLL

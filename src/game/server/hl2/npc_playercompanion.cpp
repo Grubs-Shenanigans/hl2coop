@@ -348,8 +348,7 @@ void CNPC_PlayerCompanion::GatherConditions()
 {
 	BaseClass::GatherConditions();
 
-
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	//TDT - Null Pointers: Null pointer fixed by KuRouZu on the steam coding forums.
 	CBasePlayer* pPlayer = ToBasePlayer(GetFollowBehavior().GetFollowTarget());//UTIL_GetNearestPlayer(GetAbsOrigin());
 
@@ -505,7 +504,7 @@ void CNPC_PlayerCompanion::GatherConditions()
 		DoCustomSpeechAI();
 	}
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	//TDT - Null Pointers: Null pointer fixed by KuRouZu on the steam coding forums.
 	if (pPlayer && hl2_episodic.GetBool() && !GetEnemy() && HasCondition(COND_HEAR_PLAYER))
 	{
@@ -530,7 +529,7 @@ void CNPC_PlayerCompanion::GatherConditions()
 //-----------------------------------------------------------------------------
 void CNPC_PlayerCompanion::DoCustomSpeechAI( void )
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -567,7 +566,7 @@ void CNPC_PlayerCompanion::DoCustomSpeechAI( void )
 //-----------------------------------------------------------------------------
 void CNPC_PlayerCompanion::PredictPlayerPush()
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -981,7 +980,7 @@ bool CNPC_PlayerCompanion::IsValidReasonableFacing( const Vector &vecSightDir, f
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 int CNPC_PlayerCompanion::TranslateSchedule(int scheduleType)
 {
 	switch (scheduleType)
@@ -1277,7 +1276,7 @@ void CNPC_PlayerCompanion::RunTask( const Task_t *pTask )
 
 		case TASK_PC_GET_PATH_OFF_COMPANION:
 			{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 				GetNavigator()->SetAllowBigStep(UTIL_GetNearestPlayer(GetAbsOrigin()));
 #else
 				if (AI_IsSinglePlayer())
@@ -1641,7 +1640,7 @@ void CNPC_PlayerCompanion::Touch( CBaseEntity *pOther )
 		if ( m_afMemory & bits_MEMORY_PROVOKED )
 			return;
 			
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		TestPlayerPushing((pOther->IsPlayer()) ? pOther : UTIL_GetNearestPlayer(GetAbsOrigin()));
 #else
 		TestPlayerPushing((pOther->IsPlayer()) ? pOther : AI_GetSinglePlayer());
@@ -1873,7 +1872,7 @@ void CNPC_PlayerCompanion::UpdateReadiness()
 		}
 	}
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	if (ai_debug_readiness.GetBool())
 #else
 	if (ai_debug_readiness.GetBool() && AI_IsSinglePlayer())
@@ -1886,7 +1885,7 @@ void CNPC_PlayerCompanion::UpdateReadiness()
 		const float GRADLENGTH	= 4.0f;
 
 		Vector right;
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		UTIL_GetNearestPlayer(GetAbsOrigin())->GetVectors(NULL, &right, NULL);
 #else
 		UTIL_PlayerByIndex(1)->GetVectors(NULL, &right, NULL);
@@ -2037,7 +2036,7 @@ bool CNPC_PlayerCompanion::PickTacticalLookTarget( AILookTargetArgs_t *pArgs )
 		// 1/3rd chance to authoritatively look at player
 		if( random->RandomInt( 0, 2 ) == 0 )
 		{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 			pArgs->hTarget = UTIL_GetNearestVisiblePlayer(this);
 #else
 			pArgs->hTarget = AI_GetSinglePlayer();
@@ -2928,7 +2927,7 @@ void CNPC_PlayerCompanion::OnFriendDamaged( CBaseCombatCharacter *pSquadmate, CB
 			}
 		}
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 		CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -3165,7 +3164,7 @@ float CNPC_PlayerCompanion::GetIdealSpeed() const
 float CNPC_PlayerCompanion::GetIdealAccel() const
 {
 	float multiplier = 1.0;
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	if (m_bMovingAwayFromPlayer && (UTIL_GetNearestPlayer(GetAbsOrigin())->GetAbsOrigin() - GetAbsOrigin()).Length2DSqr() < Square(3.0 * 12.0))
 		multiplier = 2.0;
 
@@ -3239,7 +3238,7 @@ bool CNPC_PlayerCompanion::ShouldAlwaysTransition( void )
 //-----------------------------------------------------------------------------
 void CNPC_PlayerCompanion::InputOutsideTransition( inputdata_t &inputdata )
 {
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 	if (!AI_IsSinglePlayer())
 		return;
 #endif //BDSBASE
@@ -3252,7 +3251,7 @@ void CNPC_PlayerCompanion::InputOutsideTransition( inputdata_t &inputdata )
 	if ( IsInAVehicle() )
 		return;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBaseEntity* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBaseEntity* pPlayer = UTIL_GetLocalPlayer();
@@ -3849,7 +3848,7 @@ bool CNPC_PlayerCompanion::IsNavigationUrgent( void )
 		// could not see the player but the player could in fact see them.  Now the NPC's facing is
 		// irrelevant and the player's viewcone is more authorative. -- jdw
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		for (int i = 1; i <= gpGlobals->maxClients; i++)
 		{
 			CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);

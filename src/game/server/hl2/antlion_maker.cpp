@@ -1172,7 +1172,7 @@ void CAntlionTemplateMaker::FindNodesCloseToPlayer( void )
 {
 	SetContextThink( &CAntlionTemplateMaker::FindNodesCloseToPlayer, gpGlobals->curtime + random->RandomFloat( 0.75, 1.75 ), s_pBlockedEffectsThinkContext );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin()); // dubious 
 #else
 	CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -1263,7 +1263,7 @@ void CAntlionTemplateMaker::BlockedCheckFunc( void )
 			if ( pNode )
 			{
 				Vector vHintPos;
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 				pNode->GetPosition(UTIL_GetNearestPlayer(GetAbsOrigin()), &vHintPos);
 #else
 				pNode->GetPosition(AI_GetSinglePlayer(), &vHintPos);

@@ -233,7 +233,7 @@ void CScriptIntro::InputSetFOVBlendTime( inputdata_t &inputdata )
 	else
 	{
 		// If we weren't blending, then we need to construct a proper starting point from scratch
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 		CBasePlayer* pPlayer = AI_GetSinglePlayer();

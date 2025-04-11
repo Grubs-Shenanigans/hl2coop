@@ -2131,7 +2131,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 bool CBaseEntity::ShouldDrawUnderwaterBulletBubbles()
 {
 #if defined( HL2_DLL ) && defined( GAME_DLL )
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBaseEntity* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 #else
 	CBaseEntity* pPlayer = (gpGlobals->maxClients == 1) ? UTIL_GetLocalPlayer() : NULL;

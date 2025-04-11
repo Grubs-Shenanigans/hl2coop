@@ -37,7 +37,7 @@ class CMissile : public CBaseCombatCharacter
 	DECLARE_CLASS( CMissile, CBaseCombatCharacter );
 
 public:
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	static const int EXPLOSION_RADIUS = 200;
 	static const int EXPLOSION_DAMAGE = 200;
 #endif //BDSBASE
@@ -74,7 +74,7 @@ public:
 
 	static CMissile *Create( const Vector &vecOrigin, const QAngle &vecAngles, edict_t *pentOwner );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	void CreateDangerSounds(bool bState) { m_bCreateDangerSounds = bState; }
 
 	static void AddCustomDetonator(CBaseEntity* pEntity, float radius, float height = -1);
@@ -97,7 +97,7 @@ protected:
 	float					m_flMarkDeadTime;
 	float					m_flDamage;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	struct CustomDetonator_t
 	{
 		EHANDLE hEntity;
@@ -111,7 +111,7 @@ protected:
 private:
 	float					m_flGracePeriodEndsAt;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	bool					m_bCreateDangerSounds;
 #endif //BDSBASE
 
@@ -151,7 +151,7 @@ public:
 	void	AimAtSpecificTarget( CBaseEntity *pTarget );
 	void	SetGuidanceHint( const char *pHintName );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	void	APCSeekThink(void);
 #endif //BDSBASE
 
@@ -233,7 +233,7 @@ public:
 	float	GetMinRestTime() { return 4.0; }
 	float	GetMaxRestTime() { return 4.0; }
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL 
 	bool	WeaponLOSCondition(const Vector& ownerPos, const Vector& targetPos, bool bSetConditions);
 	int		WeaponRangeAttack1Condition(float flDot, float flDist);
@@ -257,7 +257,7 @@ public:
 	void	UpdateLaserPosition( Vector vecMuzzlePos = vec3_origin, Vector vecEndPos = vec3_origin );
 	Vector	GetLaserPosition( void );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifndef CLIENT_DLL 
 
 	// NPC RPG users cheat and directly set the laser pointer's origin
@@ -274,6 +274,10 @@ public:
 		static Vector cone = VECTOR_CONE_3DEGREES;
 		return cone;
 	}
+#else
+	void	UpdateNPCLaserPosition(const Vector& vecTarget);
+	void	SetNPCLaserPosition(const Vector& vecTarget);
+	const Vector& GetNPCLaserPosition(void);
 #endif //BDSBASE
 	
 #ifdef CLIENT_DLL

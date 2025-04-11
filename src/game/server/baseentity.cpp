@@ -1034,7 +1034,7 @@ void CBaseEntity::DrawDebugGeometryOverlays(void)
 		}
 	}
 
-#ifdef BDSBASE	
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 	if (m_debugOverlays & OVERLAY_AUTOAIM_BIT && (GetFlags() & FL_AIMTARGET) && pPlayer != NULL)
 #else
@@ -1044,7 +1044,7 @@ void CBaseEntity::DrawDebugGeometryOverlays(void)
 		// Crude, but it gets the point across.
 		Vector vecCenter = GetAutoAimCenter();
 		Vector vecRight, vecUp, vecDiag;
-#ifndef BDSBASE
+#ifndef BDSBASE_NPC
 		CBasePlayer* pPlayer = AI_GetSinglePlayer();
 #endif //BDSBASE
 		float radius = GetAutoAimRadius();
@@ -1849,9 +1849,9 @@ int CBaseEntity::VPhysicsTakeDamage( const CTakeDamageInfo &info )
 		{
 			// if the player is holding the object, use it's real mass (player holding reduced the mass)
 #ifdef BDSBASE
-			// See which MP player is holding the physics object and then use that player to get the real mass of the object.
-			// This is ugly but better than having linkage between an object and its "holding" player.
 			CBasePlayer* pPlayer = NULL;
+
+#ifdef BDSBASE_NPC
 			for (int i = 1; i <= gpGlobals->maxClients; i++)
 			{
 				CBasePlayer* tempPlayer = UTIL_PlayerByIndex(i);
@@ -1861,6 +1861,27 @@ int CBaseEntity::VPhysicsTakeDamage( const CTakeDamageInfo &info )
 					break;
 				}
 			}
+#else
+			if (gpGlobals->maxClients == 1)
+			{
+				pPlayer = UTIL_GetLocalPlayer();
+			}
+			else
+			{
+				// See which MP player is holding the physics object and then use that player to get the real mass of the object.
+				// This is ugly but better than having linkage between an object and its "holding" player.
+				for (int i = 1; i <= gpGlobals->maxClients; i++)
+				{
+					CBasePlayer* tempPlayer = UTIL_PlayerByIndex(i);
+
+					if (tempPlayer && (tempPlayer->GetHeldObject() == this))
+					{
+						pPlayer = tempPlayer;
+						break;
+					}
+				}
+			}
+#endif
 #else
 			CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 #endif
@@ -7925,7 +7946,7 @@ void CBaseEntity::DispatchResponse( const char *conceptName )
 	ModifyOrAppendCriteria( set );
 
 	// Append local player criteria to set,too
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
@@ -7988,7 +8009,7 @@ void CBaseEntity::DumpResponseCriteria( void )
 	ModifyOrAppendCriteria( set );
 
 	// Append local player criteria to set,too
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
@@ -8477,7 +8498,7 @@ bool CBaseEntity::SUB_AllowedToFade( void )
 
 	// on Xbox, allow these to fade out
 #ifndef _XBOX
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 #else
 	CBasePlayer* pPlayer = (AI_IsSinglePlayer()) ? UTIL_GetLocalPlayer() : NULL;

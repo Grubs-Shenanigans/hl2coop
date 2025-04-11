@@ -873,7 +873,7 @@ float CBounceBomb::FindNearestNPC()
 	}
 
 	// finally, check the player.
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 #else
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
@@ -883,7 +883,7 @@ float CBounceBomb::FindNearestNPC()
 	{
 		float flDist = (pPlayer->GetAbsOrigin() - GetAbsOrigin() ).LengthSqr();
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		if (flDist < flNearest)
 #else
 		if (flDist < flNearest && FVisible(pPlayer, MASK_SOLID_BRUSHONLY))

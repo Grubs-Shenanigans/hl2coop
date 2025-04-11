@@ -579,7 +579,7 @@ Vector CParticleSystemQuery::GetLocalPlayerPos( void )
 		return vec3_origin;
 	return pPlayer->WorldSpaceCenter();
 #else
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer(); //AI Patch Replacment: CBasePlayer *pPlayer = AI_GetSinglePlayer();
 #else
 	CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -603,7 +603,7 @@ void CParticleSystemQuery::GetLocalPlayerEyeVectors( Vector *pForward, Vector *p
 	}
 	pPlayer->EyeVectors( pForward, pRight, pUp );
 #else
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 #else
 	CBasePlayer* pPlayer = AI_GetSinglePlayer();

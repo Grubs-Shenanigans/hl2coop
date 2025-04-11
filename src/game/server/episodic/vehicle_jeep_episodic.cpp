@@ -955,7 +955,7 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 	//Msg("Server detected %d objects\n", m_iNumRadarContacts );
 
 	//TDT - Information: Fix pPlayer from sp to mp.
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer *pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer *pPlayer = AI_GetSinglePlayer();
@@ -1135,7 +1135,7 @@ CBaseEntity *CPropJeepEpisodic::OnFailedPhysGunPickup( Vector vPhysgunPos )
 		// Player's forward direction
 		Vector vecPlayerForward;
 		//TDT - Information: Fix pPlayer from sp to mp.
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CBasePlayer *pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin()); 
 #else
 		CBasePlayer *pPlayer = AI_GetSinglePlayer();
@@ -1322,7 +1322,7 @@ static void KillBlockingEnemyNPCs( CBasePlayer *pPlayer, CBaseEntity *pVehicleEn
 			npcList[i]->TakeDamage( dmgInfo );
             
             //TDT - Null Pointers: Occasionally on hitting an AI the game would crash. This is our fix.
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 			IPhysicsObject*physicsObj = npcList[i]->VPhysicsGetObject();
 			if (physicsObj == NULL)
 				return;

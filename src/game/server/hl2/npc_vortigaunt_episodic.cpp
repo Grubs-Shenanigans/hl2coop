@@ -442,7 +442,7 @@ void CNPC_Vortigaunt::RunTask( const Task_t *pTask )
 	case TASK_VORTIGAUNT_WAIT_FOR_PLAYER:
 	{
 		// Wait for the player to get near (before starting the bugbait sequence)
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 		CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -644,7 +644,7 @@ int CNPC_Vortigaunt::RangeAttack1Conditions( float flDot, float flDist )
 		if ( ( GetAbsOrigin() - GetEnemy()->GetAbsOrigin() ).LengthSqr() < Square( AntlionWorkerBurstRadius() ) )
 			return COND_TOO_CLOSE_TO_ATTACK;
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetEnemy()->GetAbsOrigin());
 #else
 		CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -905,7 +905,7 @@ void CNPC_Vortigaunt::HandleAnimEvent( animevent_t *pEvent )
 				// HACK: If we've still failed, just spawn it on the player 
 				if ( i == iNumAttempts )
 				{
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 					CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 					CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -1698,7 +1698,7 @@ void CNPC_Vortigaunt::MaintainHealSchedule( void )
 		return;
 
 	// For now, we only heal the player
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -2359,7 +2359,7 @@ Disposition_t CNPC_Vortigaunt::IRelationType( CBaseEntity *pTarget )
 bool CNPC_Vortigaunt::HealGestureHasLOS( void )
 {
 	//For now the player is always our target
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	CBaseEntity* pTargetEnt = UTIL_GetNearestVisiblePlayer(this);
 #else
 	CBaseEntity* pTargetEnt = AI_GetSinglePlayer();

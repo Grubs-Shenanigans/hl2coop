@@ -228,7 +228,7 @@ void CNPCSimpleTalker::RunTask( const Task_t *pTask )
 	case TASK_TALKER_CLIENT_STARE:
 	case TASK_TALKER_LOOK_AT_CLIENT:
 
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 		if (pTask->iTask == TASK_TALKER_CLIENT_STARE)
 		{
 			// Get edict for one player
@@ -833,7 +833,7 @@ int CNPCSimpleTalker::SelectNonCombatSpeechSchedule()
 		return SCHED_TALKER_IDLE_SPEAK;
 	}
 	
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 	if (GetExpresser()->CanSpeak() && HasCondition(COND_SEE_PLAYER) && random->RandomInt(0, 6) == 0)
 	{
 		CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
