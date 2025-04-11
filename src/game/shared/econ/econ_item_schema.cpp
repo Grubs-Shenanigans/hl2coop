@@ -3182,7 +3182,12 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	m_bBaseItem = m_pKVItem->GetInt( "baseitem", 0 ) != 0;
 #ifdef BDSBASE
 #ifdef BDSBASE_CUSTOM_SCHEMA
-	m_bSoloItem = m_pKVItem->GetInt("soloitem", 0) != 0;
+	m_bSoloItem = m_pKVItem->GetInt("customitem", 0) != 0;
+
+	if (!m_bSoloItem)
+	{
+		m_bSoloItem = m_pKVItem->GetInt("soloitem", 0) != 0;
+	}
 #else
 	//if there's no custom schema, no items can be solo items.
 	m_bSoloItem = false;
