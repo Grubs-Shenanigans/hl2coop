@@ -17,7 +17,7 @@ This base is specific to multiplayer mod projects.
     - NOTE: You may need to do some tinkering to make these singleplayer projects work well with the new SDK base. There are some bugs and crashes that won't be addressed by this base.
 - NPC NextBot sensing support from FIREFIGHT RELOADED.
 - Integrated Python binaries (on Windows) for more simple buiding.
-- Implemented Discord RPC support. Mod authors can change the DiscordAppId parameter in their gameinfo.txt file for more personalized icons. Mods can also use the DiscordAllowMapIcons option to allow map specific icons. Mod icons must be named "ModImage" and map icons must be named the map name.
+- Implemented Discord RPC support with the BDSBASE_DISCORD compile definition. Mod authors can change the DiscordAppId parameter in their gameinfo.txt file for more personalized icons. Mods can also use the DiscordAllowMapIcons option to allow map specific icons. Mod icons must be named "ModImage" and map icons must be named the map name.
 - Full support of the Half-Life 2 Survivor animation set for all mods.
 - reset.bat file in each mod folder, used for cleaning up config/temporary files for easy mod distribution
 - Implemented bhopping functionality that can be enabled or disabled by server owners in TF2 and HL2DM.
