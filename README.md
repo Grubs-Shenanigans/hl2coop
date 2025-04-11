@@ -21,6 +21,7 @@ This base is specific to multiplayer mod projects.
 - Full support of the Half-Life 2 Survivor animation set for all mods.
 - reset.bat file in each mod folder, used for cleaning up config/temporary files for easy mod distribution
 - Implemented bhopping functionality that can be enabled or disabled by server owners in TF2 and HL2DM.
+- Multiplayer NPC support with the BDSBASE_NPC compile definition.
 
 ## Setup:
 Read Autumn's setup guide at README_FROG.md for detailed setup.
