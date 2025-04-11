@@ -8,7 +8,6 @@
 	nohimodel 1
 	nocrosshair 1
 	supportsvr	1
-	DiscordAppID			1347077140306464838
 	hidden_maps
 	{
 		"test_speakers"		1
