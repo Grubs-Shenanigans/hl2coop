@@ -33,7 +33,7 @@ enum seentype_t
 	SEEN_ALL = -1,	// Default
 	SEEN_HIGH_PRIORITY = 0,
 	SEEN_NPCS,
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifdef NEXT_BOT
 	SEEN_MISC,
 	SEEN_NEXTBOTS
@@ -70,7 +70,7 @@ public:
 		m_SeenArrays[0] = &m_SeenHighPriority;
 		m_SeenArrays[1] = &m_SeenNPCs;
 		m_SeenArrays[2] = &m_SeenMisc;
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifdef NEXT_BOT
 		m_SeenArrays[3] = &m_SeenNextBots;
 #endif
@@ -132,7 +132,7 @@ private:
 	int 			LookForHighPriorityEntities( int iDistance );
 	int 			LookForNPCs( int iDistance );
 	int 			LookForObjects( int iDistance );
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifdef NEXT_BOT
 	int 			LookForNextBots(int iDistance);
 #endif
@@ -149,7 +149,7 @@ private:
 	CUtlVector<EHANDLE> m_SeenHighPriority;
 	CUtlVector<EHANDLE> m_SeenNPCs;
 	CUtlVector<EHANDLE> m_SeenMisc;
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifdef NEXT_BOT
 	CUtlVector<EHANDLE> m_SeenNextBots;
 #endif
@@ -166,7 +166,7 @@ private:
 	float			m_TimeLastLookHighPriority;
 	float			m_TimeLastLookNPCs;
 	float			m_TimeLastLookMisc;
-#ifdef BDSBASE
+#ifdef BDSBASE_NPC
 #ifdef NEXT_BOT
 	float			m_TimeLastLookNextBots;
 #endif
