@@ -150,7 +150,7 @@
 
 #endif
 
-#ifdef BDSBASE
+#ifdef BDSBASE_DISCORD
 #ifdef WIN32
 // not adding a VPC path just for this smh...
 #include "../thirdparty/discord-rpc/include/discord_rpc.h"
@@ -343,7 +343,7 @@ static ConVar s_CV_ShowParticleCounts("showparticlecounts", "0", 0, "Display num
 static ConVar s_cl_team("cl_team", "default", FCVAR_USERINFO|FCVAR_ARCHIVE, "Default team when joining a game");
 static ConVar s_cl_class("cl_class", "default", FCVAR_USERINFO|FCVAR_ARCHIVE, "Default class when joining a game");
 
-#ifdef BDSBASE
+#ifdef BDSBASE_DISCORD
 #ifdef WIN32
 // Discord RPC
 static ConVar cl_discord_appid("cl_discord_appid", "1347077140306464838", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT);
@@ -878,7 +878,7 @@ CHLClient::CHLClient()
 	g_bLevelInitialized = false;
 }
 
-#ifdef BDSBASE
+#ifdef BDSBASE_DISCORD
 #ifdef WIN32
 //-----------------------------------------------------------------------------
 // Discord RPC
@@ -1174,7 +1174,7 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 		RegisterSecureLaunchProcessFunc( pfnUnsafeCmdLineProcessor );
 	}
 
-#ifdef BDSBASE
+#ifdef BDSBASE_DISCORD
 #ifdef WIN32
 	if (cl_discord.GetBool())
 	{
@@ -1351,7 +1351,7 @@ void CHLClient::Shutdown( void )
 	ClientSteamContext().Shutdown();
 #endif
 
-#ifdef BDSBASE
+#ifdef BDSBASE_DISCORD
 #ifdef WIN32
 	if (cl_discord.GetBool())
 	{
@@ -1779,7 +1779,7 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 	// Check low violence settings for this map
 	g_RagdollLVManager.SetLowViolence( pMapName );
 
-#ifdef BDSBASE
+#ifdef BDSBASE_DISCORD
 #ifdef WIN32
 	if (cl_discord.GetBool())
 	{
@@ -1910,7 +1910,7 @@ void CHLClient::LevelShutdown( void )
 
 	gHUD.LevelShutdown();
 
-#ifdef BDSBASE
+#ifdef BDSBASE_DISCORD
 #ifdef WIN32
 	if (cl_discord.GetBool())
 	{
