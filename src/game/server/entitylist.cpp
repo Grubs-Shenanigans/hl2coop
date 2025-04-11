@@ -533,7 +533,11 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 			}
 			else
 			{
+#ifdef BDSBASE_NPC
+				return (CBaseEntity*)UTIL_GetLocalPlayer();
+#else
 				return (CBaseEntity*)UTIL_PlayerByIndex(1);
+#endif
 			}
 #else
 			return (CBaseEntity*)UTIL_PlayerByIndex(1);
@@ -553,7 +557,11 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 			else
 			{
 				// FIXME: error condition?
-				return (CBaseEntity *)UTIL_PlayerByIndex( 1 );
+#ifdef BDSBASE_NPC
+				return (CBaseEntity*)UTIL_GetLocalPlayer();
+#else
+				return (CBaseEntity*)UTIL_PlayerByIndex(1);
+#endif
 			}
 
 		}
@@ -567,7 +575,11 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 		}
 		else if ( FStrEq( pName, "picker" ) )
 		{
-			return FindPickerEntity( UTIL_PlayerByIndex(1) );
+#ifdef BDSBASE_NPC
+			return FindPickerEntity(UTIL_GetLocalPlayer());
+#else
+			return FindPickerEntity(UTIL_PlayerByIndex(1));
+#endif //BDSBASE
 		}
 		else if ( FStrEq( pName, "self" ) )
 		{

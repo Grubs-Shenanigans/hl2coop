@@ -1297,7 +1297,11 @@ void CNPC_BaseScanner::DiveBombSoundThink()
 	pPhysicsObject->GetPosition( &vecPosition, NULL );
 	pPhysicsObject->GetVelocity( &vecVelocity, NULL );
 
-	CBasePlayer *pPlayer = AI_GetSinglePlayer();
+#ifdef BDSBASE_NPC
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+	CBasePlayer* pPlayer = AI_GetSinglePlayer();
+#endif //BDSBASE	
 	if ( pPlayer )
 	{
 		Vector vecDelta;

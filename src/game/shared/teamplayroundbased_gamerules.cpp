@@ -412,7 +412,12 @@ CON_COMMAND_F( mp_forcewin, "Forces team to win", FCVAR_CHEAT )
 		if ( args.ArgC() == 1 )
 		{
 			// if no team specified, use player 1's team
-			CBasePlayer *pPlayer = UTIL_PlayerByIndex( 1 );
+#ifdef BDSBASE_NPC
+			CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#else
+			CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
+#endif //BDSBASE
+			
 			if ( pPlayer )
 			{
 				iTeam = pPlayer->GetTeamNumber();

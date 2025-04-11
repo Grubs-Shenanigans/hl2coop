@@ -852,7 +852,11 @@ void CPropCrane::InputUnlock( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 void CPropCrane::InputForcePlayerIn( inputdata_t &inputdata )
 {
-	CBasePlayer *pPlayer = UTIL_PlayerByIndex( 1 );
+#ifdef BDSBASE_NPC
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+	CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
+#endif //BDSBASE	
 	if ( pPlayer && !m_hPlayer )
 	{
 		GetServerVehicle()->HandlePassengerEntry( pPlayer, 0 );

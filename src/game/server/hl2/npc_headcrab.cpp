@@ -33,6 +33,13 @@
 #include "hl2_gamerules.h"
 #include "decals.h"
 
+#ifdef BDSBASE_NPC
+//TDT - Episodic Issues: Here we include the hl2mp gamerules so that calls to darkness mode work.
+#ifdef HL2MP
+#include "hl2mp_gamerules.h"
+#endif
+#endif
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -1321,7 +1328,11 @@ void CBaseHeadcrab::DropFromCeiling( void )
 				{
 					SetSchedule( SCHED_HEADCRAB_CEILING_DROP );
 
-					CBaseEntity *pPlayer = AI_GetSinglePlayer();
+#ifdef BDSBASE_NPC
+					CBaseEntity* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+					CBaseEntity* pPlayer = AI_GetSinglePlayer();
+#endif //BDSBASE
 
 					if ( pPlayer )
 					{

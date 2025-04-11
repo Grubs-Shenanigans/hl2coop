@@ -1345,7 +1345,13 @@ bool CAI_Hint::HintMatchesCriteria( CAI_BaseNPC *pNPC, const CHintCriteria &hint
 
 	if ( hintCriteria.HasFlag(bits_HINT_HAS_LOS_TO_PLAYER|bits_HAS_EYEPOSITION_LOS_TO_PLAYER) )
 	{
-		CBasePlayer *pPlayer = AI_GetSinglePlayer();
+#ifdef BDSBASE_NPC
+		CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
+		if (!pPlayer)
+			UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+		CBasePlayer* pPlayer = AI_GetSinglePlayer();
+#endif //BDSBASE
 
 		if( pPlayer != NULL )
 		{

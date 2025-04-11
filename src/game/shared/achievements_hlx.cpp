@@ -126,9 +126,15 @@ protected:
 		{
 			CBaseEntity *pThrower = pGrenade->GetThrower();
 			CBaseEntity *pOriginalThrower = pGrenade->GetOriginalThrower();
-			CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+#ifndef BDSBASE_NPC
+			CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 			// check if player was most recent thrower, but the victim was the original thrower
-			if ( ( pPlayer == pThrower ) && ( pOriginalThrower == pVictim ) )
+#ifdef BDSBASE_NPC
+			if (pThrower->IsPlayer() && (pOriginalThrower == pVictim))
+#else
+			if ((pPlayer == pThrower) && (pOriginalThrower == pVictim))
+#endif //BDSBASE
 			{
 				IncrementCount();
 			}				

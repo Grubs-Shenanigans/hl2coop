@@ -39,6 +39,13 @@
 #include "saverestoretypes.h"
 #include "nav_mesh.h"
 
+#ifdef BDSBASE_NPC
+//TDT - Episodic Issues: Here we include the hl2mp gamerules so that calls to darkness mode work.
+#ifdef HL2MP
+#include "hl2mp_gamerules.h"
+#endif
+#endif
+
 #ifndef BDSBASE
 #ifdef TF_DLL
 #include "nav_mesh/tf_nav_area.h"
@@ -1932,7 +1939,11 @@ void CBaseCombatCharacter::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector
 			{
 				// Drop enough ammo to kill 2 of me.
 				// Figure out how much damage one piece of this type of ammo does to this type of enemy.
-				float flAmmoDamage = g_pGameRules->GetAmmoDamage( UTIL_PlayerByIndex(1), this, pWeapon->GetPrimaryAmmoType() );
+#ifdef BDSBASE_NPC				
+				float flAmmoDamage = g_pGameRules->GetAmmoDamage(UTIL_GetNearestPlayer(GetAbsOrigin()), this, pWeapon->GetPrimaryAmmoType());
+#else
+				float flAmmoDamage = g_pGameRules->GetAmmoDamage(UTIL_PlayerByIndex(1), this, pWeapon->GetPrimaryAmmoType());
+#endif //BDSBASE
 				pWeapon->m_iClip1 = (GetMaxHealth() / flAmmoDamage) * 2;
 			}
 		}
@@ -3315,7 +3326,11 @@ CBaseEntity *CBaseCombatCharacter::FindMissTarget( void )
 	CBaseEntity *pMissCandidates[ MAX_MISS_CANDIDATES ];
 	int numMissCandidates = 0;
 
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+#ifdef BDSBASE_NPC
+	CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
+#else
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 	CBaseEntity *pEnts[256];
 	Vector		radius( 100, 100, 100);
 	Vector		vecSource = GetAbsOrigin();

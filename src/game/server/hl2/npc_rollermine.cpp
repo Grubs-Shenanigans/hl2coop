@@ -1866,7 +1866,11 @@ float CNPC_RollerMine::GetAttackDamageScale( CBaseEntity *pVictim )
 		if ( pVictim->MyNPCPointer() )
 		{
 			// If we don't hate the player, we're immune
-			CBasePlayer *pPlayer = UTIL_PlayerByIndex(1);
+#ifdef BDSBASE_NPC
+			CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+			CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
+#endif //BDSBASE
 			if ( pPlayer && pVictim->MyNPCPointer()->IRelationType( pPlayer ) != D_HT )
 				return 0.0;
 		}

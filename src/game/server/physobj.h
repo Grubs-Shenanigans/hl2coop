@@ -87,9 +87,6 @@ protected:
 	float			m_flForceToEnableMotion;
 	QAngle			m_angPreferredCarryAngles;
 	bool			m_bNotSolidToWorld;
-#ifdef BDSBASE
-	CBasePlayer* m_pLastHolder = nullptr;
-#endif
 
 	// Outputs
 	COutputEvent	m_OnDamaged;

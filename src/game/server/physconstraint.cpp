@@ -16,9 +16,12 @@
 #include "fmtstr.h"
 #include "physics_prop_ragdoll.h"
 
+#ifndef BDSBASE_NPC
+//TDT - Episodic Issues: If we don't comment these out, then the code doesn't compile.
 #define HINGE_NOTIFY HL2_EPISODIC
 #if HINGE_NOTIFY
 #include "physconstraint_sounds.h"
+#endif
 #endif
 
 #include "physconstraint.h"

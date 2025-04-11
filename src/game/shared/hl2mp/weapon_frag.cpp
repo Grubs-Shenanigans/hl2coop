@@ -15,6 +15,9 @@
 	#include "hl2mp_player.h"
 	#include "te_effect_dispatch.h"
 	#include "grenade_frag.h"
+#ifdef BDSBASE_NPC
+	#include "soundent.h"
+#endif // BDSBASE_NPC
 #endif
 
 #include "weapon_ar2.h"
@@ -59,8 +62,17 @@ public:
 
 	bool	Deploy( void );
 	bool	Holster( CBaseCombatWeapon *pSwitchingTo = NULL );
+
+#ifdef BDSBASE_NPC
+#ifndef CLIENT_DLL 
+	int		CapabilitiesGet(void) { return bits_CAP_WEAPON_RANGE_ATTACK1; }
+#endif 
+#endif //BDSBASE
 	
 	bool	Reload( void );
+#ifdef BDSBASE_NPC
+	bool	ShouldDisplayHUDHint() { return true; }
+#endif //BDSBASE
 
 #ifndef CLIENT_DLL
 	void Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
@@ -103,6 +115,9 @@ acttable_t	CWeaponFrag::m_acttable[] =
 	{ ACT_HL2MP_GESTURE_RANGE_ATTACK,	ACT_HL2MP_GESTURE_RANGE_ATTACK_GRENADE,	false },
 	{ ACT_HL2MP_GESTURE_RELOAD,			ACT_HL2MP_GESTURE_RELOAD_GRENADE,		false },
 	{ ACT_HL2MP_JUMP,					ACT_HL2MP_JUMP_GRENADE,					false },
+#ifdef BDSBASE_NPC
+	{ ACT_RANGE_ATTACK1, ACT_RANGE_ATTACK_SLAM, true },
+#endif //BDSBASE
 };
 
 IMPLEMENT_ACTTABLE(CWeaponFrag);
@@ -203,6 +218,24 @@ void CWeaponFrag::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 		m_flNextPrimaryAttack	= gpGlobals->curtime + RETHROW_DELAY;
 		m_flNextSecondaryAttack	= gpGlobals->curtime + RETHROW_DELAY;
 		m_flTimeWeaponIdle = FLT_MAX; //NOTE: This is set once the animation has finished up!
+#ifdef BDSBASE_NPC		
+		// Make a sound designed to scare snipers back into their holes!
+		CBaseCombatCharacter* pOwner = GetOwner();
+
+		if (pOwner)
+		{
+			Vector vecSrc = pOwner->Weapon_ShootPosition();
+			Vector	vecDir;
+
+			AngleVectors(pOwner->EyeAngles(), &vecDir);
+
+			trace_t tr;
+
+			UTIL_TraceLine(vecSrc, vecSrc + vecDir * 1024, MASK_SOLID_BRUSHONLY, pOwner, COLLISION_GROUP_NONE, &tr);
+
+			CSoundEnt::InsertSound(SOUND_DANGER_SNIPERONLY, tr.endpos, 384, 0.2, pOwner);
+		}
+#endif //BDSBASE
 	}
 }
 

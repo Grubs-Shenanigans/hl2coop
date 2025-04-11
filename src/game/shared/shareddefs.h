@@ -584,11 +584,17 @@ enum
 	BLOOD_COLOR_GREEN,
 	BLOOD_COLOR_MECH,
 
+#ifdef BDSBASE_NPC
+	BLOOD_COLOR_ANTLION,		// FIXME: Move to Base HL2
+	BLOOD_COLOR_ZOMBIE,			// FIXME: Move to Base HL2
+	BLOOD_COLOR_ANTLION_WORKER,
+#else
 #if defined( HL2_EPISODIC )
 	BLOOD_COLOR_ANTLION,		// FIXME: Move to Base HL2
 	BLOOD_COLOR_ZOMBIE,			// FIXME: Move to Base HL2
 	BLOOD_COLOR_ANTLION_WORKER,
 #endif // HL2_EPISODIC
+#endif
 };
 
 //-----------------------------------------------------------------------------

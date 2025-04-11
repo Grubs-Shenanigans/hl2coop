@@ -12,7 +12,7 @@
 #include "eventlist.h"
 #include "npcevent.h"
 #ifdef BDSBASE
-#include "weapon_hl2mpbasebasebludgeon.h"
+#include "basebludgeonweapon.h"
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -938,7 +938,7 @@ int CItem_AmmoCrate::OnTakeDamage( const CTakeDamageInfo &info )
 		CBaseCombatWeapon* weapon = player->GetActiveWeapon();
 
 #ifdef BDSBASE
-		if (weapon && dynamic_cast<CBaseHL2MPBludgeonWeapon*>(weapon))
+		if (weapon && dynamic_cast<CBaseHLBludgeonWeapon*>(weapon))
 		{
 			if (info.GetDamageType() & DMG_CLUB)
 			{

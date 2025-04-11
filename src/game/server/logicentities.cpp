@@ -2430,7 +2430,11 @@ void CLogicAutosave::InputSave( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 void CLogicAutosave::InputSaveDangerous( inputdata_t &inputdata )
 {
-	CBasePlayer *pPlayer = UTIL_PlayerByIndex( 1 );
+#ifdef BDSBASE_NPC
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#else
+	CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
+#endif //BDSBASE
 
 	if ( g_ServerGameDLL.m_fAutoSaveDangerousTime != 0.0f && g_ServerGameDLL.m_fAutoSaveDangerousTime >= gpGlobals->curtime )
 	{
@@ -2479,8 +2483,13 @@ class CLogicActiveAutosave : public CLogicAutosave
 
 	void SaveThink()
 	{
-		CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
-		if ( pPlayer )
+#ifdef BDSBASE_NPC
+		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+		if (pPlayer && gpGlobals->maxClients == 1)
+#else
+		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+		if (pPlayer)
+#endif //BDSBASE
 		{
 			if ( m_flStartTime < 0 )
 			{

@@ -1033,12 +1033,20 @@ void CBaseEntity::DrawDebugGeometryOverlays(void)
 			NDebugOverlay::EntityBounds(this, 255, 255, 255, 0, 0 );
 		}
 	}
-	if ( m_debugOverlays & OVERLAY_AUTOAIM_BIT && (GetFlags()&FL_AIMTARGET) && AI_GetSinglePlayer() != NULL )
+
+#ifdef BDSBASE_NPC
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+	if (m_debugOverlays & OVERLAY_AUTOAIM_BIT && (GetFlags() & FL_AIMTARGET) && pPlayer != NULL)
+#else
+	if (m_debugOverlays & OVERLAY_AUTOAIM_BIT && (GetFlags() & FL_AIMTARGET) && AI_GetSinglePlayer() != NULL)
+#endif //BDSBASE
 	{
 		// Crude, but it gets the point across.
 		Vector vecCenter = GetAutoAimCenter();
 		Vector vecRight, vecUp, vecDiag;
-		CBasePlayer *pPlayer = AI_GetSinglePlayer();
+#ifndef BDSBASE_NPC
+		CBasePlayer* pPlayer = AI_GetSinglePlayer();
+#endif //BDSBASE
 		float radius = GetAutoAimRadius();
 
 		QAngle angles = pPlayer->EyeAngles();
@@ -1843,6 +1851,17 @@ int CBaseEntity::VPhysicsTakeDamage( const CTakeDamageInfo &info )
 #ifdef BDSBASE
 			CBasePlayer* pPlayer = NULL;
 
+#ifdef BDSBASE_NPC
+			for (int i = 1; i <= gpGlobals->maxClients; i++)
+			{
+				CBasePlayer* tempPlayer = UTIL_PlayerByIndex(i);
+				if (tempPlayer && (tempPlayer->GetHeldObject() == this))
+				{
+					pPlayer = tempPlayer;
+					break;
+				}
+			}
+#else
 			if (gpGlobals->maxClients == 1)
 			{
 				pPlayer = UTIL_GetLocalPlayer();
@@ -1862,6 +1881,7 @@ int CBaseEntity::VPhysicsTakeDamage( const CTakeDamageInfo &info )
 					}
 				}
 			}
+#endif
 #else
 			CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 #endif
@@ -7926,7 +7946,11 @@ void CBaseEntity::DispatchResponse( const char *conceptName )
 	ModifyOrAppendCriteria( set );
 
 	// Append local player criteria to set,too
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+#ifdef BDSBASE_NPC
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 	if( pPlayer )
 		pPlayer->ModifyOrAppendPlayerCriteria( set );
 
@@ -7985,7 +8009,11 @@ void CBaseEntity::DumpResponseCriteria( void )
 	ModifyOrAppendCriteria( set );
 
 	// Append local player criteria to set,too
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+#ifdef BDSBASE_NPC
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 	if ( pPlayer )
 	{
 		pPlayer->ModifyOrAppendPlayerCriteria( set );
@@ -8470,7 +8498,11 @@ bool CBaseEntity::SUB_AllowedToFade( void )
 
 	// on Xbox, allow these to fade out
 #ifndef _XBOX
-	CBasePlayer *pPlayer = ( AI_IsSinglePlayer() ) ? UTIL_GetLocalPlayer() : NULL;
+#ifdef BDSBASE_NPC
+	CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
+#else
+	CBasePlayer* pPlayer = (AI_IsSinglePlayer()) ? UTIL_GetLocalPlayer() : NULL;
+#endif //BDSBASE
 
 	if ( pPlayer && pPlayer->FInViewCone( this ) )
 		return false;

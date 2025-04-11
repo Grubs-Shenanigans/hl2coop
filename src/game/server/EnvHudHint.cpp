@@ -89,7 +89,11 @@ void CEnvHudHint::InputShowHudHint( inputdata_t &inputdata )
 		}
 		else
 		{
+#ifdef BDSBASE_NPC
+			pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
 			pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 		}
 
 		if ( !pPlayer || !pPlayer->IsNetClient() )
@@ -126,7 +130,11 @@ void CEnvHudHint::InputHideHudHint( inputdata_t &inputdata )
 		}
 		else
 		{
+#ifdef BDSBASE_NPC
+			pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+#else
 			pPlayer = UTIL_GetLocalPlayer();
+#endif //BDSBASE
 		}
 
 		if ( !pPlayer || !pPlayer->IsNetClient() )

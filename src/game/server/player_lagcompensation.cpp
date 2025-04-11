@@ -175,7 +175,6 @@ static void RestorePlayerTo( CBasePlayer *pPlayer, const Vector &vWantedPos )
 	}
 }
 
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -244,6 +243,7 @@ ILagCompensationManager *lagcompensation = &g_LagCompensationManager;
 //-----------------------------------------------------------------------------
 void CLagCompensationManager::FrameUpdatePostEntityThink()
 {
+
 	if ( (gpGlobals->maxClients <= 1) || !sv_unlag.GetBool() )
 	{
 		ClearHistory();
@@ -335,9 +335,9 @@ void CLagCompensationManager::FrameUpdatePostEntityThink()
 		record.m_masterSequence = pPlayer->GetSequence();
 		record.m_masterCycle = pPlayer->GetCycle();
 
-		for( int i=0; i<MAXSTUDIOPOSEPARAM; i++ )
+		for( int i2=0; i2<MAXSTUDIOPOSEPARAM; i2++ )
 		{
-			record.m_flPoseParameters[i] = pPlayer->GetPoseParameter(i);
+			record.m_flPoseParameters[i2] = pPlayer->GetPoseParameter(i2);
 		}
 	}
 
@@ -421,13 +421,13 @@ void CLagCompensationManager::StartLagCompensation( CBasePlayer *player, CUserCm
 	{
 		CBasePlayer *pPlayer = UTIL_PlayerByIndex( i );
 
-		if ( !pPlayer )
+		if (!pPlayer)
 		{
 			continue;
 		}
 
 		// Don't lag compensate yourself you loser...
-		if ( player == pPlayer )
+		if (player == pPlayer)
 		{
 			continue;
 		}
@@ -767,7 +767,6 @@ void CLagCompensationManager::BacktrackPlayer( CBasePlayer *pPlayer, float flTar
 		pPlayer->DrawServerHitboxes(4, true);
 	}
 }
-
 
 void CLagCompensationManager::FinishLagCompensation( CBasePlayer *player )
 {

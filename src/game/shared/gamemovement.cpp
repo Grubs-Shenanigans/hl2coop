@@ -1886,7 +1886,11 @@ void CGameMovement::Accelerate( Vector& wishdir, float wishspeed, float accel )
 		return;
 
 	// See if we are changing direction a bit
+#ifdef BDSBASE_NPC
+	currentspeed = sqrt(DotProduct(mv->m_vecVelocity, mv->m_vecVelocity));
+#else
 	currentspeed = mv->m_vecVelocity.Dot(wishdir);
+#endif //BDSBASE
 
 	// Reduce wishspeed by the amount of veer.
 	addspeed = wishspeed - currentspeed;

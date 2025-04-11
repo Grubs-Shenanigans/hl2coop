@@ -16,6 +16,10 @@
 #endif
 #else
 	#include "hl2mp_player.h"
+
+#ifdef BDSBASE_NPC
+	#include "te_effect_dispatch.h"
+#endif //BDSBASE
 #endif
 
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
@@ -41,6 +45,10 @@ public:
 
 #ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
+
+#ifdef BDSBASE_NPC
+	void Operator_HandleAnimEvent(animevent_t* pEvent, CBaseCombatCharacter* pOperator);
+#endif //BDSBASE
 #endif
 
 private:
@@ -77,6 +85,32 @@ acttable_t CWeapon357::m_acttable[] =
 
 IMPLEMENT_ACTTABLE( CWeapon357 );
 
+#ifdef BDSBASE_NPC
+void CWeapon357::Operator_HandleAnimEvent(animevent_t* pEvent, CBaseCombatCharacter* pOperator)
+{
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+
+	switch (pEvent->event)
+	{
+		case EVENT_WEAPON_RELOAD:
+		{
+			CEffectData data;
+
+			// Emit six spent shells
+			for (int i = 0; i < 6; i++)
+			{
+				data.m_vOrigin = pOwner->WorldSpaceCenter() + RandomVector(-4, 4);
+				data.m_vAngles = QAngle(90, random->RandomInt(0, 360), 0);
+				data.m_nEntIndex = entindex();
+
+				DispatchEffect("ShellEject", data);
+			}
+
+			break;
+		}
+	}
+}
+#endif //BDSBASE
 #endif
 
 //-----------------------------------------------------------------------------
@@ -157,9 +191,12 @@ void CWeapon357::PrimaryAttack( void )
 	angles.y += random->RandomInt(-1, 1);
 	angles.z = 0;
 
-#ifndef CLIENT_DLL
 	pPlayer->SnapEyeAngles(angles);
-#endif
+
+#ifdef BDSBASE_NPC
+	pPlayer->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
+	CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), 600, 0.2, GetOwner());
+#endif //BDSBASE
 #endif
 
 	pPlayer->ViewPunch( QAngle( -8, random->RandomFloat( -2, 2 ), 0 ) );
