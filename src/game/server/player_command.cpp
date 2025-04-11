@@ -305,7 +305,7 @@ void CPlayerMove::RunPostThink( CBasePlayer *player )
 
 #ifdef BDSBASE
 	int cl_ear_ringing_val = 1;
-	if (player->IsNetClient())
+	if (!player->IsFakeClient())
 	{
 		const char* cl_ear_ringing = engine->GetClientConVarValue(engine->IndexOfEdict(player->edict()), "cl_ear_ringing");
 		if (cl_ear_ringing)

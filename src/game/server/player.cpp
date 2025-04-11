@@ -1510,9 +1510,8 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 void CBasePlayer::OnDamagedByExplosion( const CTakeDamageInfo &info )
 {
 #ifdef BDSBASE
-
 	int cl_ear_ringing_val = 1;
-	if (IsNetClient())
+	if (!IsFakeClient())
 	{
 		const char* cl_ear_ringing = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_ear_ringing");
 		if (cl_ear_ringing)
@@ -2397,7 +2396,11 @@ bool CBasePlayer::StartObserverMode(int mode)
     AddSolidFlags( FSOLID_NOT_SOLID );
 
 #ifdef BDSBASE
+#if HL2MP
 	SetObserverMode(OBS_MODE_ROAMING);
+#else
+	SetObserverMode(mode);
+#endif
 #else
 	SetObserverMode(mode);
 #endif
