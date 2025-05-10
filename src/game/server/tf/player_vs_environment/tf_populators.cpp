@@ -2302,6 +2302,11 @@ void CWave::WaveCompleteUpdate( void )
 		}
 	}
 
+#ifdef BDSBASE
+	// Trigger wave win vo for players that survived
+	TFGameRules()->HaveAllPlayersSpeakConceptIfAllowed(MP_CONCEPT_MVM_WAVE_WIN);
+#endif
+
 	CBroadcastRecipientFilter filter;
 	filter.MakeReliable();
 	UserMessageBegin( filter, "MVMAnnouncement" );

@@ -860,6 +860,11 @@ void CTFTankBoss::TankBossThink( void )
 		m_isDroppingBomb = false;
 
 		TFGameRules()->BroadcastSound( 255, "Announcer.MVM_Tank_Planted" );
+
+#ifdef BDSBASE
+		// Added wave lose vo trigger
+		TFGameRules()->HaveAllPlayersSpeakConceptIfAllowed(MP_CONCEPT_MVM_WAVE_LOSE);
+#endif
 	}
 
 	// if the Tank is driving under something, shut off its smokestack
