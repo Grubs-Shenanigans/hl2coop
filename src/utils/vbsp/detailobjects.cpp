@@ -499,11 +499,19 @@ static void AddDetailSpriteToLump( const Vector &vecOrigin, const QAngle &vecAng
 {
 	// Insert an element into the object dictionary if it aint there...
 	int i = s_DetailObjectLump.AddToTail( );
-
-	if (i >= 65535)
+    
+#ifdef BDSBASE
+    if (i >= MAX_MAP_DETAIL_PROPS)
+    {
+		Warning( 	"Warning: Too many detail props emitted on this map! (recommended: %d, actual: %d\n" 
+				 	"This can cause performance issues!\n", MAX_MAP_DETAIL_PROPS, i);
+	}
+#else
+    if (i >= 65535)
 	{
 		Error( "Error! Too many detail props emitted on this map! (64K max!)n" );
 	}
+#endif
 
 	DetailObjectLump_t& objectLump = s_DetailObjectLump[i];
 	objectLump.m_DetailModel = AddDetailSpriteDictLump( pPos, pTex ); 
