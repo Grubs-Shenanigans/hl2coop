@@ -606,6 +606,10 @@ void CTFHudMatchStatus::FireGameEvent( IGameEvent * event )
 			{
 				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( this, "HudMatchStatus_ShowMatchWinDoors_NoOpen", false );
 			}
+
+#ifdef BDSBASE
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("CompetitiveGame_LowerChatWindow", false);
+#endif
 		}
 	}
 }
@@ -622,6 +626,9 @@ void CTFHudMatchStatus::HandleCountdown( int nTime )
 		if ( TFGameRules()->GetRoundsPlayed() == 0 )
 		{
 			ShowRoundSign( TFGameRules()->GetRoundsPlayed() );
+#ifdef BDSBASE
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("CompetitiveGame_RestoreChatWindow", false); // Restore chat window to in-game position
+#endif
 		}
 		break;
 	case 10:
@@ -665,6 +672,9 @@ void CTFHudMatchStatus::ShowMatchStartDoors()
 		m_pMatchStartModelPanel->SetSkin( nSkin );
 
 		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( this, "HudMatchStatus_ShowMatchStartDoors", false );
+#ifdef BDSBASE
+		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "CompetitiveGame_LowerChatWindow", false);	// Lowering chat window to minimize overlap with team lineup ui
+#endif
 
 		bool bUsesStickyRanks = pMatchDesc->BUsesStickyRanks();
 		SetControlVisible( "RankUpLabel", bUsesStickyRanks, true );
