@@ -124,6 +124,9 @@ public:
 	virtual void Simulate( void );
 	virtual void FireEvent( const Vector& origin, const QAngle& angles, int event, const char *options ) OVERRIDE;
 	virtual void UpdateStepSound( surfacedata_t *psurface, const Vector &vecOrigin, const Vector &vecVelocity ) OVERRIDE;
+#ifdef BDSBASE
+	virtual void PlayStepSound(Vector& vecOrigin, surfacedata_t* psurface, float fvol, bool force);
+#endif
 
 	CNewParticleEffect *SpawnHalloweenSpellFootsteps( ParticleAttachment_t eParticleAttachment, int iHalloweenFootstepType );
 
