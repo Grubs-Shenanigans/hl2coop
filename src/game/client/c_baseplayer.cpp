@@ -649,6 +649,10 @@ void C_BasePlayer::SetObserverMode ( int iNewMode )
 			g_ClientVirtualReality.AlignTorsoAndViewToWeapon();
 		}
 	}
+
+#ifdef BDSBASE
+	UpdateVisibility();
+#endif
 }
 
 
