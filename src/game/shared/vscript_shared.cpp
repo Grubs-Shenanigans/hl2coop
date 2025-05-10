@@ -58,6 +58,19 @@ private:
 };*/
 #endif
 
+#ifdef BDSBASE
+#define SCRIPT_PATH "scripts/vscripts"
+
+static const char* g_pszScriptExtensions[] =
+{
+	"",		// SL_NONE
+	".gm",	// SL_GAMEMONKEY
+	".nut",	// SL_SQUIRREL
+	".lua", // SL_LUA
+	".py",  // SL_PYTHON
+};
+#endif
+
 HSCRIPT VScriptCompileScript( const char *pszScriptName, bool bWarnMissing )
 {
 	if ( !g_pScriptVM )
@@ -65,7 +78,8 @@ HSCRIPT VScriptCompileScript( const char *pszScriptName, bool bWarnMissing )
 		return NULL;
 	}
 
-	static const char *pszExtensions[] =
+#ifndef BDSBASE
+	static const char* pszExtensions[] =
 	{
 		"",		// SL_NONE
 		".gm",	// SL_GAMEMONKEY
@@ -74,7 +88,10 @@ HSCRIPT VScriptCompileScript( const char *pszScriptName, bool bWarnMissing )
 		".py",  // SL_PYTHON
 	};
 
-	const char *pszVMExtension = pszExtensions[g_pScriptVM->GetLanguage()];
+	const char* pszVMExtension = pszExtensions[g_pScriptVM->GetLanguage()];
+#else
+	const char* pszVMExtension = g_pszScriptExtensions[g_pScriptVM->GetLanguage()];
+#endif
 	const char *pszIncomingExtension = V_strrchr( pszScriptName , '.' );
 	if ( pszIncomingExtension && V_strcmp( pszIncomingExtension, pszVMExtension ) != 0 )
 	{
@@ -83,14 +100,25 @@ HSCRIPT VScriptCompileScript( const char *pszScriptName, bool bWarnMissing )
 	}
 
 	CFmtStr scriptPath;
-	if ( pszIncomingExtension )
+#ifdef BDSBASE
+	if (pszIncomingExtension)
 	{
-		scriptPath.sprintf( "scripts/vscripts/%s", pszScriptName );
+		scriptPath.sprintf(SCRIPT_PATH "/%s", pszScriptName);
 	}
 	else
-	{	
-		scriptPath.sprintf( "scripts/vscripts/%s%s", pszScriptName,  pszVMExtension );
+	{
+		scriptPath.sprintf(SCRIPT_PATH "/%s%s", pszScriptName, pszVMExtension);
 	}
+#else
+	if (pszIncomingExtension)
+	{
+		scriptPath.sprintf("scripts/vscripts/%s", pszScriptName);
+	}
+	else
+	{
+		scriptPath.sprintf("scripts/vscripts/%s%s", pszScriptName, pszVMExtension);
+	}
+#endif
 
 	const char *pBase;
 	CUtlBuffer bufferScript;
@@ -258,12 +286,76 @@ CON_COMMAND( script, "Run the text as a script" )
 	}
 }
 
+#ifdef BDSBASE
+static void ScriptFileAutocompleteRecursive(const char* pDirectory, const char* pExtension,
+	const char* pMatch, int& nMatches, const char* pCommandName, char commands[COMMAND_COMPLETION_MAXITEMS][COMMAND_COMPLETION_ITEM_LENGTH])
+{
+	char szDirectory[MAX_PATH];
+	V_snprintf(szDirectory, sizeof(szDirectory), "%s/*", pDirectory);
 
+	FileFindHandle_t hFile;
+	const char* pFileName = filesystem->FindFirst(szDirectory, &hFile);
+	while (pFileName)
+	{
+		if (*pFileName != '.')
+		{
+			char szCompleteFilename[MAX_PATH];
+			V_snprintf(szCompleteFilename, sizeof(szCompleteFilename), "%s/%s", pDirectory, pFileName);
+			if (g_pFullFileSystem->FindIsDirectory(hFile))
+			{
+				ScriptFileAutocompleteRecursive(szCompleteFilename, pExtension, pMatch, nMatches, pCommandName, commands);
+			}
+			else
+			{
+				const char* pFileExtension = V_strrchr(pFileName, '.');
+				if (pFileExtension && !V_stricmp(pFileExtension, pExtension))
+				{
+					if (V_strstr(pFileName, pMatch))
+						V_snprintf(commands[nMatches++], COMMAND_COMPLETION_ITEM_LENGTH, "%s %s",
+							pCommandName, szCompleteFilename + sizeof(SCRIPT_PATH));
+				}
+			}
+		}
 
+		if (nMatches >= COMMAND_COMPLETION_MAXITEMS)
+			break;
+
+		pFileName = filesystem->FindNext(hFile);
+	}
+	filesystem->FindClose(hFile);
+}
+
+static int script_execute_autocomplete(const char* partial, char commands[COMMAND_COMPLETION_MAXITEMS][COMMAND_COMPLETION_ITEM_LENGTH])
+{
+	int nMatches = 0;
+	if (g_pScriptVM)
+	{
+		const char* pExtension = g_pszScriptExtensions[g_pScriptVM->GetLanguage()];
 #ifdef CLIENT_DLL
-CON_COMMAND( script_execute_client, "Run a vscript file" )
+		const char* pCommandName = "script_execute_client";
 #else
-CON_COMMAND( script_execute, "Run a vscript file" )
+		const char* pCommandName = "script_execute";
+#endif
+		const char* pMatch = partial + V_strlen(pCommandName) + 1;
+
+		ScriptFileAutocompleteRecursive(SCRIPT_PATH, pExtension, pMatch, nMatches, pCommandName, commands);
+	}
+	return nMatches;
+}
+#endif
+
+#ifdef BDSBASE
+#ifdef CLIENT_DLL
+CON_COMMAND_F_COMPLETION(script_execute_client, "Run a vscript file", FCVAR_NONE, script_execute_autocomplete)
+#else
+CON_COMMAND_F_COMPLETION(script_execute, "Run a vscript file", FCVAR_NONE, script_execute_autocomplete)
+#endif
+#else
+#ifdef CLIENT_DLL
+CON_COMMAND(script_execute_client, "Run a vscript file")
+#else
+CON_COMMAND(script_execute, "Run a vscript file")
+#endif
 #endif
 {
 #ifdef CLIENT_DLL
