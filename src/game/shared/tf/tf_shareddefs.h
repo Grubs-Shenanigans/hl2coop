@@ -822,9 +822,13 @@ enum ETFCond
 	TF_COND_HALLOWEEN_HELL_HEAL              = 128,
 	TF_COND_POWERUPMODE_DOMINANT			 = 129,
 	TF_COND_IMMUNE_TO_PUSHBACK				 = 130,
-		//
+	//
 	// ADD NEW ITEMS HERE TO AVOID BREAKING DEMOS
 	//
+
+#ifdef BDSBASE
+	TF_COND_MINICRITBOOSTED					= 131,
+#endif
 
 	// ******** Keep this block last! ********
 	// Keep experimental conditions below and graduate out of it before shipping

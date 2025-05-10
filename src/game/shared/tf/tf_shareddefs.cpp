@@ -430,6 +430,10 @@ static const char *g_aConditionNames[] =
 	// ADD NEW ITEMS HERE TO AVOID BREAKING DEMOS
 	//
 
+#ifdef BDSBASE
+	"TF_COND_MINICRITBOOSTED",					// = 131
+#endif
+
 	// ******** Keep this block last! ********
 	// Keep experimental conditions below and graduate out of it before shipping
 };

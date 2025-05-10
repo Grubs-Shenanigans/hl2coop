@@ -2109,7 +2109,11 @@ public:
 				vResult = Vector( 50, 2, 48 );
 				pPlayer->m_Shared.m_bChargeGlowing = false;
 			}
-			else if ( pPlayer->m_Shared.InCond( TF_COND_OFFENSEBUFF ) || pPlayer->m_Shared.InCond( TF_COND_ENERGY_BUFF ) )
+#ifdef BDSBASE
+			else if (pPlayer->m_Shared.InCond(TF_COND_OFFENSEBUFF) || pPlayer->m_Shared.InCond(TF_COND_ENERGY_BUFF) || pPlayer->m_Shared.InCond(TF_COND_MINICRITBOOSTED))
+#else
+			else if (pPlayer->m_Shared.InCond(TF_COND_OFFENSEBUFF) || pPlayer->m_Shared.InCond(TF_COND_ENERGY_BUFF))
+#endif
 			{
 				// Temporarily hijacking this proxy for buff FX.
 				if ( iVisibleTeam == TF_TEAM_RED )
