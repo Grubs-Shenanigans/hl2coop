@@ -727,7 +727,29 @@ void CTFMinigun::ActivatePushBackAttackMode( void )
 	}
 
 	pOwner->m_Shared.StartRageDrain();
-	EmitSound( "Heavy.Battlecry03" );
+
+#ifdef BDSBASE
+	CMultiplayer_Expresser* pExpresser = pOwner->GetMultiplayerExpresser();
+	Assert(pExpresser);
+	pExpresser->AllowMultipleScenes();
+
+	// Keep MvM lines exclusive to the mode, use generic lines elsewhere
+	if (pOwner->IsPlayerClass(TF_CLASS_HEAVYWEAPONS))
+	{
+		if (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_DEFENDERS)
+		{
+			pOwner->SpeakConceptIfAllowed(MP_CONCEPT_MVM_DEPLOY_RAGE);
+			pExpresser->DisallowMultipleScenes();
+			return;
+		}
+	}
+
+	pOwner->SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_BATTLECRY);
+	pExpresser->DisallowMultipleScenes();
+	return;
+#else
+	EmitSound("Heavy.Battlecry03");
+#endif
 }
 
 //-----------------------------------------------------------------------------
