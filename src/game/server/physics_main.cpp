@@ -2028,6 +2028,12 @@ void Physics_SimulateEntity( CBaseEntity *pEntity )
 		pEntity->PhysicsRunThink();
 	}
 }
+
+#ifdef BDSBASE
+extern ConVar sv_noclipduringpause;
+extern ConVar sv_pauseplayers;
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Runs the main physics simulation loop against all entities ( except players )
 //-----------------------------------------------------------------------------
@@ -2041,7 +2047,13 @@ void Physics_RunThinkFunctions( bool simulating )
 	// clear all entites freed outside of this loop
 	gEntList.CleanupDeleteList();
 
-	if ( !simulating )
+#ifdef BDSBASE
+	bool shouldPauseServerPlayers = (sv_noclipduringpause.GetBool() ? false : (!simulating && sv_pauseplayers.GetBool()));
+
+	if (!simulating && !shouldPauseServerPlayers)
+#else
+	if (!simulating)
+#endif
 	{
 		// only simulate players
 		for ( int i = 1; i <= gpGlobals->maxClients; i++ )
