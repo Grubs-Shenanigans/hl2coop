@@ -1017,8 +1017,12 @@ BEGIN_DATADESC( CEnvGlobal )
 	DEFINE_INPUTFUNC( FIELD_INTEGER, "SetCounter",	InputSetCounter ),
 	DEFINE_INPUTFUNC( FIELD_INTEGER, "AddToCounter",	InputAddToCounter ),
 	DEFINE_INPUTFUNC( FIELD_VOID, "GetCounter",	InputGetCounter ),
-	
-	DEFINE_OUTPUT( m_outCounter, "Counter" ),
+
+#ifdef BDSBASE
+	DEFINE_OUTPUT(m_outCounter, "OnCounter"),
+#else
+	DEFINE_OUTPUT(m_outCounter, "Counter"),
+#endif
 
 END_DATADESC()
 
