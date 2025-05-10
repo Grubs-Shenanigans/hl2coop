@@ -67,7 +67,16 @@ public:
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
 
 	bool		 HasPreferredCarryAnglesForPlayer( CBasePlayer *pPlayer );
-	virtual QAngle PreferredCarryAngles( void ) { return m_angPreferredCarryAngles; }
+
+#ifdef BDSBASE
+#ifdef HL2MP
+	virtual QAngle PreferredCarryAngles(CBasePlayer* pPlayer) { return m_angPreferredCarryAngles; }
+#else
+	virtual QAngle PreferredCarryAngles(void) { return m_angPreferredCarryAngles; }
+#endif
+#else
+	virtual QAngle PreferredCarryAngles(void) { return m_angPreferredCarryAngles; }
+#endif
 
 	// inputs
 	void InputWake( inputdata_t &inputdata );
