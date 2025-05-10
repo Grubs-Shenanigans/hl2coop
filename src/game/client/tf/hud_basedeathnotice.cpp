@@ -510,10 +510,13 @@ void CHudBaseDeathNotice::FireGameEvent( IGameEvent *event )
 		m_DeathNotices[iMsg].Victim.iTeam = g_PR->GetTeam( victim );
 		Q_strncpy( m_DeathNotices[iMsg].Killer.szName, killer_name, ARRAYSIZE( m_DeathNotices[iMsg].Killer.szName ) );
 		Q_strncpy( m_DeathNotices[iMsg].Victim.szName, victim_name, ARRAYSIZE( m_DeathNotices[iMsg].Victim.szName ) );
-		if ( killedwith && *killedwith )
+
+#ifndef BDSBASE
+		if (killedwith && *killedwith)
 		{
-			Q_snprintf( m_DeathNotices[iMsg].szIcon, sizeof(m_DeathNotices[iMsg].szIcon), "d_%s", killedwith );
-		}			
+			Q_snprintf(m_DeathNotices[iMsg].szIcon, sizeof(m_DeathNotices[iMsg].szIcon), "d_%s", killedwith);
+		}
+#endif		
 		if ( !killer || killer == victim )
 		{
 			m_DeathNotices[iMsg].bSelfInflicted = true;
@@ -545,8 +548,17 @@ void CHudBaseDeathNotice::FireGameEvent( IGameEvent *event )
 					// special case icon for hit-by-vehicle death
 					Q_strncpy( m_DeathNotices[ iMsg ].szIcon, "d_vehicle", ARRAYSIZE( m_DeathNotices[ iMsg ].szIcon ) );
 				}
-			}			
+			}
 		}
+#ifdef BDSBASE
+		else
+		{
+			if (killedwith && *killedwith)
+			{
+				Q_snprintf(m_DeathNotices[iMsg].szIcon, sizeof(m_DeathNotices[iMsg].szIcon), "d_%s", killedwith);
+			}	
+		}
+#endif
 
 		m_DeathNotices[iMsg].iWeaponID = event->GetInt( "weaponid" );
 		m_DeathNotices[iMsg].iKillerID = event->GetInt( "attacker" );
