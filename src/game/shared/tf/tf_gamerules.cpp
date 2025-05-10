@@ -12117,11 +12117,26 @@ void CTFGameRules::CreateStandardEntities()
 	m_hGamerulesProxy->SetName( AllocPooledString("tf_gamerules" ) );
 	
 	g_voteControllerGlobal	=	static_cast< CVoteController *>( CBaseEntity::Create( "vote_controller", vec3_origin, vec3_angle ) );
+#ifdef BDSBASE
+	g_voteControllerGlobal->SetName(MAKE_STRING("zz_global_vote_controller"));
+#endif
 	g_voteControllerRed		=	static_cast< CVoteController *>( CBaseEntity::Create( "vote_controller", vec3_origin, vec3_angle ) );
+#ifdef BDSBASE
+	g_voteControllerRed->SetName(MAKE_STRING("zz_red_vote_controller"));
+#endif
 	g_voteControllerBlu		=	static_cast< CVoteController *>( CBaseEntity::Create( "vote_controller", vec3_origin, vec3_angle ) );
+#ifdef BDSBASE
+	g_voteControllerBlu->SetName(MAKE_STRING("zz_blue_vote_controller"));
+#endif
 
 	// Vote Issue classes are handled/cleaned-up by g_voteControllers
+#ifdef BDSBASE
+	NewTeamIssue< CDummyIssue >();
+#endif
 	NewTeamIssue< CKickIssue >();
+#ifdef BDSBASE
+	NewGlobalIssue< CDummyIssue >();
+#endif
 	NewGlobalIssue< CRestartGameIssue >();
 	NewGlobalIssue< CChangeLevelIssue >();
 	NewGlobalIssue< CNextLevelIssue >();

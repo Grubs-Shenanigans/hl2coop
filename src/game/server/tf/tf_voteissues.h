@@ -29,6 +29,18 @@ public:
 	}
 };
 
+#ifdef BDSBASE
+class CDummyIssue : public CBaseTFIssue
+{
+public:
+	CDummyIssue(CVoteController* pVoteController) : CBaseTFIssue("Dummy", pVoteController) { }
+
+	virtual void		ExecuteCommand(void) OVERRIDE { };
+	virtual const char* GetDisplayString(void) OVERRIDE { return "Placeholder"; };
+	virtual void		ListIssueDetails(CBasePlayer* forWhom) OVERRIDE { };
+};
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
