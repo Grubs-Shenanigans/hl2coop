@@ -93,6 +93,10 @@ ConVar fraglimit( "mp_fraglimit","0", FCVAR_NOTIFY|FCVAR_REPLICATED, "The number
 
 ConVar mp_show_voice_icons( "mp_show_voice_icons", "1", FCVAR_REPLICATED, "Show overhead player voice icons when players are speaking.\n" );
 
+#ifdef BDSBASE
+ConVar mp_enable_coloredtext("mp_enable_coloredtext", "0", FCVAR_NOTIFY|FCVAR_REPLICATED, "");
+#endif
+
 #ifdef GAME_DLL
 
 ConVar tv_delaymapchange( "tv_delaymapchange", "0", FCVAR_NONE, "Delays map change until broadcast is complete" );
