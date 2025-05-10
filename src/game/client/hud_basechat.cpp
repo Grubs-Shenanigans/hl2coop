@@ -156,6 +156,10 @@ wchar_t* ReadLocalizedString( bf_read &msg, OUT_Z_BYTECAP(outSizeInBytes) wchar_
 	return pOut;
 }
 
+#ifdef BDSBASE
+extern ConVar mp_enable_coloredtext;
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Reads a string from the current message, converts it to unicode, and strips out color codes
 //-----------------------------------------------------------------------------
@@ -178,10 +182,28 @@ wchar_t* ReadChatTextString( bf_read &msg, OUT_Z_BYTECAP(outSizeInBytes) wchar_t
 			{
 				// mark the next seven or nine characters. one for the control character and six or eight for the code itself.
 				const int nSkip = ( *test == COLOR_HEXCODE ? 7 : 9 );
-				for ( int i = 0; i < nSkip && *test != 0; i++, test++ )
+
+#ifdef BDSBASE
+				if (mp_enable_coloredtext.GetBool())
+				{
+					for (int i = 0; i < nSkip && *test != 0; i++, test++)
+					{
+						*test = COLOR_NORMAL;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < nSkip && *test != 0; i++)
+					{
+						*++test = COLOR_NORMAL;
+					}
+				}
+#else
+				for (int i = 0; i < nSkip && *test != 0; i++, test++)
 				{
 					*test = COLOR_NORMAL;
 				}
+#endif
 
 				// if we reached the end of the string first, then back up
 				if ( *test == 0 )
