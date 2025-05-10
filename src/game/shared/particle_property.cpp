@@ -561,10 +561,10 @@ void CParticleProperty::UpdateControlPoint( ParticleEffectList_t *pEffect, int i
 
 #ifdef TF_CLIENT_DLL
 
-	CBaseEntity* pWearable = (CBaseEntity*)pPoint->hEntity.Get();
-	if (pWearable && GetAttribInterface(pWearable) && !pWearable->IsPlayer())
+	CBaseEntity* pEnt = (CBaseEntity*)pPoint->hEntity.Get();
+	if (pEnt && GetAttribInterface(pEnt) && !pEnt->IsPlayer())
 	{
-		CTFWearable* pTFWearable = dynamic_cast<CTFWearable*>(pWearable);
+		CTFWearable* pTFWearable = dynamic_cast<CTFWearable*>(pEnt);
 
 		if (pTFWearable)
 		{
