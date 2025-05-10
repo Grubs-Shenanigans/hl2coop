@@ -8,7 +8,6 @@ This base is specific to multiplayer mod projects.
 
 ## Projects using this base:
 - SURVIVOR II (Based on HL2DM)
-- Grey's Revenge (Based on TF2)
 
 ## Features:
 - Restored game project generator scripts. No more having to generate every project!
