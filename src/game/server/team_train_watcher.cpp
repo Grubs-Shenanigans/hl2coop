@@ -1184,10 +1184,23 @@ void CTeamTrainWatcher::WatcherThink( void )
 					CBaseMultiplayerPlayer *pPlayer = ToBaseMultiplayerPlayer( UTIL_PlayerByIndex( i ) );
 					if ( pPlayer )
 					{
-						if ( m_hAreaCap->IsTouching( pPlayer ) )
+#ifdef BDSBASE
+						if (m_hAreaCap->IsTouching(pPlayer))
 						{
-							pPlayer->SpeakConceptIfAllowed( MP_CONCEPT_CART_MOVING_FORWARD );
+							// only makes sense for offense
+							pPlayer->SpeakConceptIfAllowed(MP_CONCEPT_CART_PUSHING);
 						}
+						else
+						{
+							// for offense and defense, since cart doesn't move when red is touching
+							pPlayer->SpeakConceptIfAllowed(MP_CONCEPT_CART_MOVING_FORWARD);
+						}
+#else
+						if (m_hAreaCap->IsTouching(pPlayer))
+						{
+							pPlayer->SpeakConceptIfAllowed(MP_CONCEPT_CART_MOVING_FORWARD);
+						}
+#endif
 					}
 				}
 			}

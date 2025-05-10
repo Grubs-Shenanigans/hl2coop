@@ -993,7 +993,11 @@ bool CHud::IsHidden( int iHudFlags )
 		return true;
 
 	// Local player dead?
-	if ( ( iHudFlags & HIDEHUD_PLAYERDEAD ) && ( pPlayer->GetHealth() <= 0 && !pPlayer->IsAlive() ) )
+#ifdef BDSBASE
+	if ((iHudFlags & HIDEHUD_PLAYERDEAD) && !pPlayer->IsAlive())
+#else
+	if ((iHudFlags & HIDEHUD_PLAYERDEAD) && (pPlayer->GetHealth() <= 0 && !pPlayer->IsAlive()))
+#endif
 		return true;
 
 	// Need the HEV suit ( HL2 )
