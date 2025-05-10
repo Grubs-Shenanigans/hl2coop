@@ -40,6 +40,6 @@ BDSBASE_CUSTOM_SCHEMA
 - Enables the creation of a items_custom.txt file that allows the addition and modification of items without needing to modify the items_game.txt file.
 
 ## Setup:
-Read Autumn's setup guide at README_FROG.md for detailed setup.
+Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.
 You may also read a more detailed guide here:
 https://developer.valvesoftware.com/wiki/Source_SDK_2013
