@@ -1715,14 +1715,15 @@ Rule MvMDeployRageHeavy
 
 Response RocketDestroyedHeavy
 {
-	scene "scenes/Player/Heavy/low/3979.vcd" 
-	scene "scenes/Player/Heavy/low/3980.vcd" 
-	scene "scenes/Player/Heavy/low/3982.vcd" 
+     	scene "scenes/Player/Heavy/low/3979.vcd"
+    	scene "scenes/Player/Heavy/low/3980.vcd"
+     	scene "scenes/Player/Heavy/low/3982.vcd"
 }
 Rule RocketDestroyedHeavy
 {
-	criteria ConceptRocketDestroyed 50PercentChance IsHeavy
-	Response RocketDestroyedHeavy
+     	criteria ConceptRocketDestroyed 10PercentChance IsHeavy
+     	ApplyContext "IsDominating:1:5" // Adding this so Heavy doesn't get cut off when taking damage
+     	Response RocketDestroyedHeavy
 }
 
 //--------------------------------------------------------------------------------------------------------------

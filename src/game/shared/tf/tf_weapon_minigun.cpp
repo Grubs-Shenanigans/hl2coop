@@ -29,6 +29,9 @@
 #include "particle_parse.h"
 #include "tf_gamestats.h"
 #include "baseprojectile.h"
+#ifdef BDSBASE
+#include "tf_projectile_rocket.h"
+#endif
 #endif
 
 #define MAX_BARREL_SPIN_VELOCITY	20
@@ -682,6 +685,20 @@ void CTFMinigun::AttackEnemyProjectiles( void )
 					pProjectile->Destroy( false, true );
 
 					EmitSound( "Halloween.HeadlessBossAxeHitWorld" );
+
+#ifdef BDSBASE
+					// Trigger response rule, we only have vo for Rockets so limit to that type
+					CTFProjectile_Rocket* pRocket = dynamic_cast<CTFProjectile_Rocket*>(pProjectile);
+					if (pRocket)
+					{
+						// Making sure Heavy has a chance to speak the lines, he will be typically be under fire in these scenarios
+						CMultiplayer_Expresser* pExpresser = pPlayer->GetMultiplayerExpresser();
+						Assert(pExpresser);
+						pExpresser->AllowMultipleScenes();
+						pPlayer->SpeakConceptIfAllowed(MP_CONCEPT_ROCKET_DESTOYED);
+						pExpresser->DisallowMultipleScenes();
+					}
+#endif
 
 					CTF_GameStats.Event_PlayerAwardBonusPoints( pPlayer, NULL, 2 );
 
