@@ -2841,6 +2841,10 @@ void CTFPlayer::PrecacheMvM()
 
 	PrecacheModel( "models/bots/tw2/boss_bot/twcarrier_addon.mdl" );
 
+#ifdef BDSBASE
+	PrecacheModel("models/player/gibs/gibs_bolt.mdl");
+#endif
+
 	PrecacheParticleSystem( "bot_impact_light" );
 	PrecacheParticleSystem( "bot_impact_heavy" );
 	PrecacheParticleSystem( "bot_death" );
@@ -9204,7 +9208,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 				pRandomInternalOrgan->KeyValue("origin", buf);
 				Q_snprintf(buf, sizeof(buf), "%.10f %.10f %.10f", GetAbsAngles().x, GetAbsAngles().y, GetAbsAngles().z);
 				pRandomInternalOrgan->KeyValue("angles", buf);
-				if (TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_BLUE)
+				if (TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && BloodColor() == DONT_BLEED)
 				{
 					//robots don't have spleens....
 					pRandomInternalOrgan->KeyValue("model", "models/player/gibs/gibs_bolt.mdl");
