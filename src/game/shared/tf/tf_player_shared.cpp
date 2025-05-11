@@ -4029,6 +4029,7 @@ void CTFPlayerShared::OnAddTaunting( void )
 	// Unzoom if we are a sniper zoomed!
 	InstantlySniperUnzoom();
 
+#ifndef BDSBASE
 	if ( ( m_pOuter->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) || m_pOuter->IsPlayerClass( TF_CLASS_SCOUT ) ) && GetTauntIndex() == TAUNT_BASE_WEAPON )
 	{
 		CTFLunchBox *pLunchBox = dynamic_cast <CTFLunchBox *> ( pWpn );
@@ -4037,6 +4038,7 @@ void CTFPlayerShared::OnAddTaunting( void )
 			pLunchBox->DrainAmmo();
 		}
 	}
+#endif
 
 #ifdef GAME_DLL
 	m_pOuter->PlayWearableAnimsForPlaybackEvent( WAP_START_TAUNTING );
@@ -4075,23 +4077,75 @@ void CTFPlayerShared::OnRemoveTaunting( void )
 	}
 
 #ifdef GAME_DLL
-	// Switch to our melee weapon, if we are at the end of a type 2 lunchbox taunt.
-	if ( m_bBiteEffectWasApplied && InCond( TF_COND_CANNOT_SWITCH_FROM_MELEE ) )
+
+#ifdef BDSBASE
+	// Switch weapons after lunchbox effects were applied
+	if (m_bBiteEffectWasApplied)
 	{
-		CBaseCombatWeapon *pWpn = m_pOuter->Weapon_GetSlot( TF_WPN_TYPE_MELEE );
-		if ( pWpn )
+		bool bSwitchWeapon = false;
+		// Switch to our melee weapon, if we are at the end of a type 2 lunchbox taunt or finished eating.
+		if (InCond(TF_COND_CANNOT_SWITCH_FROM_MELEE))
 		{
-			m_pOuter->Weapon_Switch( pWpn );
+			CBaseCombatWeapon* pWpn = m_pOuter->Weapon_GetSlot(TF_WPN_TYPE_MELEE);
+			if (pWpn)
+			{
+				m_pOuter->Weapon_Switch(pWpn);
+			}
+			else
+			{
+				// Safety net
+				RemoveCond(TF_COND_ENERGY_BUFF);
+				RemoveCond(TF_COND_CANNOT_SWITCH_FROM_MELEE);
+				bSwitchWeapon = true;
+			}
+		}
+		else
+		{
+			CBaseCombatWeapon* pActiveWpn = m_pOuter->GetActiveTFWeapon();
+
+			// Drink effects should always switch away
+			// Heavy might still be hungry, don't switch away if he has more lunchbox ammo
+			if (InCond(TF_COND_ENERGY_BUFF) || InCond(TF_COND_PHASE) || (pActiveWpn && !pActiveWpn->HasAnyAmmo()))
+			{
+				bSwitchWeapon = true;
+			}
+		}
+
+		// Switch to last weapon, otherwise the next best weapon
+		if (bSwitchWeapon)
+		{
+			CBaseCombatWeapon* pLastWeapon = m_pOuter->GetLastWeapon();
+			if (pLastWeapon && m_pOuter->Weapon_CanSwitchTo(pLastWeapon))
+			{
+				m_pOuter->Weapon_Switch(pLastWeapon);
+			}
+			else
+			{
+				m_pOuter->SwitchToNextBestWeapon(pLastWeapon);
+			}
+		}
+
+		m_bBiteEffectWasApplied = false;
+	}
+#else
+	// Switch to our melee weapon, if we are at the end of a type 2 lunchbox taunt.
+	if (m_bBiteEffectWasApplied && InCond(TF_COND_CANNOT_SWITCH_FROM_MELEE))
+	{
+		CBaseCombatWeapon* pWpn = m_pOuter->Weapon_GetSlot(TF_WPN_TYPE_MELEE);
+		if (pWpn)
+		{
+			m_pOuter->Weapon_Switch(pWpn);
 		}
 		else
 		{
 			// Safety net
-			RemoveCond( TF_COND_ENERGY_BUFF );
-			RemoveCond( TF_COND_CANNOT_SWITCH_FROM_MELEE );
+			RemoveCond(TF_COND_ENERGY_BUFF);
+			RemoveCond(TF_COND_CANNOT_SWITCH_FROM_MELEE);
 		}
 	}
 
 	m_bBiteEffectWasApplied = false;
+#endif
 
 	if ( m_pOuter->m_hTauntItem != NULL )
 	{

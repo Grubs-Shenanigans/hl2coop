@@ -10998,6 +10998,7 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		}
 	}
 
+#ifndef BDSBASE
 	// Prevents a sandwich ignore-ammo-while-taking-damage-and-eating alias exploit
 	if ( m_Shared.InCond( TF_COND_TAUNTING ) && m_Shared.GetTauntIndex() == TAUNT_BASE_WEAPON )
 	{
@@ -11013,6 +11014,7 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			}
 		}
 	}
+#endif
 
 	// Fire a global game event - "player_hurt"
 	IGameEvent * event = gameeventmanager->CreateEvent( "player_hurt" );
@@ -18940,25 +18942,59 @@ void CTFPlayer::DoTauntAttack( void )
 				float flDropDeadTime = ( 100.f / tf_scout_energydrink_consume_rate.GetFloat() ) + 1.f;	// Just in case.  Normally over in 8 seconds.
 
 				CTFLunchBox *pLunchbox = static_cast< CTFLunchBox* >( pActiveWeapon );
-				if ( pLunchbox && pLunchbox->GetLunchboxType() == LUNCHBOX_ADDS_MINICRITS )
+
+#ifdef BDSBASE
+				if (pLunchbox)
 				{
-					m_Shared.AddCond( TF_COND_ENERGY_BUFF, flDropDeadTime );
+					if (pLunchbox->GetLunchboxType() == LUNCHBOX_ADDS_MINICRITS)
+					{
+						m_Shared.AddCond(TF_COND_ENERGY_BUFF, flDropDeadTime);
+					}
+					else
+					{
+						m_Shared.AddCond(TF_COND_PHASE, flDropDeadTime);
+
+						if (HasTheFlag())
+						{
+							bool bShouldDrop = true;
+
+							// Always allow teams to hear each other in TD mode
+							if (TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS)
+							{
+								bShouldDrop = false;
+							}
+
+							if (bShouldDrop)
+							{
+								DropFlag();
+							}
+						}
+
+					}
+
+					pLunchbox->DrainAmmo();
+					m_Shared.SetBiteEffectWasApplied();
+				}
+#else
+				if (pLunchbox && pLunchbox->GetLunchboxType() == LUNCHBOX_ADDS_MINICRITS)
+				{
+					m_Shared.AddCond(TF_COND_ENERGY_BUFF, flDropDeadTime);
 				}
 				else
 				{
-					m_Shared.AddCond( TF_COND_PHASE, flDropDeadTime );
+					m_Shared.AddCond(TF_COND_PHASE, flDropDeadTime);
 
-					if ( HasTheFlag() )
+					if (HasTheFlag())
 					{
 						bool bShouldDrop = true;
 
 						// Always allow teams to hear each other in TD mode
-						if ( TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS )
+						if (TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS)
 						{
 							bShouldDrop = false;
 						}
 
-						if ( bShouldDrop )
+						if (bShouldDrop)
 						{
 							DropFlag();
 						}
@@ -18966,6 +19002,7 @@ void CTFPlayer::DoTauntAttack( void )
 				}
 
 				SelectLastItem();
+#endif
 			}
 		}
 	}
