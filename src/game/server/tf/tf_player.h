@@ -778,6 +778,10 @@ public:
 	bool				ScriptIsImmuneToPushback( void ) const		{ return m_Shared.IsImmuneToPushback(); }
 	int					ScriptGetDisguiseAmmoCount()				{ return m_Shared.GetDisguiseAmmoCount(); }
 	void				ScriptSetDisguiseAmmoCount( int nValue )	{ return m_Shared.SetDisguiseAmmoCount(nValue); }
+#ifdef BDSBASE
+	int					ScriptGetDisguiseAmmoReserveCount()			{ return m_Shared.GetDisguiseAmmoReserveCount(); }
+	void				ScriptSetDisguiseAmmoReserveCount(int nValue) { return m_Shared.SetDisguiseAmmoReserveCount(nValue); }
+#endif
 	int					ScriptGetDisguiseTeam()						{ return m_Shared.GetDisguiseTeam(); }
 	bool				ScriptIsFullyInvisible()					{ return m_Shared.IsFullyInvisible(); }
 	float				ScriptGetSpyCloakMeter()					{ return m_Shared.GetSpyCloakMeter(); }
@@ -1428,6 +1432,10 @@ private:
 	int					m_peakDamagePerSecond;
 
 	CNetworkVar( uint16, m_nActiveWpnClip );
+#ifdef BDSBASE
+	CNetworkVar(uint16, m_nActiveWpnReserve);
+	uint16				m_nActiveWpnReservePrev;
+#endif
 	uint16				m_nActiveWpnClipPrev;
 	float				m_flNextClipSendTime;
 

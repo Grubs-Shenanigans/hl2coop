@@ -887,6 +887,9 @@ private:
 
 	// Medic healtarget active weapon ammo/clip count
 	uint16	m_nActiveWpnClip;
+#ifdef BDSBASE
+	uint16	m_nActiveWpnReserve;
+#endif
 	
 	// Blast jump whistle
 	CSoundPatch		*m_pBlastJumpLoop;
