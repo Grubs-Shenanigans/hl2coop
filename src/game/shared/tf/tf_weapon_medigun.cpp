@@ -180,7 +180,11 @@ BEGIN_PREDICTION_DATA( CWeaponMedigun  )
 	DEFINE_FIELD( m_bCanChangeTarget, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flHealEffectLifetime, FIELD_FLOAT ),
 
-	DEFINE_PRED_FIELD( m_flChargeLevel, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
+#ifdef BDSBASE
+	DEFINE_PRED_FIELD_TOL(m_flChargeLevel, FIELD_FLOAT, FTYPEDESC_INSENDTABLE, 0.125f),
+#else
+	DEFINE_PRED_FIELD(m_flChargeLevel, FIELD_FLOAT, FTYPEDESC_INSENDTABLE),
+#endif
 	DEFINE_PRED_FIELD( m_bChargeRelease, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE ),
 
 //	DEFINE_PRED_FIELD( m_bPlayingSound, FIELD_BOOLEAN ),
@@ -1698,8 +1702,28 @@ void CWeaponMedigun::ItemPostFrame( void )
 		m_bReloadDown = false;
 	}
 
+#ifdef BDSBASE
+#ifdef CLIENT_DLL
+	DrainCharge();
+#endif
+#endif
+
 	WeaponIdle();
 }
+
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: Drain Ubercharge on client during weapon draw to fix prediction errors
+//-----------------------------------------------------------------------------
+void CWeaponMedigun::ItemBusyFrame(void)
+{
+#ifdef CLIENT_DLL
+	DrainCharge();
+#endif
+
+	BaseClass::ItemBusyFrame();
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -2051,11 +2075,16 @@ void CWeaponMedigun::SecondaryAttack( void )
 	{
 		// Remove charge immediately and just give target and yourself the conditions
 		m_bChargeRelease = false;
+#ifdef BDSBASE
+		SetChargeLevel(m_flChargeLevel - flChunkSize);
+#endif
 #ifdef GAME_DLL
 		float flResistDuration = weapon_vaccinator_resist_duration.GetFloat();
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pOwner, flResistDuration, add_uber_time );
 		pOwner->m_Shared.AddCond( g_MedigunResistConditions[GetResistType()].uberCond, flResistDuration, pOwner );
+#ifdef BDSBASE
 		m_flChargeLevel -= flChunkSize;
+#endif
 		if ( pTFPlayerPatient )
 		{
 			pTFPlayerPatient->m_Shared.AddCond( g_MedigunResistConditions[GetResistType()].uberCond, flResistDuration, pOwner );

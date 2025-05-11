@@ -73,6 +73,9 @@ public:
 	virtual void	UpdateOnRemove( void );
 	virtual void	ItemHolsterFrame( void );
 	virtual void	ItemPostFrame( void );
+#ifdef BDSBASE
+	virtual void	ItemBusyFrame(void);
+#endif
 	virtual bool	Lower( void );
 	virtual void	PrimaryAttack( void );
 	virtual void	SecondaryAttack( void );
