@@ -33,6 +33,10 @@
 	#include "ai_basenpc.h"
 	#include "env_zoom.h"
 
+#ifdef BDSBASE
+	#include "ammodef.h"
+#endif
+
 	extern int TrainSpeed(int iSpeed, int iMax);
 	
 #endif
