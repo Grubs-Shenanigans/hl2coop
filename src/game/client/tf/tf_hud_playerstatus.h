@@ -196,11 +196,18 @@ private:
 	vgui::ImagePanel	*m_pWheelOfDoomImage;
 	vgui::ImagePanel	*m_pSlowedImage;
 	CExLabel			*m_pPlayerLevelLabel;
+#ifdef BDSBASE
+	CExLabel* m_pPlayerHealthLabel;
+	CExLabel* m_pPlayerMaxHealthLabel;
+#endif
 
 	CUtlVector<CTFBuffInfo*> m_vecBuffInfo;
 
 	int					m_nHealth;
 	int					m_nMaxHealth;
+#ifdef BDSBASE
+	int					m_nMaxBuffedHealth;
+#endif
 
 	int					m_nBonusHealthOrigX;
 	int					m_nBonusHealthOrigY;

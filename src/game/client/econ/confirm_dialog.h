@@ -187,7 +187,9 @@ public:
 
 	CTFSpectatorGUIHealth *m_pTargetHealth;
 	CHandle< C_BaseEntity >	m_hEntity;
+#ifndef BDSBASE
 	float m_flPrevHealth;
+#endif
 
 protected:
 	// Revive dialog occurs in game, so we expect to be in this action set

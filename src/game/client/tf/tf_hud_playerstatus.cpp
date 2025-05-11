@@ -712,6 +712,13 @@ CTFHudPlayerHealth::CTFHudPlayerHealth( Panel *parent, const char *name ) : Edit
 
 	m_iAnimState = HUD_HEALTH_NO_ANIM;
 	m_bAnimate = true;
+
+#ifdef BDSBASE
+	m_pPlayerLevelLabel = NULL;
+
+	m_pPlayerHealthLabel = NULL;
+	m_pPlayerMaxHealthLabel = NULL;
+#endif
 }
 
 CTFHudPlayerHealth::~CTFHudPlayerHealth()
@@ -751,6 +758,11 @@ void CTFHudPlayerHealth::ApplySchemeSettings( IScheme *pScheme )
 	m_pBuildingHealthImageBG->SetVisible( m_bBuilding );
 
 	m_pPlayerLevelLabel = dynamic_cast<CExLabel*>( FindChildByName( "PlayerStatusPlayerLevel" ) );
+
+#ifdef BDSBASE
+	m_pPlayerHealthLabel = dynamic_cast<CExLabel*>(FindChildByName("PlayerStatusHealthValue"));
+	m_pPlayerMaxHealthLabel = dynamic_cast<CExLabel*>(FindChildByName("PlayerStatusMaxHealthValue"));
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -758,105 +770,239 @@ void CTFHudPlayerHealth::ApplySchemeSettings( IScheme *pScheme )
 //-----------------------------------------------------------------------------
 void CTFHudPlayerHealth::SetHealth( int iNewHealth, int iMaxHealth, int	iMaxBuffedHealth )
 {
+#ifdef BDSBASE
+	if (m_nHealth != iNewHealth || m_nMaxHealth != iMaxHealth || m_nMaxBuffedHealth != iMaxBuffedHealth)
+	{
+		// set our health
+		m_nHealth = iNewHealth;
+		m_nMaxHealth = iMaxHealth;
+		m_nMaxBuffedHealth = iMaxBuffedHealth;
+
+		m_pHealthImage->SetHealth((float)(m_nHealth) / (float)(m_nMaxHealth));
+		m_pHealthImage->SetFgColor(Color(255, 255, 255, 255));
+
+		if (m_nHealth <= 0)
+		{
+			if (m_pHealthImageBG->IsVisible())
+			{
+				m_pHealthImageBG->SetVisible(false);
+			}
+			if (m_pBuildingHealthImageBG->IsVisible())
+			{
+				m_pBuildingHealthImageBG->SetVisible(false);
+			}
+			HideHealthBonusImage();
+
+			if (m_pPlayerHealthLabel && m_pPlayerHealthLabel->IsVisible())
+			{
+				m_pPlayerHealthLabel->SetVisible(false);
+			}
+			if (m_pPlayerMaxHealthLabel && m_pPlayerMaxHealthLabel->IsVisible())
+			{
+				m_pPlayerMaxHealthLabel->SetVisible(false);
+			}
+		}
+		else
+		{
+			if (!m_pHealthImageBG->IsVisible())
+			{
+				m_pHealthImageBG->SetVisible(true);
+			}
+			m_pBuildingHealthImageBG->SetVisible(m_bBuilding);
+
+			// are we getting a health bonus?
+			if (m_nHealth > m_nMaxHealth)
+			{
+				if (m_pHealthBonusImage && m_nBonusHealthOrigW != -1)
+				{
+					if (!m_pHealthBonusImage->IsVisible())
+					{
+						m_pHealthBonusImage->SetVisible(true);
+					}
+
+					if (m_bAnimate && m_iAnimState != HUD_HEALTH_BONUS_ANIM)
+					{
+						g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudHealthDyingPulseStop");
+						g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudHealthBonusPulse");
+
+						m_iAnimState = HUD_HEALTH_BONUS_ANIM;
+					}
+
+					m_pHealthBonusImage->SetDrawColor(Color(255, 255, 255, 255));
+
+					// scale the flashing image based on how much health bonus we currently have
+					float flBoostMaxAmount = (m_nMaxBuffedHealth)-m_nMaxHealth;
+					float flPercent = MIN((m_nHealth - m_nMaxHealth) / flBoostMaxAmount, 1.0f);
+
+					int nPosAdj = RoundFloatToInt(flPercent * m_nHealthBonusPosAdj);
+					int nSizeAdj = 2 * nPosAdj;
+
+					m_pHealthBonusImage->SetBounds(m_nBonusHealthOrigX - nPosAdj,
+						m_nBonusHealthOrigY - nPosAdj,
+						m_nBonusHealthOrigW + nSizeAdj,
+						m_nBonusHealthOrigH + nSizeAdj);
+				}
+			}
+			// are we close to dying?
+			else if (m_nHealth < m_nMaxHealth * m_flHealthDeathWarning)
+			{
+				if (m_pHealthBonusImage && m_nBonusHealthOrigW != -1)
+				{
+					if (!m_pHealthBonusImage->IsVisible())
+					{
+						m_pHealthBonusImage->SetVisible(true);
+					}
+
+					if (m_bAnimate && m_iAnimState != HUD_HEALTH_DYING_ANIM)
+					{
+						g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudHealthBonusPulseStop");
+						g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudHealthDyingPulse");
+
+						m_iAnimState = HUD_HEALTH_DYING_ANIM;
+					}
+
+					m_pHealthBonusImage->SetDrawColor(m_clrHealthDeathWarningColor);
+
+					// scale the flashing image based on how much health bonus we currently have
+					float flBoostMaxAmount = m_nMaxHealth * m_flHealthDeathWarning;
+					float flPercent = (flBoostMaxAmount - m_nHealth) / flBoostMaxAmount;
+
+					int nPosAdj = RoundFloatToInt(flPercent * m_nHealthBonusPosAdj);
+					int nSizeAdj = 2 * nPosAdj;
+
+					m_pHealthBonusImage->SetBounds(m_nBonusHealthOrigX - nPosAdj,
+						m_nBonusHealthOrigY - nPosAdj,
+						m_nBonusHealthOrigW + nSizeAdj,
+						m_nBonusHealthOrigH + nSizeAdj);
+				}
+
+				m_pHealthImage->SetFgColor(m_clrHealthDeathWarningColor);
+			}
+			// turn it off
+			else
+			{
+				HideHealthBonusImage();
+			}
+			if (m_pPlayerHealthLabel && !m_pPlayerHealthLabel->IsVisible())
+			{
+				m_pPlayerHealthLabel->SetVisible(true);
+			}
+
+			if (m_pPlayerMaxHealthLabel)
+			{
+				bool bVisible = (m_nMaxHealth - m_nHealth >= 5) ? true : false;
+				if (m_pPlayerMaxHealthLabel->IsVisible() != bVisible)
+				{
+					m_pPlayerMaxHealthLabel->SetVisible(bVisible);
+				}
+			}
+		}
+
+		// set our health display value
+		SetDialogVariable("Health", m_nHealth);
+		SetDialogVariable("MaxHealth", m_nMaxHealth);
+		SetDialogVariable("MaxBuffedHealth", m_nMaxBuffedHealth);
+	}
+#else
 	// set our health
 	m_nHealth = iNewHealth;
 	m_nMaxHealth = iMaxHealth;
-	m_pHealthImage->SetHealth( (float)(m_nHealth) / (float)(m_nMaxHealth) );
+	m_pHealthImage->SetHealth((float)(m_nHealth) / (float)(m_nMaxHealth));
 
-	if ( m_pHealthImage )
+	if (m_pHealthImage)
 	{
-		m_pHealthImage->SetFgColor( Color( 255, 255, 255, 255 ) );
+		m_pHealthImage->SetFgColor(Color(255, 255, 255, 255));
 	}
 
-	if ( m_nHealth <= 0 )
+	if (m_nHealth <= 0)
 	{
-		if ( m_pHealthImageBG->IsVisible() )
+		if (m_pHealthImageBG->IsVisible())
 		{
-			m_pHealthImageBG->SetVisible( false );
+			m_pHealthImageBG->SetVisible(false);
 		}
-		if ( m_pBuildingHealthImageBG->IsVisible() )
+		if (m_pBuildingHealthImageBG->IsVisible())
 		{
-			m_pBuildingHealthImageBG->SetVisible( false );
+			m_pBuildingHealthImageBG->SetVisible(false);
 		}
 		HideHealthBonusImage();
 	}
 	else
 	{
-		if ( !m_pHealthImageBG->IsVisible() )
+		if (!m_pHealthImageBG->IsVisible())
 		{
-			m_pHealthImageBG->SetVisible( true );
+			m_pHealthImageBG->SetVisible(true);
 		}
-		m_pBuildingHealthImageBG->SetVisible( m_bBuilding );
+		m_pBuildingHealthImageBG->SetVisible(m_bBuilding);
 
 		// are we getting a health bonus?
-		if ( m_nHealth > m_nMaxHealth )
+		if (m_nHealth > m_nMaxHealth)
 		{
-			if ( m_pHealthBonusImage && m_nBonusHealthOrigW != -1 )
+			if (m_pHealthBonusImage && m_nBonusHealthOrigW != -1)
 			{
-				if ( !m_pHealthBonusImage->IsVisible() )
+				if (!m_pHealthBonusImage->IsVisible())
 				{
-					m_pHealthBonusImage->SetVisible( true );
+					m_pHealthBonusImage->SetVisible(true);
 				}
 
-				if ( m_bAnimate && m_iAnimState != HUD_HEALTH_BONUS_ANIM )
+				if (m_bAnimate && m_iAnimState != HUD_HEALTH_BONUS_ANIM)
 				{
-					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( this, "HudHealthDyingPulseStop" );
-					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( this, "HudHealthBonusPulse" );
+					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudHealthDyingPulseStop");
+					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudHealthBonusPulse");
 
 					m_iAnimState = HUD_HEALTH_BONUS_ANIM;
 				}
 
-				m_pHealthBonusImage->SetDrawColor( Color( 255, 255, 255, 255 ) );
+				m_pHealthBonusImage->SetDrawColor(Color(255, 255, 255, 255));
 
 				// scale the flashing image based on how much health bonus we currently have
-				float flBoostMaxAmount = ( iMaxBuffedHealth ) - m_nMaxHealth;
-				float flPercent = MIN( ( m_nHealth - m_nMaxHealth ) / flBoostMaxAmount, 1.0f );
+				float flBoostMaxAmount = (iMaxBuffedHealth)-m_nMaxHealth;
+				float flPercent = MIN((m_nHealth - m_nMaxHealth) / flBoostMaxAmount, 1.0f);
 
-				int nPosAdj = RoundFloatToInt( flPercent * m_nHealthBonusPosAdj );
+				int nPosAdj = RoundFloatToInt(flPercent * m_nHealthBonusPosAdj);
 				int nSizeAdj = 2 * nPosAdj;
 
-				m_pHealthBonusImage->SetBounds( m_nBonusHealthOrigX - nPosAdj, 
-					m_nBonusHealthOrigY - nPosAdj, 
+				m_pHealthBonusImage->SetBounds(m_nBonusHealthOrigX - nPosAdj,
+					m_nBonusHealthOrigY - nPosAdj,
 					m_nBonusHealthOrigW + nSizeAdj,
-					m_nBonusHealthOrigH + nSizeAdj );
+					m_nBonusHealthOrigH + nSizeAdj);
 			}
 		}
 		// are we close to dying?
-		else if ( m_nHealth < m_nMaxHealth * m_flHealthDeathWarning )
+		else if (m_nHealth < m_nMaxHealth * m_flHealthDeathWarning)
 		{
-			if ( m_pHealthBonusImage && m_nBonusHealthOrigW != -1 )
+			if (m_pHealthBonusImage && m_nBonusHealthOrigW != -1)
 			{
-				if ( !m_pHealthBonusImage->IsVisible() )
+				if (!m_pHealthBonusImage->IsVisible())
 				{
-					m_pHealthBonusImage->SetVisible( true );
+					m_pHealthBonusImage->SetVisible(true);
 				}
 
-				if ( m_bAnimate && m_iAnimState != HUD_HEALTH_DYING_ANIM )
+				if (m_bAnimate && m_iAnimState != HUD_HEALTH_DYING_ANIM)
 				{
-					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( this, "HudHealthBonusPulseStop" );
-					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( this, "HudHealthDyingPulse" );
+					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudHealthBonusPulseStop");
+					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudHealthDyingPulse");
 
 					m_iAnimState = HUD_HEALTH_DYING_ANIM;
 				}
 
-				m_pHealthBonusImage->SetDrawColor( m_clrHealthDeathWarningColor );
+				m_pHealthBonusImage->SetDrawColor(m_clrHealthDeathWarningColor);
 
 				// scale the flashing image based on how much health bonus we currently have
 				float flBoostMaxAmount = m_nMaxHealth * m_flHealthDeathWarning;
-				float flPercent = ( flBoostMaxAmount - m_nHealth ) / flBoostMaxAmount;
+				float flPercent = (flBoostMaxAmount - m_nHealth) / flBoostMaxAmount;
 
-				int nPosAdj = RoundFloatToInt( flPercent * m_nHealthBonusPosAdj );
+				int nPosAdj = RoundFloatToInt(flPercent * m_nHealthBonusPosAdj);
 				int nSizeAdj = 2 * nPosAdj;
 
-				m_pHealthBonusImage->SetBounds( m_nBonusHealthOrigX - nPosAdj, 
-					m_nBonusHealthOrigY - nPosAdj, 
+				m_pHealthBonusImage->SetBounds(m_nBonusHealthOrigX - nPosAdj,
+					m_nBonusHealthOrigY - nPosAdj,
 					m_nBonusHealthOrigW + nSizeAdj,
-					m_nBonusHealthOrigH + nSizeAdj );
+					m_nBonusHealthOrigH + nSizeAdj);
 			}
 
-			if ( m_pHealthImage )
+			if (m_pHealthImage)
 			{
-				m_pHealthImage->SetFgColor( m_clrHealthDeathWarningColor );
+				m_pHealthImage->SetFgColor(m_clrHealthDeathWarningColor);
 			}
 		}
 		// turn it off
@@ -867,24 +1013,25 @@ void CTFHudPlayerHealth::SetHealth( int iNewHealth, int iMaxHealth, int	iMaxBuff
 	}
 
 	// set our health display value
-	if ( m_nHealth > 0 )
+	if (m_nHealth > 0)
 	{
-		SetDialogVariable( "Health", m_nHealth );
+		SetDialogVariable("Health", m_nHealth);
 
-		if ( m_nMaxHealth - m_nHealth >= 5 )
+		if (m_nMaxHealth - m_nHealth >= 5)
 		{
-			SetDialogVariable( "MaxHealth", m_nMaxHealth );
+			SetDialogVariable("MaxHealth", m_nMaxHealth);
 		}
 		else
 		{
-			SetDialogVariable( "MaxHealth", "" );
+			SetDialogVariable("MaxHealth", "");
 		}
 	}
 	else
 	{
-		SetDialogVariable( "Health", "" );
-		SetDialogVariable( "MaxHealth", "" );
-	}	
+		SetDialogVariable("Health", "");
+		SetDialogVariable("MaxHealth", "");
+	}
+#endif	
 }
 
 //-----------------------------------------------------------------------------
