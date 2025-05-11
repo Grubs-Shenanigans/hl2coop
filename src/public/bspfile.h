@@ -57,16 +57,21 @@
 // Common limits
 // leaffaces, leafbrushes, planes, and verts are still bounded by
 // 16 bit short limits
+#ifdef BDSBASE
+#define	MAX_MAP_MODELS					2048
+#define	MAX_MAP_BRUSHES					16384
+#define	MAX_MAP_ENTITIES				32768
+#define	MAX_MAP_TEXINFO					16384
+#define MAX_MAP_TEXDATA					8096
+#define MAX_MAP_DISPINFO				8096
+#else
 #define	MAX_MAP_MODELS					1024
 #define	MAX_MAP_BRUSHES					8192
-#ifdef BDSBASE
-#define	MAX_MAP_ENTITIES				32768
-#else
 #define	MAX_MAP_ENTITIES				8192
-#endif
 #define	MAX_MAP_TEXINFO					12288
 #define MAX_MAP_TEXDATA					2048
 #define MAX_MAP_DISPINFO				2048
+#endif
 #define MAX_MAP_DISP_VERTS				( MAX_MAP_DISPINFO * ((1<<MAX_MAP_DISP_POWER)+1) * ((1<<MAX_MAP_DISP_POWER)+1) )
 #define MAX_MAP_DISP_TRIS				( (1 << MAX_MAP_DISP_POWER) * (1 << MAX_MAP_DISP_POWER) * 2 )
 #define MAX_DISPVERTS					NUM_DISP_POWER_VERTS( MAX_MAP_DISP_POWER )
