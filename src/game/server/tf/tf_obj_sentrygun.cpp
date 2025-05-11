@@ -1757,10 +1757,18 @@ void CObjectSentrygun::SentryRotate( void )
 				EmitSentrySound( "Building_Sentrygun.Idle" );
 				break;
 			case 2:
-				EmitSound( "Building_Sentrygun.Idle2" );
+#ifdef BDSBASE
+				EmitSentrySound("Building_Sentrygun.Idle2");
+#else
+				EmitSound("Building_Sentrygun.Idle2");
+#endif
 				break;
 			case 3:
-				EmitSound( "Building_Sentrygun.Idle3" );
+#ifdef BDSBASE
+				EmitSentrySound("Building_Sentrygun.Idle3");
+#else
+				EmitSound("Building_Sentrygun.Idle3");
+#endif
 				break;
 			}
 
