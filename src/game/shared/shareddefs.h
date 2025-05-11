@@ -178,7 +178,11 @@ enum
 #define MAX_VOTE_DETAILS_LENGTH 64
 #define INVALID_ISSUE			-1
 #define MAX_VOTE_OPTIONS		5
+#ifdef BDSBASE
+#define DEDICATED_SERVER		255
+#else
 #define DEDICATED_SERVER		99
+#endif
 
 enum CastVote
 {
