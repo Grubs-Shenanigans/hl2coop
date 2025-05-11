@@ -1367,6 +1367,9 @@ bool CObjectSentrygun::FireRocket()
 		// Setup next rocket shot
 		if ( m_bPlayerControlled )
 		{
+#ifdef BDSBASE
+			AddGesture(ACT_RANGE_ATTACK2, 2.25, true);
+#endif
 			m_flNextRocketAttack = gpGlobals->curtime + 2.25;
 		}
 		else
