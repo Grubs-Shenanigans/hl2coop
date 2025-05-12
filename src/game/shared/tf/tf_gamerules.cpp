@@ -720,6 +720,7 @@ ConVar tf_spawn_glows_duration( "tf_spawn_glows_duration", "10", FCVAR_NOTIFY | 
 
 #ifdef BDSBASE
 ConVar tf_allow_pyroland("tf_allow_pyroland", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable Pyroland filters on the current map.");
+ConVar tf_killeater_demoshield_countotherkills("tf_killeater_demoshield_countotherkills", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Allows Strange Demoman shields to count kills from other weapons.");
 #endif
 
 #ifdef GAME_DLL
@@ -10620,6 +10621,11 @@ void EconItemInterface_OnOwnerKillEaterEvent( IEconItemInterface *pEconEntity, C
 
 		if ( !pWearableItem->GetAttributeContainer() )
 			continue;
+
+#ifdef BDSBASE
+		if (!Q_strcmp(pWearableItem->GetAttributeContainer()->GetItem()->GetStaticData()->GetItemClass(), "tf_wearable_demoshield") && !tf_killeater_demoshield_countotherkills.GetBool())
+			continue;
+#endif
 
 		EconEntity_ValidateAndSendStrangeMessageToGC( pWearableItem->GetAttributeContainer()->GetItem(), pOwner, pVictim, eEventType, nIncrementValue );
 
