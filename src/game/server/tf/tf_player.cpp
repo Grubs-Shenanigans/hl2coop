@@ -9884,6 +9884,14 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		{
 			m_Shared.NoteLastDamageTime( m_lastDamageAmount );
 		}
+
+#ifdef BDSBASE
+		// Set our disguise health when taking falldamage to make it more believable
+		if (m_Shared.InCond(TF_COND_DISGUISED) && info.GetDamageType() & DMG_FALL)
+		{
+			m_Shared.SetDisguiseHealth(Max(m_Shared.GetDisguiseHealth() - RoundFloatToInt(info.GetDamage()), 1));
+		}
+#endif
 	}
 
 	if ( pWeapon ) 
@@ -15341,9 +15349,15 @@ void CTFPlayer::PlayFlinch( const CTakeDamageInfo &info )
 	if ( !IsAlive() )
 		return;
 
-	// No pain flinches while disguised, our man has supreme discipline
-	if ( m_Shared.InCond( TF_COND_DISGUISED ) )
+#ifdef BDSBASE
+	// No pain flinches while disguised, our man has supreme discipline unless he falls
+	if (m_Shared.InCond(TF_COND_DISGUISED) && !(info.GetDamageType() & DMG_FALL))
 		return;
+#else
+	// No pain flinches while disguised, our man has supreme discipline
+	if (m_Shared.InCond(TF_COND_DISGUISED))
+		return;
+#endif
 
 	PlayerAnimEvent_t flinchEvent;
 
@@ -15404,9 +15418,11 @@ void CTFPlayer::PainSound( const CTakeDamageInfo &info )
 	if ( !IsAlive() )
 		return;
 
+#ifndef BDSBASE
 	// no pain sounds while disguised, our man has supreme discipline
-	if ( m_Shared.InCond( TF_COND_DISGUISED ) )
+	if (m_Shared.InCond(TF_COND_DISGUISED))
 		return;
+#endif
 
 	if ( m_flNextPainSoundTime > gpGlobals->curtime )
 		return;
@@ -15423,6 +15439,13 @@ void CTFPlayer::PainSound( const CTakeDamageInfo &info )
 			if ( pData )
 			{
 #ifdef BDSBASE
+				CPASFilter filter(GetAbsOrigin());
+				if (m_Shared.InCond(TF_COND_DISGUISED))
+				{
+					filter.RemoveRecipientsByTeam(GetGlobalTFTeam((GetTeamNumber() == TF_TEAM_RED) ? TF_TEAM_BLUE : TF_TEAM_RED));
+					filter.RemoveRecipient(this);
+				}
+
 				int nDeathSound = DEATH_SOUND_GENERIC;
 				if (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS)
 				{
@@ -15432,14 +15455,36 @@ void CTFPlayer::PainSound( const CTakeDamageInfo &info )
 						nDeathSound = DEATH_SOUND_GENERIC_GIANT_MVM;
 					}
 				}
-				EmitSound(pData->GetDeathSound(nDeathSound));
+				EmitSound(filter, entindex(), pData->GetDeathSound(nDeathSound));
 #else
 				EmitSound(pData->GetDeathSound(DEATH_SOUND_GENERIC));
 #endif
 			}
+
+#ifdef BDSBASE
+			if (m_Shared.InCond(TF_COND_DISGUISED))
+			{
+				TFPlayerClassData_t* pDisguiseData = GetPlayerClassData(m_Shared.GetDisguiseClass());
+				if (pDisguiseData)
+				{
+					CPASFilter disguisedFilter(GetAbsOrigin());
+					disguisedFilter.RemoveRecipientsByTeam(GetGlobalTeam(TEAM_SPECTATOR));
+					disguisedFilter.RemoveRecipientsByTeam(GetGlobalTeam(TEAM_UNASSIGNED));
+					disguisedFilter.RemoveRecipientsByTeam(GetGlobalTFTeam(GetTeamNumber()));
+					disguisedFilter.AddRecipient(this);
+					EmitSound(disguisedFilter, entindex(), pDisguiseData->GetDeathSound(DEATH_SOUND_GENERIC));
+				}
+			}
+#endif
 		}
 		return;
 	}
+
+#ifdef BDSBASE
+	// no pain sounds while disguised, our man has supreme discipline
+	if (m_Shared.InCond(TF_COND_DISGUISED))
+		return;
+#endif
 
 	// No sound for DMG_GENERIC
 	if ( info.GetDamageType() == 0 || info.GetDamageType() == DMG_PREVENT_PHYSICS_FORCE )
