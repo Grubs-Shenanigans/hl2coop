@@ -800,13 +800,21 @@ void C_TFRagdoll::CreateTFRagdoll()
 	{
 		// Overwrite network origin so later interpolation will use this position.
 		SetNetworkOrigin( m_vecRagdollOrigin );
-		SetAbsOrigin( m_vecRagdollOrigin );
+#ifdef BDSBASE
+		SetAbsOrigin(pPlayer->GetRenderOrigin());
+#else
+		SetAbsOrigin(m_vecRagdollOrigin);
+#endif
 		SetAbsVelocity( m_vecRagdollVelocity );
 
 		Interp_Reset( GetVarMapping() );
 	}
 
-	if ( IsCloaked() )
+#ifdef BDSBASE
+	if (m_bCloaked)
+#else
+	if (IsCloaked())
+#endif
 	{
 		AddEffects( EF_NOSHADOW );
 	}
@@ -987,7 +995,11 @@ void C_TFRagdoll::CreateTFRagdoll()
 #endif
 	}
 
-	if ( pPlayer->HasBombinomiconEffectOnDeath() && !m_bGib && !m_bDissolving )
+#ifdef BDSBASE
+	if (m_bBombinomicon && !m_bGib && !m_bDissolving)
+#else
+	if (pPlayer->HasBombinomiconEffectOnDeath() && !m_bGib && !m_bDissolving)
+#endif
 	{
 		m_flTimeToDissolve = 1.2f;
 	}
@@ -996,7 +1008,11 @@ void C_TFRagdoll::CreateTFRagdoll()
 	if ( pPlayer && TFGameRules() && TFGameRules()->IsBirthday() )
 	{
 		AngularImpulse angularImpulse( RandomFloat( 0.0f, 120.0f ), RandomFloat( 0.0f, 120.0f ), 0.0 );
-		breakablepropparams_t breakParams( m_vecRagdollOrigin, GetRenderAngles(), m_vecRagdollVelocity, angularImpulse );
+#ifdef BDSBASE
+		breakablepropparams_t breakParams(pPlayer->GetRenderOrigin(), GetRenderAngles(), m_vecRagdollVelocity, angularImpulse);
+#else
+		breakablepropparams_t breakParams(m_vecRagdollOrigin, GetRenderAngles(), m_vecRagdollVelocity, angularImpulse);
+#endif
 		breakParams.impactEnergyScale = 1.0f;
 		pPlayer->DropPartyHat( breakParams, m_vecRagdollVelocity.GetForModify() );
 	}
@@ -1118,12 +1134,20 @@ void C_TFRagdoll::CreateTFHeadGib( void )
 {
 	C_TFPlayer *pPlayer = GetPlayer();
 
-	if ( pPlayer && ((pPlayer->m_hFirstGib == NULL) || m_bFeignDeath) )
+#ifdef BDSBASE
+	if (pPlayer && pPlayer->m_hFirstGib == NULL)
+#else
+	if (pPlayer && ((pPlayer->m_hFirstGib == NULL) || m_bFeignDeath))
+#endif
 	{
 		Vector vecVelocity = m_vecForce + m_vecRagdollVelocity;
 		VectorNormalize( vecVelocity );
 
-		pPlayer->CreatePlayerGibs( m_vecRagdollOrigin, vecVelocity, m_vecForce.Length(), m_bBurning, false, true );
+#ifdef BDSBASE
+		pPlayer->CreatePlayerGibs(pPlayer->GetRenderOrigin(), vecVelocity, m_vecForce.Length(), m_bBurning, m_bFeignDeath, false, true);
+#else
+		pPlayer->CreatePlayerGibs(m_vecRagdollOrigin, vecVelocity, m_vecForce.Length(), m_bBurning, false, true);
+#endif
 		// Decap Death Camera is disorienting on range Decaps (aka bullets)
 		// Use normal Deathcam
 		if ( m_iDamageCustom == TF_DMG_CUSTOM_HEADSHOT_DECAPITATION )
@@ -1133,57 +1157,110 @@ void C_TFRagdoll::CreateTFHeadGib( void )
 	}
 }
 
+#ifdef BDSBASE
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
-void C_TFRagdoll::CreateTFGibs( bool bDestroyRagdoll, bool bCurrentPosition )
+void C_TFRagdoll::CreateTFGibs(bool bDestroyRagdoll)
 {
-	C_TFPlayer *pPlayer = GetPlayer();
-	
-	if ( pPlayer && pPlayer->HasBombinomiconEffectOnDeath() )
-	{
-		m_vecForce *= 2.0f;
-		m_vecForce.z *= 3.0f;
+	C_TFPlayer* pPlayer = GetPlayer();
 
-		DispatchParticleEffect( TFGameRules()->IsHolidayActive( kHoliday_Halloween ) ? "bombinomicon_burningdebris_halloween" : "bombinomicon_burningdebris", 
-								bCurrentPosition ? GetAbsOrigin() : m_vecRagdollOrigin, GetAbsAngles() );
-		EmitSound( "Bombinomicon.Explode" );
-	}
-
-	if ( pPlayer && ((pPlayer->m_hFirstGib == NULL) || m_bFeignDeath) )
+	if (pPlayer)
 	{
-		Vector vecVelocity = m_vecForce + m_vecRagdollVelocity;
-		VectorNormalize( vecVelocity );
-		pPlayer->CreatePlayerGibs( bCurrentPosition ? pPlayer->GetRenderOrigin() : m_vecRagdollOrigin, vecVelocity, m_vecForce.Length(), m_bBurning );
-	}
+		Vector vecOrigin = m_bGib ? pPlayer->GetRenderOrigin() : GetRenderOrigin();
 
-	if ( pPlayer )
-	{
-		if ( TFGameRules() && TFGameRules()->IsBirthdayOrPyroVision() )
+		if (m_bBombinomicon)
 		{
-			DispatchParticleEffect( "bday_confetti", pPlayer->GetAbsOrigin() + Vector(0,0,32), vec3_angle );
+			m_vecForce *= 2.0f;
+			m_vecForce.z *= 3.0f;
 
-			if ( TFGameRules() && TFGameRules()->IsBirthday() )
+			DispatchParticleEffect(TFGameRules()->IsHolidayActive(kHoliday_Halloween) ? "bombinomicon_burningdebris_halloween" : "bombinomicon_burningdebris",
+				vecOrigin, GetAbsAngles());
+			EmitSound("Bombinomicon.Explode");
+		}
+
+		if (pPlayer->m_hFirstGib == NULL)
+		{
+			Vector vecVelocity = m_vecForce + m_vecRagdollVelocity;
+			VectorNormalize(vecVelocity);
+			pPlayer->CreatePlayerGibs(vecOrigin, vecVelocity, m_vecForce.Length(), m_bBurning, m_bFeignDeath);
+		}
+
+		if (TFGameRules() && TFGameRules()->IsBirthdayOrPyroVision())
+		{
+			DispatchParticleEffect("bday_confetti", pPlayer->GetAbsOrigin() + Vector(0, 0, 32), vec3_angle);
+
+			if (TFGameRules() && TFGameRules()->IsBirthday())
 			{
-				C_BaseEntity::EmitSound( "Game.HappyBirthday" );
+				C_BaseEntity::EmitSound("Game.HappyBirthday");
 			}
 		}
-		else if ( m_bCritOnHardHit && !UTIL_IsLowViolence() )
+		else if (m_bCritOnHardHit && !UTIL_IsLowViolence())
 		{
-			DispatchParticleEffect( "tfc_sniper_mist", pPlayer->WorldSpaceCenter(), vec3_angle );
+			DispatchParticleEffect("tfc_sniper_mist", pPlayer->WorldSpaceCenter(), vec3_angle);
 		}
 	}
 
-	if ( bDestroyRagdoll )
+	if (bDestroyRagdoll)
 	{
 		EndFadeOut();
 	}
 	else
 	{
-		SetRenderMode( kRenderNone );
+		SetRenderMode(kRenderNone);
 		UpdateVisibility();
 	}
 }
+#else
+void C_TFRagdoll::CreateTFGibs(bool bDestroyRagdoll, bool bCurrentPosition)
+{
+	C_TFPlayer* pPlayer = GetPlayer();
+
+	if (pPlayer && pPlayer->HasBombinomiconEffectOnDeath())
+	{
+		m_vecForce *= 2.0f;
+		m_vecForce.z *= 3.0f;
+
+		DispatchParticleEffect(TFGameRules()->IsHolidayActive(kHoliday_Halloween) ? "bombinomicon_burningdebris_halloween" : "bombinomicon_burningdebris",
+			bCurrentPosition ? GetAbsOrigin() : m_vecRagdollOrigin, GetAbsAngles());
+		EmitSound("Bombinomicon.Explode");
+	}
+
+	if (pPlayer && ((pPlayer->m_hFirstGib == NULL) || m_bFeignDeath))
+	{
+		Vector vecVelocity = m_vecForce + m_vecRagdollVelocity;
+		VectorNormalize(vecVelocity);
+		pPlayer->CreatePlayerGibs(bCurrentPosition ? pPlayer->GetRenderOrigin() : m_vecRagdollOrigin, vecVelocity, m_vecForce.Length(), m_bBurning);
+	}
+
+	if (pPlayer)
+	{
+		if (TFGameRules() && TFGameRules()->IsBirthdayOrPyroVision())
+		{
+			DispatchParticleEffect("bday_confetti", pPlayer->GetAbsOrigin() + Vector(0, 0, 32), vec3_angle);
+
+			if (TFGameRules() && TFGameRules()->IsBirthday())
+			{
+				C_BaseEntity::EmitSound("Game.HappyBirthday");
+			}
+		}
+		else if (m_bCritOnHardHit && !UTIL_IsLowViolence())
+		{
+			DispatchParticleEffect("tfc_sniper_mist", pPlayer->WorldSpaceCenter(), vec3_angle);
+		}
+	}
+
+	if (bDestroyRagdoll)
+	{
+		EndFadeOut();
+	}
+	else
+	{
+		SetRenderMode(kRenderNone);
+		UpdateVisibility();
+	}
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Separate from CreateTFGibs so we can easily remove it if we don't like it...
@@ -1283,6 +1360,10 @@ void C_TFRagdoll::OnDataChanged( DataUpdateType_t type )
 
 		if ( bCreateRagdoll )
 		{
+#ifdef BDSBASE
+			m_bBombinomicon = !m_bCloaked && pPlayer->HasBombinomiconEffectOnDeath();
+#endif
+
 			if ( m_bGib )
 			{
 				CreateTFGibs( !m_bDissolving );
@@ -1463,7 +1544,9 @@ void C_TFRagdoll::ClientThink( void )
 	}
 
 	C_TFPlayer *pPlayer = GetPlayer();
-	bool bBombinomicon = ( pPlayer && pPlayer->HasBombinomiconEffectOnDeath() );
+#ifndef BDSBASE
+	bool bBombinomicon = (pPlayer && pPlayer->HasBombinomiconEffectOnDeath());
+#endif
 
 	if ( !m_bGib )
 	{
@@ -1488,23 +1571,41 @@ void C_TFRagdoll::ClientThink( void )
 				}
 			}
 		}
-		else if ( bBombinomicon && ( GetFlags() & FL_DISSOLVING ) )
+#ifdef BDSBASE
+		else if (m_bBombinomicon && (GetFlags() & FL_DISSOLVING))
 		{
 			m_flTimeToDissolve -= gpGlobals->frametime;
-			if ( m_flTimeToDissolve <= 0 )
+			if (m_flTimeToDissolve <= 0)
 			{
-				CreateTFGibs( true, true );
+				CreateTFGibs( true );
 			}
 		}
+#else
+		else if (bBombinomicon && (GetFlags() & FL_DISSOLVING))
+		{
+			m_flTimeToDissolve -= gpGlobals->frametime;
+			if (m_flTimeToDissolve <= 0)
+			{
+				CreateTFGibs(true, true);
+			}
+		}
+#endif
 		else if ( m_bBecomeAsh )
 		{
 			m_flTimeToDissolve -= gpGlobals->frametime;
 			if ( m_flTimeToDissolve <= 0 )
 			{
-				if ( bBombinomicon )
+#ifdef BDSBASE
+				if (m_bBombinomicon)
 				{
-					CreateTFGibs( true, true );
+					CreateTFGibs( true );
 				}
+#else
+				if (bBombinomicon)
+				{
+					CreateTFGibs(true, true);
+				}
+#endif
 				else
 				{
 					// Hide the ragdoll and stop everything but the ash particle effect
@@ -1527,6 +1628,17 @@ void C_TFRagdoll::ClientThink( void )
 				return;
 			}
 		}
+#ifdef BDSBASE
+		else if (m_bBombinomicon)
+		{
+			m_flTimeToDissolve -= gpGlobals->frametime;
+			if (m_flTimeToDissolve <= 0)
+			{
+				CreateTFGibs(true);
+				return;
+			}
+		}
+#else
 		else if ( bBombinomicon )
 		{
 			m_flTimeToDissolve -= gpGlobals->frametime;
@@ -1536,6 +1648,7 @@ void C_TFRagdoll::ClientThink( void )
 				return;
 			}
 		}
+#endif
 	}
 	// Gibbing
 	else
@@ -1549,10 +1662,17 @@ void C_TFRagdoll::ClientThink( void )
 
 				if ( pPlayer )
 				{
-					if ( bBombinomicon )
+#ifdef BDSBASE
+					if (m_bBombinomicon)
 					{
-						CreateTFGibs( true, true );
+						CreateTFGibs( true );
 					}
+#else
+					if (bBombinomicon)
+					{
+						CreateTFGibs(true, true);
+					}
+#endif
 					else
 					{
 						for ( int i=0; i<pPlayer->m_hSpawnedGibs.Count(); i++ )
@@ -7412,7 +7532,11 @@ void C_TFPlayer::CheckAndUpdateGibType( void )
 //			&vecVelocity - 
 //			&vecImpactVelocity - 
 //-----------------------------------------------------------------------------
-void C_TFPlayer::CreatePlayerGibs( const Vector &vecOrigin, const Vector &vecVelocity, float flImpactScale, bool bBurning, bool bWearableGibs, bool bOnlyHead, bool bDisguiseGibs )
+#ifdef BDSBASE
+void C_TFPlayer::CreatePlayerGibs(const Vector& vecOrigin, const Vector& vecVelocity, float flImpactScale, bool bBurning, bool bFeignDeath, bool bWearableGibs, bool bOnlyHead, bool bDisguiseGibs)
+#else
+void C_TFPlayer::CreatePlayerGibs(const Vector& vecOrigin, const Vector& vecVelocity, float flImpactScale, bool bBurning, bool bWearableGibs, bool bOnlyHead, bool bDisguiseGibs)
+#endif
 {
 	// Make sure we have Gibs to create.
 	if ( m_aGibs.Count() == 0 )
@@ -7477,25 +7601,55 @@ void C_TFPlayer::CreatePlayerGibs( const Vector &vecOrigin, const Vector &vecVel
 				}
 			}
 			
-			m_hFirstGib = CreateGibsFromList( headGib, nModelIndex, NULL, breakParams, this, -1 , false, true, &m_hSpawnedGibs, bBurning );
-			m_hHeadGib = m_hFirstGib;
-			if ( m_hFirstGib )
+#ifdef BDSBASE
+			EHANDLE hGib = CreateGibsFromList(headGib, nModelIndex, NULL, breakParams, this, -1, false, true, &m_hSpawnedGibs, bBurning);
+			if (!bFeignDeath)
 			{
-				IPhysicsObject *pPhysicsObject = m_hFirstGib->VPhysicsGetObject();
-				if( pPhysicsObject )
+				m_hFirstGib = hGib;
+				m_hHeadGib = hGib;
+			}
+
+			if (hGib)
+			{
+				IPhysicsObject* pPhysicsObject = hGib->VPhysicsGetObject();
+				if (pPhysicsObject)
 				{
 					// Give the head some rotational damping so it doesn't roll so much (for the player's view).
 					float damping, rotdamping;
-					pPhysicsObject->GetDamping( &damping, &rotdamping );
+					pPhysicsObject->GetDamping(&damping, &rotdamping);
 					rotdamping *= 6.f;
-					pPhysicsObject->SetDamping( &damping, &rotdamping );
+					pPhysicsObject->SetDamping(&damping, &rotdamping);
 				}
 			}
+#else
+			m_hFirstGib = CreateGibsFromList(headGib, nModelIndex, NULL, breakParams, this, -1, false, true, &m_hSpawnedGibs, bBurning);
+			m_hHeadGib = m_hFirstGib;
+			if (m_hFirstGib)
+			{
+				IPhysicsObject* pPhysicsObject = m_hFirstGib->VPhysicsGetObject();
+				if (pPhysicsObject)
+				{
+					// Give the head some rotational damping so it doesn't roll so much (for the player's view).
+					float damping, rotdamping;
+					pPhysicsObject->GetDamping(&damping, &rotdamping);
+					rotdamping *= 6.f;
+					pPhysicsObject->SetDamping(&damping, &rotdamping);
+				}
+			}
+#endif
 		}
 		else
 		{
 			CheckAndUpdateGibType();
-			m_hFirstGib = CreateGibsFromList( m_aGibs, nModelIndex, NULL, breakParams, this, -1 , false, true, &m_hSpawnedGibs, bBurning );
+#ifdef BDSBASE
+			EHANDLE hGib = CreateGibsFromList(m_aGibs, nModelIndex, NULL, breakParams, this, -1, false, true, &m_hSpawnedGibs, bBurning);
+			if (!bFeignDeath)
+			{
+				m_hFirstGib = hGib;
+			}
+#else
+			m_hFirstGib = CreateGibsFromList(m_aGibs, nModelIndex, NULL, breakParams, this, -1, false, true, &m_hSpawnedGibs, bBurning);
+#endif
 		}
 		DropPartyHat( breakParams, vecBreakVelocity );
 	}

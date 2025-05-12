@@ -201,7 +201,11 @@ public:
 	// Gibs.
 	void InitPlayerGibs( void );
 	void CheckAndUpdateGibType( void );
-	void CreatePlayerGibs( const Vector &vecOrigin, const Vector &vecVelocity, float flImpactScale, bool bBurning, bool bWearableGibs=false, bool bOnlyHead=false, bool bDisguiseGibs=false );
+#ifdef BDSBASE
+	void CreatePlayerGibs(const Vector& vecOrigin, const Vector& vecVelocity, float flImpactScale, bool bBurning, bool bFeignDeath = false, bool bWearableGibs = false, bool bOnlyHead = false, bool bDisguiseGibs = false);
+#else
+	void CreatePlayerGibs(const Vector& vecOrigin, const Vector& vecVelocity, float flImpactScale, bool bBurning, bool bWearableGibs = false, bool bOnlyHead = false, bool bDisguiseGibs = false);
+#endif
 	void DropPartyHat( breakablepropparams_t &breakParams, Vector &vecBreakVelocity );
 	void DropWearable( C_TFWearable *pItem, const breakablepropparams_t &params );
 
@@ -1100,7 +1104,11 @@ private:
 	void Interp_Copy( C_BaseAnimatingOverlay *pSourceEntity );
 
 	void CreateTFRagdoll();
-	void CreateTFGibs( bool bDestroyRagdoll = true, bool bCurrentPosition = false );
+#ifdef BDSBASE
+	void CreateTFGibs(bool bDestroyRagdoll = true);
+#else
+	void CreateTFGibs(bool bDestroyRagdoll = true, bool bCurrentPosition = false);
+#endif
 	void CreateWearableGibs( bool bDisguiseWearables );
 	void CreateTFHeadGib();
 
@@ -1144,6 +1152,9 @@ private:
 	float m_flPercentInvisible;
 	float m_flTimeToDissolve;
 	bool  m_bCritOnHardHit;	// plays the red mist particle effect
+#ifdef BDSBASE
+	bool  m_bBombinomicon;
+#endif
 	float m_flHeadScale;
 	float m_flTorsoScale;
 	float m_flHandScale;
