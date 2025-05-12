@@ -1274,7 +1274,11 @@ void C_TFRagdoll::CreateWearableGibs( bool bDisguiseWearables )
 
 	Vector vecVelocity = m_vecForce + m_vecRagdollVelocity;
 	VectorNormalize( vecVelocity );
-	pPlayer->CreatePlayerGibs( m_vecRagdollOrigin, vecVelocity, m_vecForce.Length(), m_bBurning, true, false, bDisguiseWearables );
+#ifdef BDSBASE
+	pPlayer->CreatePlayerGibs(pPlayer->GetRenderOrigin(), vecVelocity, m_vecForce.Length(), m_bBurning, m_bFeignDeath, true, false, bDisguiseWearables);
+#else
+	pPlayer->CreatePlayerGibs(m_vecRagdollOrigin, vecVelocity, m_vecForce.Length(), m_bBurning, true, false, bDisguiseWearables);
+#endif
 }
 
 
