@@ -1370,7 +1370,11 @@ void CTFWeaponBase::OnActiveStateChanged( int iOldState )
 
 	// Check for a speed mod change.
 	CTFPlayer *pPlayer = ToTFPlayer( GetOwner() );
-	if ( pPlayer )
+#ifdef BDSBASE
+	if (pPlayer && pPlayer->IsAlive())
+#else
+	if (pPlayer)
+#endif
 	{
 		pPlayer->TeamFortress_SetSpeed();
 	}
