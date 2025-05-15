@@ -243,6 +243,10 @@ protected:
 	virtual void Paint( void );
 	virtual bool ShouldDraw( void );
 
+#ifdef BDSBASE
+	virtual bool CanAnimate() const OVERRIDE { return false; };
+#endif
+
 private:
 	int m_iScopeTexture[4];
 	int m_iScopeTextureAlt[4];
