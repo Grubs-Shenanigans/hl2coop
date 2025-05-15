@@ -96,7 +96,9 @@ public:
 	virtual const char *GetMuzzleFlashParticleEffect( void )	{ return "drg_pomson_muzzleflash"; }
 	virtual const char *GetIdleParticleEffect( void )			{ return "drg_pomson_idle"; }
 
-	virtual void GetProjectileFireSetup( CTFPlayer *pPlayer, Vector vecOffset, Vector *vecSrc, QAngle *angForward, bool bHitTeammates = true, float flEndDist = 2000.f );
+#ifndef BDSBASE
+	virtual void GetProjectileFireSetup(CTFPlayer* pPlayer, Vector vecOffset, Vector* vecSrc, QAngle* angForward, bool bHitTeammates = true, float flEndDist = 2000.f);
+#endif
 };
 
 
