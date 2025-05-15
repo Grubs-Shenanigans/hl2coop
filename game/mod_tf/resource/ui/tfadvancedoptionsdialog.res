@@ -76,8 +76,8 @@
 		"pinCorner"		"0"
 		"visible"		"1"
 		"enabled"		"1"
-		"fgcolor_override" "235 226 202 255"
-		"bgcolor_override" "46 43 42 255"
+		"fgcolor_override" "180 180 180 255"
+		"bgcolor_override" "0 0 0 255"
 	}
 	"CancelButton"
 	{
