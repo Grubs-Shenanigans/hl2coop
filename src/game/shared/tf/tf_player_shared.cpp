@@ -199,6 +199,10 @@ ConVar tf_afterburn_debug( "tf_afterburn_debug", "0", FCVAR_REPLICATED | FCVAR_C
 #ifdef CLIENT_DLL
 ConVar tf_colorblindassist( "tf_colorblindassist", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Setting this to 1 turns on colorblind mode." );
 
+#ifdef BDSBASE
+extern ConVar cl_flipviewmodels;
+#endif
+
 extern ConVar cam_idealdist;
 extern ConVar cam_idealdistright;
 
@@ -10382,6 +10386,16 @@ void CTFPlayer::GetHorriblyHackedRailgunPosition( const Vector& vStart, Vector *
 	// DO NOT LOOK BEHIND THE MAGIC CURTAIN
 	Vector vForward, vRight, vUp;
 	AngleVectors( EyeAngles(), &vForward, &vRight, &vUp );
+
+#ifdef BDSBASE
+#ifdef CLIENT_DLL
+	// Flips the horizontal position.
+	if (cl_flipviewmodels.GetBool())
+	{
+		vRight *= -1;
+	}
+#endif // CLIENT_DLL
+#endif
 
 	*out_pvStartPos = vStart
 					+ (vForward * 60.9f)
