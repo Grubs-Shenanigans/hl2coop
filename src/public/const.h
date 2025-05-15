@@ -122,7 +122,7 @@
 
 // NOTE if you move things up, make sure to change this value
 #ifdef BDSBASE
-#define PLAYER_FLAG_BITS		31
+#define PLAYER_FLAG_BITS		32
 #else
 #define PLAYER_FLAG_BITS		10
 #endif

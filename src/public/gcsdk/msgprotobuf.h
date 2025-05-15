@@ -101,6 +101,9 @@ public:
 
 	virtual ~CProtoBufMsgBase();
 
+#ifdef BDSBASE
+	bool BIsInitialized() const;
+#endif
 	bool InitFromPacket( IMsgNetPacket * pNetPacket );
 	bool BAsyncSend( IProtoBufSendHandler & pSender ) const;
 	bool BAsyncSendWithPreSerializedBody( IProtoBufSendHandler & pSender, const byte *pubBody, uint32 cubBody ) const;

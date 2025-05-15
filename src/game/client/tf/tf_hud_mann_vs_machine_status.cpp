@@ -784,6 +784,7 @@ void CWaveStatusPanel::UpdateEnemyCounts( void )
 			{
 				pPanel->m_pEnemyCountImageBG->SetBgColor( m_clrMiniBoss );
 			}
+
 			if ( pPanel->m_pEnemyCountCritBG )
 			{
 				pPanel->m_pEnemyCountCritBG->SetVisible( miniboss[i].iFlags & MVM_CLASS_FLAG_ALWAYSCRIT );
@@ -986,7 +987,18 @@ void CWaveStatusPanel::UpdateEnemyCounts( void )
 
 				if ( pPanel->m_pEnemyCountImageBG  )
 				{
+#ifdef BDSBASE
+					if (support_normal[i].iFlags & MVM_CLASS_FLAG_MINIBOSS)
+					{
+						pPanel->m_pEnemyCountImageBG->SetBgColor(m_clrMiniBoss);
+					}
+					else
+					{
+						pPanel->m_pEnemyCountImageBG->SetBgColor(m_clrNormal);
+					}
+#else
 					pPanel->m_pEnemyCountImageBG->SetBgColor( m_clrNormal );
+#endif
 				}
 
 #ifdef BDSBASE

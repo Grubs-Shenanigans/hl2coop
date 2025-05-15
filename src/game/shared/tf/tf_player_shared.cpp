@@ -9888,7 +9888,13 @@ void CTFPlayerShared::StunPlayer(float flTime, float flReductionAmount, int iStu
 
 	float flRemapAmount = RemapValClamped(flReductionAmount, 0.0, 1.0, 0, 255);
 
+#ifdef BDSBASE
+#ifdef GAME_DLL
 	int iOldStunFlags = GetStunFlags();
+#endif
+#else
+	int iOldStunFlags = GetStunFlags();
+#endif
 
 	// Already stunned
 	bool bStomp = false;
