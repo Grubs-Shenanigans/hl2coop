@@ -121,11 +121,7 @@
 #define	FL_INWATER				(1<<9)	// In water
 
 // NOTE if you move things up, make sure to change this value
-#ifdef BDSBASE
-#define PLAYER_FLAG_BITS		32
-#else
 #define PLAYER_FLAG_BITS		10
-#endif
 
 #define	FL_FLY					(1<<10)	// Changes the SV_Movestep() behavior to not need to be on ground
 #define	FL_SWIM					(1<<11)	// Changes the SV_Movestep() behavior to not need to be on ground (but stay in water)
@@ -168,7 +164,7 @@
 
 // NOTE if you move things up, make sure to change this value
 #ifdef BDSBASE
-#define PLAYER_FLAG_BITS		31
+#define PLAYER_FLAG_BITS		32
 #else
 #define PLAYER_FLAG_BITS		11
 #endif
