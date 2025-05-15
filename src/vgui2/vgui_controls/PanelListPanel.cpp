@@ -84,7 +84,11 @@ int	PanelListPanel::ComputeVPixelsNeeded()
 	for ( int i = 0; i < m_SortedItems.Count(); i++ )
 	{
 		Panel *panel = m_DataItems[ m_SortedItems[i] ].panel;
-		if ( !panel )
+#ifdef BDSBASE
+		if (!panel || !panel->IsVisible())
+#else
+		if (!panel)
+#endif
 			continue;
 
 		if ( panel->IsLayoutInvalid() )
@@ -322,13 +326,21 @@ void PanelListPanel::PerformLayout()
 	
 	for ( int i = 0; i < m_SortedItems.Count(); i++ )
 	{
+#ifdef BDSBASE
+		DATAITEM& item = m_DataItems[m_SortedItems[i]];
+		if (!item.panel || !item.panel->IsVisible())
+			continue;
+#endif
+
 		int iCurrentColumn = i % m_iNumColumns;
 
 		// add in a little buffer between panels
 		if ( iCurrentColumn == 0 )
 			y += m_iPanelBuffer;
 
-		DATAITEM &item = m_DataItems[ m_SortedItems[i] ];
+#ifndef BDSBASE
+		DATAITEM& item = m_DataItems[m_SortedItems[i]];
+#endif
 
 		if ( h < item.panel->GetTall() )
 			h = item.panel->GetTall();

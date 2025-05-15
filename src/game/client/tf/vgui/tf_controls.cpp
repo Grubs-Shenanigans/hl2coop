@@ -656,6 +656,11 @@ CTFAdvancedOptionsDialog::CTFAdvancedOptionsDialog(vgui::Panel *parent) : BaseCl
 	SetScheme(scheme);
 	SetProportional( true );
 
+#ifdef BDSBASE
+	m_pFilterPanel = new vgui::TextEntry(this, "FilterPanel");
+	m_pFilterPanel->AddActionSignalTarget(this);
+#endif
+
 	m_pListPanel = new vgui::PanelListPanel( this, "PanelListPanel" );
 
 	m_pList = NULL;
@@ -695,6 +700,10 @@ void CTFAdvancedOptionsDialog::ApplySchemeSettings( vgui::IScheme *pScheme )
 	LoadControlSettings("resource/ui/TFAdvancedOptionsDialog.res");
 	m_pListPanel->SetFirstColumnWidth( 0 );
 
+#ifdef BDSBASE
+	m_pFilterPanel->SetMaximumCharCount(32);
+#endif
+
 	CreateControls();
 }
 
@@ -717,6 +726,88 @@ void CTFAdvancedOptionsDialog::OnClose()
 	TFModalStack()->PopModal( this );
 	MarkForDeletion();
 }
+
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CTFAdvancedOptionsDialog::OnMessage(const KeyValues* pParams, vgui::VPANEL fromPanel)
+{
+	if (!Q_stricmp(pParams->GetName(), "TextChanged")
+		&& fromPanel == m_pFilterPanel->GetVPanel())
+	{
+		char szBuffer[32];
+		m_pFilterPanel->GetText(szBuffer, sizeof(szBuffer));
+
+		// Make everything visible if the filter field is empty
+		if (!Q_strcmp(szBuffer, ""))
+		{
+			mpcontrol_t* pList = m_pList;
+			while (pList)
+			{
+				pList->SetVisible(true);
+				pList = pList->next;
+			}
+			m_pListPanel->InvalidateLayout();
+			return;
+		}
+
+		bool bCategoryVisible = false;
+		mpcontrol_t* pCurrentCategory = NULL;
+		mpcontrol_t* pList = m_pList;
+		while (pList)
+		{
+			char szDisplayText[32];
+
+			switch (pList->type)
+			{
+			case O_CATEGORY:
+				// When a new category is hit, we hide the previous one if it has no visible elements
+				if (pCurrentCategory)
+					pCurrentCategory->SetVisible(bCategoryVisible);
+
+				// Set the current category to the new one and iterate to the next panel
+				bCategoryVisible = false;
+				pCurrentCategory = pList;
+				pList = pList->next;
+				continue;
+			case O_BOOL:
+			case O_BUTTON:
+			{
+				// Checkboxes and buttons handle display text themselves
+				Label* pLabel = (Label*)pList->pControl;
+				pLabel->GetText(szDisplayText, sizeof(szDisplayText));
+				break;
+			}
+			default:
+				pList->pPrompt->GetText(szDisplayText, sizeof(szDisplayText));
+				break;
+			}
+
+			if (!Q_stristr(szDisplayText, szBuffer))
+			{
+				pList->SetVisible(false);
+			}
+			else
+			{
+				pList->SetVisible(true);
+				bCategoryVisible = true;
+			}
+
+			pList = pList->next;
+		}
+
+		// We need to do this check again in case there was no new category
+		if (pCurrentCategory)
+			pCurrentCategory->SetVisible(bCategoryVisible);
+
+		m_pListPanel->InvalidateLayout();
+		return;
+	}
+
+	BaseClass::OnMessage(pParams, fromPanel);
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
