@@ -12607,6 +12607,9 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 				event->SetInt( "carrier", entindex() );
 				event->SetInt( "priority", 8 );
 				event->SetInt( "team", pCaptureFlag->GetTeamNumber() );
+#ifdef BDSBASE
+				event->SetString("msg", STRING(pCaptureFlag->m_iszDefendName));
+#endif
 				gameeventmanager->FireEvent( event );
 			}
 			CTF_GameStats.Event_PlayerDefendedPoint( pPlayerAttacker );

@@ -333,6 +333,12 @@ public:
 	const char		*GetPaperEffect( void );
 	void			GetTrailEffect( int nTeam, char *pchName, int nBuffSize );
 
+#ifdef BDSBASE
+	string_t m_iszCaptureName;
+	string_t m_iszPickupName;
+	string_t m_iszDefendName;
+#endif
+
 	int				GetPointValue() const { return m_nPointValue.Get(); }
 private:
 

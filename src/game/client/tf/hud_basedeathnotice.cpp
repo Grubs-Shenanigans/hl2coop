@@ -672,6 +672,9 @@ void CHudBaseDeathNotice::FireGameEvent( IGameEvent *event )
 
 		const char *pszMsgKey = NULL;
 		int iEventType = event->GetInt( "eventtype" );
+#ifdef BDSBASE
+		const char* pszMsgText = event->GetString("msg", "");
+#endif
 
 		bool bIsMvM = TFGameRules() && TFGameRules()->IsMannVsMachineMode();
 		if ( bIsMvM )
@@ -687,16 +690,55 @@ void CHudBaseDeathNotice::FireGameEvent( IGameEvent *event )
 
 		bool bIsHalloween2014 = TFGameRules() && TFGameRules()->IsHalloweenScenario( CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY );
 
-		switch ( iEventType )
+		switch (iEventType)
 		{
-		case TF_FLAGEVENT_PICKUP: 
-			pszMsgKey = bIsHalloween2014 ? "#Msg_PickedUpFlagHalloween2014" : "#Msg_PickedUpFlag"; 
+		case TF_FLAGEVENT_PICKUP:
+#ifdef BDSBASE
+			if (Q_strlen(pszMsgText) <= 0)
+			{
+				pszMsgKey = bIsHalloween2014 ? "#Msg_PickedUpFlagHalloween2014" : "#Msg_PickedUpFlag";
+			}
+			else
+			{
+				pszMsgKey = pszMsgText;
+			}
+#else
+			pszMsgKey = bIsHalloween2014 ? "#Msg_PickedUpFlagHalloween2014" : "#Msg_PickedUpFlag";
+#endif
 			break;
-		case TF_FLAGEVENT_CAPTURE: 
-			pszMsgKey = bIsHalloween2014 ? "#Msg_CapturedFlagHalloween2014" : "#Msg_CapturedFlag"; 
+		case TF_FLAGEVENT_CAPTURE:
+#ifdef BDSBASE
+			if (Q_strlen(pszMsgText) <= 0)
+			{
+				pszMsgKey = bIsHalloween2014 ? "#Msg_CapturedFlagHalloween2014" : "#Msg_CapturedFlag";
+			}
+			else
+			{
+				pszMsgKey = pszMsgText;
+			}
+#else
+			pszMsgKey = bIsHalloween2014 ? "#Msg_CapturedFlagHalloween2014" : "#Msg_CapturedFlag";
+#endif
 			break;
-		case TF_FLAGEVENT_DEFEND: 
-			if ( bIsMvM )
+		case TF_FLAGEVENT_DEFEND:
+#ifdef BDSBASE
+			if (Q_strlen(pszMsgText) <= 0)
+			{
+				if (bIsMvM)
+				{
+					pszMsgKey = "#Msg_DefendedBomb";
+				}
+				else
+				{
+					pszMsgKey = bIsHalloween2014 ? "#Msg_DefendedFlagHalloween2014" : "#Msg_DefendedFlag";
+				}
+			}
+			else
+			{
+				pszMsgKey = pszMsgText;
+			}
+#else
+			if (bIsMvM)
 			{
 				pszMsgKey = "#Msg_DefendedBomb";
 			}
@@ -704,7 +746,7 @@ void CHudBaseDeathNotice::FireGameEvent( IGameEvent *event )
 			{
 				pszMsgKey = bIsHalloween2014 ? "#Msg_DefendedFlagHalloween2014" : "#Msg_DefendedFlag";
 			}
-
+#endif
 
 			break;
 
@@ -720,6 +762,9 @@ void CHudBaseDeathNotice::FireGameEvent( IGameEvent *event )
 		}
 
 		wchar_t *pwzEventText = g_pVGuiLocalize->Find( pszMsgKey );
+#ifdef BDSBASE
+		wchar_t pwzEventTextNonLocalized[256] = L"";
+#endif
 		Assert( pwzEventText );
 		if ( pwzEventText )
 		{
@@ -727,7 +772,12 @@ void CHudBaseDeathNotice::FireGameEvent( IGameEvent *event )
 		}
 		else
 		{
-			V_memset( m_DeathNotices[iMsg].wzInfoText, 0, sizeof( m_DeathNotices[iMsg].wzInfoText ) );
+#ifdef BDSBASE
+			g_pVGuiLocalize->ConvertANSIToUnicode(pszMsgKey, pwzEventTextNonLocalized, sizeof(pwzEventTextNonLocalized));
+			V_wcsncpy(m_DeathNotices[iMsg].wzInfoText, pwzEventTextNonLocalized, sizeof(m_DeathNotices[iMsg].wzInfoText));
+#else
+			V_memset(m_DeathNotices[iMsg].wzInfoText, 0, sizeof(m_DeathNotices[iMsg].wzInfoText));
+#endif
 		}
 
 		int iPlayerIndex = event->GetInt( "player" );
