@@ -801,7 +801,14 @@ void C_TFRagdoll::CreateTFRagdoll()
 		// Overwrite network origin so later interpolation will use this position.
 		SetNetworkOrigin( m_vecRagdollOrigin );
 #ifdef BDSBASE
-		SetAbsOrigin(pPlayer->GetRenderOrigin());
+		if (pPlayer)
+		{
+			SetAbsOrigin(pPlayer->GetRenderOrigin());
+		}
+		else
+		{
+			SetAbsOrigin(m_vecRagdollOrigin);
+		}
 #else
 		SetAbsOrigin(m_vecRagdollOrigin);
 #endif
