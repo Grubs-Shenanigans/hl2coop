@@ -201,10 +201,16 @@ BEGIN_DATADESC( CBaseAnimating )
 	DEFINE_INPUTFUNC( FIELD_FLOAT, "IgniteLifetime", InputIgniteLifetime ),
 	DEFINE_INPUTFUNC( FIELD_INTEGER, "IgniteNumHitboxFires", InputIgniteNumHitboxFires ),
 	DEFINE_INPUTFUNC( FIELD_FLOAT, "IgniteHitboxFireScale", InputIgniteHitboxFireScale ),
+#ifdef BDSBASE
+	DEFINE_INPUTFUNC(FIELD_VOID, "Extinguish", InputExtinguish),
+#endif
 	DEFINE_INPUTFUNC( FIELD_VOID, "BecomeRagdoll", InputBecomeRagdoll ),
 	DEFINE_INPUTFUNC( FIELD_STRING, "SetLightingOriginHack", InputSetLightingOriginRelative ),
 	DEFINE_INPUTFUNC( FIELD_STRING, "SetLightingOrigin", InputSetLightingOrigin ),
 	DEFINE_OUTPUT( m_OnIgnite, "OnIgnite" ),
+#ifdef BDSBASE
+	DEFINE_OUTPUT(m_OnExtinguish, "OnExtinguish"),
+#endif
 
 	DEFINE_INPUT( m_fadeMinDist, FIELD_FLOAT, "fademindist" ),
 	DEFINE_INPUT( m_fadeMaxDist, FIELD_FLOAT, "fademaxdist" ),
@@ -299,6 +305,13 @@ BEGIN_ENT_SCRIPTDESC( CBaseAnimating, CBaseEntity, "Animating models" )
 	DEFINE_SCRIPTFUNC_NAMED( ScriptSetPoseParameter, "SetPoseParameter", "(id, value) Sets a pose parameter value" )
 	DEFINE_SCRIPTFUNC( GetSkin, "Gets the current skin index." )
 	DEFINE_SCRIPTFUNC( SetSkin, "Sets the skin." )
+#ifdef BDSBASE
+	DEFINE_SCRIPTFUNC(Ignite, "Ignites this entity.")
+	DEFINE_SCRIPTFUNC(IgniteLifetime, "Ignites the entity for a user-defined lifetime.")
+	DEFINE_SCRIPTFUNC(IgniteNumHitboxFires, "Ignites this entity with a user-defined number of hitbox fire particles.")
+	DEFINE_SCRIPTFUNC(IgniteHitboxFireScale, "Ignites this entity with a user-defined hitbox fire particle scale.")
+	DEFINE_SCRIPTFUNC(Extinguish, "Extinguishes the entity.")
+#endif
 	DEFINE_SCRIPTFUNC_NAMED( ScriptSetModel, "SetModelSimple", "Set a model for this entity. Matches easier behaviour of the SetModel input, automatically precaches, maintains sequence/cycle if possible." )
 	DEFINE_SCRIPTFUNC( SetCycle, "Sets the models current cycle" )
 	DEFINE_SCRIPTFUNC( GetCycle, "Gets the models current cycle" )
@@ -3598,6 +3611,28 @@ void CBaseAnimating::IgniteHitboxFireScale( float flHitboxFireScale )
 	pFlame->SetHitboxFireScale( flHitboxFireScale );
 }
 
+#ifdef BDSBASE
+void CBaseAnimating::Extinguish()
+{
+	if (!IsOnFire())
+		return;
+
+	// get the flame effect
+	CEntityFlame* pFlame = dynamic_cast<CEntityFlame*>(GetEffectEntity());
+	if (pFlame)
+	{
+		pFlame->SetThink(&CBaseEntity::SUB_Remove);
+		pFlame->SetNextThink(gpGlobals->curtime + 0.1f);
+	}
+
+	// remove the OnFire flag
+	RemoveFlag(FL_ONFIRE);
+
+	// fire OnExtinguish output
+	m_OnExtinguish.FireOutput(this, this);
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Fades out!
 //-----------------------------------------------------------------------------
@@ -3709,6 +3744,13 @@ void CBaseAnimating::InputBecomeRagdoll( inputdata_t &inputdata )
 {
 	BecomeRagdollOnClient( vec3_origin );
 }
+
+#ifdef BDSBASE
+void CBaseAnimating::InputExtinguish(inputdata_t& inputdata)
+{
+	Extinguish();
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
