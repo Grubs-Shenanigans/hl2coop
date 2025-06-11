@@ -290,8 +290,14 @@ void CTFPowerupBottle::ReapplyProvision( void )
 						// ACHIEVEMENT_TF_MVM_USE_AMMO_BOTTLE
 						if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
 						{
-							if ( ( pWeapon->UsesPrimaryAmmo() && !pWeapon->HasPrimaryAmmo() ) ||
-								( pWeapon->UsesSecondaryAmmo() && !pWeapon->HasSecondaryAmmo() ) )
+#ifdef BDSBASE
+							if ((pWeapon->UsesPrimaryAmmo() && !pWeapon->HasPrimaryAmmo()) ||
+								(pWeapon->UsesSecondaryAmmo() && !pWeapon->HasSecondaryAmmo()) ||
+								(pWeapon->IsEnergyWeapon() && !pWeapon->Energy_HasEnergy()) )
+#else
+							if ((pWeapon->UsesPrimaryAmmo() && !pWeapon->HasPrimaryAmmo()) ||
+								(pWeapon->UsesSecondaryAmmo() && !pWeapon->HasSecondaryAmmo()) )
+#endif
 							{
 								pTFPlayer->AwardAchievement( ACHIEVEMENT_TF_MVM_USE_AMMO_BOTTLE ); 
 							}
