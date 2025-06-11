@@ -1715,7 +1715,11 @@ int CBaseEntity::TakeDamage( const CTakeDamageInfo &inputInfo )
 		}
 
 		// Scale the damage by my own modifiers
-		info.ScaleDamage( GetReceivedDamageScale( info.GetAttacker() ) );
+#ifdef BDSBASE
+		info.ScaleDamage(GetReceivedDamageScale(info.GetAttacker() ? info.GetAttacker() : NULL));
+#else
+		info.ScaleDamage(GetReceivedDamageScale(info.GetAttacker()));
+#endif
 
 		//Msg("%s took %.2f Damage, at %.2f\n", GetClassname(), info.GetDamage(), gpGlobals->curtime );
 
@@ -1785,6 +1789,12 @@ int CBaseEntity::TakeDamage( const CTakeDamageInfo &inputInfo )
 float CBaseEntity::GetAttackDamageScale( CBaseEntity *pVictim )
 {
 	float flScale = 1;
+
+#ifdef BDSBASE
+	if (m_DamageModifiers.Count() <= 0)
+		return flScale;
+#endif
+
 	FOR_EACH_LL( m_DamageModifiers, i )
 	{
 		if ( !m_DamageModifiers[i]->IsDamageDoneToMe() )
@@ -1801,6 +1811,12 @@ float CBaseEntity::GetAttackDamageScale( CBaseEntity *pVictim )
 float CBaseEntity::GetReceivedDamageScale( CBaseEntity *pAttacker )
 {
 	float flScale = 1;
+
+#ifdef BDSBASE
+	if (m_DamageModifiers.Count() <= 0)
+		return flScale;
+#endif
+
 	FOR_EACH_LL( m_DamageModifiers, i )
 	{
 		if ( m_DamageModifiers[i]->IsDamageDoneToMe() )
