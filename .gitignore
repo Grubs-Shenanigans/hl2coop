@@ -42,6 +42,8 @@ client.lib
 server.pdb
 server.dll
 server.lib
+game/*_win64.exe
+game/*_win64.pdb
 
 client.so
 client.so.dbg
@@ -49,6 +51,8 @@ server.so
 server.so.dbg
 server_srv.so
 server_srv.so.dbg
+game/*_linux64
+game/*_linux64.dbg
 
 client.dylib
 client.dylib.dSYM/

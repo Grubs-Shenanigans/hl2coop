@@ -694,6 +694,10 @@ public:
 	void InputDispatchResponse( inputdata_t& inputdata );
 	void InputDisableShadow( inputdata_t &inputdata );
 	void InputEnableShadow( inputdata_t &inputdata );
+#ifdef BDSBASE
+	void InputDisableDraw(inputdata_t& inputdata);
+	void InputEnableDraw(inputdata_t& inputdata);
+#endif
 	void InputAddOutput( inputdata_t &inputdata );
 	void InputFireUser1( inputdata_t &inputdata );
 	void InputFireUser2( inputdata_t &inputdata );
