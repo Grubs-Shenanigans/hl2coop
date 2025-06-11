@@ -17,6 +17,11 @@
 #include "tf_gamerules.h"
 #include "ihudlcd.h"
 #include "tf_hud_freezepanel.h"
+#ifdef BDSBASE
+#include "tf_gc_client.h"
+#include "tf_partyclient.h"
+#include "tf_matchmaking_dashboard.h"
+#endif
 #if defined( REPLAY_ENABLED )
 #include "replay/ienginereplay.h"
 #endif
@@ -125,8 +130,13 @@ void RenderPartyChatMessage( const ChatMessage_t& message,
 		GetPlayerNameForSteamID( wCharPlayerName, sizeof(wCharPlayerName), message.m_steamID );
 		pRichText->InsertColorChange( colorPlayerName );
 		pRichText->InsertString( wCharPlayerName );
-		pRichText->InsertString( ": " );
+#ifndef BDSBASE
+		pRichText->InsertString(": ");
+#endif
 		pRichText->InsertColorChange( colorText );
+#ifdef BDSBASE
+		pRichText->InsertString(": ");
+#endif
 		pRichText->InsertString( message.m_pwszText );
 	}
 	break;
@@ -211,6 +221,10 @@ void CHudChat::Init( void )
 	HOOK_HUD_MESSAGE( CHudChat, VoiceSubtitle );
 }
 
+#ifdef BDSBASE
+ConVar tf_party_use_member_color("tf_party_use_member_color", "0", FCVAR_ARCHIVE);
+#endif
+
 void CHudChat::FireGameEvent( IGameEvent *event )
 {
 	if ( FStrEq( event->GetName(), "party_chat" ) )
@@ -240,8 +254,24 @@ void CHudChat::FireGameEvent( IGameEvent *event )
 			GetChatHistory()->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
 		}
 
+#ifdef BDSBASE
+		Color colorPartyMember = m_colorPartyMessage;
+
+		auto pParty = GTFPartyClient()->GetActiveParty();
+
+		if (pParty && tf_party_use_member_color.GetBool())
+		{
+			int nSlot = pParty->GetClientCentricMemberIndexBySteamID(steamID);
+			colorPartyMember = GetMMDashboard()->GetPartyMemberColor(nSlot);
+			GetChatHistory()->InsertFade(hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME);
+		}
+
+		RenderPartyChatMessage({ eType, wText, steamID }, GetChatHistory(), m_colorPartyEvent, colorPartyMember, m_colorPartyMessage);
+#else
+		RenderPartyChatMessage({ eType, wText, steamID }, GetChatHistory(), m_colorPartyEvent, m_colorPartyMessage, m_colorPartyMessage);
+#endif
+
 		// Put the message and fade
-		RenderPartyChatMessage( { eType, wText, steamID }, GetChatHistory(), m_colorPartyEvent, m_colorPartyMessage, m_colorPartyMessage );
 		GetChatHistory()->InsertFade( hud_saytext_time.GetFloat(), CHAT_HISTORY_IDLE_FADE_TIME );
 
 		return;
