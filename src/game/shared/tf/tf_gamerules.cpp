@@ -5785,6 +5785,10 @@ void CTFRadiusDamageInfo::CalculateFalloff( void )
 	}
 }
 
+#ifdef BDSBASE
+ConVar tf_explosion_creep("tf_explosion_creep", "12");
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Attempt to apply the radius damage to the specified entity
 //-----------------------------------------------------------------------------
@@ -5816,12 +5820,48 @@ int CTFRadiusDamageInfo::ApplyToEntity( CBaseEntity *pEntity )
 		UTIL_TraceLine( vecSrc, vecSpot, MASK_RADIUS_DAMAGE, &filterSelf, &tr );
 	}
 
+#ifdef BDSBASE
+	// If we don't trace the whole way to the target, and we didn't hit the target entity, we're blocked, so do a more robust check
+	if (tr.fraction != 1.f && tr.m_pEnt != pEntity)
+	{
+		if (tf_explosion_creep.GetBool())
+		{
+			Vector vecToTarget = vecSpot - vecSrc;
+			VectorNormalize(vecToTarget);
+
+			// We're going to deflect the blast along the surface that 
+			// interrupted a trace from explosion to this target.
+			Vector vecUp, vecDeflect;
+			CrossProduct(vecToTarget, tr.plane.normal, vecUp);
+			CrossProduct(tr.plane.normal, vecUp, vecDeflect);
+			VectorNormalize(vecDeflect);
+
+			// Trace along the surface that intercepted the blast...
+			//NDebugOverlay::Line( vecSrc, vecSrc + (vecDeflect * tf_explosion_creep.GetFloat()), 255, 255, 0, false, 10 );
+			UTIL_TraceLine(vecSrc, vecSrc + (vecDeflect * tf_explosion_creep.GetFloat()), MASK_RADIUS_DAMAGE, &filter, &tr);
+
+			// ...to see if there's a nearby edge that the explosion would 'spill over' if the blast were fully simulated.
+			//NDebugOverlay::Line( tr.endpos, vecSpot, 255, 0, 0, false, 10 );
+			UTIL_TraceLine(tr.endpos, vecSpot, MASK_RADIUS_DAMAGE, &filter, &tr);
+
+			if (tr.fraction != 1.0 && tr.DidHitWorld()) 
+			{
+				return 0;
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+#else
 	// If we don't trace the whole way to the target, and we didn't hit the target entity, we're blocked
-	if ( tr.fraction != 1.f && tr.m_pEnt != pEntity )
+	if (tr.fraction != 1.f && tr.m_pEnt != pEntity)
 	{
 		// Don't let projectiles block damage
 		return 0;
 	}
+#endif
 
 	// Adjust the damage - apply falloff.
 	float flAdjustedDamage = 0.0f;
