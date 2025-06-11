@@ -52,10 +52,14 @@ public:
 
 	bool HasFullCharge() const;
 
+#ifdef BDSBASE
+	float			GetProgress(void);
+#endif
 	virtual void	OnResourceMeterFilled() OVERRIDE;
 	virtual float	GetMeterMultiplier() const OVERRIDE;
 
 #ifdef BDSBASE
+	const char* GetEffectLabelText(void) { return "#TF_PRESSURE"; }
 	virtual bool	CanInspect() const OVERRIDE;
 #endif
 
