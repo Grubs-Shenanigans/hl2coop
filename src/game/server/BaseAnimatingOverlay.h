@@ -185,6 +185,19 @@ public:
 	void	RemoveLayer( int iLayer, float flKillRate = 0.2, float flKillDelay = 0.0 );
 	void	FastRemoveLayer( int iLayer );
 
+#ifdef BDSBASE
+	int		ScriptAddGestureSequence(int sequence, bool autokill = true) { return AddGestureSequence(sequence, autokill); }
+	int		ScriptAddGestureSequenceDuration(int sequence, float flDuration, bool autokill = true) { return AddGestureSequence(sequence, flDuration, autokill); }
+	int		ScriptAddGesture(int activity, bool autokill = true) { return AddGesture((Activity)activity, autokill); }
+	int		ScriptAddGestureDuration(int activity, float flDuration, bool autokill = true) { return AddGesture((Activity)activity, flDuration, autokill); }
+	bool	ScriptIsPlayingGesture(int activity) { return IsPlayingGesture((Activity)activity); }
+	void	ScriptRestartGesture(int activity, bool addifmissing = true, bool autokill = true) { RestartGesture((Activity)activity, addifmissing, autokill); }
+	void	ScriptRemoveGesture(int activity) { RemoveGesture((Activity)activity); }
+	void	ScriptSetLayerCycle(int iLayer, float flCycle) { SetLayerCycle(iLayer, flCycle); }
+	void	ScriptSetLayerCycleLastEventCheck(int iLayer, float flCycle, float flPrevCycle, float flLastEventCheck) { SetLayerCycle(iLayer, flCycle, flPrevCycle, flLastEventCheck); };
+	int		ScriptFindGestureLayer(int activity) { return FindGestureLayer((Activity)activity); }
+#endif
+
 	CAnimationLayer *GetAnimOverlay( int iIndex );
 	int GetNumAnimOverlays() const;
 	void SetNumAnimOverlays( int num );
@@ -199,6 +212,9 @@ private:
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 	DECLARE_PREDICTABLE();
+#ifdef BDSBASE
+	DECLARE_ENT_SCRIPTDESC();
+#endif
 };
 
 EXTERN_SEND_TABLE(DT_BaseAnimatingOverlay);
