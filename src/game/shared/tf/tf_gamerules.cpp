@@ -22070,6 +22070,11 @@ bool CTFGameRules::CanUpgradeWithAttrib( CTFPlayer *pPlayer, int iWeaponSlot, at
 			return ( iWeaponID == TF_WEAPON_MEDIGUN );
 		}
 	case 871:	// falling_impact_radius_stun
+#ifdef BDSBASE
+		{
+			return (bRocketPack || (iWeaponSlot == TF_WPN_TYPE_SECONDARY && pPlayer->IsPlayerClass(TF_CLASS_SOLDIER) && pPlayer->m_Shared.CanFallStomp())); // wow
+		}
+#endif
 	case 872:	// thermal_thruster_air_launch
 		{
 			return bRocketPack;
