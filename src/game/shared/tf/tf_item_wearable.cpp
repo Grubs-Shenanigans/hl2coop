@@ -546,50 +546,95 @@ bool CTFWearable::UpdateBodygroups( CBaseCombatCharacter* pOwner, int iState )
 	if ( !pTFOwner )
 		return false;
 
-	bool bBaseUpdate = BaseClass::UpdateBodygroups( pOwner, iState );
-	if ( bBaseUpdate && m_bDisguiseWearable )
-	{
-		CEconItemView *pItem = GetAttributeContainer()->GetItem(); // Safe. Checked in base class call.
+#ifdef BDSBASE
+	BaseClass::UpdateBodygroups(pOwner, iState);
 
-		CTFPlayer *pDisguiseTarget = pTFOwner->m_Shared.GetDisguiseTarget();
-		if ( !pDisguiseTarget )
+	CEconItemView* pItem = GetAttributeContainer() ? GetAttributeContainer()->GetItem() : NULL;
+
+#ifdef CLIENT_DLL
+	if (pItem && m_bDisguiseWearable)
+	{
+		// Update our disguise bodygroup.
+		int iDisguiseBody = pTFOwner->m_Shared.GetDisguiseBody();
+		int iTeam = pTFOwner->m_Shared.GetDisguiseTeam();
+		int iNumBodyGroups = pItem->GetStaticData()->GetNumModifiedBodyGroups(iTeam);
+		for (int i = 0; i < iNumBodyGroups; ++i)
+		{
+			int iBody = 0;
+			const char* pszBodyGroup = pItem->GetStaticData()->GetModifiedBodyGroup(iTeam, i, iBody);
+			int iBodyGroup = pTFOwner->FindBodygroupByName(pszBodyGroup);
+
+			if (iBodyGroup == -1)
+				continue;
+
+			::SetBodygroup(pTFOwner->GetModelPtr(), iDisguiseBody, iBodyGroup, iState);
+		}
+
+		pTFOwner->m_Shared.SetDisguiseBody(iDisguiseBody);
+	}
+#endif // CLIENT_DLL
+
+	if (pItem)
+	{
+		int iTeam = pTFOwner->GetTeamNumber();
+		int iNumBodyGroups = pItem->GetStaticData()->GetNumCodeControlledBodyGroups(iTeam);
+		for (int i = 0; i < iNumBodyGroups; ++i)
+		{
+			codecontrolledbodygroupdata_t ccbgd = { NULL, NULL };
+			const char* pszBodyGroup = pItem->GetStaticData()->GetCodeControlledBodyGroup(iTeam, i, ccbgd);
+			int iBodyGroup = FindBodygroupByName(pszBodyGroup);
+			if (iBodyGroup != -1)
+			{
+				SetBodygroup(iBodyGroup, CalcBodyGroup(pOwner, pItem, pszBodyGroup, ccbgd));
+			}
+		}
+	}
+#else
+	bool bBaseUpdate = BaseClass::UpdateBodygroups(pOwner, iState);
+	if (bBaseUpdate && m_bDisguiseWearable)
+	{
+		CEconItemView* pItem = GetAttributeContainer()->GetItem(); // Safe. Checked in base class call.
+
+		CTFPlayer* pDisguiseTarget = pTFOwner->m_Shared.GetDisguiseTarget();
+		if (!pDisguiseTarget)
 			return false;
 
 		// Update our disguise bodygroup.
 		int iDisguiseBody = pTFOwner->m_Shared.GetDisguiseBody();
 		int iTeam = pTFOwner->m_Shared.GetDisguiseTeam();
-		int iNumBodyGroups = pItem->GetStaticData()->GetNumModifiedBodyGroups( iTeam );
-		for ( int i=0; i<iNumBodyGroups; ++i )
+		int iNumBodyGroups = pItem->GetStaticData()->GetNumModifiedBodyGroups(iTeam);
+		for (int i = 0; i < iNumBodyGroups; ++i)
 		{
 			int iBody = 0;
-			const char *pszBodyGroup = pItem->GetStaticData()->GetModifiedBodyGroup( iTeam, i, iBody );
-			int iBodyGroup = pDisguiseTarget->FindBodygroupByName( pszBodyGroup );
+			const char* pszBodyGroup = pItem->GetStaticData()->GetModifiedBodyGroup(iTeam, i, iBody);
+			int iBodyGroup = pDisguiseTarget->FindBodygroupByName(pszBodyGroup);
 
-			if ( iBodyGroup == -1 )
+			if (iBodyGroup == -1)
 				continue;
 
-			::SetBodygroup( pDisguiseTarget->GetModelPtr(), iDisguiseBody, iBodyGroup, iState );
+			::SetBodygroup(pDisguiseTarget->GetModelPtr(), iDisguiseBody, iBodyGroup, iState);
 		}
 
-		pTFOwner->m_Shared.SetDisguiseBody( iDisguiseBody );
+		pTFOwner->m_Shared.SetDisguiseBody(iDisguiseBody);
 	}
 
-	CEconItemView *pItem = GetAttributeContainer() ? GetAttributeContainer()->GetItem() : NULL;
-	if ( pItem )
-	{		
+	CEconItemView* pItem = GetAttributeContainer() ? GetAttributeContainer()->GetItem() : NULL;
+	if (pItem)
+	{
 		int iTeam = pTFOwner->GetTeamNumber();
-		int iNumBodyGroups = pItem->GetStaticData()->GetNumCodeControlledBodyGroups( iTeam );
-		for ( int i=0; i<iNumBodyGroups; ++i )
+		int iNumBodyGroups = pItem->GetStaticData()->GetNumCodeControlledBodyGroups(iTeam);
+		for (int i = 0; i < iNumBodyGroups; ++i)
 		{
 			codecontrolledbodygroupdata_t ccbgd = { NULL, NULL };
-			const char *pszBodyGroup = pItem->GetStaticData()->GetCodeControlledBodyGroup( iTeam, i, ccbgd );
-			int iBodyGroup = FindBodygroupByName( pszBodyGroup );
-			if ( iBodyGroup != -1 )
+			const char* pszBodyGroup = pItem->GetStaticData()->GetCodeControlledBodyGroup(iTeam, i, ccbgd);
+			int iBodyGroup = FindBodygroupByName(pszBodyGroup);
+			if (iBodyGroup != -1)
 			{
-				SetBodygroup( iBodyGroup, CalcBodyGroup( pOwner, pItem, pszBodyGroup, ccbgd ) );
+				SetBodygroup(iBodyGroup, CalcBodyGroup(pOwner, pItem, pszBodyGroup, ccbgd));
 			}
 		}
 	}
+#endif
 
 	// Additional hidden bodygroups.
 	for ( int i=0; i<m_HiddenBodyGroups.Count(); ++i )
