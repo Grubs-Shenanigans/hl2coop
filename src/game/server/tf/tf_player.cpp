@@ -306,6 +306,9 @@ extern ConVar tf_tournament_classchange_allowed;
 extern ConVar tf_tournament_classchange_ready_allowed;
 extern ConVar tf_rocketpack_impact_push_min;
 extern ConVar tf_rocketpack_impact_push_max;
+#ifdef BDSBASE
+extern ConVar mp_disable_respawn_times;
+#endif
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
 extern ConVar mp_developer;
 extern ConVar bot_mimic;
@@ -4040,6 +4043,10 @@ void CTFPlayer::Spawn()
 	// make sure we clear custom attributes that we added
 	RemoveAllCustomAttributes();
 
+#ifdef BDSBASE
+	if (mp_disable_respawn_times.GetInt() > 1)
+		ForceRespawn();
+#endif
 
 	CTFPlayerResource *pResource = dynamic_cast<CTFPlayerResource *>( g_pPlayerResource );
 	if ( pResource )
