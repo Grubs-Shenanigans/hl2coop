@@ -320,7 +320,11 @@ void CCharacterInfoPanel::OnCommand( const char *command )
 	}
 	else
 	{
-		engine->ClientCmd( const_cast<char *>( command ) );
+#ifdef BDSBASE
+		engine->ClientCmd_Unrestricted(command);
+#else
+		engine->ClientCmd(const_cast<char*>(command));
+#endif
 	}
 
 	BaseClass::OnCommand( command );
