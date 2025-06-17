@@ -387,7 +387,11 @@ void CVoiceStatus::UpdateServerState(bool bForce)
 
 			player_info_t pi;
 
-			if ( !engine->GetPlayerInfo( i+1, &pi ) )
+#ifdef BDSBASE
+			if (!engine->GetPlayerInfo(playerIndex + 1, &pi))
+#else
+			if (!engine->GetPlayerInfo(i + 1, &pi))
+#endif
 				continue;
 
 			if ( m_BanMgr.GetPlayerBan( pi.guid ) )
