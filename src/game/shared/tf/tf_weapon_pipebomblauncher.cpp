@@ -147,6 +147,12 @@ void CTFPipebombLauncher::WeaponReset( void )
 	DetonateRemotePipebombs( true );
 #endif
 
+#ifdef BDSBASE
+#ifdef CLIENT_DLL
+	StopSound(TF_WEAPON_PIPEBOMB_LAUNCHER_CHARGE_SOUND);
+#endif
+#endif
+
 	m_flChargeBeginTime = 0.0f;
 }
 
