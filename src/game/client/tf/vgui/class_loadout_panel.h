@@ -84,6 +84,9 @@ public:
 	CEconItemView	*GetItemInSlot( int iSlot );
 
 	MESSAGE_FUNC_PTR( OnItemPanelMouseReleased, "ItemPanelMouseReleased", panel );
+#ifdef BDSBASE
+	MESSAGE_FUNC_PTR(OnItemPanelMouseRightRelease, "ItemPanelMouseRightRelease", panel);
+#endif
 	MESSAGE_FUNC_PARAMS( OnSelectionReturned, "SelectionReturned", data );
 	MESSAGE_FUNC( OnCancelSelection, "CancelSelection" );
 	MESSAGE_FUNC( OnClosing, "Closing" );
