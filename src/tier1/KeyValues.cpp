@@ -2366,7 +2366,11 @@ bool KeyValues::LoadFromBuffer( char const *resourceName, CUtlBuffer &buf, IBase
 	{
 		// delete included keys!
 		int i;
-		for ( i = includedKeys.Count() - 1; i > 0; i-- )
+#ifdef BDSBASE
+		for (i = includedKeys.Count() - 1; i >= 0; i--)
+#else
+		for (i = includedKeys.Count() - 1; i > 0; i--)
+#endif
 		{
 			KeyValues *kv = includedKeys[ i ];
 			kv->deleteThis();
