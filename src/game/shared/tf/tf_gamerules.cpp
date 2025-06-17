@@ -10368,6 +10368,9 @@ void CTFGameRules::ClientSettingsChanged( CBasePlayer *pPlayer )
 	// keep track of their cl_autorezoom value
 	pTFPlayer->SetAutoRezoom( Q_atoi( engine->GetClientConVarValue( pPlayer->entindex(), "cl_autorezoom" ) ) > 0 );
 	pTFPlayer->SetAutoReload( Q_atoi( engine->GetClientConVarValue( pPlayer->entindex(), "cl_autoreload" ) ) > 0 );
+#ifdef BDSBASE
+	pTFPlayer->SetHoldZoom(Q_atoi(engine->GetClientConVarValue(pPlayer->entindex(), "cl_holdzoom")) > 0);
+#endif
 
 	// keep track of their tf_remember_lastswitched value
 	pTFPlayer->SetRememberActiveWeapon( Q_atoi( engine->GetClientConVarValue( pPlayer->entindex(), "tf_remember_activeweapon" ) ) > 0 );
