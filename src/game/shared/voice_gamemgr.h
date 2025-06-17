@@ -55,7 +55,9 @@ public:
 	bool				ClientCommand(CBasePlayer *pPlayer, const CCommand &args );
 
 	bool				CheckProximity( int iDistance );
+#ifndef BDSBASE
 	void				SetProximityDistance( int iDistance );
+#endif
 
 	bool				IsPlayerIgnoringPlayer( int iTalker, int iListener );
 
@@ -69,7 +71,9 @@ private:
 	IVoiceGameMgrHelper	*m_pHelper;
 	int					m_nMaxPlayers;
 	double				m_UpdateInterval;						// How long since the last update.
+#ifndef BDSBASE
 	int					m_iProximityDistance;
+#endif
 };
 
 
