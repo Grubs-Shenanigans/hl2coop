@@ -181,10 +181,13 @@ void CMMDashboardParentManager::AttachToTopMostPopup()
 
 	Panel *pPopup = ipanel()->GetPanel( (VPANEL)top, GetControlsModuleName());
 
+	//we shouldn't have this panel anyways since we're a mod...
+#ifndef BDSBASE_TF2_LEGACY_MAINMENU
 	if ( !pPopup && gViewPortInterface )
 	{
 		pPopup = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
 	}
+#endif
 
 	if ( pPopup )
 	{

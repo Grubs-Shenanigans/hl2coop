@@ -358,10 +358,12 @@ IViewPortPanel* TFViewport::CreatePanelByName(const char *szPanelName)
 	{
 		newpanel = new CTFGiveawayItemPanel( this );
 	}
+#ifndef BDSBASE_TF2_LEGACY_MAINMENU
 	else if ( Q_strcmp( PANEL_MAINMENUOVERRIDE, szPanelName ) == 0 )
 	{
 		newpanel = new CHudMainMenuOverride( this );
 	}
+#endif
 	else
 	{
 		// create a generic base panel, don't add twice
@@ -384,12 +386,14 @@ void TFViewport::CreateDefaultPanels( void )
 	AddNewPanel( CreatePanelByName( PANEL_PVE_WIN ), "PANEL_PVE_WIN" );
 	AddNewPanel( CreatePanelByName( PANEL_GIVEAWAY_ITEM ), "PANEL_GIVEAWAY_ITEM" );
 
+#ifndef BDSBASE_TF2_LEGACY_MAINMENU
 	CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)CreatePanelByName( PANEL_MAINMENUOVERRIDE );
 	if ( pMMOverride )
 	{
 		AddNewPanel( pMMOverride, "PANEL_MAINMENUOVERRIDE" );
 		pMMOverride->AttachToGameUI();	
 	}
+#endif
 
 	BaseClass::CreateDefaultPanels();
 }

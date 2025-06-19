@@ -39,6 +39,10 @@ BDSBASE_CUSTOM_SCHEMA
 - Games: TF2
 - Enables the creation of a items_custom.txt file that allows the addition and modification of items without needing to modify the items_game.txt file.
 
+BDSBASE_TF2_LEGACY
+- Games: TF2
+- Enables features from older versions of TF2, such as the old main menu, older flame thrower particles, and various other features.
+
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.
 You may also read a more detailed guide here:

@@ -1560,8 +1560,12 @@ static void CL_OpenSteamWorkshopDialog( const CCommand &args )
 {
 	if ( g_pSteamWorkshopDialog.Get() == NULL )
 	{
+#ifndef BDSBASE_TF2_LEGACY_MAINMENU
 		IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
 		g_pSteamWorkshopDialog = vgui::SETUP_PANEL( new CSteamWorkshopDialog( (CHudMainMenuOverride*)pMMOverride ) );
+#else
+		g_pSteamWorkshopDialog = vgui::SETUP_PANEL(new CSteamWorkshopDialog(NULL));
+#endif
 	}
 	engine->ExecuteClientCmd( "gameui_activate" );
 	g_pSteamWorkshopDialog->Show();

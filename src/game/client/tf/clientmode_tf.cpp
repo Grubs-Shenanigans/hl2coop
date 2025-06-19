@@ -449,6 +449,7 @@ void ClientModeTFNormal::Init()
 	if ( gameUIFactory )
 	{
 		m_pGameUI = (IGameUI *) gameUIFactory(GAMEUI_INTERFACE_VERSION, NULL );
+
 		if ( NULL != m_pGameUI )
 		{
 			// insert stats summary panel as the loading background dialog
@@ -458,12 +459,16 @@ void ClientModeTFNormal::Init()
 			pPanel->MakePopup( false );
 			m_pGameUI->SetLoadingBackgroundDialog( pPanel->GetVPanel() );
 
+#ifndef BDSBASE_TF2_LEGACY_MAINMENU
 			IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
 			if ( pMMOverride )
 			{
 				((CHudMainMenuOverride*)pMMOverride)->AttachToGameUI();	
 			}
-		}		
+#else
+			m_pGameUI->SetMainMenuOverride(NULL);
+#endif
+		}
 	}
 
 #if defined( _X360 )

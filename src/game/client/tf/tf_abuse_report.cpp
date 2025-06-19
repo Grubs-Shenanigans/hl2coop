@@ -107,9 +107,14 @@ void CTFAbuseReportManager::ActivateSubmitReportUI()
 	Assert( g_AbuseReportDlg.Get() == NULL );
 	Assert( m_pIncidentData != NULL );
 
-	IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
+#ifndef BDSBASE_TF2_LEGACY_MAINMENU
+	IViewPortPanel* pMMOverride = (gViewPortInterface->FindPanelByName(PANEL_MAINMENUOVERRIDE));
 	engine->ExecuteClientCmd("gameui_activate");
 	vgui::SETUP_PANEL( new CAbuseReportDlg( (CHudMainMenuOverride*)pMMOverride, m_pIncidentData ) );
+#else
+	engine->ExecuteClientCmd("gameui_activate");
+	vgui::SETUP_PANEL(new CAbuseReportDlg(NULL, m_pIncidentData));
+#endif
 	Assert( g_AbuseReportDlg.Get() != NULL );
 	g_AbuseReportDlg->MakeModal();
 }

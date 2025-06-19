@@ -5,6 +5,7 @@
 	nomodels				1
 	nohimodel 				1
 	nocrosshair				0
+	//gamelogo				1
 	hidden_maps
 	{
 		"test_speakers"		1

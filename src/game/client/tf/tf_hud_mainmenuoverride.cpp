@@ -634,7 +634,6 @@ void CHudMainMenuOverride::ApplySchemeSettings( IScheme *scheme )
 	lambdaAddTooltip( "SettingsButton", "#MMenu_Tooltip_Options" );
 	lambdaAddTooltip( "TF2SettingsButton", "#MMenu_Tooltip_AdvOptions" );
 
-
 	LoadCharacterImageFile();
 
 	RemoveAllMenuEntries();
@@ -799,6 +798,12 @@ void CHudMainMenuOverride::LoadMenuEntries( void )
 
 	for (KeyValues *dat = datafile->GetFirstSubKey(); dat != NULL; dat = dat->GetNextKey())
 	{
+#ifdef BDSBASE
+		bool legacy = dat->GetBool("OnlyInLegacyMode");
+		if (legacy)
+			continue;
+#endif
+
 		const char *label = dat->GetString("label", "<unknown>");
 		const char *cmd = dat->GetString("command", NULL);
 		const char *name = dat->GetName();
