@@ -8,6 +8,7 @@ This base is specific to multiplayer mod projects.
 
 ## Projects using this base:
 - SURVIVOR II (Based on HL2DM)
+- Team Fortress 2 PRIME (Based on TF2)
 
 ## Features:
 - Restored game project generator scripts. No more having to generate every project!
