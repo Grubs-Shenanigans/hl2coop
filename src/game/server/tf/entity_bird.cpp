@@ -88,7 +88,11 @@ void CEntityBird::SpawnRandomBirds( void )
 	if ( !pszMapName || !pszMapName[0] )
 		return;
 
-	KeyValues *pFileKV = new KeyValues( "birds" );
+#ifdef BDSBASE
+	KeyValuesAD pFileKV("birds");
+#else
+	KeyValues* pFileKV = new KeyValues("birds");
+#endif
 	if ( !pFileKV->LoadFromFile( g_pFullFileSystem, "scripts/birds.txt", "MOD" ) )
 		return;
 
