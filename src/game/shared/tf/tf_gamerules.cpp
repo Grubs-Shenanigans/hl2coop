@@ -8001,6 +8001,12 @@ bool CTFGameRules::ClientCommand( CBaseEntity *pEdict, const CCommand &args )
 				return true;
 
 			bool bReady = ( atoi( args[1] ) == 1 );
+
+#ifdef BDSBASE
+			if (bReady == IsPlayerReady(pPlayer->entindex()))
+				return true;
+#endif
+
 			PlayerReadyStatus_UpdatePlayerState( pPlayer, bReady );
 			if ( bReady )
 			{
