@@ -2267,7 +2267,11 @@ bool CTFGameRules::BInMatchStartCountdown() const
 	if ( IsCompetitiveMode() )
 	{
 		float flTime = GetRoundRestartTime();
-		if ( ( flTime > 0.f ) && ( (int)( flTime - gpGlobals->curtime ) <= mp_tournament_readymode_countdown.GetInt() ) )
+#ifdef BDSBASE
+		if ((flTime > 0.f) && ((int)ceil(flTime - gpGlobals->curtime) <= mp_tournament_readymode_countdown.GetInt()))
+#else
+		if ((flTime > 0.f) && ((int)(flTime - gpGlobals->curtime) <= mp_tournament_readymode_countdown.GetInt()))
+#endif
 		{
 			return true;
 		}
@@ -2884,6 +2888,11 @@ bool CTFGameRules::PlayerReadyStatus_HaveMinPlayersToEnable( void )
 		if ( playerVector[i]->IsReplay() )
 			continue;
 
+#ifdef BDSBASE
+		if (playerVector[i]->IsDisconnecting())
+			continue;
+#endif
+
 		nNumPlayers++;
 	}
 
@@ -2990,7 +2999,11 @@ bool CTFGameRules::PlayerReadyStatus_ShouldStartCountdown( void )
 
 	if ( IsMannVsMachineMode() )
 	{
-		if ( !IsTeamReady( TF_TEAM_PVE_DEFENDERS ) && m_flRestartRoundTime >= gpGlobals->curtime + mp_tournament_readymode_countdown.GetInt() )
+#ifdef BDSBASE
+		if (!IsTeamReady(TF_TEAM_PVE_DEFENDERS) && m_flRestartRoundTime >= (int)ceil(gpGlobals->curtime + mp_tournament_readymode_countdown.GetInt()))
+#else
+		if (!IsTeamReady(TF_TEAM_PVE_DEFENDERS) && m_flRestartRoundTime >= gpGlobals->curtime + mp_tournament_readymode_countdown.GetInt())
+#endif
 		{
 			bool bIsTeamReady = PlayerReadyStatus_ArePlayersOnTeamReady( TF_TEAM_PVE_DEFENDERS );
 			if ( bIsTeamReady )
@@ -3053,8 +3066,14 @@ void CTFGameRules::PlayerReadyStatus_UpdatePlayerState( CTFPlayer *pTFPlayer, bo
 		return;
 
 	// Make sure we have enough to allow ready mode commands
-	if ( !PlayerReadyStatus_HaveMinPlayersToEnable() )
+	if (!PlayerReadyStatus_HaveMinPlayersToEnable())
+	{
+#ifdef BDSBASE
+		// Reset ready state if we do not have enough players anymore.
+		PlayerReadyStatus_ResetState();
+#endif
 		return;
+	}
 
 	int nEntIndex = pTFPlayer->entindex();
 	if ( !IsIndexIntoPlayerArrayValid(nEntIndex) )
@@ -13413,6 +13432,10 @@ void CTFGameRules::ClientDisconnected( edict_t *pClient )
 	CTFPlayer *pPlayer = ToTFPlayer( GetContainingEntity( pClient ) );
 	if ( pPlayer )
 	{
+#ifdef BDSBASE
+		pPlayer->SetConnected(PlayerDisconnecting);
+#endif
+
 		// ACHIEVEMENT_TF_PYRO_DOMINATE_LEAVESVR - Pyro causes a dominated player to leave the server
 		for ( int i = 1; i <= gpGlobals->maxClients ; i++ )
 		{
@@ -13455,6 +13478,13 @@ void CTFGameRules::ClientDisconnected( edict_t *pClient )
 					{
 						PlayerReadyStatus_ResetState();
 					}
+#ifdef BDSBASE
+					// For MvM, we don't want to stop the countdown if others are ready so reset only the leaving player's ready state.
+					else if (IsPlayerReady(pPlayer->entindex()))
+					{
+						PlayerReadyStatus_UpdatePlayerState(pPlayer, false);
+					}
+#endif
 				}
 				else if ( !IsTeamReady( pPlayer->GetTeamNumber() ) )
 				{
@@ -21008,14 +21038,22 @@ void CTFGameRules::BetweenRounds_Think( void )
 	if ( UsePlayerReadyStatusMode() )
 	{
 		// Everyone is ready, or the drop-dead timer naturally ticked down to mp_tournament_readymode_countdown
-		bool bStartFinalCountdown = ( PlayerReadyStatus_ShouldStartCountdown() || ( m_flRestartRoundTime > 0 && (int)( m_flRestartRoundTime - gpGlobals->curtime ) == mp_tournament_readymode_countdown.GetInt() ) );
+#ifdef BDSBASE
+		bool bStartFinalCountdown = (PlayerReadyStatus_ShouldStartCountdown() || (m_flRestartRoundTime > 0 && (int)ceil(m_flRestartRoundTime - gpGlobals->curtime) == mp_tournament_readymode_countdown.GetInt()));
+#else
+		bool bStartFinalCountdown = (PlayerReadyStatus_ShouldStartCountdown() || (m_flRestartRoundTime > 0 && (int)(m_flRestartRoundTime - gpGlobals->curtime) == mp_tournament_readymode_countdown.GetInt()));
+#endif
 
 		// It's the FINAL COUNTDOOOWWWNNnnnnnnnnn
 		float flDropDeadTime = gpGlobals->curtime + mp_tournament_readymode_countdown.GetFloat() + 0.1f;
 		if ( bStartFinalCountdown && ( m_flRestartRoundTime < 0 || m_flRestartRoundTime >= flDropDeadTime ) )
 		{
+#ifdef BDSBASE
+			m_flRestartRoundTime.Set(gpGlobals->curtime + mp_tournament_readymode_countdown.GetFloat());
+#else
 			float flDelay = IsMannVsMachineMode() ? 10.f : mp_tournament_readymode_countdown.GetFloat();
-			m_flRestartRoundTime.Set( gpGlobals->curtime + flDelay );
+			m_flRestartRoundTime.Set(gpGlobals->curtime + flDelay);
+#endif
 			ShouldResetScores( true, true );
 			ShouldResetRoundsPlayed( true );
 
