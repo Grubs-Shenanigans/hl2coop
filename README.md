@@ -33,15 +33,15 @@ BDSBASE_NPC:
 
 BDSBASE_DISCORD: 
 - Games: All
-- Enables optional Discord integration. Note that this is a Windows only feature due to the unstability of Discord clients on Linux, and the Discord RPC library will be included with your solution. However, the DLL file wouldn't be required to load it.
+- Enables optional Discord integration. Note that this is a Windows only feature due to the instability of Discord clients on Linux, and the Discord RPC library will be included with your solution. However, the DLL file wouldn't be required to load it.
 
 BDSBASE_CUSTOM_SCHEMA
 - Games: TF2
 - Enables the creation of a items_custom.txt file that allows the addition and modification of items without needing to modify the items_game.txt file.
 
-BDSBASE_TF2_LEGACY
+BDSBASE_TF2_LEGACY_MAINMENU
 - Games: TF2
-- Enables features from older versions of TF2, such as the old main menu, older flame thrower particles, and various other features.
+- Enables the old main menu from older versions of TF2.
 
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.
