@@ -304,5 +304,9 @@ bool CHealthAmmoKit::MyTouch( CBasePlayer *pPlayer )
 		}
 	}
 
+#ifdef BDSBASE
+	return (bAmmoSuccess || bHealthSuccess);
+#else
 	return bAmmoSuccess | bHealthSuccess;
+#endif
 }
