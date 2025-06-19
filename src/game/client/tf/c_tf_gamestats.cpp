@@ -91,7 +91,11 @@ const char *g_ItemEventNames[] =
 	"item_used_tool",
 	"item_used_consumable",
 	"item_removed_attrib",
+#ifdef BDSBASE
+	"item_changed_style",
+#else
 	"item_changed_style"
+#endif
 
 	// NEW STORE EVENTS
 	"store2_entered",	// This gets written *in addition* to IE_STORE_ENTERED
