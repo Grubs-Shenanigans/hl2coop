@@ -34,7 +34,7 @@ BDSBASE_NPC:
 
 BDSBASE_DISCORD: 
 - Games: All
-- Enables Discord integration. Note that this is a Windows only feature due to the instability of Discord clients on Linux, and the Discord RPC library will be included with your solution. Mod authors can change the DiscordAppId parameter in their gameinfo.txt file for more personalized icons. Mods can also use the DiscordAllowMapIcons option to allow map specific icons. Mod icons must be named "ModImage" and map icons must be named the map name.
+- Enables Discord integration. Note that this is a Windows only feature due to the instability of Discord clients on Linux, and the Discord RPC library will be included with your solution. Mod authors can change the DiscordAppId parameter in their gameinfo.txt file. Mods can also use the DiscordAllowMapIcons option to allow map specific icons. Mod icons must be named "ModImage" and map icons must be named the map name.
 
 BDSBASE_USE_LOCAL_SCHEMA
 - Games: TF2
