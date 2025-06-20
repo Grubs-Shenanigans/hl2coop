@@ -38,7 +38,7 @@ BDSBASE_DISCORD:
 
 BDSBASE_USE_LOCAL_SCHEMA
 - Games: TF2
-- Forses the game to use the local items_game.txt instead of the one from the GC.
+- Forces the game to use the local items_game.txt instead of the one from the GC.
 
 BDSBASE_CUSTOM_SCHEMA
 - Games: TF2
