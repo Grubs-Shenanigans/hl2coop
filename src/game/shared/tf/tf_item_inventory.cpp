@@ -1144,7 +1144,7 @@ void CTFPlayerInventory::EquipLocal(uint64 ulItemID, equipped_class_t unClass, e
 		for (int i = 0; i < count; i++)
 		{
 			CEconItemView* pItem = TFInventoryManager()->GetSoloItem(i);
-			if (pItem && pItem->GetItemDefIndex() == ulPreviousItem)
+			if (pItem && pItem->GetSOCData() && pItem->GetItemDefIndex() == ulPreviousItem)
 			{
 				pItem->GetSOCData()->UnequipFromClass(unClass);
 			}

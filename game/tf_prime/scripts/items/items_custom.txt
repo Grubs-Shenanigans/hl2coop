@@ -48,7 +48,7 @@
 			"used_by_classes"
 			{
 				"engineer"	"1"
-				"scout" "1"
+				//"scout" "1"
 			}
 			"static_attrs"
 			{
@@ -62,15 +62,30 @@
 					"attribute_class"	"pistol_variable_refire"
 					"value"				"1"								
 				}
-				"damage penalty"
+				"mult_spread_scales_consecutive"
 				{
-					"attribute_class"	"mult_dmg"
-					"value"	"0.85"
+					"attribute_class" 	"mult_spread_scales_consecutive"
+					"value" "1"
 				}
 				"clip size penalty"
 				{
 					"attribute_class"	"mult_clipsize"
 					"value"	"0.65"
+				}
+				"fire rate penalty speedpistol"
+				{
+					"attribute_class"	"mult_postfiredelay"
+					"value"	"1.2"
+				}
+				"mult_spread_scales_consecutive_start_spread"
+				{
+					"attribute_class"	"mult_spread_scales_consecutive_start_spread"
+					"value"				"1.5"
+				}
+				"mult_spread_scales_consecutive_end_spread"
+				{
+					"attribute_class"	"mult_spread_scales_consecutive_end_spread"
+					"value"				"2.0"
 				}
 			}
 			"mouse_pressed_sound"	"ui/item_light_gun_pickup.wav"
@@ -81,6 +96,7 @@
 
 	"items"
 	{
+		// CUSTOM WEAPONS
 		"34400"
 		{
 			"name"		"Speed Pistol"
@@ -105,11 +121,66 @@
 		{
 			"name"	"pistol variable refire"
 			"attribute_class"	"pistol_variable_refire"
-			"description_string"	"#TF_Prime_Attrib_PistolVariableRefire"
+			"description_string"	"#Attrib_PistolVariableRefire"
 			"description_format"	"value_is_additive"
 			"hidden"	"0"
 			"effect_type"	"positive"
 			"stored_as_integer"	"1"
+		}
+		
+		"4002"
+		{
+			"name"	"fire rate penalty speedpistol"
+			"attribute_class"	"mult_postfiredelay"
+			"description_string"	"#Attrib_FireRate_Negative_speedpistolver"
+			"description_format"	"value_is_inverted_percentage"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		
+		"4003"
+		{
+			"name"	"mult_spread_scales_consecutive_min_clamp"
+			"attribute_class"	"mult_spread_scales_consecutive_min_clamp"
+			"description_string"	""
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		
+		"4004"
+		{
+			"name"	"mult_spread_scales_consecutive_max_clamp"
+			"attribute_class"	"mult_spread_scales_consecutive_max_clamp"
+			"description_string"	""
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		
+		"4005"
+		{
+			"name"	"mult_spread_scales_consecutive_start_spread"
+			"attribute_class"	"mult_spread_scales_consecutive_start_spread"
+			"description_string"	"#Attrib_SpreadPenaltyScalesCons_spreadstart"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		
+		"4006"
+		{
+			"name"	"mult_spread_scales_consecutive_end_spread"
+			"attribute_class"	"mult_spread_scales_consecutive_end_spread"
+			"description_string"	"#Attrib_SpreadPenaltyScalesCons_spreadend"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
 		}
 	}
 }
