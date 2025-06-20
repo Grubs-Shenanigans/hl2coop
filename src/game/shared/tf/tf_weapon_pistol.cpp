@@ -40,6 +40,66 @@ BEGIN_DATADESC( CTFPistol )
 END_DATADESC()
 #endif
 
+#ifdef TF_PRIME_DLL
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+CTFPistol::CTFPistol(void)
+{
+	m_flSoonestPrimaryAttack = gpGlobals->curtime;
+}
+
+bool CTFPistol::CanUseOldRefire(void)
+{
+	int iVariableFireTime = 0;
+	CALL_ATTRIB_HOOK_INT(iVariableFireTime, pistol_variable_refire);
+
+	return iVariableFireTime != 0;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Allows firing as fast as button is pressed
+//-----------------------------------------------------------------------------
+void CTFPistol::ItemPostFrame(void)
+{
+	if (CanUseOldRefire())
+	{
+		CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+		if (pOwner == NULL)
+			return;
+
+		BaseClass::ItemPostFrame();
+
+		if (m_bInReload)
+			return;
+
+		//Allow a refire as fast as the player can click
+		if (((pOwner->m_nButtons & IN_ATTACK) == false) && (m_flSoonestPrimaryAttack < gpGlobals->curtime))
+		{
+			m_flNextPrimaryAttack = gpGlobals->curtime - 0.1f;
+		}
+	}
+	else
+	{
+		BaseClass::ItemPostFrame();
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
+void CTFPistol::PrimaryAttack(void)
+{
+	if (CanUseOldRefire())
+	{
+		m_flSoonestPrimaryAttack = gpGlobals->curtime + PISTOL_FASTEST_REFIRE_TIME;
+	}
+
+	BaseClass::PrimaryAttack();
+}
+
+#endif
+
 //============================
 
 IMPLEMENT_NETWORKCLASS_ALIASED( TFPistol_Scout, DT_WeaponPistol_Scout )
