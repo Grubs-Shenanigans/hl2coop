@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -euo pipefail
 
 script=$(readlink -f -- "$0")
 pushd "$(dirname -- "$script")" > /dev/null
 
-source sdk_container_nixos
+source sdk_container
 run_in_sniper "$@"
 
 if [ $# -eq 0 ]; then
@@ -21,10 +21,10 @@ else
     fi
 fi
 
-solution_out="_vpc_/ninja/sdk_everything_bds_$VPC_NINJA_BUILD_MODE"
+solution_out="_vpc_/ninja/sdk_game_tf_prime_$VPC_NINJA_BUILD_MODE"
 
 if [[ ! -e "$solution_out.ninja" ]]; then
-    devtools/bin/vpc /survivor2 /tf_prime /linux64 /ninja /define:SOURCESDK /define:BDSBASE +everything /mksln "$solution_out"
+    devtools/bin/vpc /tf_prime /linux64 /ninja /define:SOURCESDK /define:BDSBASE +game /mksln "$solution_out"
 
     # Generate compile commands.
     ninja -f "$solution_out.ninja" -t compdb > compile_commands.json

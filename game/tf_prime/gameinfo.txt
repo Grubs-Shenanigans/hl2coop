@@ -19,6 +19,8 @@
 	supportsvr				0
 	ReplayRequired 			1
 
+	DiscordAppId 			"1385409586474909716"
+
 	DependsOnAppID 			440
 
 	FileSystem

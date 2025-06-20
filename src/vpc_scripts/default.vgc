@@ -22,7 +22,7 @@ $Games
 	"SDK"
 	"TF"
     //BDS PROJECTS GO HERE
-    "GREYMOD"
+    "TF_PRIME"
     "SURVIVOR2"
 }
 
