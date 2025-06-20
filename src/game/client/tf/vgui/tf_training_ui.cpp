@@ -2168,11 +2168,16 @@ void CL_ShowTrainingDialog( const CCommand &args )
 {
 	if ( g_pTrainingDialog.Get() == NULL )
 	{
+#ifdef BDSBASE
 #ifndef BDSBASE_TF2_LEGACY_MAINMENU
 		IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
 		g_pTrainingDialog = new CTrainingDialog( (CHudMainMenuOverride*)pMMOverride );
 #else
 		g_pTrainingDialog = new CTrainingDialog(NULL);
+#endif
+#else
+		IViewPortPanel* pMMOverride = (gViewPortInterface->FindPanelByName(PANEL_MAINMENUOVERRIDE));
+		g_pTrainingDialog = new CTrainingDialog((CHudMainMenuOverride*)pMMOverride);
 #endif
 		g_pTrainingDialog->InvalidateLayout( true, true );
 	}

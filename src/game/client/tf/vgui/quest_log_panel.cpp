@@ -916,12 +916,21 @@ void CQuestLogPanel::SetVisible( bool bState )
 	}
 	else if ( IsVisible() )
 	{
+#ifdef BDSBASE
 #ifndef BDSBASE_TF2_LEGACY_MAINMENU
 		// Detach from the GameUI when we hide
 		IViewPortPanel *pMMOverride = gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE );
 		if ( pMMOverride )
 		{
 			((CHudMainMenuOverride*)pMMOverride)->AttachToGameUI();	
+		}
+#endif
+#else
+		// Detach from the GameUI when we hide
+		IViewPortPanel* pMMOverride = gViewPortInterface->FindPanelByName(PANEL_MAINMENUOVERRIDE);
+		if (pMMOverride)
+		{
+			((CHudMainMenuOverride*)pMMOverride)->AttachToGameUI();
 		}
 #endif
 

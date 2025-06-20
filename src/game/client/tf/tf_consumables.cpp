@@ -1495,9 +1495,17 @@ public:
 		if ( msg.BReadStr( &url ) )
 		{
 			steamapicontext->SteamFriends()->ActivateGameOverlayToWebPage( url.Get() );
+#ifdef BDSBASE
 #ifndef BDSBASE_TF2_LEGACY_MAINMENU
 			IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
 			if ( pMMOverride )
+			{
+				((CHudMainMenuOverride*)pMMOverride)->UpdatePromotionalCodes();
+			}
+#endif
+#else
+			IViewPortPanel* pMMOverride = (gViewPortInterface->FindPanelByName(PANEL_MAINMENUOVERRIDE));
+			if (pMMOverride)
 			{
 				((CHudMainMenuOverride*)pMMOverride)->UpdatePromotionalCodes();
 			}

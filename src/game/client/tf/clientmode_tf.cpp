@@ -459,6 +459,7 @@ void ClientModeTFNormal::Init()
 			pPanel->MakePopup( false );
 			m_pGameUI->SetLoadingBackgroundDialog( pPanel->GetVPanel() );
 
+#ifdef BDSBASE
 #ifndef BDSBASE_TF2_LEGACY_MAINMENU
 			IViewPortPanel *pMMOverride = ( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
 			if ( pMMOverride )
@@ -467,6 +468,13 @@ void ClientModeTFNormal::Init()
 			}
 #else
 			m_pGameUI->SetMainMenuOverride(NULL);
+#endif
+#else
+			IViewPortPanel* pMMOverride = (gViewPortInterface->FindPanelByName(PANEL_MAINMENUOVERRIDE));
+			if (pMMOverride)
+			{
+				((CHudMainMenuOverride*)pMMOverride)->AttachToGameUI();
+			}
 #endif
 		}
 	}

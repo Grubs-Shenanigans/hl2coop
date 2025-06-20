@@ -260,18 +260,22 @@ void CTFInventoryManager::GenerateBaseItems( void )
 #ifdef BDSBASE
 #ifdef BDSBASE_CUSTOM_SCHEMA
 	const CEconItemSchema::BaseItemDefinitionMap_t& mapItemsSolo = GetItemSchema()->GetSoloItemDefinitionMap();
-	iStart = 0;
-	for (int it = iStart; it != mapItemsSolo.InvalidIndex(); it = mapItemsSolo.NextInorder(it))
+
+	if (mapItemsSolo.Count() > 0)
 	{
-		CEconItemView* pItemView = new CEconItemView;
-		CEconItem* pItem = new CEconItem;
-		pItem->m_ulID = mapItemsSolo[it]->GetDefinitionIndex();
-		pItem->m_unAccountID = 0;
-		pItem->m_unDefIndex = mapItemsSolo[it]->GetDefinitionIndex();
-		pItemView->Init(mapItemsSolo[it]->GetDefinitionIndex(), AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, false);
-		pItemView->SetItemID(mapItemsSolo[it]->GetDefinitionIndex());
-		pItemView->SetNonSOEconItem(pItem);
-		m_pSoloLoadoutItems.AddToTail(pItemView);
+		iStart = 0;
+		for (int it = iStart; it != mapItemsSolo.InvalidIndex(); it = mapItemsSolo.NextInorder(it))
+		{
+			CEconItemView* pItemView = new CEconItemView;
+			CEconItem* pItem = new CEconItem;
+			pItem->m_ulID = mapItemsSolo[it]->GetDefinitionIndex();
+			pItem->m_unAccountID = 0;
+			pItem->m_unDefIndex = mapItemsSolo[it]->GetDefinitionIndex();
+			pItemView->Init(mapItemsSolo[it]->GetDefinitionIndex(), AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, false);
+			pItemView->SetItemID(mapItemsSolo[it]->GetDefinitionIndex());
+			pItemView->SetNonSOEconItem(pItem);
+			m_pSoloLoadoutItems.AddToTail(pItemView);
+		}
 	}
 #endif
 #endif

@@ -125,11 +125,16 @@ CQuestMapPanel* GetQuestMapPanel()
 {
 	if ( g_pQuestMapPanel == NULL )
 	{
+#ifdef BDSBASE
 #ifndef BDSBASE_TF2_LEGACY_MAINMENU
 		CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
 		g_pQuestMapPanel = new CQuestMapPanel( pMMOverride, "QuestMap" );
 #else
 		g_pQuestMapPanel = new CQuestMapPanel(NULL, "QuestMap");
+#endif
+#else
+		CHudMainMenuOverride* pMMOverride = (CHudMainMenuOverride*)(gViewPortInterface->FindPanelByName(PANEL_MAINMENUOVERRIDE));
+		g_pQuestMapPanel = new CQuestMapPanel(pMMOverride, "QuestMap");
 #endif
 		g_pQuestMapPanel->MakeReadyForUse();
 	}

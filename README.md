@@ -36,6 +36,10 @@ BDSBASE_DISCORD:
 - Games: All
 - Enables optional Discord integration. Note that this is a Windows only feature due to the instability of Discord clients on Linux, and the Discord RPC library will be included with your solution. However, the DLL file wouldn't be required to load it. Mod authors can change the DiscordAppId parameter in their gameinfo.txt file for more personalized icons. Mods can also use the DiscordAllowMapIcons option to allow map specific icons. Mod icons must be named "ModImage" and map icons must be named the map name.
 
+BDSBASE_USE_LOCAL_SCHEMA
+- Games: TF2
+- Forses the game to use the local items_game.txt instead of the one from the GC.
+
 BDSBASE_CUSTOM_SCHEMA
 - Games: TF2
 - Enables the creation of a items_custom.txt file that allows the addition and modification of items without needing to modify the items_game.txt file.
