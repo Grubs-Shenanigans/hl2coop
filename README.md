@@ -8,7 +8,6 @@ This base is specific to multiplayer mod projects.
 
 ## Projects using this base:
 - SURVIVOR II (Based on HL2DM)
-- Team Fortress 2 PRIME (Based on TF2)
 
 ## Features:
 - Restored game project generator scripts. No more having to generate every project!
@@ -19,10 +18,10 @@ This base is specific to multiplayer mod projects.
 - Integrated Python binaries (on Windows) for more simple buiding.
 - Implemented Discord RPC support with the BDSBASE_DISCORD preprocessor definition.
 - Full support of the Half-Life 2 Survivor animation set for all mods.
-- reset.bat file in each mod folder, used for cleaning up config/temporary files for easy mod distribution
+- reset.bat file in each mod folder, used for cleaning up config/temporary files for easy mod distribution.
 - Implemented bhopping functionality that can be enabled or disabled by server owners in TF2 and HL2DM.
 - Multiplayer NPC support with the BDSBASE_NPC preprocessor definition.
-- Custom items support for TF2 with the BDSBASE_CUSTOM_SCHEMA preprocessor definition.
+- Various optional preprocessor definitions for changing TF2's behavior.
 
 ## Options/Preprocessor Definitions
 These options are meant to be added to the VPC files (client and server) of the mod you wish to modify.
@@ -44,9 +43,17 @@ BDSBASE_CUSTOM_SCHEMA
 - Games: TF2
 - Enables the creation of a items_custom.txt file that allows the addition and modification of items without needing to modify the items_game.txt file.
 
-BDSBASE_TF2_LEGACY_MAINMENU
+BDSBASE_LEGACY_MAINMENU
 - Games: TF2
 - Enables the old main menu from older versions of TF2.
+
+BDSBASE_STOCK_ONLY
+- Games: TF2
+- Prevents non-stock items from showing up in the loadout panel. Using this with BDSBASE_CUSTOM_SCHEMA would also allow custom items to be allowed with this option. You may re-enable cosmetics by using BDSBASE_STOCK_ONLY_ALLOWCOSMETICS. If you only need BDSBASE_CUSTOM_SCHEMA for custom attributes, use BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY.
+
+BDSBASE_ECON_LOADOUT_ONLY
+- Games: TF2
+- Disables access to the backpack or other econ panels.
 
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.

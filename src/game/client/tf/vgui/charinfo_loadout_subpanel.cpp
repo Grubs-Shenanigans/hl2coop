@@ -786,8 +786,19 @@ void CCharInfoLoadoutSubPanel::PerformLayout( void )
 
 		for ( int i = 0; i < CHSB_NUM_BUTTONS; i++ )
 		{
-			m_pSubButtons[i]->SetVisible( true );
-			m_pButtonLabels[i]->SetVisible( true );
+#ifdef BDSBASE
+#ifdef BDSBASE_ECON_LOADOUT_ONLY
+			m_pSubButtons[i]->SetVisible(false);
+			m_pButtonLabels[i]->SetVisible(false);
+
+#else
+			m_pSubButtons[i]->SetVisible(true);
+			m_pButtonLabels[i]->SetVisible(true);
+#endif
+#else 
+			m_pSubButtons[i]->SetVisible(true);
+			m_pButtonLabels[i]->SetVisible(true);
+#endif
 		}
 		if ( !bChangesLabel )
 		{

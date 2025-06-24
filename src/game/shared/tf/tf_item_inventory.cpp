@@ -379,6 +379,44 @@ int	CTFInventoryManager::GetAllUsableItemsForSlot( int iClass, int iSlot, CUtlVe
 		if ( !bIsAccountIndex && !pItemData->CanBeUsedByClass(iClass) )
 			continue;
 
+#ifdef BDSBASE
+#ifdef BDSBASE_STOCK_ONLY
+		bool bIsStock = pItemData->IsBaseItem();
+#ifdef BDSBASE_CUSTOM_SCHEMA
+#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+		bool bShouldLoad = bIsStock;
+#else
+		bool bIsCustom = pItemData->IsSoloItem();
+		bool bShouldLoad = (bIsStock || bIsCustom);
+#endif
+#else
+		bool bShouldLoad = bIsStock;
+#endif
+#else
+		bool bShouldLoad = true;
+#endif
+
+#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+		bool bIsWeapon = ((pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_PRIMARY) ||
+			(pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_SECONDARY) ||
+			(pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_MELEE) ||
+			(pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_PDA) ||
+			(pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_PDA2) || 
+			(pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_BUILDING));
+
+		bool bFinalCheck = (bShouldLoad || !bIsWeapon);
+#else
+		bool bFinalCheck = bShouldLoad;
+#endif
+#else
+		bool bFinalCheck = bShouldLoad;
+#endif
+
+		if (!bFinalCheck)
+			continue;
+#endif
+
 		// Passing in iSlot of -1 finds all items usable by the class
 		if ( iSlot >= 0 && pItem->GetStaticData()->GetLoadoutSlot( iClass ) != iSlot )
 			continue;
@@ -391,6 +429,7 @@ int	CTFInventoryManager::GetAllUsableItemsForSlot( int iClass, int iSlot, CUtlVe
 	}
 
 #ifdef BDSBASE
+#ifdef BDSBASE_CUSTOM_SCHEMA
 	iCount = m_pSoloLoadoutItems.Count();
 
 	for (int i = 0; i < iCount; i++)
@@ -408,6 +447,7 @@ int	CTFInventoryManager::GetAllUsableItemsForSlot( int iClass, int iSlot, CUtlVe
 
 		pList->AddToTail(pItem);
 	}
+#endif
 #endif
 
 	return pList->Count();
@@ -1591,46 +1631,96 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 	if ( iSlot < 0 || iSlot >= CLASS_LOADOUT_POSITION_COUNT )
 		return NULL;
 
+#ifdef BDSBASE
+	bool skipAcc = false;
+#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+	bool bIsWeapon = ((iSlot == LOADOUT_POSITION_PRIMARY) ||
+					(iSlot == LOADOUT_POSITION_SECONDARY) ||
+					(iSlot == LOADOUT_POSITION_MELEE) ||
+					(iSlot == LOADOUT_POSITION_PDA) ||
+					(iSlot == LOADOUT_POSITION_PDA2) ||
+					(iSlot == LOADOUT_POSITION_BUILDING));
+
+	skipAcc = bIsWeapon;
+#else
+	skipAcc = true;
+#endif
+#endif
+
+	if (skipAcc)
+	{
+		return GetDefaultItemInLoadout(iClass, iSlot, true);
+	}
+
+#endif
+
 	if ( iClass == GEconItemSchema().GetAccountIndex() )
 	{
 		return GetInventoryItemByItemID( m_AccountLoadoutItems[ iSlot ] );
 	}
+#ifdef BDSBASE
+	return GetDefaultItemInLoadout(iClass, iSlot);
+#else
 	else
 	{
-		if ( iClass < TF_FIRST_NORMAL_CLASS || iClass >= TF_LAST_NORMAL_CLASS  )
+		if (iClass < TF_FIRST_NORMAL_CLASS || iClass >= TF_LAST_NORMAL_CLASS)
 			return NULL;
 
 		// If we don't have an item in the loadout at that slot, we return the base item
-		if ( m_LoadoutItems[iClass][iSlot] != LOADOUT_SLOT_USE_BASE_ITEM )
+		if (m_LoadoutItems[iClass][iSlot] != LOADOUT_SLOT_USE_BASE_ITEM)
 		{
-			CEconItemView *pItem = GetInventoryItemByItemID( m_LoadoutItems[iClass][iSlot] );
+			CEconItemView* pItem = GetInventoryItemByItemID(m_LoadoutItems[iClass][iSlot]);
 
 			// To protect against users lying to the backend about the position of their items,
 			// we need to validate their position on the server when we retrieve them.
-			if ( pItem && AreSlotsConsideredIdentical( pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot( iClass ), iSlot ) )
+			if (pItem && AreSlotsConsideredIdentical(pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot(iClass), iSlot))
 				return pItem;
-
-#ifdef BDSBASE
-			if (m_LoadoutItems[iClass][iSlot] < 100000)
-			{
-				int count = TFInventoryManager()->GetSoloItemCount();
-
-				for (int i = 0; i < count; i++)
-				{
-					CEconItemView* pItem = TFInventoryManager()->GetSoloItem(i);
-					if (pItem && pItem->GetItemDefIndex() == m_LoadoutItems[iClass][iSlot])
-					{
-						if (pItem && AreSlotsConsideredIdentical(pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot(iClass), iSlot))
-							return pItem;
-					}
-				}
-			}
-#endif
 		}
 	}
 
 	return TFInventoryManager()->GetBaseItemForClass( iClass, iSlot );
+#endif
 }
+
+#ifdef BDSBASE
+CEconItemView* CTFPlayerInventory::GetDefaultItemInLoadout(int iClass, int iSlot, bool bIgnorePosValidation)
+{
+	if (iClass < TF_FIRST_NORMAL_CLASS || iClass >= TF_LAST_NORMAL_CLASS)
+		return NULL;
+
+	// If we don't have an item in the loadout at that slot, we return the base item
+	if (m_LoadoutItems[iClass][iSlot] != LOADOUT_SLOT_USE_BASE_ITEM)
+	{
+		if (!bIgnorePosValidation)
+		{
+			CEconItemView* pItem = GetInventoryItemByItemID(m_LoadoutItems[iClass][iSlot]);
+
+			// To protect against users lying to the backend about the position of their items,
+			// we need to validate their position on the server when we retrieve them.
+			if (pItem && AreSlotsConsideredIdentical(pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot(iClass), iSlot))
+				return pItem;
+		}
+
+		if (m_LoadoutItems[iClass][iSlot] < 100000)
+		{
+			int count = TFInventoryManager()->GetSoloItemCount();
+
+			for (int i = 0; i < count; i++)
+			{
+				CEconItemView* pItem = TFInventoryManager()->GetSoloItem(i);
+				if (pItem && pItem->GetItemDefIndex() == m_LoadoutItems[iClass][iSlot])
+				{
+					if (pItem && AreSlotsConsideredIdentical(pItem->GetStaticData()->GetEquipType(), pItem->GetStaticData()->GetLoadoutSlot(iClass), iSlot))
+						return pItem;
+				}
+			}
+		}
+	}
+
+	return TFInventoryManager()->GetBaseItemForClass(iClass, iSlot);
+}
+#endif
 
 #ifdef CLIENT_DLL
 CEconItemView *CTFPlayerInventory::GetCacheServerItemInLoadout( int iClass, int iSlot )

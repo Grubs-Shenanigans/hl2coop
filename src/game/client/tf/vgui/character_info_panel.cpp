@@ -345,6 +345,12 @@ void CCharacterInfoPanel::OpenLoadoutToClass( int iClassIndex, bool bOpenClassLo
 //-----------------------------------------------------------------------------
 void CCharacterInfoPanel::OpenLoadoutToBackpack( void ) 
 { 
+#ifdef BDSBASE
+#ifdef BDSBASE_ECON_LOADOUT_ONLY
+	return;
+#endif
+#endif
+
 	m_pLoadoutPanel->OpenToBackpack();
 }
 
@@ -353,6 +359,12 @@ void CCharacterInfoPanel::OpenLoadoutToBackpack( void )
 //-----------------------------------------------------------------------------
 void CCharacterInfoPanel::OpenLoadoutToCrafting( void ) 
 { 
+#ifdef BDSBASE
+#ifdef BDSBASE_ECON_LOADOUT_ONLY
+	return;
+#endif
+#endif
+
 	m_pLoadoutPanel->OpenToCrafting();
 }
 
@@ -361,6 +373,12 @@ void CCharacterInfoPanel::OpenLoadoutToCrafting( void )
 //-----------------------------------------------------------------------------
 void CCharacterInfoPanel::OpenLoadoutToArmory( void ) 
 { 
+#ifdef BDSBASE
+#ifdef BDSBASE_ECON_LOADOUT_ONLY
+	return;
+#endif
+#endif
+
 	m_pLoadoutPanel->OpenToArmory();
 }
 
@@ -369,6 +387,12 @@ void CCharacterInfoPanel::OpenLoadoutToArmory( void )
 //-----------------------------------------------------------------------------
 void CCharacterInfoPanel::OpenToPaintkitPreview( CEconItemView* pItem, bool bFixedItem, bool bFixedPaintkit )
 {
+#ifdef BDSBASE
+#ifdef BDSBASE_ECON_LOADOUT_ONLY
+	return;
+#endif
+#endif
+
 	m_pLoadoutPanel->OpenToPaintkitPreview( pItem, bFixedItem, bFixedPaintkit );
 }
 

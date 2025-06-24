@@ -359,7 +359,7 @@ IViewPortPanel* TFViewport::CreatePanelByName(const char *szPanelName)
 		newpanel = new CTFGiveawayItemPanel( this );
 	}
 #ifdef BDSBASE
-#ifndef BDSBASE_TF2_LEGACY_MAINMENU
+#ifndef BDSBASE_LEGACY_MAINMENU
 	else if ( Q_strcmp( PANEL_MAINMENUOVERRIDE, szPanelName ) == 0 )
 	{
 		newpanel = new CHudMainMenuOverride( this );
@@ -394,7 +394,7 @@ void TFViewport::CreateDefaultPanels( void )
 	AddNewPanel( CreatePanelByName( PANEL_GIVEAWAY_ITEM ), "PANEL_GIVEAWAY_ITEM" );
 	
 #ifdef BDSBASE
-#ifndef BDSBASE_TF2_LEGACY_MAINMENU
+#ifndef BDSBASE_LEGACY_MAINMENU
 	CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)CreatePanelByName( PANEL_MAINMENUOVERRIDE );
 	if ( pMMOverride )
 	{

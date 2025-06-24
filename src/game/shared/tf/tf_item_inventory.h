@@ -42,6 +42,9 @@ public:
 	virtual ~CTFPlayerInventory();
 
 	virtual CEconItemView	*GetItemInLoadout( int iClass, int iSlot );
+#ifdef BDSBASE
+	virtual CEconItemView	*GetDefaultItemInLoadout(int iClass, int iSlot, bool bIgnorePosValidation = false);
+#endif
 
 #ifdef CLIENT_DLL
 	// Removes any item in a loadout slot. If the slot has a base item,

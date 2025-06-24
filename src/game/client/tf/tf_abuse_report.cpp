@@ -108,7 +108,7 @@ void CTFAbuseReportManager::ActivateSubmitReportUI()
 	Assert( m_pIncidentData != NULL );
 
 #ifdef BDSBASE
-#ifndef BDSBASE_TF2_LEGACY_MAINMENU
+#ifndef BDSBASE_LEGACY_MAINMENU
 	IViewPortPanel* pMMOverride = (gViewPortInterface->FindPanelByName(PANEL_MAINMENUOVERRIDE));
 	engine->ExecuteClientCmd("gameui_activate");
 	vgui::SETUP_PANEL( new CAbuseReportDlg( (CHudMainMenuOverride*)pMMOverride, m_pIncidentData ) );
