@@ -875,7 +875,7 @@ float CTFWeaponBaseGun::GetWeaponSpread( void )
 		CALL_ATTRIB_HOOK_FLOAT( flScaler, mult_spread_scales_consecutive );
 		if ( flScaler != 0.f && m_iConsecutiveShots )
 		{
-#ifdef TF_PRIME_DLL
+#ifdef BDSBASE
 			float flMinClamp = 1.f;
 			CALL_ATTRIB_HOOK_FLOAT(flMinClamp, mult_spread_scales_consecutive_min_clamp);
 

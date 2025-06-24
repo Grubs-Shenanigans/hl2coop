@@ -21,7 +21,6 @@ $Project "client"
     "game\client\client_episodic.vpc"		[$EPISODIC]
     "game\client\client_lostcoast.vpc"		[$LOSTCOAST]
     //BDS PROJECTS GO HERE
-	"game\client\client_tf_prime.vpc"			[$TF_PRIME]
 	"game\client\client_survivor2.vpc"		[$SURVIVOR2]
 }
 
@@ -62,7 +61,6 @@ $Project "server"
     "game\server\server_episodic.vpc"		[$EPISODIC]
     "game\server\server_lostcoast.vpc"		[$LOSTCOAST]
     //BDS PROJECTS GO HERE
-    "game\server\server_tf_prime.vpc"			[$TF_PRIME]
 	"game\server\server_survivor2.vpc"		[$SURVIVOR2]
 }
 
@@ -75,7 +73,6 @@ $Project "launcher_main"
     "launcher_main\launcher_main_mod_lostcoast.vpc" [$LOSTCOAST]
     //BDS PROJECTS GO HERE
     "launcher_main\launcher_main_mod_survivor2.vpc" [$SURVIVOR2]
-	"launcher_main\launcher_main_mod_tf_prime.vpc" [$TF_PRIME]
 }
 
 $Project "mathlib"

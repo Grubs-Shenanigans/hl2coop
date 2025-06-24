@@ -22,7 +22,6 @@ $Games
 	"SDK"
 	"TF"
     //BDS PROJECTS GO HERE
-    "TF_PRIME"
     "SURVIVOR2"
 }
 
