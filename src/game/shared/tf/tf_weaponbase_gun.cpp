@@ -875,25 +875,8 @@ float CTFWeaponBaseGun::GetWeaponSpread( void )
 		CALL_ATTRIB_HOOK_FLOAT( flScaler, mult_spread_scales_consecutive );
 		if ( flScaler != 0.f && m_iConsecutiveShots )
 		{
-#ifdef TF_PRIME_DLL
-			float flMinClamp = 1.f;
-			CALL_ATTRIB_HOOK_FLOAT(flMinClamp, mult_spread_scales_consecutive_min_clamp);
-
-			float flMaxClamp = 5.f;
-			CALL_ATTRIB_HOOK_FLOAT(flMaxClamp, mult_spread_scales_consecutive_max_clamp);
-
-			float flStartSpread = 1.125f;
-			CALL_ATTRIB_HOOK_FLOAT(flMinClamp, mult_spread_scales_consecutive_start_spread);
-
-			float flEndSpread = 1.5f;
-			CALL_ATTRIB_HOOK_FLOAT(flMaxClamp, mult_spread_scales_consecutive_end_spread);
-
 			// We enter this on what is going to be the second shot, due to how/when m_iConsecutiveShots increments
-			flScaler = RemapValClamped((float)m_iConsecutiveShots, flMinClamp, flMaxClamp, flStartSpread, flEndSpread);
-#else
-			// We enter this on what is going to be the second shot, due to how/when m_iConsecutiveShots increments
-			flScaler = RemapValClamped((float)m_iConsecutiveShots, 1.f, 5.f, 1.125f, 1.5f);
-#endif
+			flScaler = RemapValClamped( (float)m_iConsecutiveShots, 1.f, 5.f, 1.125f, 1.5f );
 			fSpread *= flScaler;
 			//DevMsg( "Shot: %i  Scalar: %3.2f  Spread: %3.2f\n", m_iConsecutiveShots.Get(), flScaler, fSpread );
 		}
