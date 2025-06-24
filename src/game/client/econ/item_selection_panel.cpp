@@ -1609,6 +1609,48 @@ const char *CAccountSlotItemSelectionPanel::GetItemNotSelectableReason( const CE
 
 	CTFItemDefinition *pItemData = pItem->GetStaticData();
 
+#ifdef BDSBASE
+#ifdef BDSBASE_STOCK_ONLY
+	bool bIsStock = pItemData->IsBaseItem();
+#ifdef BDSBASE_CUSTOM_SCHEMA
+#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+	bool bShouldLoad = bIsStock;
+#else
+	bool bIsCustom = pDef->IsSoloItem();
+	bool bShouldLoad = (bIsStock || bIsCustom);
+#endif
+#else
+	bool bShouldLoad = bIsStock;
+#endif
+#else
+	bool bShouldLoad = true;
+#endif
+
+#ifdef BDSBASE_STOCK_ONLY
+	bool bIsReskin = pItemData->IsReskin();
+
+#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+	bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
+		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
+		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
+		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
+		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
+		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
+
+	bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
+#else
+	bool bFinalCheck = (bShouldLoad || bIsReskin);
+#endif
+#else
+	bool bFinalCheck = bShouldLoad;
+#endif
+
+	//instead of deleting the item in the panel, grey the panel out.
+	if (!bFinalCheck)
+		return "#Econ_GreyOutReason_CannotBeUsedInMod";
+
+#endif
+
 	if ( pItemData->GetEquipType() != EEquipType_t::EQUIP_TYPE_ACCOUNT ) 
 		return "#Econ_GreyOutReason_CannotBeUsedByThisClass";
 
