@@ -49,7 +49,7 @@ BDSBASE_LEGACY_MAINMENU
 
 BDSBASE_STOCK_ONLY
 - Games: TF2
-- Prevents non-stock items from showing up in the loadout panel. Using this with BDSBASE_CUSTOM_SCHEMA would also allow custom items to be allowed with this option. You may re-enable cosmetics by using BDSBASE_STOCK_ONLY_ALLOWCOSMETICS. If you only need BDSBASE_CUSTOM_SCHEMA for custom attributes, use BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY.
+- Prevents non-stock items from showing up in the loadout panel. Using this with BDSBASE_CUSTOM_SCHEMA would also allow custom items to be allowed with this option. You may re-enable cosmetics and weapon stranges, reskins, etc by using BDSBASE_STOCK_ONLY_ALLOWCOSMETICS. Items that represent stock weapons must have "reskin" set to 1 in your desired item schema definitions. If you only need BDSBASE_CUSTOM_SCHEMA for custom attributes, use BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY.
 
 BDSBASE_ECON_LOADOUT_ONLY
 - Games: TF2

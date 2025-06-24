@@ -912,29 +912,73 @@ void CCharInfoLoadoutSubPanel::UpdateLabelFromClass( int nClass )
 	}
 
 	CUtlVector<CEconItemView*> pList;
-	int iNumItems = TFInventoryManager()->GetAllUsableItemsForSlot( nClass, -1, &pList );
 
-	if ( !iNumItems )
+#if (defined (BDSBASE) && defined(BDSBASE_STOCK_ONLY))
+	int iNumActualItems = TFInventoryManager()->GetAllUsableItemsForSlot(nClass, -1, &pList, true);
+
+	pList.RemoveAll();
+
+	int iNumItems = TFInventoryManager()->GetAllUsableItemsForSlot(nClass, -1, &pList);
+
+	if (!iNumActualItems)
 	{
-		const wchar_t *wszItemsName = g_pVGuiLocalize->Find( "#NoItemsFoundShort" );
-		m_pItemsLabel->SetText( wszItemsName );
-		m_pItemsLabel->SetColorStr( m_ItemColorNone );
+		const wchar_t* wszItemsName = g_pVGuiLocalize->Find("#NoItemsFoundShort");
+		m_pItemsLabel->SetText(wszItemsName);
+		m_pItemsLabel->SetColorStr(m_ItemColorNone);
 	}
-	else if ( iNumItems == 1 )
+	else if (iNumActualItems == 1)
 	{
-		const wchar_t *wszItemsName = g_pVGuiLocalize->Find( "#ItemsFoundShortOne" );
-		m_pItemsLabel->SetText( wszItemsName );
-		m_pItemsLabel->SetColorStr( m_ItemColor );
+		const wchar_t* wszItemsName = g_pVGuiLocalize->Find("#ItemsFoundShortOne");
+		m_pItemsLabel->SetText(wszItemsName);
+		m_pItemsLabel->SetColorStr(m_ItemColor);
 	}
 	else
 	{
 		wchar_t wzCount[10];
-		_snwprintf( wzCount, ARRAYSIZE( wzCount ), L"%d", iNumItems );
-		wchar_t	wTemp[32];
-		g_pVGuiLocalize->ConstructString_safe( wTemp, g_pVGuiLocalize->Find("ItemsFoundShort"), 1, wzCount );
-		m_pItemsLabel->SetText( wTemp );
-		m_pItemsLabel->SetColorStr( m_ItemColor );
+		_snwprintf(wzCount, ARRAYSIZE(wzCount), L"%d", iNumActualItems);
+
+		wchar_t wzCount2[10];
+		_snwprintf(wzCount2, ARRAYSIZE(wzCount2), L"%d", iNumItems);
+
+		wchar_t	wTemp[64];
+
+		if (iNumItems == 1)
+		{
+			g_pVGuiLocalize->ConstructString_safe(wTemp, g_pVGuiLocalize->Find("ItemsFoundShortOne_Ex"), 1, wzCount);
+		}
+		else
+		{
+			g_pVGuiLocalize->ConstructString_safe(wTemp, g_pVGuiLocalize->Find("ItemsFoundShort_Ex"), 2, wzCount, wzCount2);
+		}
+
+		m_pItemsLabel->SetText(wTemp);
+		m_pItemsLabel->SetColorStr(m_ItemColor);
 	}
+#else
+	int iNumItems = TFInventoryManager()->GetAllUsableItemsForSlot(nClass, -1, &pList);
+
+	if (!iNumItems)
+	{
+		const wchar_t* wszItemsName = g_pVGuiLocalize->Find("#NoItemsFoundShort");
+		m_pItemsLabel->SetText(wszItemsName);
+		m_pItemsLabel->SetColorStr(m_ItemColorNone);
+	}
+	else if (iNumItems == 1)
+	{
+		const wchar_t* wszItemsName = g_pVGuiLocalize->Find("#ItemsFoundShortOne");
+		m_pItemsLabel->SetText(wszItemsName);
+		m_pItemsLabel->SetColorStr(m_ItemColor);
+	}
+	else
+	{
+		wchar_t wzCount[10];
+		_snwprintf(wzCount, ARRAYSIZE(wzCount), L"%d", iNumItems);
+		wchar_t	wTemp[32];
+		g_pVGuiLocalize->ConstructString_safe(wTemp, g_pVGuiLocalize->Find("ItemsFoundShort"), 1, wzCount);
+		m_pItemsLabel->SetText(wTemp);
+		m_pItemsLabel->SetColorStr(m_ItemColor);
+	}
+#endif
 
 	int iPos = 0;
 	for ( int i = TF_FIRST_NORMAL_CLASS; i <= NUM_CLASSES_IN_LOADOUT_PANEL; i++ )

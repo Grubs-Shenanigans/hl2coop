@@ -498,7 +498,17 @@ void CArmoryPanel::SetFilterTo( int iItemDef, armory_filters_t nFilter )
 			//	- Items that don't have fixed qualities
 			//	- Normal quality items
 			//	- Items that haven't asked to be shown
+#ifdef BDSBASE
+#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+			if (pDef->IsHidden() || pDef->GetQuality() == k_unItemQuality_Any || pDef->GetQuality() == AE_NORMAL || !pDef->ShouldShowInArmory())
+#else
+			if (pDef->IsHidden())
+#endif
+#endif
+#else
 			if ( pDef->IsHidden() || pDef->GetQuality() == k_unItemQuality_Any || pDef->GetQuality() == AE_NORMAL || !pDef->ShouldShowInArmory() )
+#endif
 				continue;
 
 #ifdef DEBUG
@@ -513,6 +523,46 @@ void CArmoryPanel::SetFilterTo( int iItemDef, armory_filters_t nFilter )
 				}
 			}
 			Assert( bFoundMatchingFilter );
+#endif
+
+#ifdef BDSBASE
+#ifdef BDSBASE_STOCK_ONLY
+			bool bIsStock = pDef->IsBaseItem();
+#ifdef BDSBASE_CUSTOM_SCHEMA
+#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+			bool bShouldLoad = bIsStock;
+#else
+			bool bIsCustom = pDef->IsSoloItem();
+			bool bShouldLoad = (bIsStock || bIsCustom);
+#endif
+#else
+			bool bShouldLoad = bIsStock;
+#endif
+#else
+			bool bShouldLoad = true;
+#endif
+
+#ifdef BDSBASE_STOCK_ONLY
+			bool bIsReskin = pDef->IsReskin();
+
+#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+			bool bIsWeapon = ((pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
+				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
+				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
+				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
+				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
+				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
+
+			bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
+#else
+			bool bFinalCheck = (bShouldLoad || bIsReskin);
+#endif
+#else
+			bool bFinalCheck = bShouldLoad;
+#endif
+
+			if (!bFinalCheck)
+				continue;
 #endif
 
 			if ( DefPassesFilter( pDef, m_CurrentFilter ) )
@@ -665,7 +715,7 @@ void CArmoryPanel::UpdateItemList( void )
 	FOR_EACH_VEC( m_pThumbnailModelPanels, i )
 	{
 		int iItemPos = iStartPos + i;
-		if ( iItemPos >= m_FilteredItemList.Count() )
+		if (iItemPos >= m_FilteredItemList.Count())
 		{
 			m_pThumbnailModelPanels[i]->SetItem( NULL );
 			m_pThumbnailModelPanels[i]->SetVisible( false );

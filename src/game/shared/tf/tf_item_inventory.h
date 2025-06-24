@@ -247,7 +247,11 @@ public:
 	bool				EquipItemInLoadout( int iClass, int iSlot, itemid_t iItemID );
 
 	// Fills out pList with all inventory items that could fit into the specified loadout slot for a given class
+#ifdef BDSBASE
+	int					GetAllUsableItemsForSlot(int iClass, int iSlot, CUtlVector<CEconItemView*>* pList, bool bSkipStockItemCheck = false);
+#else
 	int					GetAllUsableItemsForSlot( int iClass, int iSlot, CUtlVector<CEconItemView*> *pList );
+#endif
 
 	virtual int			GetBackpackPositionFromBackend( uint32 iBackendPosition ) { return ExtractBackpackPositionFromBackend(iBackendPosition); }
 

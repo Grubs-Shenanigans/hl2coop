@@ -2308,6 +2308,7 @@ m_bIsPackItem( false ),
 m_bBaseItem( false ),
 #ifdef BDSBASE
 m_bSoloItem(false),
+m_bIsReskin(false),
 #endif
 m_pszItemLogClassname( NULL ),
 m_pszItemIconClassname( NULL ),
@@ -3192,6 +3193,26 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	//if there's no custom schema, no items can be solo items.
 	m_bSoloItem = false;
 #endif
+
+
+
+#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+	m_bIsReskin = m_pKVItem->GetInt("reskin", 0) != 0;
+
+	//allow if we're on the whitelist too
+	if (!m_bIsReskin)
+	{
+		m_bIsReskin = m_pKVItem->GetInt("stock_whitelist", 0) != 0;
+	}
+#else
+	m_bIsReskin = m_pKVItem->GetInt("stock_whitelist", 0) != 0;
+#endif
+#else
+	//if stock only w/ cosmetics aren't enabled, no reskins are allowed.
+	m_bIsReskin = false;
+#endif
+
 #endif
 	m_pszItemLogClassname = m_pKVItem->GetString( "item_logname", NULL );
 	m_pszItemIconClassname = m_pKVItem->GetString( "item_iconname", NULL );

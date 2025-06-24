@@ -1110,11 +1110,21 @@ void CBackpackPanel::AssignItemToPanel( CItemModelPanel *pPanel, int iIndex )
 
 			if ( mapItems[it]->IsBaseItem() && !mapItems[it]->IsHidden() )
 			{
+#ifdef BDSBASE
+#if (defined(BDSBASE_STOCK_ONLY) && !defined(BDSBASE_STOCK_ONLY_ALLOWCOSMETICS))
+				pItemDef = mapItems[it];
+#else
 				// Instead of linking to this base item definition, link to the definition of what it will become
 				// when we customize it.
-				CFmtStr fmtStrCustomizedDefName( "Upgradeable %s", mapItems[it]->GetDefinitionName() );
-				pItemDef = GetItemSchema()->GetItemDefinitionByName( fmtStrCustomizedDefName.Access() );
-				
+				CFmtStr fmtStrCustomizedDefName("Upgradeable %s", mapItems[it]->GetDefinitionName());
+				pItemDef = GetItemSchema()->GetItemDefinitionByName(fmtStrCustomizedDefName.Access());
+#endif
+#else
+				// Instead of linking to this base item definition, link to the definition of what it will become
+				// when we customize it.
+				CFmtStr fmtStrCustomizedDefName("Upgradeable %s", mapItems[it]->GetDefinitionName());
+				pItemDef = GetItemSchema()->GetItemDefinitionByName(fmtStrCustomizedDefName.Access());
+#endif
 				// If we don't have an upgradeable version, we assume that we can't upgrade it and link to the base
 				// definition instead. We expect this to only happen if the item won't actually be useable for whatever
 				// purpose (name tags, etc.). We sanity-check this on the GC.
@@ -2926,6 +2936,57 @@ const char *CBackpackPanel::GetGreyOutItemPanelReason( CItemModelPanel *pItemPan
 			}
 		}
 	}
+#ifdef BDSBASE
+	else
+	{
+		if (pItemPanel->HasItem())
+		{
+			CEconItemView* pItemView = pItemPanel->GetItem();
+			CTFItemDefinition* pDef = pItemView->GetStaticData();
+
+#ifdef BDSBASE_STOCK_ONLY
+			bool bIsStock = pDef->IsBaseItem();
+#ifdef BDSBASE_CUSTOM_SCHEMA
+#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+			bool bShouldLoad = bIsStock;
+#else
+			bool bIsCustom = pDef->IsSoloItem();
+			bool bShouldLoad = (bIsStock || bIsCustom);
+#endif
+#else
+			bool bShouldLoad = bIsStock;
+#endif
+#else
+			bool bShouldLoad = true;
+#endif
+
+#ifdef BDSBASE_STOCK_ONLY
+			bool bIsReskin = pDef->IsReskin();
+
+#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+			bool bIsWeapon = ((pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
+				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
+				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
+				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
+				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
+				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
+
+			bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
+#else
+			bool bFinalCheck = (bShouldLoad || bIsReskin);
+#endif
+#else
+			bool bFinalCheck = bShouldLoad;
+#endif
+
+			//instead of deleting the item in the panel, grey the panel out.
+			if (!bFinalCheck)
+			{
+				return "#Econ_GreyOutReason_CannotBeUsedInMod";
+			}
+		}
+	}
+#endif
 
 	return NULL;
 }

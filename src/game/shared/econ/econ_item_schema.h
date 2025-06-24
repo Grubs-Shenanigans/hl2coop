@@ -1282,6 +1282,7 @@ public:
 	bool		IsBaseItem( void ) const			{ return m_bBaseItem; }
 #ifdef BDSBASE
 	bool		IsSoloItem(void) const				{ return m_bSoloItem; }
+	bool		IsReskin(void) const				{ return m_bIsReskin; }
 #endif
 	bool		IsBundle( void ) const				{ return m_BundleInfo != NULL; }
 	bool		HasProperName( void ) const			{ return m_bProperName; }
@@ -1605,6 +1606,7 @@ private:
 	bool			m_bBaseItem;
 #ifdef BDSBASE
 	bool			m_bSoloItem;
+	bool			m_bIsReskin;
 #endif
 	bool			m_bImported;
 

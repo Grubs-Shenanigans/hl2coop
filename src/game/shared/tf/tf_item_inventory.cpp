@@ -354,7 +354,11 @@ bool CTFInventoryManager::EquipItemInLoadout( int iClass, int iSlot, itemid_t iI
 //-----------------------------------------------------------------------------
 // Purpose: Fills out pList with all inventory items that could fit into the specified loadout slot for a given class
 //-----------------------------------------------------------------------------
+#ifdef BDSBASE
+int	CTFInventoryManager::GetAllUsableItemsForSlot( int iClass, int iSlot, CUtlVector<CEconItemView*>* pList, bool bSkipStockItemCheck )
+#else
 int	CTFInventoryManager::GetAllUsableItemsForSlot( int iClass, int iSlot, CUtlVector<CEconItemView*> *pList )
+#endif
 {
 	bool bIsAccountIndex = iClass == GEconItemSchema().GetAccountIndex();
 	if ( bIsAccountIndex )
@@ -380,41 +384,46 @@ int	CTFInventoryManager::GetAllUsableItemsForSlot( int iClass, int iSlot, CUtlVe
 			continue;
 
 #ifdef BDSBASE
+		if (!bSkipStockItemCheck)
+		{
 #ifdef BDSBASE_STOCK_ONLY
-		bool bIsStock = pItemData->IsBaseItem();
+			bool bIsStock = pItemData->IsBaseItem();
 #ifdef BDSBASE_CUSTOM_SCHEMA
 #ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
-		bool bShouldLoad = bIsStock;
+			bool bShouldLoad = bIsStock;
 #else
-		bool bIsCustom = pItemData->IsSoloItem();
-		bool bShouldLoad = (bIsStock || bIsCustom);
+			bool bIsCustom = pItemData->IsSoloItem();
+			bool bShouldLoad = (bIsStock || bIsCustom);
 #endif
 #else
-		bool bShouldLoad = bIsStock;
+			bool bShouldLoad = bIsStock;
 #endif
 #else
-		bool bShouldLoad = true;
+			bool bShouldLoad = true;
 #endif
 
 #ifdef BDSBASE_STOCK_ONLY
+			bool bIsReskin = pItemData->IsReskin();
+
 #ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
-		bool bIsWeapon = ((pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_PRIMARY) ||
-			(pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_SECONDARY) ||
-			(pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_MELEE) ||
-			(pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_PDA) ||
-			(pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_PDA2) || 
-			(pItemData->GetLoadoutSlot(iClass) == LOADOUT_POSITION_BUILDING));
+			bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
+				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
+				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
+				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
+				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
+				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
 
-		bool bFinalCheck = (bShouldLoad || !bIsWeapon);
+			bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
 #else
-		bool bFinalCheck = bShouldLoad;
+			bool bFinalCheck = (bShouldLoad || bIsReskin);
 #endif
 #else
-		bool bFinalCheck = bShouldLoad;
+			bool bFinalCheck = bShouldLoad;
 #endif
 
-		if (!bFinalCheck)
-			continue;
+			if (!bFinalCheck)
+				continue;
+		}
 #endif
 
 		// Passing in iSlot of -1 finds all items usable by the class
@@ -1634,6 +1643,13 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 #ifdef BDSBASE
 	bool skipAcc = false;
 #ifdef BDSBASE_STOCK_ONLY
+	//after we analyze that, let's check if the item we're looking at is a reskin.
+	bool bIsReskin = false;
+
+	CEconItemView* pItemInSlot = GetDefaultItemInLoadout(iClass, iSlot);
+	CTFItemDefinition* pItemData = pItemInSlot->GetStaticData();
+	bIsReskin = pItemData->IsReskin();
+
 #ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
 	bool bIsWeapon = ((iSlot == LOADOUT_POSITION_PRIMARY) ||
 					(iSlot == LOADOUT_POSITION_SECONDARY) ||
@@ -1642,9 +1658,9 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 					(iSlot == LOADOUT_POSITION_PDA2) ||
 					(iSlot == LOADOUT_POSITION_BUILDING));
 
-	skipAcc = bIsWeapon;
+	skipAcc = (!bIsReskin && bIsWeapon);
 #else
-	skipAcc = true;
+	skipAcc = !bIsReskin;
 #endif
 #endif
 
