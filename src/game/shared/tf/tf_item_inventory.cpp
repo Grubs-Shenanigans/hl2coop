@@ -231,6 +231,26 @@ void CTFInventoryManager::PostInit( void )
 	GenerateBaseItems();
 }
 
+#ifdef BDSBASE
+CEconItemView* CTFInventoryManager::AddSoloItem(int id)
+{
+	CEconItemView* pItemView = new CEconItemView;
+	CEconItem* pItem = new CEconItem;
+	pItem->SetItemID(id);
+	pItem->m_unAccountID = 0;
+	pItem->m_unDefIndex = id;
+	pItem->SetFlags(kEconItemFlag_NonEconomy);
+	pItemView->Init(id, AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, false);
+	pItemView->SetItemID(id);
+#if CLIENT_DLL
+	pItemView->SetNonSOEconItem(pItem);
+#endif
+	m_pSoloLoadoutItems.AddToTail(pItemView);
+
+	return pItemView;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Generate & store the base item details for each class & loadout slot
 //-----------------------------------------------------------------------------
@@ -259,22 +279,14 @@ void CTFInventoryManager::GenerateBaseItems( void )
 
 #ifdef BDSBASE
 #ifdef BDSBASE_CUSTOM_SCHEMA
-	const CEconItemSchema::BaseItemDefinitionMap_t& mapItemsSolo = GetItemSchema()->GetSoloItemDefinitionMap();
+	const CEconItemSchema::SoloItemDefinitionMap_t& mapItemsSolo = GetItemSchema()->GetSoloItemDefinitionMap();
 
 	if (mapItemsSolo.Count() > 0)
 	{
 		iStart = 0;
 		for (int it = iStart; it != mapItemsSolo.InvalidIndex(); it = mapItemsSolo.NextInorder(it))
 		{
-			CEconItemView* pItemView = new CEconItemView;
-			CEconItem* pItem = new CEconItem;
-			pItem->m_ulID = mapItemsSolo[it]->GetDefinitionIndex();
-			pItem->m_unAccountID = 0;
-			pItem->m_unDefIndex = mapItemsSolo[it]->GetDefinitionIndex();
-			pItemView->Init(mapItemsSolo[it]->GetDefinitionIndex(), AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, false);
-			pItemView->SetItemID(mapItemsSolo[it]->GetDefinitionIndex());
-			pItemView->SetNonSOEconItem(pItem);
-			m_pSoloLoadoutItems.AddToTail(pItemView);
+			AddSoloItem(mapItemsSolo[it]->GetDefinitionIndex());
 		}
 	}
 #endif
@@ -1141,7 +1153,7 @@ void CTFPlayerInventory::EquipLocal(uint64 ulItemID, equipped_class_t unClass, e
 	else
 	{
 		CEconItemView* pPreviousItem = GetInventoryItemByItemID(ulPreviousItem);
-		if (pPreviousItem) {
+		if (pPreviousItem && pPreviousItem->GetSOCData()) {
 			pPreviousItem->GetSOCData()->UnequipFromClass(unClass);
 		}
 	}
@@ -1160,12 +1172,20 @@ void CTFPlayerInventory::EquipLocal(uint64 ulItemID, equipped_class_t unClass, e
 	if (ulItemID < 100000)
 	{
 		int count = TFInventoryManager()->GetSoloItemCount();
-
+		CEconItemView* pItem;
 		for (int i = 0; i < count; i++)
 		{
-			CEconItemView* pItem = TFInventoryManager()->GetSoloItem(i);
-
-			if (pItem && pItem->GetItemDefIndex() == ulItemID)
+			pItem = TFInventoryManager()->GetSoloItem(i);
+			if (pItem && pItem->GetSOCData() && pItem->GetItemDefIndex() == ulItemID)
+			{
+				pItem->GetSOCData()->Equip(unClass, unSlot);
+				break;
+			}
+		}
+		if (!pItem)
+		{
+			pItem = TFInventoryManager()->AddSoloItem(ulItemID);
+			if (pItem && pItem->GetSOCData() && pItem->GetItemDefIndex() == ulItemID)
 			{
 				pItem->GetSOCData()->Equip(unClass, unSlot);
 			}

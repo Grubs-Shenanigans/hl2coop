@@ -45,10 +45,24 @@ public:
 	DECLARE_DATADESC();
 #endif
 
+#ifdef TF_PRIME_DLL
+	CTFPistol();
+#else
 	CTFPistol() {}
+#endif
 	~CTFPistol() {}
 
+#ifdef TF_PRIME_DLL
+	virtual void	ItemPostFrame(void);
+	virtual void	PrimaryAttack(void);
+	virtual bool	CanUseOldRefire(void);
+#endif
+
 	virtual int		GetWeaponID( void ) const			{ return TF_WEAPON_PISTOL; }
+
+#ifdef TF_PRIME_DLL
+	CNetworkVar(float, m_flSoonestPrimaryAttack);
+#endif
 
 private:
 	CTFPistol( const CTFPistol & ) {}
