@@ -193,10 +193,6 @@ public:
 	virtual bool		LoadPreset(equipped_class_t unClass, equipped_preset_t unPreset);
 #endif
 
-#ifdef BDSBASE
-	CEconItemView*		AddSoloItem(int id);
-#endif
-
 	// Returns the item data for the base item in the loadout slot for a given class
 	CEconItemView		*GetBaseItemForClass( int iClass, int iSlot );
 	void				GenerateBaseItems( void );
