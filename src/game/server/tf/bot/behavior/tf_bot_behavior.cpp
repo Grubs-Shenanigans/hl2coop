@@ -20,6 +20,9 @@
 #include "bot/tf_bot_manager.h"
 #include "bot/behavior/tf_bot_behavior.h"
 #include "bot/behavior/tf_bot_dead.h"
+#ifdef BDSBASE
+#include "bot/behavior/tf_bot_freeze_input.h"
+#endif
 #include "NextBot/NavMeshEntities/func_nav_prerequisite.h"
 #include "bot/behavior/nav_entities/tf_bot_nav_ent_destroy_entity.h"
 #include "bot/behavior/nav_entities/tf_bot_nav_ent_move_to.h"
@@ -110,6 +113,14 @@ ActionResult< CTFBot >	CTFBotMainAction::Update( CTFBot *me, float interval )
 		// not on a team - do nothing
 		return Done( "Not on a playing team" );
 	}
+
+#ifdef BDSBASE
+	if (me->m_Shared.InCond(TF_COND_FREEZE_INPUT) || me->m_Shared.InCond(TF_COND_HALLOWEEN_THRILLER))
+	{
+		// frozen - do nothing
+		return SuspendFor(new CTFBotFreezeInput, "Frozen by TF_COND");
+	}
+#endif
 
 	// Should I accept taunt from my partner?
 	if ( me->FindPartnerTauntInitiator() )

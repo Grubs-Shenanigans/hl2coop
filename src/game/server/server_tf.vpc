@@ -525,6 +525,8 @@ $Project "Server (TF)"
 					$File	"tf\bot\behavior\tf_bot_melee_attack.h"
 					$File	"tf\bot\behavior\tf_bot_approach_object.cpp"
 					$File	"tf\bot\behavior\tf_bot_approach_object.h"
+					$File	"tf\bot\behavior\tf_bot_freeze_input.cpp" [$BDSBASE]
+					$File	"tf\bot\behavior\tf_bot_freeze_input.h"  [$BDSBASE]
 					$File	"tf\bot\behavior\tf_bot_get_health.cpp"
 					$File	"tf\bot\behavior\tf_bot_get_health.h"
 					$File	"tf\bot\behavior\tf_bot_get_ammo.cpp"
