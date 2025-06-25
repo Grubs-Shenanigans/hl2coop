@@ -8651,7 +8651,11 @@ bool CBaseEntity::ValidateScriptScope()
 //-----------------------------------------------------------------------------
 void CBaseEntity::RunVScripts()
 {
-	if( m_iszVScripts == NULL_STRING )
+#ifdef BDSBASE
+	if (m_iszVScripts == NULL_STRING || !ValidateScriptScope())
+#else
+	if (m_iszVScripts == NULL_STRING)
+#endif
 	{
 		return;
 	}
@@ -8728,7 +8732,11 @@ void CBaseEntity::RunVScripts()
 //--------------------------------------------------------------------------------------------------
 void CBaseEntity::RunPrecacheScripts( void )
 {
-	if( m_iszVScripts == NULL_STRING )
+#ifdef BDSBASE
+	if (m_iszVScripts == NULL_STRING || !ValidateScriptScope())
+#else
+	if (m_iszVScripts == NULL_STRING)
+#endif
 	{
 		return;
 	}
@@ -8743,7 +8751,11 @@ void CBaseEntity::RunPrecacheScripts( void )
 
 void CBaseEntity::RunOnPostSpawnScripts( void )
 {
-	if( m_iszVScripts == NULL_STRING )
+#ifdef BDSBASE
+	if (m_iszVScripts == NULL_STRING || !ValidateScriptScope())
+#else
+	if (m_iszVScripts == NULL_STRING)
+#endif
 	{
 		return;
 	}
