@@ -28,6 +28,9 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#ifdef BDSBASE
+static ConVar tf_inspect_allow_self("tf_inspect_allow_self", "0", FCVAR_ARCHIVE, "When attempting to inspect without looking at another player, inspect yourself.");
+#endif
 
 DECLARE_HUDELEMENT( CHudInspectPanel );
 
@@ -68,7 +71,11 @@ void InspectUp()
 		CHudElement *pElement = gHUD.FindElement( "CHudInspectPanel" );
 		if ( pElement )
 		{
-			((CHudInspectPanel *)pElement)->UserCmd_InspectTarget();
+#ifdef BDSBASE
+			((CHudInspectPanel*)pElement)->UserCmd_InspectTarget(false);
+#else
+			((CHudInspectPanel*)pElement)->UserCmd_InspectTarget();
+#endif
 		}
 	}
 
@@ -78,6 +85,24 @@ void InspectUp()
 	pLocalPlayer->SetInspectTime( 0.f );
 }
 static ConCommand s_inspect_up_cmd( "-inspect", InspectUp, "", FCVAR_SERVER_CAN_EXECUTE );
+
+#ifdef BDSBASE
+void InspectSelf()
+{
+	C_TFPlayer* pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
+	if (pLocalPlayer == NULL)
+	{
+		return;
+	}
+
+	CHudElement* pElement = gHUD.FindElement("CHudInspectPanel");
+	if (pElement)
+	{
+		((CHudInspectPanel*)pElement)->UserCmd_InspectTarget(true);
+	}
+}
+static ConCommand s_inspect_self_cmd("inspect_self", InspectSelf, "Inspect your weapons and wearables.", FCVAR_SERVER_CAN_EXECUTE);
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -143,14 +168,22 @@ bool CHudInspectPanel::ShouldDraw( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudInspectPanel::UserCmd_InspectTarget( void )
+#ifdef BDSBASE
+void CHudInspectPanel::UserCmd_InspectTarget(bool bForceSelf)
+#else
+void CHudInspectPanel::UserCmd_InspectTarget(void)
+#endif
 {
 	// If we're in observer mode, we cycle items on the current observer target
 	C_TFPlayer *pLocalTFPlayer = C_TFPlayer::GetLocalTFPlayer();
 	if ( !pLocalTFPlayer )
 		return;
 
-	C_TFPlayer *pTargetPlayer = GetInspectTarget( pLocalTFPlayer );
+#ifdef BDSBASE
+	C_TFPlayer* pTargetPlayer = bForceSelf ? pLocalTFPlayer : GetInspectTarget(pLocalTFPlayer);
+#else
+	C_TFPlayer* pTargetPlayer = GetInspectTarget(pLocalTFPlayer);
+#endif
 
 	bool bVisible = false;
 	if ( pLocalTFPlayer->IsObserver() )
@@ -176,7 +209,7 @@ void CHudInspectPanel::UserCmd_InspectTarget( void )
 			else if ( pTargetPlayer && ( pTargetPlayer->GetTeamNumber() != TF_TEAM_PVE_INVADERS ) )
 			{
 #ifdef BDSBASE
-				if (tf_mvm_allow_upgrade_inspect.GetInt() == 0 || (tf_mvm_allow_upgrade_inspect.GetInt() == -1 && !GetClientModeTFNormal()->BIsFriendOrPartyMember(pTargetPlayer)))
+				if (tf_mvm_allow_upgrade_inspect.GetInt() == 0 || (tf_mvm_allow_upgrade_inspect.GetInt() == -1 && !GetClientModeTFNormal()->BIsFriendOrPartyMember(pTargetPlayer) && pTargetPlayer != pLocalTFPlayer))
 #else
 				if (!GetClientModeTFNormal()->BIsFriendOrPartyMember(pTargetPlayer))
 #endif
@@ -266,6 +299,13 @@ C_TFPlayer *CHudInspectPanel::GetInspectTarget( C_TFPlayer *pLocalTFPlayer )
 		}
 	}
 
+#ifdef BDSBASE
+	if (!pTargetPlayer && tf_inspect_allow_self.GetInt() > 0)
+	{
+		pTargetPlayer = pLocalTFPlayer;
+	}
+#endif
+
 	return pTargetPlayer;
 }
 
@@ -288,7 +328,11 @@ int	CHudInspectPanel::HudElementKeyInput( int down, ButtonCode_t keynum, const c
 {
 	if ( IsVisible() && pszCurrentBinding && pszCurrentBinding[0] )
 	{
-		if ( FStrEq( pszCurrentBinding, "+attack" ) )
+#ifdef BDSBASE
+		if (FStrEq(pszCurrentBinding, "+attack") || FStrEq(pszCurrentBinding, "+attack2") || FStrEq(pszCurrentBinding, "+attack3"))
+#else
+		if (FStrEq(pszCurrentBinding, "+attack"))
+#endif
 		{
 			CBasePlayer *pLocalPlayer = CBasePlayer::GetLocalPlayer();
 			if ( pLocalPlayer && ( pLocalPlayer->GetTeamNumber() >= FIRST_GAME_TEAM ) && pLocalPlayer->IsAlive() )
