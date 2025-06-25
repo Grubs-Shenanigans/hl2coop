@@ -1346,6 +1346,18 @@ public:
 		return (int)GetSolid();
 	}
 
+#ifdef BDSBASE
+	void ScriptMakePhysics(int nSolidType, int nSolidFlags, bool asleep)
+	{
+		VPhysicsInitNormal((SolidType_t)nSolidType, nSolidFlags, asleep);
+	}
+
+	void ScriptDestroyPhysics(void)
+	{
+		VPhysicsDestroyObject();
+	}
+#endif
+
 	HSCRIPT ScriptGetModelKeyValues( void );
 
 	void ScriptPrecacheModel( const char *name );
