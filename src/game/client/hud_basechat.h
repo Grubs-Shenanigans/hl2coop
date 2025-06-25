@@ -247,6 +247,10 @@ public:
 	virtual void	StopMessageMode( void );
 	void			Send( void );
 
+#ifdef BDSBASE
+	virtual void OnKeyCodeTyped(vgui::KeyCode code);
+#endif
+
 	MESSAGE_FUNC( OnChatEntrySend, "ChatEntrySend" );
 	MESSAGE_FUNC( OnChatEntryStopMessageMode, "ChatEntryStopMessageMode" );
 
