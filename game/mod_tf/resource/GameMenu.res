@@ -66,7 +66,7 @@
 	} 
 	"5"
 	{
-		"label" "#GameUI_CallVote"
+		"label" "#GameUI_GameMenu_CallVote"
 		"command" "engine open_vote"
 		"OnlyInGame" "1"
 		"OnlyInLegacyMode"	"1"
@@ -143,6 +143,12 @@
 		"OnlyInLegacyMode"	"1"
 	}
 	"17"
+	{
+		"label" "#GameUI_ReportPlayerCaps"
+		"command" "OpenReportPlayerDialog"
+		"OnlyInLegacyMode"	"1"
+	}
+	"18"
 	{
 		"label" "#GameUI_GameMenu_Quit"
 		"command" "Quit"
