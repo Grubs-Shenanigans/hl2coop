@@ -9,6 +9,9 @@
 #include "tf_bot_locomotion.h"
 #include "particle_parse.h"
 
+#ifdef BDSBASE
+ConVar tf_bot_nav_crouch("tf_bot_nav_crouch", "1", FCVAR_CHEAT);
+#endif
 
 //-----------------------------------------------------------------------------------------
 void CTFBotLocomotion::Update( void )
@@ -29,6 +32,21 @@ void CTFBotLocomotion::Update( void )
 			// engineers need to crouch behind their guns
 			me->ReleaseCrouchButton();
 		}
+
+#ifdef BDSBASE
+		if (tf_bot_nav_crouch.GetBool())
+		{
+			const PathFollower* path = me->GetCurrentPath();
+			if (path && path->GetCurrentGoal() && path->GetCurrentGoal()->area)
+			{
+				if (path->GetCurrentGoal()->area->GetAttributes() & NAV_MESH_CROUCH)
+				{
+					// moving through a crouch area
+					me->PressCrouchButton(0.3f);
+				}
+			}
+		}
+#endif
 	}
 	else
 	{
