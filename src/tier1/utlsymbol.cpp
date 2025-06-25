@@ -327,8 +327,12 @@ FileNameHandle_t CUtlFilenameSymbolTable::FindOrAddFileName( const char *pFileNa
 	char fn[ MAX_PATH ];
 	Q_strncpy( fn, pFileName, sizeof( fn ) );
 	Q_RemoveDotSlashes( fn );
+#ifdef BDSBASE
+	Q_strlower(fn);
+#else
 #ifdef _WIN32
-	Q_strlower( fn );
+	Q_strlower(fn);
+#endif
 #endif
 
 	// Split the filename into constituent parts
@@ -370,8 +374,12 @@ FileNameHandle_t CUtlFilenameSymbolTable::FindFileName( const char *pFileName )
 	char fn[ MAX_PATH ];
 	Q_strncpy( fn, pFileName, sizeof( fn ) );
 	Q_RemoveDotSlashes( fn );
+#ifdef BDSBASE
+	Q_strlower(fn);
+#else
 #ifdef _WIN32
-	Q_strlower( fn );
+	Q_strlower(fn);
+#endif
 #endif
 
 	// Split the filename into constituent parts
