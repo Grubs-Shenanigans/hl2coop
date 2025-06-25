@@ -64,7 +64,7 @@
 		"OnlyInGame" "1"
 		"OnlyInLegacyMode"	"1"
 	} 
-	"5"
+	"4"
 	{
 		"label" "#GameUI_GameMenu_CallVote"
 		"command" "engine open_vote"
@@ -72,29 +72,35 @@
 		"OnlyInLegacyMode"	"1"
 	} 
 	
-	"6"
+	"5"
 	{
 		"label" "------------------------"
 		"OnlyInGame" "1"
 		"OnlyInLegacyMode"	"1"
 	}
 	
-	"7"
+	"6"
 	{
 		"label" "#GameUI_GameMenu_CharacterSetup"
 		"command" "engine open_charinfo"
 		"OnlyInLegacyMode"	"1"
 	}
-	"8"
+	"7"
 	{
 		"label" "#GameUI_GameMenu_Achievements"
 		"command" "OpenAchievementsDialog"
 		"OnlyInLegacyMode"	"1"
 	}
-	"9"
+	"8"
 	{
 		"label" "#GameUI_GameMenu_Options"
 		"command" "OpenOptionsDialog"
+		"OnlyInLegacyMode"	"1"
+	}
+	"9"
+	{
+		"label" "#GameUI_GameMenu_AdvancedOptions"
+		"command" "engine opentf2options"
 		"OnlyInLegacyMode"	"1"
 	}
 	
@@ -137,18 +143,6 @@
 	}
 	
 	"16"
-	{
-		"label" "#GameUI_ReportBug"
-		"command" "engine bug"
-		"OnlyInLegacyMode"	"1"
-	}
-	"17"
-	{
-		"label" "#GameUI_ReportPlayerCaps"
-		"command" "OpenReportPlayerDialog"
-		"OnlyInLegacyMode"	"1"
-	}
-	"18"
 	{
 		"label" "#GameUI_GameMenu_Quit"
 		"command" "Quit"
