@@ -3297,7 +3297,11 @@ void CTFPlayer::PlayerRunCommand( CUserCmd *ucmd, IMoveHelper *moveHelper )
 	{
 		m_Shared.CreateVehicleMove( gpGlobals->frametime, ucmd );
 	}
-	else if ( IsTaunting() || m_Shared.InCond( TF_COND_HALLOWEEN_THRILLER ) )
+#ifdef BDSBASE
+	else if (IsTaunting())
+#else
+	else if (IsTaunting() || m_Shared.InCond(TF_COND_HALLOWEEN_THRILLER))
+#endif
 	{
 		// For some taunts, it is critical that the player not move once they start
 		if ( !CanMoveDuringTaunt() )
@@ -5075,6 +5079,11 @@ void CTFPlayer::UseActionSlotItemPressed( void )
 		DoNoiseMaker();
 		return;
 	}
+
+#ifdef BDSBASE
+	if (m_Shared.InCond(TF_COND_FREEZE_INPUT))
+		return;
+#endif
 
 	CBaseEntity *pActionSlotEntity = GetEntityForLoadoutSlot( LOADOUT_POSITION_ACTION );
 	if ( !pActionSlotEntity )
@@ -18636,6 +18645,15 @@ void CTFPlayer::HandleTauntCommand( int iTauntSlot )
 {
 	if ( !IsAllowedToTaunt() )
 		return;
+
+#ifdef BDSBASE
+	if (m_Shared.InCond(TF_COND_HALLOWEEN_THRILLER))
+	{
+		// Don't allow econ taunts during thriller cond
+		Taunt();
+		return;
+	}
+#endif
 
 	m_nActiveTauntSlot = LOADOUT_POSITION_INVALID;
 	if ( iTauntSlot > 0 && iTauntSlot <= 8 )

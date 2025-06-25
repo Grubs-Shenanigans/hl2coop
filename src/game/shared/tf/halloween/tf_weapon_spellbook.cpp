@@ -869,7 +869,11 @@ bool CTFSpellBook::CanCastSpell( CTFPlayer *pPlayer )
 	if ( !pPlayer->m_Shared.InCond( TF_COND_HALLOWEEN_KART) && !pPlayer->CanAttack() )
 		return false;
 
-	if ( pPlayer->m_Shared.InCond( TF_COND_HALLOWEEN_THRILLER ) )
+#ifdef BDSBASE
+	if (pPlayer->m_Shared.InCond(TF_COND_FREEZE_INPUT))
+#else
+	if (pPlayer->m_Shared.InCond(TF_COND_HALLOWEEN_THRILLER))
+#endif
 		return false;
 
 	if ( tf_test_spellindex.GetInt() > -1 && tf_test_spellindex.GetInt() < GetTotalSpellCount( pPlayer ) )

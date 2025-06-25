@@ -4569,35 +4569,70 @@ void CTFPlayerShared::OnRemoveHalloweenBombHead( void )
 
 void CTFPlayerShared::OnAddHalloweenThriller( void )
 {
+#ifdef BDSBASE
 #ifdef CLIENT_DLL
-	C_TFPlayer *pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
+	C_TFPlayer* pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
 
-	if ( !TFGameRules()->IsHalloweenScenario( CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY ) )
+	if (!TFGameRules()->IsHalloweenScenario(CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY))
 	{
-		if ( pLocalPlayer == m_pOuter )
+		if (pLocalPlayer == m_pOuter)
 		{
-			m_pOuter->EmitSound( "Halloween.dance_howl" );
-			m_pOuter->EmitSound( "Halloween.dance_loop" );	
+			m_pOuter->EmitSound("Halloween.dance_howl");
+			m_pOuter->EmitSound("Halloween.dance_loop");
 		}
 	}
+#else
+	AddCond(TF_COND_FREEZE_INPUT);
+#endif // CLIENT_DLL
+#else
+#ifdef CLIENT_DLL
+	C_TFPlayer* pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
+
+	if (!TFGameRules()->IsHalloweenScenario(CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY))
+	{
+		if (pLocalPlayer == m_pOuter)
+		{
+			m_pOuter->EmitSound("Halloween.dance_howl");
+			m_pOuter->EmitSound("Halloween.dance_loop");
+		}
+	}
+#endif
 #endif
 }
 
 void CTFPlayerShared::OnRemoveHalloweenThriller( void )
 {
+#ifdef BDSBASE
 #ifdef CLIENT_DLL
-	C_TFPlayer *pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
+	C_TFPlayer* pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
 
-	if ( !TFGameRules()->IsHalloweenScenario( CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY ) )
+	if (!TFGameRules()->IsHalloweenScenario(CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY))
 	{
-		if ( pLocalPlayer == m_pOuter )
+		if (pLocalPlayer == m_pOuter)
 		{
-			m_pOuter->StopSound( "Halloween.dance_loop" );	
+			m_pOuter->StopSound("Halloween.dance_loop");
+		}
+	}
+#else
+	RemoveCond(TF_COND_FREEZE_INPUT);
+	// If this is hightower, players will be healing themselves while dancing
+	StopHealing(m_pOuter);
+#endif
+#else
+#ifdef CLIENT_DLL
+	C_TFPlayer* pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
+
+	if (!TFGameRules()->IsHalloweenScenario(CTFGameRules::HALLOWEEN_SCENARIO_DOOMSDAY))
+	{
+		if (pLocalPlayer == m_pOuter)
+		{
+			m_pOuter->StopSound("Halloween.dance_loop");
 		}
 	}
 #else
 	// If this is hightower, players will be healing themselves while dancing
-	StopHealing( m_pOuter );
+	StopHealing(m_pOuter);
+#endif
 #endif
 }
 
@@ -13355,7 +13390,11 @@ bool CTFPlayer::CanMoveDuringTaunt()
 	if ( m_Shared.InCond( TF_COND_HALLOWEEN_KART ) )
 		return true;
 
-	if ( m_Shared.InCond( TF_COND_TAUNTING ) || m_Shared.InCond( TF_COND_HALLOWEEN_THRILLER ) )
+#ifdef BDSBASE
+	if (m_Shared.InCond(TF_COND_TAUNTING))
+#else
+	if (m_Shared.InCond(TF_COND_TAUNTING) || m_Shared.InCond(TF_COND_HALLOWEEN_THRILLER))
+#endif
 	{
 #ifdef GAME_DLL
 		if ( tf_allow_sliding_taunt.GetBool() )
