@@ -8724,10 +8724,18 @@ void BuildBigHeadTransformations( CBaseAnimating *pObject, CStudioHdr *hdr, Vect
 	// Scale the head.
 	MatrixScaleBy ( flScale, transform );
 
+#ifdef BDSBASE
+	const int cMaxNumHelms = 4;
+#else
 	const int cMaxNumHelms = 2;
+#endif
 	int iHelmIndex[cMaxNumHelms];
 	iHelmIndex[0] = pObject->LookupBone( "prp_helmet" );
 	iHelmIndex[1] = pObject->LookupBone( "prp_hat" );
+#ifdef BDSBASE
+	iHelmIndex[2] = pObject->LookupBone("prp_cig");
+	iHelmIndex[3] = pObject->LookupBone("prp_glasses");
+#endif
 
 	for ( int i = 0; i < cMaxNumHelms; i++ )
 	{
@@ -8774,6 +8782,22 @@ void BuildDecapitatedTransformations( CBaseAnimating *pObject, CStudioHdr *hdr, 
 		matrix3x4_t  &transformhelmet = pObject->GetBoneForWrite( iHelm );
 		MatrixScaleByZero ( transformhelmet );
 	}
+
+#ifdef BDSBASE
+	iHelm = pObject->LookupBone("prp_cig");
+	if (iHelm != -1)
+	{
+		matrix3x4_t& transformhelmet = pObject->GetBoneForWrite(iHelm);
+		MatrixScaleByZero(transformhelmet);
+	}
+
+	iHelm = pObject->LookupBone("prp_glasses");
+	if (iHelm != -1)
+	{
+		matrix3x4_t& transformhelmet = pObject->GetBoneForWrite(iHelm);
+		MatrixScaleByZero(transformhelmet);
+	}
+#endif
 }
 
 
@@ -8827,6 +8851,18 @@ void BuildNeckScaleTransformations(CBaseAnimating* pObject, CStudioHdr* hdr, Vec
 			MatrixScaleByZero ( cig_transform );
 		}
 	}
+
+#ifdef BDSBASE
+	if (iClass == TF_CLASS_MEDIC)
+	{
+		int iGlasses = pObject->LookupBone("prp_glasses");
+		if (iGlasses != -1)
+		{
+			matrix3x4_t& glasses_transform = pObject->GetBoneForWrite(iGlasses);
+			MatrixScaleByZero(glasses_transform);
+		}
+	}
+#endif
 
 	// Compress the head into the neck.
 	int iHead = pObject->LookupBone( "bip_head" );
@@ -8885,7 +8921,11 @@ void AppendChildren_R( CUtlVector< const mstudiobone_t * > *pChildBones, const s
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void BuildTorsoScaleTransformations( CBaseAnimating *pObject, CStudioHdr *hdr, Vector *pos, Quaternion q[], const matrix3x4_t& cameraTransform, int boneMask, CBoneBitList &boneComputed, float flScale, int iClass )
+#ifdef BDSBASE
+void BuildTorsoScaleTransformations(CBaseAnimating* pObject, CStudioHdr* hdr, Vector* pos, Quaternion q[], const matrix3x4_t& cameraTransform, int boneMask, CBoneBitList& boneComputed, float flScale)
+#else
+void BuildTorsoScaleTransformations(CBaseAnimating* pObject, CStudioHdr* hdr, Vector* pos, Quaternion q[], const matrix3x4_t& cameraTransform, int boneMask, CBoneBitList& boneComputed, float flScale, int iClass)
+#endif
 {
 	if ( !pObject || flScale == 1.f )
 		return;
@@ -9108,7 +9148,11 @@ void C_TFPlayer::BuildTransformations( CStudioHdr *hdr, Vector *pos, Quaternion 
 	m_BoneAccessor.SetWritableBones( BONE_USED_BY_ANYTHING );
 	float flHeadScale = m_Shared.InCond( TF_COND_HALLOWEEN_GHOST_MODE ) ? 1.5 : m_flHeadScale;
 	BuildBigHeadTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, flHeadScale );
-	BuildTorsoScaleTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flTorsoScale, GetPlayerClass()->GetClassIndex() );
+#ifdef BDSBASE
+	BuildTorsoScaleTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flTorsoScale);
+#else
+	BuildTorsoScaleTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flTorsoScale, GetPlayerClass()->GetClassIndex());
+#endif
 	BuildHandScaleTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flHandScale );
 #ifdef BDSBASE
 	BuildNeckScaleTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flNeckScale);
@@ -9127,7 +9171,11 @@ void C_TFRagdoll::BuildTransformations( CStudioHdr *hdr, Vector *pos, Quaternion
 
 	m_BoneAccessor.SetWritableBones( BONE_USED_BY_ANYTHING );
 	BuildBigHeadTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flHeadScale );
-	BuildTorsoScaleTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flTorsoScale, GetClass() );
+#ifdef BDSBASE
+	BuildTorsoScaleTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flTorsoScale);
+#else
+	BuildTorsoScaleTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flTorsoScale, GetClass());
+#endif
 	BuildHandScaleTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flHandScale );
 #ifdef BDSBASE
 	BuildNeckScaleTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flNeckScale);
