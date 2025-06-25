@@ -51,7 +51,14 @@ void AddSubKeyNamed( KeyValues *pKeys, const char *pszName );
 
 using namespace vgui;
 
+#ifdef BDSBASE
+#define TOURNAMENT_PANEL_OVERFLOW_THRESHOLD 9
+#endif
 #define TOURNAMENT_PANEL_UPDATE_INTERVAL 0.25f
+
+#ifdef BDSBASE
+ConVar cl_hud_tournament_always_centered("cl_hud_tournament_always_centered", "0", FCVAR_ARCHIVE, "Ensure that the client is always visible within the tournament HUD.");
+#endif
 
 extern ConVar mp_timelimit;
 extern ConVar mp_winlimit;
@@ -926,6 +933,24 @@ void CHudTournament::RecalculatePlayerPanels( void )
 			}
 		}
 	}
+
+#ifdef BDSBASE
+	if (cl_hud_tournament_always_centered.GetBool())
+	{
+		if (iPanel > TOURNAMENT_PANEL_OVERFLOW_THRESHOLD)
+		{
+			// Get a point close enough to the middle.
+			int middlePoint = RoundInt(iPanel / 2);
+
+			// Switch player locations so that the client is visible once again.
+			CTFPlayerPanel* middlePanel = GetOrAddPanel(middlePoint);
+			middlePanel->SetPlayerIndex(pPlayer->entindex());
+
+			CTFPlayerPanel* clientPanel = GetOrAddPanel(pPlayer->entindex());
+			clientPanel->SetPlayerIndex(middlePoint);
+		}
+	}
+#endif
 
 	// Clear out any extra panels
 	for ( int i = iPanel; i < m_PlayerPanels.Count(); i++  )
