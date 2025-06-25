@@ -232,7 +232,7 @@ CEntityDissolve *CEntityDissolve::Create( CBaseEntity *pTarget, const char *pMat
 			// Necessary to cause it to do the appropriate death cleanup
 			if ( pTarget->m_lifeState == LIFE_ALIVE )
 			{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 				CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 #else
 				CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
@@ -351,7 +351,7 @@ void CEntityDissolve::DissolveThink( void )
 		// Necessary to cause it to do the appropriate death cleanup
 		// Yeah, the player may have nothing to do with it, but
 		// passing NULL to TakeDamage causes bad things to happen
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 		CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);

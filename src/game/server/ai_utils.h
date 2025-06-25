@@ -23,7 +23,7 @@
 
 inline CBasePlayer *AI_GetSinglePlayer()
 {
-#ifndef BDSBASE_NPC
+#if !defined(BDSBASE_NPC)
 	if (gpGlobals->maxClients > 1)
 	{
 		return NULL;

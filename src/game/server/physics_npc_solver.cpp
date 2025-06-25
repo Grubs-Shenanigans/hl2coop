@@ -297,7 +297,7 @@ IMotionEvent::simresult_e CPhysicsNPCSolver::Simulate( IPhysicsMotionController 
 
 		if ( pObject->GetGameFlags() & FVPHYSICS_PLAYER_HELD )
 		{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 			Vector origin;
 			pObject->GetPosition(&origin, NULL);
 			CBasePlayer* pPlayer = UTIL_GetNearestPlayer(origin);

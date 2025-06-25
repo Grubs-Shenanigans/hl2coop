@@ -533,7 +533,7 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 			}
 			else
 			{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 				return (CBaseEntity*)UTIL_GetLocalPlayer();
 #else
 				return (CBaseEntity*)UTIL_PlayerByIndex(1);
@@ -557,7 +557,7 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 			else
 			{
 				// FIXME: error condition?
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 				return (CBaseEntity*)UTIL_GetLocalPlayer();
 #else
 				return (CBaseEntity*)UTIL_PlayerByIndex(1);
@@ -575,11 +575,30 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 		}
 		else if ( FStrEq( pName, "picker" ) )
 		{
-#ifdef BDSBASE_NPC
-			return FindPickerEntity(UTIL_GetLocalPlayer());
+#ifdef BDSBASE
+			if (pSearchingEntity && pSearchingEntity->IsPlayer())
+			{
+				return FindPickerEntity((CBasePlayer*)pSearchingEntity);
+			}
+			else if (pActivator && pActivator->IsPlayer())
+			{
+				return FindPickerEntity((CBasePlayer*)pActivator);
+			}
+			else if (pCaller && pCaller->IsPlayer())
+			{
+				return FindPickerEntity((CBasePlayer*)pCaller);
+			}
+			else
+			{
+#endif
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
+				return FindPickerEntity(UTIL_GetLocalPlayer());
 #else
-			return FindPickerEntity(UTIL_PlayerByIndex(1));
+				return FindPickerEntity(UTIL_PlayerByIndex(1));
 #endif //BDSBASE
+#ifdef BDSBASE
+			}
+#endif
 		}
 		else if ( FStrEq( pName, "self" ) )
 		{

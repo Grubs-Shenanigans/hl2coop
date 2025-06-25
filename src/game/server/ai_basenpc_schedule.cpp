@@ -3363,7 +3363,7 @@ void CAI_BaseNPC::RunTask( const Task_t *pTask )
 	case TASK_FACE_PLAYER:
 		{
 			// Get edict for one player
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 			CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 #else
 			CBasePlayer* pPlayer = AI_GetSinglePlayer();
@@ -3665,7 +3665,7 @@ void CAI_BaseNPC::RunTask( const Task_t *pTask )
 
 						if( pHint )
 						{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 							CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 							CBasePlayer* pPlayer = AI_GetSinglePlayer();

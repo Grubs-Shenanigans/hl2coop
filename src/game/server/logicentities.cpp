@@ -2438,7 +2438,7 @@ void CLogicAutosave::InputSave( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 void CLogicAutosave::InputSaveDangerous( inputdata_t &inputdata )
 {
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 #else
 	CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
@@ -2491,7 +2491,7 @@ class CLogicActiveAutosave : public CLogicAutosave
 
 	void SaveThink()
 	{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 		if (pPlayer && gpGlobals->maxClients == 1)
 #else

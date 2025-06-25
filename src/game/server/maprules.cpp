@@ -349,7 +349,7 @@ void CGameText::Display( CBaseEntity *pActivator )
 	if ( !CanFireForActivator( pActivator ) )
 		return;
 
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	// also send to all if we haven't got a specific activator player to send to 
 	if (MessageToAll() || !pActivator || !pActivator->IsPlayer())
 #else
@@ -360,7 +360,7 @@ void CGameText::Display( CBaseEntity *pActivator )
 	}
 	else
 	{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 		UTIL_HudMessage(ToBasePlayer(pActivator), m_textParms, MessageGet());
 #else
 		// If we're in singleplayer, show the message to the player.

@@ -659,7 +659,7 @@ CNPCSpawnDestination *CTemplateNPCMaker::FindSpawnDestination()
 		{
 			bool fValid = true;
 			Vector vecTest = pDestination->GetAbsOrigin();
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 			pPlayer = UTIL_GetNearestPlayer(vecTest);
 #endif //BDSBASE
 
@@ -729,7 +729,7 @@ CNPCSpawnDestination *CTemplateNPCMaker::FindSpawnDestination()
 			for( int i = 0 ; i < count ; i++ )
 			{
 				Vector vecTest = pDestinations[ i ]->GetAbsOrigin();
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 				pPlayer = UTIL_GetNearestPlayer(vecTest);
 #endif //BDSBASE
 				float flDist = ( vecTest - pPlayer->GetAbsOrigin() ).Length();

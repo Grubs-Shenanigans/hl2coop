@@ -105,7 +105,7 @@ void CMessage::InputShowMessage( inputdata_t &inputdata )
 		}
 		else
 		{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 			pPlayer = UTIL_GetLocalPlayer(); // just show it to the host, if there is one 
 #else
 			pPlayer = (gpGlobals->maxClients > 1) ? NULL : UTIL_GetLocalPlayer();
@@ -223,7 +223,7 @@ void CCredits::RollOutroCredits()
 {
 	sv_unlockedchapters.SetValue( "15" );
 	
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	CRecipientFilter filter;
 	filter.AddAllPlayers();
 	filter.MakeReliable();
@@ -252,7 +252,7 @@ void CCredits::InputRollOutroCredits( inputdata_t &inputdata )
 
 void CCredits::InputShowLogo( inputdata_t &inputdata )
 {
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	CRecipientFilter filter;
 	filter.AddAllPlayers();
 	filter.MakeReliable();
@@ -269,7 +269,7 @@ void CCredits::InputShowLogo( inputdata_t &inputdata )
 
 	if ( m_flLogoLength )
 	{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 		UserMessageBegin(filter, "LogoTimeMsg");
 #else
 		UserMessageBegin(user, "LogoTimeMsg");
@@ -279,7 +279,7 @@ void CCredits::InputShowLogo( inputdata_t &inputdata )
 	}
 	else
 	{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 		UserMessageBegin(filter, "CreditsMsg");
 #else
 		UserMessageBegin(user, "CreditsMsg");
@@ -296,7 +296,7 @@ void CCredits::InputSetLogoLength( inputdata_t &inputdata )
 
 void CCredits::InputRollCredits( inputdata_t &inputdata )
 {
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	CRecipientFilter filter;
 	filter.AddAllPlayers();
 	filter.MakeReliable();

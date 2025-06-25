@@ -14,7 +14,7 @@
 #include "ai_basenpc.h"
 #include "saverestore_utlvector.h"
 
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 #ifdef NEXT_BOT
 #include "NextBotManager.h"
 #endif
@@ -86,7 +86,7 @@ BEGIN_SIMPLE_DATADESC( CAI_Senses )
 	DEFINE_FIELD( m_TimeLastLookHighPriority, 	FIELD_TIME	),
 	DEFINE_FIELD( m_TimeLastLookNPCs, 	FIELD_TIME	),
 	DEFINE_FIELD( m_TimeLastLookMisc, 	FIELD_TIME	),
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 #ifdef NEXT_BOT
 	DEFINE_FIELD(m_TimeLastLookNextBots, FIELD_TIME),
 #endif
@@ -367,7 +367,7 @@ void CAI_Senses::Look( int iDistance )
 		LookForHighPriorityEntities( iDistance );
 		LookForNPCs( iDistance);
 		LookForObjects( iDistance );
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 #ifdef NEXT_BOT
 		LookForNextBots(iDistance);
 #endif
@@ -527,7 +527,7 @@ int CAI_Senses::LookForNPCs( int iDistance )
     return m_SeenNPCs.Count();
 }
 
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 #ifdef NEXT_BOT
 //-----------------------------------------------------------------------------
 
@@ -657,7 +657,7 @@ float CAI_Senses::GetTimeLastUpdate( CBaseEntity *pEntity )
 		return m_TimeLastLookHighPriority;
 	if ( pEntity->IsNPC() )
 		return m_TimeLastLookNPCs;
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 #ifdef NEXT_BOT
 	if (pEntity->IsNextBot())
 		return m_TimeLastLookNextBots;

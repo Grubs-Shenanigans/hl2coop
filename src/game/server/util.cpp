@@ -578,7 +578,7 @@ CBasePlayer	*UTIL_PlayerByIndex( int playerIndex )
 // Return the local player.
 // If this is a multiplayer game, return NULL.
 // 
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 CBasePlayer* UTIL_GetLocalPlayer(void)
 {
 

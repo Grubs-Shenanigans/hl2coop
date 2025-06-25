@@ -119,7 +119,7 @@ void CMessageEntity::Think( void )
 	SetNextThink( gpGlobals->curtime + 0.1f );
 
 	// check for player distance
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();

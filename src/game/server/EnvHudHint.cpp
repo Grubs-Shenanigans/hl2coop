@@ -89,7 +89,7 @@ void CEnvHudHint::InputShowHudHint( inputdata_t &inputdata )
 		}
 		else
 		{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 			pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 			pPlayer = UTIL_GetLocalPlayer();
@@ -130,7 +130,7 @@ void CEnvHudHint::InputHideHudHint( inputdata_t &inputdata )
 		}
 		else
 		{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 			pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 			pPlayer = UTIL_GetLocalPlayer();

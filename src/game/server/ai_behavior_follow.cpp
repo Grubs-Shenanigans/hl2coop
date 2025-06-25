@@ -18,7 +18,7 @@
 #include "ndebugoverlay.h"
 #include "ai_senses.h"
 
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 //TDT - Episodic Issues: Here we include the hl2mp gamerules so that calls to darkness mode work.
 #ifdef HL2MP
 #include "hl2mp_gamerules.h"
@@ -2137,7 +2137,7 @@ void CAI_FollowGoal::EnableGoal( CAI_BaseNPC *pAI )
 		return;
 	
 	CBaseEntity *pGoalEntity = GetGoalEntity();
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	if (!pGoalEntity)
 	{
 		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());

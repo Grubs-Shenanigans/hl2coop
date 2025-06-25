@@ -191,7 +191,7 @@ void CAI_Relationship::ApplyRelationship( CBaseEntity *pActivator, CBaseEntity *
 	
 	// The player spawns slightly after the NPCs, meaning that if we don't wait, the
 	// player will miss any relationships placed on them.
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	if (UTIL_GetLocalPlayer())
 #else
 	if (AI_IsSinglePlayer() && !UTIL_GetLocalPlayer())

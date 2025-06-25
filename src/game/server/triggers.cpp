@@ -2665,7 +2665,7 @@ void CTriggerSave::Touch( CBaseEntity *pOther )
 		if ( g_ServerGameDLL.m_fAutoSaveDangerousTime != 0.0f && g_ServerGameDLL.m_fAutoSaveDangerousTime >= gpGlobals->curtime )
 		{
 			// A previous dangerous auto save was waiting to become safe
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 			CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 			CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
@@ -2689,7 +2689,7 @@ void CTriggerSave::Touch( CBaseEntity *pOther )
 	if ( m_fDangerousTimer != 0.0f )
 	{
 		// There's a dangerous timer. Save if we have enough hitpoints.
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 		CBasePlayer* pPlayer = UTIL_PlayerByIndex(1);
@@ -3098,7 +3098,7 @@ void CTriggerCamera::Enable( void )
 
 	if ( !m_hPlayer || !m_hPlayer->IsPlayer() )
 	{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 		m_hPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 		m_hPlayer = UTIL_GetLocalPlayer();
@@ -3312,7 +3312,7 @@ void CTriggerCamera::Disable( void )
 		}
 
 		//TDT - Null Pointers: On ep2_outland_01 the game would crash as it didn't find a player, so define them as the nearest player.
-#ifdef BDSBASE_NPC	
+#if defined(BDSBASE) && defined(BDSBASE_NPC)	
 		m_hPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #endif //BDSBASE
 
@@ -3607,7 +3607,7 @@ static void PlayCDTrack( int iTrack )
 	// manually find the single player. 
 	pClient = engine->PEntityOfEntIndex( 1 );
 
-#ifndef BDSBASE_NPC
+#if !defined(BDSBASE_NPC)
 	Assert(gpGlobals->maxClients == 1);
 #endif //BDSBASE
 	

@@ -10,7 +10,7 @@
 #include "ai_memory.h"
 #include "ai_basenpc.h"
 
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 #ifdef NEXT_BOT
 #include "NextBotManager.h"
 #endif
@@ -251,7 +251,7 @@ bool CAI_Enemies::ShouldDiscardMemory( AI_EnemyInfo_t *pMemory )
 	if ( pEnemy )
 	{
 		CAI_BaseNPC *pEnemyNPC = pEnemy->MyNPCPointer();
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 		if (pEnemyNPC)
 		{
 			if (pEnemyNPC->GetState() == NPC_STATE_DEAD)

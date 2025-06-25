@@ -448,7 +448,7 @@ void CFlextalkActor::ProcessSceneEvents( void )
 		}
 		else if (flex_talk.GetInt() == -4)
 		{
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 			AddLookTarget(UTIL_GetNearestVisiblePlayer(this), 0.5, flex_looktime.GetFloat());
 #else
 			AddLookTarget(UTIL_PlayerByIndex(1), 0.5, flex_looktime.GetFloat());

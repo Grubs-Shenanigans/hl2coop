@@ -1034,7 +1034,7 @@ void CBaseEntity::DrawDebugGeometryOverlays(void)
 		}
 	}
 
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 	if (m_debugOverlays & OVERLAY_AUTOAIM_BIT && (GetFlags() & FL_AIMTARGET) && pPlayer != NULL)
 #else
@@ -1044,7 +1044,7 @@ void CBaseEntity::DrawDebugGeometryOverlays(void)
 		// Crude, but it gets the point across.
 		Vector vecCenter = GetAutoAimCenter();
 		Vector vecRight, vecUp, vecDiag;
-#ifndef BDSBASE_NPC
+#if !defined(BDSBASE_NPC)
 		CBasePlayer* pPlayer = AI_GetSinglePlayer();
 #endif //BDSBASE
 		float radius = GetAutoAimRadius();
@@ -1867,7 +1867,7 @@ int CBaseEntity::VPhysicsTakeDamage( const CTakeDamageInfo &info )
 #ifdef BDSBASE
 			CBasePlayer* pPlayer = NULL;
 
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 			for (int i = 1; i <= gpGlobals->maxClients; i++)
 			{
 				CBasePlayer* tempPlayer = UTIL_PlayerByIndex(i);
@@ -7998,7 +7998,7 @@ void CBaseEntity::DispatchResponse( const char *conceptName )
 	ModifyOrAppendCriteria( set );
 
 	// Append local player criteria to set,too
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
@@ -8061,7 +8061,7 @@ void CBaseEntity::DumpResponseCriteria( void )
 	ModifyOrAppendCriteria( set );
 
 	// Append local player criteria to set,too
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 #else
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
@@ -8550,7 +8550,7 @@ bool CBaseEntity::SUB_AllowedToFade( void )
 
 	// on Xbox, allow these to fade out
 #ifndef _XBOX
-#ifdef BDSBASE_NPC
+#if defined(BDSBASE) && defined(BDSBASE_NPC)
 	CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 #else
 	CBasePlayer* pPlayer = (AI_IsSinglePlayer()) ? UTIL_GetLocalPlayer() : NULL;
