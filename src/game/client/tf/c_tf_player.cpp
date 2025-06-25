@@ -547,6 +547,9 @@ IMPLEMENT_CLIENTCLASS_DT_NOBASE( C_TFRagdoll, DT_TFRagdoll, CTFRagdoll )
 	RecvPropFloat( RECVINFO( m_flHeadScale ) ),
 	RecvPropFloat( RECVINFO( m_flTorsoScale ) ),
 	RecvPropFloat( RECVINFO( m_flHandScale ) ),
+#ifdef BDSBASE
+	RecvPropFloat(RECVINFO(m_flNeckScale)),
+#endif
 END_RECV_TABLE()
 
 //-----------------------------------------------------------------------------
@@ -585,6 +588,9 @@ C_TFRagdoll::C_TFRagdoll()
 	m_flHeadScale = 1.f;
 	m_flTorsoScale = 1.f;
 	m_flHandScale = 1.f;
+#ifdef BDSBASE
+	m_flNeckScale = 1.f;
+#endif
 
 	UseClientSideAnimation();
 
@@ -711,6 +717,9 @@ void C_TFRagdoll::CreateTFRagdoll()
 		m_flHeadScale = pPlayer->GetHeadScale();
 		m_flTorsoScale = pPlayer->GetTorsoScale();
 		m_flHandScale = pPlayer->GetHandScale();
+#ifdef BDSBASE
+		m_flNeckScale = pPlayer->GetNeckScale();
+#endif
 	}
 
 	if ( nModelIndex != -1 )
@@ -3942,6 +3951,9 @@ IMPLEMENT_CLIENTCLASS_DT( C_TFPlayer, DT_TFPlayer, CTFPlayer )
 	RecvPropFloat( RECVINFO( m_flHeadScale ) ),
 	RecvPropFloat( RECVINFO( m_flTorsoScale ) ),
 	RecvPropFloat( RECVINFO( m_flHandScale ) ),
+#ifdef BDSBASE
+	RecvPropFloat(RECVINFO(m_flNeckScale)),
+#endif
 
 	RecvPropBool( RECVINFO( m_bUseBossHealthBar ) ),
 
@@ -4124,6 +4136,9 @@ C_TFPlayer::C_TFPlayer() :
 	m_flHeadScale = 1.f;
 	m_flTorsoScale = 1.f;
 	m_flHandScale = 1.f;
+#ifdef BDSBASE
+	m_flNeckScale = 1.f;
+#endif
 
 	m_bIsMiniBoss = false;
 	m_bUseBossHealthBar = false;
@@ -8765,9 +8780,17 @@ void BuildDecapitatedTransformations( CBaseAnimating *pObject, CStudioHdr *hdr, 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void BuildNeckScaleTransformations( CBaseAnimating *pObject, CStudioHdr *hdr, Vector *pos, Quaternion q[], const matrix3x4_t& cameraTransform, int boneMask, CBoneBitList &boneComputed, float flScale, int iClass )
+#ifdef BDSBASE
+void BuildHeadSmashTransformations(CBaseAnimating* pObject, CStudioHdr* hdr, Vector* pos, Quaternion q[], const matrix3x4_t& cameraTransform, int boneMask, CBoneBitList& boneComputed, int iClass)
+#else
+void BuildNeckScaleTransformations(CBaseAnimating* pObject, CStudioHdr* hdr, Vector* pos, Quaternion q[], const matrix3x4_t& cameraTransform, int boneMask, CBoneBitList& boneComputed, float flScale, int iClass)
+#endif
 {
-	if ( !pObject || flScale == 1.f )
+#ifdef BDSBASE
+	if (!pObject)
+#else
+	if (!pObject || flScale == 1.f)
+#endif
 		return;
 
 	int iNeck = pObject->LookupBone( "bip_neck" );
@@ -8786,7 +8809,11 @@ void BuildNeckScaleTransformations( CBaseAnimating *pObject, CStudioHdr *hdr, Ve
 			matrix3x4_t &spine_transform = pObject->GetBoneForWrite( iSpine );
 			MatrixPosition( spine_transform, spine_position );
 			MatrixPosition( neck_transform, neck_position );
-			position = flScale * ( neck_position - spine_position );
+#ifdef BDSBASE
+			position = 0.5f * (neck_position - spine_position);
+#else
+			position = flScale * (neck_position - spine_position);
+#endif
 			MatrixSetTranslation( spine_position + position, neck_transform );
 		}
 	}
@@ -8966,6 +8993,60 @@ void BuildHandScaleTransformations( CBaseAnimating *pObject, CStudioHdr *hdr, Ve
 	}
 }
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void BuildNeckScaleTransformations(CBaseAnimating* pObject, CStudioHdr* hdr, Vector* pos, Quaternion q[], const matrix3x4_t& cameraTransform, int boneMask, CBoneBitList& boneComputed, float flScale)
+{
+	if (!pObject || flScale == 1.f)
+		return;
+
+	int iNeck = pObject->LookupBone("bip_neck");
+	if (iNeck == -1)
+		return;
+
+	const studiohdr_t* pHdr = modelinfo->GetStudiomodel(pObject->GetModel());
+
+	int iTargetBone = iNeck;
+
+	// Compress head towards neck.
+	int iMoveBone = pObject->LookupBone("bip_head");
+	if (iMoveBone == -1)
+	{
+		return;
+	}
+
+	const matrix3x4_t& targetBone_transform = pObject->GetBone(iTargetBone);
+	Vector vTargetBonePos;
+	MatrixPosition(targetBone_transform, vTargetBonePos);
+
+	matrix3x4_t& moveBone_transform = pObject->GetBoneForWrite(iMoveBone);
+	Vector vMoveBonePos;
+	MatrixPosition(moveBone_transform, vMoveBonePos);
+	Vector vNewMovePos = vTargetBonePos + flScale * (vMoveBonePos - vTargetBonePos);
+	MatrixSetTranslation(vNewMovePos, moveBone_transform);
+
+	iTargetBone = iMoveBone;
+
+	Vector vOffset = vNewMovePos - vMoveBonePos;
+
+	// apply to all its child bones
+	CUtlVector< const mstudiobone_t* > vecChildBones;
+	AppendChildren_R(&vecChildBones, pHdr, iMoveBone);
+	for (int j = 0; j < vecChildBones.Count(); ++j)
+	{
+		int iChildBone = pObject->LookupBone(vecChildBones[j]->pszName());
+		if (iChildBone == -1)
+			continue;
+
+		matrix3x4_t& childBone_transform = pObject->GetBoneForWrite(iChildBone);
+		Vector vChildPos;
+		MatrixPosition(childBone_transform, vChildPos);
+		MatrixSetTranslation(vChildPos + vOffset, childBone_transform);
+	}
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -9029,6 +9110,9 @@ void C_TFPlayer::BuildTransformations( CStudioHdr *hdr, Vector *pos, Quaternion 
 	BuildBigHeadTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, flHeadScale );
 	BuildTorsoScaleTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flTorsoScale, GetPlayerClass()->GetClassIndex() );
 	BuildHandScaleTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flHandScale );
+#ifdef BDSBASE
+	BuildNeckScaleTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flNeckScale);
+#endif
 
 	BuildFirstPersonMeathookTransformations( hdr, pos, q, cameraTransform, boneMask, boneComputed, "bip_head" );
 }
@@ -9045,6 +9129,9 @@ void C_TFRagdoll::BuildTransformations( CStudioHdr *hdr, Vector *pos, Quaternion
 	BuildBigHeadTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flHeadScale );
 	BuildTorsoScaleTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flTorsoScale, GetClass() );
 	BuildHandScaleTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flHandScale );
+#ifdef BDSBASE
+	BuildNeckScaleTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed, m_flNeckScale);
+#endif
 
 	if ( IsDecapitation() && !m_bBaseTransform )
 	{
@@ -9055,7 +9142,11 @@ void C_TFRagdoll::BuildTransformations( CStudioHdr *hdr, Vector *pos, Quaternion
 	if ( IsHeadSmash() && !m_bBaseTransform )
 	{
 		m_BoneAccessor.SetWritableBones( BONE_USED_BY_ANYTHING );
-		BuildNeckScaleTransformations( this, hdr, pos, q, cameraTransform, boneMask, boneComputed, 0.5f, GetClass() );
+#ifdef BDSBASE
+		BuildHeadSmashTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed, GetClass());
+#else
+		BuildNeckScaleTransformations(this, hdr, pos, q, cameraTransform, boneMask, boneComputed, 0.5f, GetClass());
+#endif
 	}
 }
 
