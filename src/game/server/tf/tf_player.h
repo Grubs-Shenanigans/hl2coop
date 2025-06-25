@@ -1033,6 +1033,9 @@ public:
 	int					m_iBlastJumpState;
 	float				m_flBlastJumpLandTime;
 	bool				m_bTakenBlastDamageSinceLastMovement;
+#ifdef BDSBASE
+	float               m_flNextSandmanStunBonusTime;
+#endif
 
 	void				SetTargetDummy( void ){ m_bIsTargetDummy = true; }
 

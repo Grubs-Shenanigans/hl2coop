@@ -107,6 +107,9 @@ PRECACHE_WEAPON_REGISTER( tf_projectile_stun_ball );
 ConVar tf_scout_stunball_base_duration( "tf_scout_stunball_base_duration", "6.0", FCVAR_DEVELOPMENTONLY );
 ConVar tf_scout_stunball_base_speed( "tf_scout_stunball_base_speed", "3000", FCVAR_DEVELOPMENTONLY );
 ConVar sv_proj_stunball_damage( "sv_proj_stunball_damage", "15", FCVAR_DEVELOPMENTONLY );
+#ifdef BDSBASE
+ConVar tf_scout_stunball_allow_bonuspoints_ratelimit("tf_scout_stunball_allow_bonuspoints_ratelimit", "1", FCVAR_NOTIFY | FCVAR_REPLICATED);
+#endif
 #endif
 // -- TFStunBall
 
@@ -765,7 +768,23 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 			}
 		}
 
-		CTF_GameStats.Event_PlayerStunBall( pOwner, ( bMax ) ? true : false );
+#ifdef BDSBASE
+		if (tf_scout_stunball_allow_bonuspoints_ratelimit.GetBool())
+		{
+			// Rate limit: only award Sandman stun bonus once per 10 seconds per player
+			if (pOwner && gpGlobals->curtime >= pOwner->m_flNextSandmanStunBonusTime)
+			{
+				CTF_GameStats.Event_PlayerStunBall(pOwner, (bMax) ? true : false);
+				pOwner->m_flNextSandmanStunBonusTime = gpGlobals->curtime + 10.0f;
+			}
+		}
+		else
+		{
+			CTF_GameStats.Event_PlayerStunBall(pOwner, (bMax) ? true : false);
+		}
+#else
+		CTF_GameStats.Event_PlayerStunBall(pOwner, (bMax) ? true : false);
+#endif
 
 		if ( pPlayer->GetWaterLevel() != WL_Eyes )
 		{
