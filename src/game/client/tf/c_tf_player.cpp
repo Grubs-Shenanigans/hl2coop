@@ -12134,8 +12134,10 @@ void C_TFPlayer::ClientAdjustVOPitch( int& pitch )
 		pitch *= 1.3f;
 	}
 	// Halloween voice futzery?
+#ifndef BDSBASE
 	else
 	{
+#endif
 		float flVoicePitchScale = 1.f;
 		CALL_ATTRIB_HOOK_FLOAT( flVoicePitchScale, voice_pitch_scale );
 
@@ -12153,7 +12155,9 @@ void C_TFPlayer::ClientAdjustVOPitch( int& pitch )
 		{
 			pitch *= flVoicePitchScale;
 		}
+#ifndef BDSBASE
 	}
+#endif
 }
 
 
