@@ -1163,7 +1163,7 @@ const char *CEquipSlotItemSelectionPanel::GetItemNotSelectableReason( const CEco
 #ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
 	bool bShouldLoad = bIsStock;
 #else
-	bool bIsCustom = pDef->IsSoloItem();
+	bool bIsCustom = pItemData->IsSoloItem();
 	bool bShouldLoad = (bIsStock || bIsCustom);
 #endif
 #else
@@ -1435,7 +1435,7 @@ const char *CItemCriteriaSelectionPanel::GetItemNotSelectableReason( const CEcon
 #ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
 	bool bShouldLoad = bIsStock;
 #else
-	bool bIsCustom = pDef->IsSoloItem();
+	bool bIsCustom = pItemData->IsSoloItem();
 	bool bShouldLoad = (bIsStock || bIsCustom);
 #endif
 #else
@@ -1615,7 +1615,7 @@ const char *CAccountSlotItemSelectionPanel::GetItemNotSelectableReason( const CE
 #ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
 	bool bShouldLoad = bIsStock;
 #else
-	bool bIsCustom = pDef->IsSoloItem();
+	bool bIsCustom = pItemData->IsSoloItem();
 	bool bShouldLoad = (bIsStock || bIsCustom);
 #endif
 #else

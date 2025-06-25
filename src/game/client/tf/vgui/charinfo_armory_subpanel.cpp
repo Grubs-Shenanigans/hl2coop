@@ -505,6 +505,8 @@ void CArmoryPanel::SetFilterTo( int iItemDef, armory_filters_t nFilter )
 #else
 			if (pDef->IsHidden())
 #endif
+#else
+			if (pDef->IsHidden() || pDef->GetQuality() == k_unItemQuality_Any || pDef->GetQuality() == AE_NORMAL || !pDef->ShouldShowInArmory())
 #endif
 #else
 			if ( pDef->IsHidden() || pDef->GetQuality() == k_unItemQuality_Any || pDef->GetQuality() == AE_NORMAL || !pDef->ShouldShowInArmory() )
