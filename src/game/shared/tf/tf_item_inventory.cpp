@@ -386,10 +386,10 @@ int	CTFInventoryManager::GetAllUsableItemsForSlot( int iClass, int iSlot, CUtlVe
 #ifdef BDSBASE
 		if (!bSkipStockItemCheck)
 		{
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 			bool bIsStock = pItemData->IsBaseItem();
 #ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
 			bool bShouldLoad = bIsStock;
 #else
 			bool bIsCustom = pItemData->IsSoloItem();
@@ -402,10 +402,10 @@ int	CTFInventoryManager::GetAllUsableItemsForSlot( int iClass, int iSlot, CUtlVe
 			bool bShouldLoad = true;
 #endif
 
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 			bool bIsReskin = pItemData->IsReskin();
 
-#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 			bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
 				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
 				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
@@ -1221,7 +1221,7 @@ void CTFPlayerInventory::EquipLocal(uint64 ulItemID, equipped_class_t unClass, e
 	if (ulItemID < 100000)
 	{
 		int count = TFInventoryManager()->GetSoloItemCount();
-		CEconItemView* pItem;
+		CEconItemView* pItem = NULL;
 		for (int i = 0; i < count; i++)
 		{
 			pItem = TFInventoryManager()->GetSoloItem(i);
@@ -1231,6 +1231,7 @@ void CTFPlayerInventory::EquipLocal(uint64 ulItemID, equipped_class_t unClass, e
 				break;
 			}
 		}
+
 		if (!pItem)
 		{
 			pItem = TFInventoryManager()->AddSoloItem(ulItemID);
@@ -1642,7 +1643,7 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 
 #ifdef BDSBASE
 	bool skipAcc = false;
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 	//after we analyze that, let's check if the item we're looking at is a reskin.
 	bool bIsReskin = false;
 
@@ -1650,7 +1651,7 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 	CTFItemDefinition* pItemData = pItemInSlot->GetStaticData();
 	bIsReskin = pItemData->IsReskin();
 
-#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 	bool bIsWeapon = ((iSlot == LOADOUT_POSITION_PRIMARY) ||
 					(iSlot == LOADOUT_POSITION_SECONDARY) ||
 					(iSlot == LOADOUT_POSITION_MELEE) ||

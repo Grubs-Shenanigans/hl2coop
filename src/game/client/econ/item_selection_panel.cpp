@@ -1157,10 +1157,10 @@ const char *CEquipSlotItemSelectionPanel::GetItemNotSelectableReason( const CEco
 	CTFItemDefinition *pItemData = pItem->GetStaticData();
 
 #ifdef BDSBASE
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 	bool bIsStock = pItemData->IsBaseItem();
 #ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
 	bool bShouldLoad = bIsStock;
 #else
 	bool bIsCustom = pDef->IsSoloItem();
@@ -1173,10 +1173,10 @@ const char *CEquipSlotItemSelectionPanel::GetItemNotSelectableReason( const CEco
 	bool bShouldLoad = true;
 #endif
 
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 	bool bIsReskin = pItemData->IsReskin();
 
-#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 	bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
 		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
 		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
@@ -1429,10 +1429,10 @@ const char *CItemCriteriaSelectionPanel::GetItemNotSelectableReason( const CEcon
 	CTFItemDefinition *pItemData = pItem->GetStaticData();
 
 #ifdef BDSBASE
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 	bool bIsStock = pItemData->IsBaseItem();
 #ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
 	bool bShouldLoad = bIsStock;
 #else
 	bool bIsCustom = pDef->IsSoloItem();
@@ -1445,10 +1445,10 @@ const char *CItemCriteriaSelectionPanel::GetItemNotSelectableReason( const CEcon
 	bool bShouldLoad = true;
 #endif
 
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 	bool bIsReskin = pItemData->IsReskin();
 
-#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 	bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
 		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
 		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
@@ -1517,15 +1517,14 @@ const char *CCraftingItemSelectionPanel::GetItemNotSelectableReason( const CEcon
 		return NULL;
 
 #ifdef BDSBASE
+#ifdef BDSBASE_CURATED_ITEMS
 	CTFItemDefinition* pItemData = pItem->GetStaticData();
-
-#ifdef BDSBASE_STOCK_ONLY
 	bool bIsStock = pItemData->IsBaseItem();
 #ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
 	bool bShouldLoad = bIsStock;
 #else
-	bool bIsCustom = pDef->IsSoloItem();
+	bool bIsCustom = pItemData->IsSoloItem();
 	bool bShouldLoad = (bIsStock || bIsCustom);
 #endif
 #else
@@ -1535,10 +1534,10 @@ const char *CCraftingItemSelectionPanel::GetItemNotSelectableReason( const CEcon
 	bool bShouldLoad = true;
 #endif
 
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 	bool bIsReskin = pItemData->IsReskin();
 
-#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 	bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
 		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
 		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
@@ -1610,10 +1609,10 @@ const char *CAccountSlotItemSelectionPanel::GetItemNotSelectableReason( const CE
 	CTFItemDefinition *pItemData = pItem->GetStaticData();
 
 #ifdef BDSBASE
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 	bool bIsStock = pItemData->IsBaseItem();
 #ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
 	bool bShouldLoad = bIsStock;
 #else
 	bool bIsCustom = pDef->IsSoloItem();
@@ -1626,10 +1625,10 @@ const char *CAccountSlotItemSelectionPanel::GetItemNotSelectableReason( const CE
 	bool bShouldLoad = true;
 #endif
 
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 	bool bIsReskin = pItemData->IsReskin();
 
-#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 	bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
 		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
 		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||

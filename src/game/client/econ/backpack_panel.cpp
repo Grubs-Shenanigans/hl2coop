@@ -1111,7 +1111,7 @@ void CBackpackPanel::AssignItemToPanel( CItemModelPanel *pPanel, int iIndex )
 			if ( mapItems[it]->IsBaseItem() && !mapItems[it]->IsHidden() )
 			{
 #ifdef BDSBASE
-#if (defined(BDSBASE_STOCK_ONLY) && !defined(BDSBASE_STOCK_ONLY_ALLOWCOSMETICS))
+#if (defined(BDSBASE_CURATED_ITEMS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS))
 				pItemDef = mapItems[it];
 #else
 				// Instead of linking to this base item definition, link to the definition of what it will become
@@ -2941,13 +2941,13 @@ const char *CBackpackPanel::GetGreyOutItemPanelReason( CItemModelPanel *pItemPan
 	{
 		if (pItemPanel->HasItem())
 		{
+#ifdef BDSBASE_CURATED_ITEMS
 			CEconItemView* pItemView = pItemPanel->GetItem();
 			CTFItemDefinition* pDef = pItemView->GetStaticData();
 
-#ifdef BDSBASE_STOCK_ONLY
 			bool bIsStock = pDef->IsBaseItem();
 #ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
 			bool bShouldLoad = bIsStock;
 #else
 			bool bIsCustom = pDef->IsSoloItem();
@@ -2960,10 +2960,10 @@ const char *CBackpackPanel::GetGreyOutItemPanelReason( CItemModelPanel *pItemPan
 			bool bShouldLoad = true;
 #endif
 
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 			bool bIsReskin = pDef->IsReskin();
 
-#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 			bool bIsWeapon = ((pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
 				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
 				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||

@@ -3196,8 +3196,8 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 
 
 
-#ifdef BDSBASE_STOCK_ONLY
-#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+#ifdef BDSBASE_CURATED_ITEMS
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 	m_bIsReskin = m_pKVItem->GetInt("reskin", 0) != 0;
 
 	//allow if we're on the whitelist too

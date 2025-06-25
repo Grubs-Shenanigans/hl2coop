@@ -913,7 +913,7 @@ void CCharInfoLoadoutSubPanel::UpdateLabelFromClass( int nClass )
 
 	CUtlVector<CEconItemView*> pList;
 
-#if (defined (BDSBASE) && defined(BDSBASE_STOCK_ONLY))
+#if (defined (BDSBASE) && defined(BDSBASE_CURATED_ITEMS))
 	int iNumActualItems = TFInventoryManager()->GetAllUsableItemsForSlot(nClass, -1, &pList, true);
 
 	pList.RemoveAll();

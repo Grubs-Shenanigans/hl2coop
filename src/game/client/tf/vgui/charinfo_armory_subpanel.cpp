@@ -499,8 +499,8 @@ void CArmoryPanel::SetFilterTo( int iItemDef, armory_filters_t nFilter )
 			//	- Normal quality items
 			//	- Items that haven't asked to be shown
 #ifdef BDSBASE
-#ifdef BDSBASE_STOCK_ONLY
-#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+#ifdef BDSBASE_CURATED_ITEMS
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 			if (pDef->IsHidden() || pDef->GetQuality() == k_unItemQuality_Any || pDef->GetQuality() == AE_NORMAL || !pDef->ShouldShowInArmory())
 #else
 			if (pDef->IsHidden())
@@ -526,10 +526,10 @@ void CArmoryPanel::SetFilterTo( int iItemDef, armory_filters_t nFilter )
 #endif
 
 #ifdef BDSBASE
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 			bool bIsStock = pDef->IsBaseItem();
 #ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
 			bool bShouldLoad = bIsStock;
 #else
 			bool bIsCustom = pDef->IsSoloItem();
@@ -542,10 +542,10 @@ void CArmoryPanel::SetFilterTo( int iItemDef, armory_filters_t nFilter )
 			bool bShouldLoad = true;
 #endif
 
-#ifdef BDSBASE_STOCK_ONLY
+#ifdef BDSBASE_CURATED_ITEMS
 			bool bIsReskin = pDef->IsReskin();
 
-#ifdef BDSBASE_STOCK_ONLY_ALLOWCOSMETICS
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 			bool bIsWeapon = ((pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
 				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
 				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||

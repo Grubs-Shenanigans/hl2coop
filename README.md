@@ -47,9 +47,9 @@ BDSBASE_LEGACY_MAINMENU
 - Games: TF2
 - Enables the old main menu from older versions of TF2.
 
-BDSBASE_STOCK_ONLY
+BDSBASE_CURATED_ITEMS
 - Games: TF2
-- Prevents non-stock items from showing up in the loadout panel. Using this with BDSBASE_CUSTOM_SCHEMA would also allow custom items to be allowed with this option. You may re-enable cosmetics and weapon stranges, reskins, etc by using BDSBASE_STOCK_ONLY_ALLOWCOSMETICS. Items that represent stock weapons must have "reskin" set to 1 in your desired item schema definitions. If you only need BDSBASE_CUSTOM_SCHEMA for custom attributes, use BDSBASE_CUSTOM_SCHEMA_STOCK_ONLY.
+- Prevents non-stock items from showing up in the loadout panel. To add an item to the curated item list, simply use "stock_whitelist" in its item definition. You may re-enable cosmetics and weapon stranges, reskins, etc by using BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS. Items that represent reskins must have "reskin" set to 1 in your desired item schema definitions. Using this with BDSBASE_CUSTOM_SCHEMA would also allow custom items to be allowed with this option. If you only need BDSBASE_CUSTOM_SCHEMA for custom attributes, use BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS.
 
 BDSBASE_ECON_LOADOUT_ONLY
 - Games: TF2

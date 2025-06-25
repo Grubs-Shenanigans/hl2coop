@@ -137,6 +137,20 @@ void PromptOrFireCommand( const char* pszCommand )
 	}
 }
 
+#ifdef BDSBASE
+#ifdef BDSBASE_LEGACY_MAINMENU
+static void CallVoteCMD()
+{
+	GetClientModeTFNormal()->GameUI()->SendMainMenuCommand("engine callvote");
+	if (GetClientModeTFNormal()->GameUI())
+	{
+		GetClientModeTFNormal()->GameUI()->SendMainMenuCommand("ResumeGame");
+	}
+}
+static ConCommand open_vote("open_vote", CallVoteCMD);
+#endif
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
