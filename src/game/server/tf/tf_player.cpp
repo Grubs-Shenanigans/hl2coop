@@ -202,7 +202,11 @@ ConVar tf_damage_multiplier_blue( "tf_damage_multiplier_blue", "1.0", FCVAR_CHEA
 ConVar tf_damage_multiplier_red( "tf_damage_multiplier_red", "1.0", FCVAR_CHEAT, "All incoming damage to a red player is multiplied by this value" );
 
 
-ConVar tf_max_voice_speak_delay( "tf_max_voice_speak_delay", "1.5", FCVAR_DEVELOPMENTONLY, "Max time after a voice command until player can do another one", true, 0.1f, false, 0.f );
+#ifdef BDSBASE
+ConVar tf_max_voice_speak_delay("tf_max_voice_speak_delay", "1.5", FCVAR_DEVELOPMENTONLY, "Max time after a voice command until player can do another one");
+#else
+ConVar tf_max_voice_speak_delay("tf_max_voice_speak_delay", "1.5", FCVAR_DEVELOPMENTONLY, "Max time after a voice command until player can do another one", true, 0.1f, false, 0.f);
+#endif
 
 ConVar tf_allow_player_use( "tf_allow_player_use", "0", FCVAR_NOTIFY, "Allow players to execute +use while playing." );
 
@@ -7368,6 +7372,43 @@ static void DebugEconItemView( const char *pszDescStr, CEconItemView *pEconItemV
 	Assert( pItemDef );
 
 	Warning("%s: \"%s\"\n", pszDescStr, pItemDef->GetDefinitionName() );
+}
+#endif
+
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CTFPlayer::ShouldRunRateLimitedVoiceCommand(const CCommand& args)
+{
+	return ShouldRunRateLimitedVoiceCommand(args[0]);
+}
+
+ConVar tf_voice_command_rate_limit("tf_voice_command_rate_limit", "0.3", FCVAR_NOTIFY, "", true, 0.05f, true, 0.3f);
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CTFPlayer::ShouldRunRateLimitedVoiceCommand(const char* pszCommand)
+{
+	const char* pcmd = pszCommand;
+
+	int i = m_RateLimitLastCommandTimes.Find(pcmd);
+	if (i == m_RateLimitLastCommandTimes.InvalidIndex())
+	{
+		m_RateLimitLastCommandTimes.Insert(pcmd, gpGlobals->curtime);
+		return true;
+	}
+	else if ((gpGlobals->curtime - m_RateLimitLastCommandTimes[i]) < tf_voice_command_rate_limit.GetFloat())
+	{
+		// Too fast.
+		return false;
+	}
+	else
+	{
+		m_RateLimitLastCommandTimes[i] = gpGlobals->curtime;
+		return true;
+	}
 }
 #endif
 

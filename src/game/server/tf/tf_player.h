@@ -1672,6 +1672,15 @@ public:
 
 	virtual bool BCanCallVote() OVERRIDE;
 	bool m_bFirstSpawnAndCanCallVote = false;
+#ifdef BDSBASE
+	// Command rate limiting.
+	bool ShouldRunRateLimitedVoiceCommand(const CCommand& args);
+	bool ShouldRunRateLimitedVoiceCommand(const char* pszCommand);
+private:
+
+	// This lets us rate limit the commands the players can execute so they don't overflow things like reliable buffers.
+	CUtlDict<float, int>	m_RateLimitLastCommandTimes;
+#endif
 };
 
 //-----------------------------------------------------------------------------
