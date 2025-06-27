@@ -333,7 +333,11 @@ float CEconEntity::ScriptGetAttribute( const char *pName, float flFallbackValue 
 Activity CEconEntity::TranslateViewmodelHandActivity( Activity actBase )
 {
 	CEconItemView *pItem = GetAttributeContainer()->GetItem();
-	if ( pItem && pItem->IsValid() )
+#ifdef BDSBASE
+	if (pItem && pItem->IsValid() && !pItem->GetStaticData()->GetViewModel())
+#else
+	if (pItem && pItem->IsValid())
+#endif
 	{
 		GameItemDefinition_t *pStaticData = pItem->GetStaticData();
 		if ( pStaticData && pStaticData->ShouldAttachToHands() )
@@ -1132,7 +1136,11 @@ void CEconEntity::UpdateAttachmentModels( void )
 	}
 
 	// Update the state of attachment models for this item
- 	bool bItemNeedsAttachment = pItemDef && (pItemDef->ShouldAttachToHands() || pItemDef->ShouldAttachToHandsVMOnly());
+#ifdef BDSBASE
+	bool bItemNeedsAttachment = pItemDef && !pItemDef->GetViewModel() && (pItemDef->ShouldAttachToHands() || pItemDef->ShouldAttachToHandsVMOnly());
+#else
+	bool bItemNeedsAttachment = pItemDef && (pItemDef->ShouldAttachToHands() || pItemDef->ShouldAttachToHandsVMOnly());
+#endif
 	if ( bItemNeedsAttachment )
 	{
 		bool bShouldShowAttachment = false;
@@ -1891,7 +1899,11 @@ int	CEconEntity::DrawOverriddenViewmodel( C_BaseViewModel *pViewmodel, int flags
 	bool bUseOverride = false;
 	
 	CEconItemView *pItem = GetAttributeContainer()->GetItem();
-	bool bAttachesToHands = ( pItem->IsValid() && (pItem->GetStaticData()->ShouldAttachToHands() || pItem->GetStaticData()->ShouldAttachToHandsVMOnly()));
+#ifdef BDSBASE
+	bool bAttachesToHands = (pItem->IsValid() && !pItem->GetStaticData()->GetViewModel() && (pItem->GetStaticData()->ShouldAttachToHands() || pItem->GetStaticData()->ShouldAttachToHandsVMOnly()));
+#else
+	bool bAttachesToHands = (pItem->IsValid() && (pItem->GetStaticData()->ShouldAttachToHands() || pItem->GetStaticData()->ShouldAttachToHandsVMOnly()));
+#endif
 
 	// If the attachment is translucent, we need to render the viewmodel first
 	if ( bIsAttachmentTranslucent )

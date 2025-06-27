@@ -663,7 +663,7 @@ const char *CTFWeaponBase::GetViewModel( int iViewModel ) const
 	//before we check for handmodel, let's see if we should use our VM
 	const CEconItemView* pItem = GetAttributeContainer()->GetItem();
 
-	if (pPlayer && pItem->IsValid() && !pItem->GetStaticData()->ShouldAttachToHands() && pItem->GetStaticData()->GetViewModel())
+	if (pPlayer && pItem->IsValid() && pItem->GetStaticData()->GetViewModel())
 	{
 		//don't use GetTFWpnData().szViewModel, as it is not filled in for most weapons.
 		//instead, the item schema will load it.
@@ -3168,6 +3168,7 @@ C_BaseAnimating *CTFWeaponBase::GetAppropriateWorldOrViewModel()
 	{
 		// For w_* models the viewmodel itself is just arms+hands. And attached to them is the actual weapon.
 		const CEconItemView *pItem = GetAttributeContainer()->GetItem();
+
 		if ( pItem->IsValid() && pItem->GetStaticData()->ShouldAttachToHands() )
 		{
 			C_BaseAnimating *pVMAttach = GetViewmodelAttachment();
