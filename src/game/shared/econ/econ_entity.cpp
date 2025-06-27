@@ -333,8 +333,26 @@ float CEconEntity::ScriptGetAttribute( const char *pName, float flFallbackValue 
 Activity CEconEntity::TranslateViewmodelHandActivity( Activity actBase )
 {
 	CEconItemView *pItem = GetAttributeContainer()->GetItem();
+
 #ifdef BDSBASE
-	if (pItem && pItem->IsValid() && !pItem->GetStaticData()->GetViewModel())
+	CBasePlayer* pOwner = ToBasePlayer(GetOwnerEntity());
+	int iClass = 0;
+	int iTeam = 0;
+	if (pOwner)
+	{
+#if defined( TF_DLL ) || defined( TF_CLIENT_DLL )
+		CTFPlayer* pTFPlayer = ToTFPlayer(pOwner);
+		if (pTFPlayer)
+		{
+			iClass = pTFPlayer->GetPlayerClass()->GetClassIndex();
+			iTeam = pOwner->GetTeamNumber();
+		}
+#endif // defined( TF_DLL ) || defined( TF_CLIENT_DLL )
+	}
+#endif
+
+#ifdef BDSBASE
+	if (pItem && pItem->IsValid() && !pItem->GetViewModel(iClass, iTeam))
 #else
 	if (pItem && pItem->IsValid())
 #endif
@@ -1137,14 +1155,31 @@ void CEconEntity::UpdateAttachmentModels( void )
 
 	// Update the state of attachment models for this item
 #ifdef BDSBASE
-	bool bItemNeedsAttachment = pItemDef && !pItemDef->GetViewModel() && (pItemDef->ShouldAttachToHands() || pItemDef->ShouldAttachToHandsVMOnly());
+	CBasePlayer* pOwner = ToBasePlayer(GetOwnerEntity());
+	int iClass = 0;
+	int iTeam = 0;
+	if (pOwner)
+	{
+#if defined( TF_DLL ) || defined( TF_CLIENT_DLL )
+		CTFPlayer* pTFPlayer = ToTFPlayer(pOwner);
+		if (pTFPlayer)
+		{
+			iClass = pTFPlayer->GetPlayerClass()->GetClassIndex();
+			iTeam = pOwner->GetTeamNumber();
+		}
+#endif // defined( TF_DLL ) || defined( TF_CLIENT_DLL )
+	}
+
+	bool bItemNeedsAttachment = pItemDef && !pItem->GetViewModel(iClass, iTeam) && (pItemDef->ShouldAttachToHands() || pItemDef->ShouldAttachToHandsVMOnly());
 #else
 	bool bItemNeedsAttachment = pItemDef && (pItemDef->ShouldAttachToHands() || pItemDef->ShouldAttachToHandsVMOnly());
 #endif
 	if ( bItemNeedsAttachment )
 	{
 		bool bShouldShowAttachment = false;
-		CBasePlayer *pOwner = ToBasePlayer( GetOwnerEntity() );
+#ifndef BDSBASE
+		CBasePlayer* pOwner = ToBasePlayer(GetOwnerEntity());
+#endif
 		if ( pOwner && !pOwner->ShouldDrawThisPlayer() )
 		{
 			// Drawing the viewmodel
@@ -1164,6 +1199,7 @@ void CEconEntity::UpdateAttachmentModels( void )
 
 					pEnt->SetOuter( this );
 
+#ifndef BDSBASE
 					int iClass = 0;
 #if defined( TF_DLL ) || defined( TF_CLIENT_DLL )
 					CTFPlayer *pTFPlayer = ToTFPlayer( pOwner );
@@ -1172,7 +1208,10 @@ void CEconEntity::UpdateAttachmentModels( void )
 						iClass = pTFPlayer->GetPlayerClass()->GetClassIndex();
 					}
 #endif // defined( TF_DLL ) || defined( TF_CLIENT_DLL )
-					if ( pEnt->InitializeAsClientEntity( pItem->GetPlayerDisplayModel( iClass, pOwner->GetTeamNumber() ), RENDER_GROUP_VIEW_MODEL_OPAQUE ) == false )
+					if (pEnt->InitializeAsClientEntity(pItem->GetPlayerDisplayModel(iClass, pOwner->GetTeamNumber()), RENDER_GROUP_VIEW_MODEL_OPAQUE) == false)
+#else
+					if (pEnt->InitializeAsClientEntity(pItem->GetPlayerDisplayModel(iClass, iTeam), RENDER_GROUP_VIEW_MODEL_OPAQUE) == false)
+#endif
 						return;
 
 					m_hViewmodelAttachment = pEnt;
@@ -1899,8 +1938,26 @@ int	CEconEntity::DrawOverriddenViewmodel( C_BaseViewModel *pViewmodel, int flags
 	bool bUseOverride = false;
 	
 	CEconItemView *pItem = GetAttributeContainer()->GetItem();
+
 #ifdef BDSBASE
-	bool bAttachesToHands = (pItem->IsValid() && !pItem->GetStaticData()->GetViewModel() && (pItem->GetStaticData()->ShouldAttachToHands() || pItem->GetStaticData()->ShouldAttachToHandsVMOnly()));
+	CBasePlayer* pOwner = ToBasePlayer(GetOwnerEntity());
+	int iClass = 0;
+	int iTeam = 0;
+	if (pOwner)
+	{
+#if defined( TF_DLL ) || defined( TF_CLIENT_DLL )
+		CTFPlayer* pTFPlayer = ToTFPlayer(pOwner);
+		if (pTFPlayer)
+		{
+			iClass = pTFPlayer->GetPlayerClass()->GetClassIndex();
+			iTeam = pOwner->GetTeamNumber();
+		}
+#endif // defined( TF_DLL ) || defined( TF_CLIENT_DLL )
+	}
+#endif
+
+#ifdef BDSBASE
+	bool bAttachesToHands = (pItem->IsValid() && !pItem->GetViewModel(iClass, iTeam) && (pItem->GetStaticData()->ShouldAttachToHands() || pItem->GetStaticData()->ShouldAttachToHandsVMOnly()));
 #else
 	bool bAttachesToHands = (pItem->IsValid() && (pItem->GetStaticData()->ShouldAttachToHands() || pItem->GetStaticData()->ShouldAttachToHandsVMOnly()));
 #endif

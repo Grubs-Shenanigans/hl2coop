@@ -111,6 +111,11 @@ PRECACHE_WEAPON_REGISTER( tf_weapon_stickbomb );
 //=============================================================================
 
 #define TF_BREAKABLE_MELEE_BREAK_BODYGROUP 0
+
+#ifdef BDSBASE
+#define TF_BREAKABLE_MELEE_BREAK_VM_BODYGROUP 1
+#endif
+
 // Absolute body number of broken/not-broken since the server can't figure them out from the studiohdr.  Would only
 // matter if we had other body groups going on anyway
 #define TF_BREAKABLE_MELEE_BODY_NOTBROKEN 0
@@ -166,10 +171,27 @@ void CTFBreakableMelee::SwitchBodyGroups( void )
 	CTFPlayer *pTFPlayer = ToTFPlayer( GetOwner() );
 	if ( pTFPlayer && pTFPlayer->GetActiveWeapon() == this )
 	{
+
+#ifdef BDSBASE
+		const CEconItemView* pItem = GetAttributeContainer()->GetItem();
+		const char* pVMName = pItem->GetViewModel(pTFPlayer->GetPlayerClass()->GetClassIndex(), pTFPlayer->GetTeamNumber());
+
+		int iBodyGroup = TF_BREAKABLE_MELEE_BREAK_BODYGROUP;
+
+		if (pVMName)
+		{
+			iBodyGroup = TF_BREAKABLE_MELEE_BREAK_VM_BODYGROUP;
+		}
+#endif
+
 		C_BaseAnimating *pViewWpn = GetAppropriateWorldOrViewModel();
 		if ( pViewWpn != this )
 		{
-			pViewWpn->SetBodygroup( TF_BREAKABLE_MELEE_BREAK_BODYGROUP, iState );
+#ifdef BDSBASE
+			pViewWpn->SetBodygroup(iBodyGroup, iState);
+#else
+			pViewWpn->SetBodygroup(TF_BREAKABLE_MELEE_BREAK_BODYGROUP, iState);
+#endif
 		}
 	}
 #else // CLIENT_DLL

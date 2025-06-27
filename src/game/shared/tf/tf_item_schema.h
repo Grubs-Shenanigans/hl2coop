@@ -263,6 +263,10 @@ public:
 	const char	*GetPlayerDisplayModel( int iClass ) const	{ Assert( iClass >= 0 && iClass < LOADOUT_COUNT ); return m_pszPlayerDisplayModel[iClass]; }
 	virtual const char	*GetPlayerDisplayModelAlt( int iClass = 0 ) const	{ Assert( iClass >= 0 && iClass < LOADOUT_COUNT ); return m_pszPlayerDisplayModelAlt[iClass]; }
 
+#ifdef BDSBASE
+	const char* GetViewModel(int iClass) const { Assert(iClass >= 0 && iClass < LOADOUT_COUNT); return m_pszViewModel[iClass]; }
+#endif
+
 	int			GetLoadoutSlot( int iLoadoutClass ) const;
 	bool		IsAWearable() const;
 	bool		IsContentStreamable() const;
@@ -292,6 +296,10 @@ private:
 	// The .mdl file used for this item when it's being carried by a player.
 	const char		*m_pszPlayerDisplayModel[LOADOUT_COUNT];
 	const char		*m_pszPlayerDisplayModelAlt[LOADOUT_COUNT];
+
+#ifdef BDSBASE
+	const char		*m_pszViewModel[LOADOUT_COUNT];
+#endif
 
 	const char* m_pszAdText;
 	const char* m_pszAdResFile;

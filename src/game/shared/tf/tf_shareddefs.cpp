@@ -1767,6 +1767,10 @@ wpntranslation_class_weapons_t pszWpnEntTranslationList[] =
 //-----------------------------------------------------------------------------
 const char *TranslateWeaponEntForClass( const char *pszName, int iClass )
 {
+#ifdef BDSBASE
+	DevMsg("Asking for %s\n", pszName);
+#endif
+
 	if ( pszName )
 	{
 		for ( int i = 0; i < ARRAYSIZE(pszWpnEntTranslationList); i++ )
@@ -1775,10 +1779,19 @@ const char *TranslateWeaponEntForClass( const char *pszName, int iClass )
 			{
 				const char *pTransName = pszWpnEntTranslationList[i].pszClassWpn[ iClass ];
 				Assert( pTransName && pTransName[0] );
+
+#ifdef BDSBASE
+				DevMsg("Translated to %s\n", pTransName);
+#endif
+
 				return pTransName;
 			}
 		}
 	}
+
+#ifdef BDSBASE
+	DevMsg("Using %s\n", pszName);
+#endif
 
 	return pszName;
 }

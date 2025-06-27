@@ -969,6 +969,33 @@ const char *CEconItemView::GetPlayerDisplayModel( int iClass, int iTeam ) const
 	return pDef->GetBasePlayerDisplayModel();
 }
 
+#ifdef BDSBASE
+const char* CEconItemView::GetViewModel(int iClass, int iTeam) const
+{
+	const CEconItemDefinition* pDef = GetStaticData();
+	if (!pDef)
+		return NULL;
+
+#if defined( TF_DLL ) || defined( TF_CLIENT_DLL )
+	// If we don't have a style, we still a couple potential overrides.
+	if (iClass >= 0 && iClass < LOADOUT_COUNT)
+	{
+		// We don't support overriding meshes in the visuals section, but we might still be overriding 
+		// the model for each class at the schema level.
+		const CTFItemDefinition* pTFDef = dynamic_cast<const CTFItemDefinition*>(pDef);
+		if (pTFDef)
+		{
+			const char* pszModel = pTFDef->GetViewModel(iClass);
+			if (pszModel && pszModel[0])
+				return pszModel;
+		}
+	}
+#endif // defined( TF_DLL ) || defined( TF_CLIENT_DLL )
+
+	return pDef->GetBaseViewModel();
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

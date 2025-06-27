@@ -41,8 +41,10 @@ public:
 	DECLARE_PREDICTABLE();
 
 // Server specific.
+#ifndef BDSBASE
 #ifdef GAME_DLL
 	DECLARE_DATADESC();
+#endif
 #endif
 
 	CTFPistol() {}

@@ -290,6 +290,9 @@ public:
 
 	// Return the model to use when displaying this model on the player character model, if any
 	const char				*GetPlayerDisplayModel( int iClass, int iTeam ) const;
+#ifdef BDSBASE
+	const char				*GetViewModel(int iClass, int iTeam) const;
+#endif
 
 	// Return the model to use when displaying this model in the world. See the notes on this in econ_item_schema.h
 	const char				*GetWorldDisplayModel() const;
