@@ -1290,6 +1290,9 @@ public:
 	const char	*GetSlotToken( void ) const			{ return m_pszSlotToken; }
 	bool		ShouldAttachToHands( void ) const	{ return m_bAttachToHands; }
 	bool		ShouldAttachToHandsVMOnly( void ) const	{ return m_bAttachToHandsVMOnly; }
+#ifdef BDSBASE
+	const char* GetViewModel(void) const { return m_pszViewmodel; }
+#endif
 	bool		ShouldFlipViewmodels( void ) const	{ return m_bFlipViewModel; }
 	int			GetInventoryImagePosition( int iIndex ) const	{ Assert( iIndex >= 0 && iIndex < 2); return m_iInventoryImagePosition[iIndex]; }
 	int			GetInventoryImageSize( int iIndex ) const	{ Assert( iIndex >= 0 && iIndex < 2); return m_iInventoryImageSize[iIndex]; }
@@ -1550,6 +1553,10 @@ private:
 	// If set, we use the base hands model for a viewmodel, and bonemerge the above player model
 	bool			m_bAttachToHands;
 	bool			m_bAttachToHandsVMOnly;
+
+#ifdef BDSBASE
+	const char*		m_pszViewmodel;
+#endif
 
 	// If set, we will force the view model to render flipped. Good for models built left handed.
 	bool			m_bFlipViewModel;
