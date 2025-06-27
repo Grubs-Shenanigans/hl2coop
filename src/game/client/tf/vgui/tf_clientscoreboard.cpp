@@ -525,11 +525,19 @@ void CTFClientScoreBoardDialog::OnCommand( const char *command )
 				if ( !pIssueKeyValues )
 					return;
 
-				int playerIndex = pIssueKeyValues->GetInt( "playerIndex", 0 );
-				if ( playerIndex > 0 && playerIndex <= MAX_PLAYERS )
+#ifdef BDSBASE
+				const char* szPlayerName = pIssueKeyValues->GetString("name", NULL);
+				if (szPlayerName && szPlayerName[0])
 				{
-					engine->ClientCmd_Unrestricted( VarArgs( "spec_player %d\n", playerIndex ) );
+					engine->ClientCmd_Unrestricted(VarArgs("spec_player \"%s\"\n", szPlayerName));
 				}
+#else
+				int playerIndex = pIssueKeyValues->GetInt("playerIndex", 0);
+				if (playerIndex > 0 && playerIndex <= MAX_PLAYERS)
+				{
+					engine->ClientCmd_Unrestricted(VarArgs("spec_player %d\n", playerIndex));
+				}
+#endif
 			}
 		}
 	}
