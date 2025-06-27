@@ -251,7 +251,16 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetProp::Update( CHL2MPBot *me, float interva
 		return Done( "My path became invalid" );
 	}
 
-	if ( me->IsRangeLessThan( m_prop, 100.0f ) )
+#ifdef BDSBASE
+	if (m_propAbandonTimer.HasStarted() && m_propAbandonTimer.IsElapsed())
+	{
+		return Done("Waited too long trying to pick up this prop");
+}
+
+	if (me->IsRangeLessThan(m_prop, m_prop->BoundingRadius() + 100.0f))
+#else
+	if (me->IsRangeLessThan(m_prop, 100.0f))
+#endif
 	{
 		// misyl: Push physcannon onto the required weapon stack when getting props.
 		if ( !m_pushedPhyscannon )
@@ -264,9 +273,13 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetProp::Update( CHL2MPBot *me, float interva
 		me->EquipBestWeaponForThreat( threat );
 	}
 
-	m_path.Update( me );
+#ifdef BDSBASE
+	if (me->IsRangeLessThan(m_prop, m_prop->BoundingRadius() + 80.0f))
+#else
+	m_path.Update(me);
 
-	if ( me->IsRangeLessThan( m_prop, 80.0f ) )
+	if (me->IsRangeLessThan(m_prop, 80.0f))
+#endif
 	{
 		if ( me->GetGroundEntity() == m_prop )
 		{
@@ -274,10 +287,33 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetProp::Update( CHL2MPBot *me, float interva
 			me->PressJumpButton();
 		}
 
-		me->GetBodyInterface()->AimHeadTowards( m_prop, IBody::MANDATORY, 0.1f, NULL, "Looking towards our desired prop" );
+#ifdef BDSBASE
+		float duration = 0.3f;
+#else
+		float duration = 0.1f;
+#endif
+
+		me->GetBodyInterface()->AimHeadTowards( m_prop, IBody::MANDATORY, duration, NULL, "Looking towards our desired prop" );
 
 		me->PressAltFireButton( 1.0f );
 	}
+
+#ifdef BDSBASE
+	// Stop when we've reached the prop and can see it so that we don't try to climb on it
+	if (me->IsRangeLessThan(m_prop, m_prop->BoundingRadius() + HalfHumanWidth) &&
+		me->GetVisionInterface()->IsLineOfSightClearToEntity(m_prop))
+	{
+		if (!m_propAbandonTimer.HasStarted())
+		{
+			// If we're standing in front of this prop and don't pick it up after 3 seconds, abandon it
+			m_propAbandonTimer.Start(3.0f);
+		}
+
+		return Continue();
+	}
+
+	m_path.Update(me);
+#endif
 
 	return Continue();
 }
