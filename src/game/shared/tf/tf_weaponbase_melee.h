@@ -89,7 +89,11 @@ protected:
 
 protected:
 
+#ifdef BDSBASE
+	CNetworkVar(float, m_flSmackTime);
+#else
 	float	m_flSmackTime;
+#endif
 	bool	m_bConnected;
 	bool	m_bMiniCrit;
 #ifdef BDSBASE

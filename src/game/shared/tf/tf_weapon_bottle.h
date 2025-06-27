@@ -98,6 +98,9 @@ public:
 	virtual const char*	GetWorldModel( void ) const OVERRIDE;
 #ifdef CLIENT_DLL
 	virtual int			GetWorldModelIndex( void ) OVERRIDE;
+#ifdef BDSBASE
+	virtual void		OnDataChanged(DataUpdateType_t type) OVERRIDE;
+#endif
 #endif
 
 	void				SetDetonated( int iVal ) { m_iDetonated = iVal; }

@@ -76,19 +76,30 @@ PRECACHE_WEAPON_REGISTER( tf_weapon_breakable_sign );
 //
 IMPLEMENT_NETWORKCLASS_ALIASED( TFStickBomb, DT_TFWeaponStickBomb )
 
+#ifndef BDSBASE
 #ifdef CLIENT_DLL
 void RecvProxy_Detonated( const CRecvProxyData *pData, void *pStruct, void *pOut );
+#endif
 #endif
 
 BEGIN_NETWORK_TABLE( CTFStickBomb, DT_TFWeaponStickBomb )
 #if defined( CLIENT_DLL )
-	RecvPropInt( RECVINFO( m_iDetonated ), 0, RecvProxy_Detonated )
+#ifdef BDSBASE
+	RecvPropInt(RECVINFO(m_iDetonated))
+#else
+	RecvPropInt(RECVINFO(m_iDetonated), 0, RecvProxy_Detonated)
+#endif
 #else
 	SendPropInt( SENDINFO( m_iDetonated ), 1, SPROP_UNSIGNED )
 #endif
 END_NETWORK_TABLE()
 
 BEGIN_PREDICTION_DATA( CTFStickBomb )
+#ifdef BDSBASE
+#ifdef CLIENT_DLL
+	DEFINE_PRED_FIELD(m_iDetonated, FIELD_INTEGER, FTYPEDESC_INSENDTABLE)
+#endif
+#endif
 END_PREDICTION_DATA()
 
 LINK_ENTITY_TO_CLASS( tf_weapon_stickbomb, CTFStickBomb );
@@ -334,19 +345,27 @@ int CTFStickBomb::GetWorldModelIndex( void )
 		return m_iWorldModelIndex;
 	}
 }
-#endif
 
-#ifdef CLIENT_DLL
-
-void RecvProxy_Detonated( const CRecvProxyData *pData, void *pStruct, void *pOut )
+#ifdef BDSBASE
+void CTFStickBomb::OnDataChanged(DataUpdateType_t updateType)
 {
-	C_TFStickBomb* pBomb = (C_TFStickBomb*) pStruct;
+	BaseClass::OnDataChanged(updateType);
 
-	if ( pData->m_Value.m_Int != pBomb->GetDetonated() )
+	SwitchBodyGroups();
+}
+#else
+
+void RecvProxy_Detonated(const CRecvProxyData* pData, void* pStruct, void* pOut)
+{
+	C_TFStickBomb* pBomb = (C_TFStickBomb*)pStruct;
+
+	if (pData->m_Value.m_Int != pBomb->GetDetonated())
 	{
-		pBomb->SetDetonated( pData->m_Value.m_Int );
+		pBomb->SetDetonated(pData->m_Value.m_Int);
 		pBomb->SwitchBodyGroups();
 	}
 }
+
+#endif
 
 #endif
