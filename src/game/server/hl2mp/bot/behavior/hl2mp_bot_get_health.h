@@ -8,8 +8,16 @@ class CHL2MPBotGetHealth : public Action< CHL2MPBot >
 public:
 	static bool IsPossible( CHL2MPBot *me );	// Return true if this Action has what it needs to perform right now
 
+#ifdef BDSBASE
+	static Vector GetHealthKitPathOrigin(CBaseEntity* pHealthKit, bool bIsCharger);
+#endif
+
 	virtual ActionResult< CHL2MPBot >	OnStart( CHL2MPBot *me, Action< CHL2MPBot > *priorAction );
 	virtual ActionResult< CHL2MPBot >	Update( CHL2MPBot *me, float interval );
+#ifdef BDSBASE
+	virtual ActionResult< CHL2MPBot >	OnSuspend(CHL2MPBot* me, Action< CHL2MPBot >* interruptingAction);
+	virtual void						OnEnd(CHL2MPBot* me, Action< CHL2MPBot >* nextAction);
+#endif
 
 	virtual EventDesiredResult< CHL2MPBot > OnStuck( CHL2MPBot *me );
 	virtual EventDesiredResult< CHL2MPBot > OnMoveToSuccess( CHL2MPBot *me, const Path *path );
@@ -24,6 +32,9 @@ private:
 	CHandle< CBaseEntity > m_healthKit;
 
 	bool m_isGoalCharger = false;
+#ifdef BDSBASE
+	bool m_usingCharger = false;
+#endif
 };
 
 
