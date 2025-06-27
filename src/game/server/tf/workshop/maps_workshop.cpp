@@ -217,20 +217,33 @@ void CTFWorkshopMap::Steam_OnQueryUGCDetails( SteamUGCQueryCompleted_t *pResult,
 	}
 
 	uint32 state = steamUGC->GetItemState( m_nFileID );
-	if (( state & k_EItemStateNeedsUpdate ) ||
-	    !( state & ( k_EItemStateDownloading | k_EItemStateDownloadPending | k_EItemStateInstalled ) ) )
+#ifdef BDSBASE
+	if (!(state & k_EItemStateDownloading))
+#else
+	if ((state & k_EItemStateNeedsUpdate) ||
+		!(state & (k_EItemStateDownloading | k_EItemStateDownloadPending | k_EItemStateInstalled)) )
+#endif
 	{
 		// Either out of date or not installed, downloading, or queued to download, ask UGC to do so. The latter happens
 		// for maps added not from subscriptions that have no reason for UGC to initiate downloads on its own.
+
+		// For some reason GetItemState returns stale data, the k_EItemStateNeedsUpdate flag is not set
+		// In the past this behaviour was already done for dedicated servers but not for clients, causing clients to be out-of-date when the map updated
+		// DownloadItem does an update check, no unnecessary downloads are done
 		if ( !steamUGC->DownloadItem( m_nFileID, m_bHighPriority ) )
 		{
 			TFWorkshopWarning( "DownloadItem failed for file, map will not be usable [ %s ]\n", m_strCanonicalName.Get() );
 			return;
 		}
 
-		TFWorkshopMsg( "New version available for map, download queued [ %s ]\n", m_strCanonicalName.Get() );
+#ifdef BDSBASE
+		TFWorkshopMsg("Map update queued [ %s ]\n", m_strCanonicalName.Get());
+#else
+		TFWorkshopMsg("New version available for map, download queued [ %s ]\n", m_strCanonicalName.Get());
+#endif
 		m_eState = eState_Downloading;
 	}
+#ifndef BDSBASE
 	else if ( engine->IsDedicatedServer() &&
 	          ( state & k_EItemStateInstalled ) &&
 	          !( state & k_EItemStateDownloading ) &&
@@ -254,8 +267,9 @@ void CTFWorkshopMap::Steam_OnQueryUGCDetails( SteamUGCQueryCompleted_t *pResult,
 		TFWorkshopMsg( "Got updated information for map [ %s ]\n", m_strCanonicalName.Get() );
 		m_eState = Downloaded() ? eState_Downloaded : eState_Downloading;
 	}
+#endif
 
-	// Notify gamerules of the udpate
+	// Notify gamerules of the update
 	TFGameRules()->OnWorkshopMapUpdated( m_nFileID );
 }
 
