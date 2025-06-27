@@ -378,12 +378,12 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetHealth::Update( CHL2MPBot *me, float inter
 	if ( m_isGoalCharger )
 	{
 		// we need to get near and wait, not try to run over
-		const float nearRange = 50.0f;
 #ifdef BDSBASE
 		const float nearRange = PLAYER_USE_RADIUS;
 		Vector vecDir = (me->EyePosition() - m_healthKit->WorldSpaceCenter());
 		if (vecDir.IsLengthLessThan(nearRange))
 #else
+		const float nearRange = 50.0f;
 		if ((me->GetAbsOrigin() - m_healthKit->GetAbsOrigin()).IsLengthLessThan(nearRange))
 #endif
 		{
