@@ -3,10 +3,7 @@ echo Resetting game...
 del voice_ban.dt
 del serverconfig.vdf
 del stats.txt
-del firefightreloaded_pak.vpk.sound.cache
-del firefightreloaded_sound.vpk.sound.cache
 del modelsounds.cache
-del hl2mp_shared.vpk.sound.cache
 del demoheader.tmp
 del textwindow_temp.html
 del console.log
@@ -53,9 +50,6 @@ del bin_linux\x64\server_srv.so.dbg
 del bin_linux\x64\gamepadui.so.dbg
 del bin_linux\x64\gamepadui_srv.so.dbg
 del sound\sound.cache
-rmdir /S /Q materials\vgui\logos\ui\
-rmdir /S /Q materials\
-rmdir /S /Q models\
 rmdir /S /Q sound\
 rmdir /S /Q sound_workshop\
 rmdir /S /Q download\user_custom\
