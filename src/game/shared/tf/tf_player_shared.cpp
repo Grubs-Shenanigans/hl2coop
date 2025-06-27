@@ -132,6 +132,9 @@ ConVar tf_mvm_bot_flag_carrier_movement_penalty( "tf_mvm_bot_flag_carrier_moveme
 //ConVar tf_scout_dodge_move_penalty_duration( "tf_scout_dodge_move_penalty_duration", "3.0", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED );
 //ConVar tf_scout_dodge_move_penalty( "tf_scout_dodge_move_penalty", "0.5", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED );
 
+#ifdef BDSBASE
+ConVar tf_cyoa_pda_animations("tf_cyoa_pda_animations", "1", FCVAR_CHEAT | FCVAR_REPLICATED, "Controls whether ConTracker animations are enabled.\n  0: Animations disabled\n  1: Animations enabled (default)\n");
+#endif
 
 #ifdef GAME_DLL
 ConVar tf_boost_drain_time( "tf_boost_drain_time", "15.0", FCVAR_DEVELOPMENTONLY, "Time is takes for a full health boost to drain away from a player.", true, 0.1, false, 0 );
@@ -679,7 +682,11 @@ bool CTFPlayer::HasCampaignMedal( int iMedal )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+#ifdef BDSBASE
+bool CTFPlayer::IsAllowedToTaunt( bool bHoldingCYOAPDA )
+#else
 bool CTFPlayer::IsAllowedToTaunt( void )
+#endif
 {
 	if ( !IsAlive() )
 		return false;
@@ -704,13 +711,32 @@ bool CTFPlayer::IsAllowedToTaunt( void )
 	if ( IsLerpingFOV() )
 		return false;
 
+#ifdef BDSBASE
+	if (bHoldingCYOAPDA)
+	{
+		// Check to see if we are on the ground.
+		if (GetGroundEntity() == NULL)
+			return false;
+	}
+	else
+	{
+		// Check for things that prevent taunting
+		if (ShouldStopTaunting())
+			return false;
+
+		// Check to see if we are on the ground.
+		if (GetGroundEntity() == NULL && !m_Shared.InCond(TF_COND_HALLOWEEN_KART))
+			return false;
+	}
+#else
 	// Check for things that prevent taunting
-	if ( ShouldStopTaunting() )
+	if (ShouldStopTaunting())
 		return false;
 
 	// Check to see if we are on the ground.
-	if ( GetGroundEntity() == NULL && !m_Shared.InCond( TF_COND_HALLOWEEN_KART ) )
+	if (GetGroundEntity() == NULL && !m_Shared.InCond(TF_COND_HALLOWEEN_KART))
 		return false;
+#endif
 
 	CTFWeaponBase *pActiveWeapon = m_Shared.GetActiveTFWeapon();
 	if ( pActiveWeapon )
@@ -732,32 +758,39 @@ bool CTFPlayer::IsAllowedToTaunt( void )
 	if ( m_Shared.InCond( TF_COND_GRAPPLED_TO_PLAYER ) )
 		return false;
 
-	if ( IsPlayerClass( TF_CLASS_SCOUT ) )
+#ifdef BDSBASE
+	if (!bHoldingCYOAPDA)
 	{
-		if ( pActiveWeapon && pActiveWeapon->GetWeaponID() == TF_WEAPON_LUNCHBOX )
+#endif
+		if (IsPlayerClass(TF_CLASS_SCOUT))
 		{
-			//Scouts can't drink while they're already phasing.
-			if ( m_Shared.InCond( TF_COND_ENERGY_BUFF ) || m_Shared.InCond( TF_COND_PHASE ) )
-				return false;
-			
-			// Or if their energy drink meter isn't refilled
-			if ( m_Shared.GetScoutEnergyDrinkMeter() < 100 )
-				return false;
-
-			//They can't drink the default (phase) item while carrying a flag
-			pActiveWeapon = m_Shared.GetActiveTFWeapon();
-			if ( pActiveWeapon && pActiveWeapon->GetWeaponID() == TF_WEAPON_LUNCHBOX )
+			if (pActiveWeapon && pActiveWeapon->GetWeaponID() == TF_WEAPON_LUNCHBOX)
 			{
-				CTFLunchBox *pLunchbox = (CTFLunchBox*)pActiveWeapon;
+				//Scouts can't drink while they're already phasing.
+				if (m_Shared.InCond(TF_COND_ENERGY_BUFF) || m_Shared.InCond(TF_COND_PHASE))
+					return false;
 
-				if ( ( pLunchbox->GetLunchboxType() == LUNCHBOX_STANDARD ) || ( pLunchbox->GetLunchboxType() == LUNCHBOX_STANDARD_ROBO ) )
+				// Or if their energy drink meter isn't refilled
+				if (m_Shared.GetScoutEnergyDrinkMeter() < 100)
+					return false;
+
+				//They can't drink the default (phase) item while carrying a flag
+				pActiveWeapon = m_Shared.GetActiveTFWeapon();
+				if (pActiveWeapon && pActiveWeapon->GetWeaponID() == TF_WEAPON_LUNCHBOX)
 				{
-					if ( !TFGameRules()->IsMannVsMachineMode() && HasItem() )
-						return false;
+					CTFLunchBox* pLunchbox = (CTFLunchBox*)pActiveWeapon;
+
+					if ((pLunchbox->GetLunchboxType() == LUNCHBOX_STANDARD) || (pLunchbox->GetLunchboxType() == LUNCHBOX_STANDARD_ROBO))
+					{
+						if (!TFGameRules()->IsMannVsMachineMode() && HasItem())
+							return false;
+					}
 				}
 			}
 		}
+#ifdef BDSBASE
 	}
+#endif
 
 	if ( IsPlayerClass( TF_CLASS_SPY ) )
 	{
@@ -771,6 +804,15 @@ bool CTFPlayer::IsAllowedToTaunt( void )
 	return true;
 }
 
+#ifdef BDSBASE
+bool CTFPlayer::IsAllowedToViewCYOAPDA(void)
+{
+	if (tf_cyoa_pda_animations.GetInt() == 0)
+		return false;
+
+	return IsAllowedToTaunt(true);
+}
+#endif
 
 // --------------------------------------------------------------------------------------------------- //
 // CTFPlayerShared implementation.
@@ -1037,6 +1079,10 @@ void CTFPlayerShared::Spawn( void )
 	m_iStunIndex = -1;
 #endif
 	m_bKingRuneBuffActive = false;
+
+#ifdef BDSBASE
+	m_pOuter->StopViewingCYOAPDA();
+#endif
 
 	// Reset our assist here incase something happens before we get killed
 	// again that checks this (getting slapped with a fish)
@@ -1552,6 +1598,10 @@ void CTFPlayerShared::RemoveAllCond()
 	m_nPlayerCondEx2 = 0;
 	m_nPlayerCondEx3 = 0;
 	m_nPlayerCondEx4 = 0;
+
+#ifdef BDSBASE
+	m_pOuter->StopViewingCYOAPDA();
+#endif
 }
 
 
@@ -11070,7 +11120,11 @@ bool CTFPlayer::CanPlayerMove() const
 	if ( TFGameRules() && TFGameRules()->BInMatchStartCountdown() )
 		return false;
 
-	if ( IsViewingCYOAPDA() )
+#ifdef BDSBASE
+	if (IsInCYOAPDAAnimation())
+#else
+	if (IsViewingCYOAPDA())
+#endif
 		return false;
 
 	bool bFreezeOnRestart = tf_player_movement_restart_freeze.GetBool();
@@ -12490,7 +12544,11 @@ bool CTFPlayer::CanAttack( int iCanAttackFlags )
 
 	Assert( pRules );
 
-	if ( IsViewingCYOAPDA() )
+#ifdef BDSBASE
+	if (IsInCYOAPDAAnimation())
+#else
+	if (IsViewingCYOAPDA())
+#endif
 		return false;
 
 	if ( m_Shared.HasPasstimeBall() ) 
@@ -13428,7 +13486,11 @@ bool CTFPlayer::ShouldStopTaunting()
 	if ( GetWaterLevel() > WL_Waist )
 		return true;
 
-	if ( IsViewingCYOAPDA() )
+#ifdef BDSBASE
+	if (IsInCYOAPDAAnimation())
+#else
+	if (IsViewingCYOAPDA())
+#endif
 		return true;
 
 	return false;
@@ -15107,3 +15169,29 @@ bool CTFPlayer::IsHelpmeButtonPressed() const
 	return m_flHelpmeButtonPressTime != 0.f;
 }
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: Returns true if this player is viewing or playing any ConTracker animations
+//-----------------------------------------------------------------------------
+bool CTFPlayer::IsInCYOAPDAAnimation(void) const
+{
+	return IsViewingCYOAPDA() || m_Shared.m_iCYOAPDAAnimState != CYOA_PDA_ANIM_NONE;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Causes the player to immediately stop viewing the ConTracker
+//-----------------------------------------------------------------------------
+void CTFPlayer::StopViewingCYOAPDA()
+{
+	if (m_PlayerAnimState && IsInCYOAPDAAnimation())
+	{
+		// Make sure the outro anim events still go out (weapon unhide).
+		m_PlayerAnimState->RestartGesture(GESTURE_SLOT_CUSTOM, ACT_MP_CYOA_PDA_OUTRO);
+		m_PlayerAnimState->ResetGestureSlot(GESTURE_SLOT_CUSTOM);
+	}
+
+	m_Shared.m_flCYOAPDAAnimStateTime = 0.f;
+	m_Shared.m_iCYOAPDAAnimState = CYOA_PDA_ANIM_NONE;
+	m_bViewingCYOAPDA = false;
+}
+#endif

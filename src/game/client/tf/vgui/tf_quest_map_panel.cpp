@@ -1245,16 +1245,22 @@ CON_COMMAND( show_quest_log, "Show the quest map panel" )
 	}
 	else
 	{
-		CTFPlayer *pTFLocalPlayer = CTFPlayer::GetLocalTFPlayer();
-		if ( pTFLocalPlayer && ( pTFLocalPlayer->IsTaunting() || pTFLocalPlayer->ShouldShowHudMenuTauntSelection() ) )
+#ifdef BDSBASE
+		engine->ClientCmd_Unrestricted("gameui_activate");
+		GetQuestMapPanel()->SetVisible(true);
+		GetQuestMapPanel()->GoToCurrentQuest();
+#else
+		CTFPlayer* pTFLocalPlayer = CTFPlayer::GetLocalTFPlayer();
+		if (pTFLocalPlayer && (pTFLocalPlayer->IsTaunting() || pTFLocalPlayer->ShouldShowHudMenuTauntSelection()))
 		{
-			internalCenterPrint->Print( "#TF_CYOA_PDA_Taunting" );
+			internalCenterPrint->Print("#TF_CYOA_PDA_Taunting");
 		}
 		else
 		{
-			engine->ClientCmd_Unrestricted( "gameui_activate" );
-			GetQuestMapPanel()->SetVisible( true );
+			engine->ClientCmd_Unrestricted("gameui_activate");
+			GetQuestMapPanel()->SetVisible(true);
 			GetQuestMapPanel()->GoToCurrentQuest();
 		}
+#endif
 	}
 }

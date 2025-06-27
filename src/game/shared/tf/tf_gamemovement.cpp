@@ -649,7 +649,11 @@ bool CTFGameMovement::StunMove()
 	// No one can move when in a final countdown transition or with the ConTracker open.
 	// Do this here to avoid the inevitable hack that prevents players 
 	// from receiving a flag or condition by stalling thinks, etc.
-	if ( m_pTFPlayer->IsViewingCYOAPDA() || ( TFGameRules() && TFGameRules()->BInMatchStartCountdown() ) )
+#ifdef BDSBASE
+	if (m_pTFPlayer->IsInCYOAPDAAnimation() || (TFGameRules() && TFGameRules()->BInMatchStartCountdown()))
+#else
+	if (m_pTFPlayer->IsViewingCYOAPDA() || (TFGameRules() && TFGameRules()->BInMatchStartCountdown()))
+#endif
 	{
 		mv->m_flForwardMove = 0.f;
 		mv->m_flSideMove = 0.f;

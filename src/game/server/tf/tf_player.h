@@ -774,7 +774,12 @@ public:
 	void				ScriptTaunt( int iTauntIndex, int iTauntConcept ) { Taunt((taunts_t)iTauntIndex, iTauntConcept); }
 	bool				IsTaunting( void ) const { return m_Shared.InCond( TF_COND_TAUNTING ); }
 	void				DoTauntAttack( void );
-	bool				IsAllowedToTaunt( void );
+#ifdef BDSBASE
+	bool				IsAllowedToTaunt(bool bHoldingCYOAPDA = false);
+	bool				IsAllowedToViewCYOAPDA(void);
+#else
+	bool				IsAllowedToTaunt(void);
+#endif
 	bool				FindOpenTauntPartnerPosition( const CEconItemView *pEconItemView, Vector &position, float *flTolerance );
 	bool				IsAllowedToInitiateTauntWithPartner( const CEconItemView *pEconItemView, char *pszErrorMessage = NULL, int cubErrorMessage = 0 );
 	void				CancelTaunt( void );
@@ -801,6 +806,10 @@ public:
 	void				SetVehicleReverseTime( float flTime ) { m_flVehicleReverseTime = flTime; }
 
 	bool				IsViewingCYOAPDA( void ) const { return m_bViewingCYOAPDA; }
+#ifdef BDSBASE
+	bool				IsInCYOAPDAAnimation(void) const;
+	void				StopViewingCYOAPDA(void);
+#endif
 	bool				IsRegenerating( void ) const { return m_bRegenerating; }
 
 #ifndef BDSBASE

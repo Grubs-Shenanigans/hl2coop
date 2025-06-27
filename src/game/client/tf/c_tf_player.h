@@ -197,6 +197,10 @@ public:
 	bool			IsTaunting( void ) const { return m_Shared.InCond( TF_COND_TAUNTING ); }
 
 	bool			IsViewingCYOAPDA( void ) const { return m_bViewingCYOAPDA; }
+#ifdef BDSBASE
+	bool			IsInCYOAPDAAnimation(void) const;
+	void			StopViewingCYOAPDA(void);
+#endif
 	bool			IsRegenerating( void ) const { return m_bRegenerating; }
 
 	virtual void	InitPhonemeMappings();
@@ -257,7 +261,12 @@ public:
 	void StopKartBrakeEffect();
 	CNetworkVar( int, m_iKartState );
 
-	bool IsAllowedToTaunt( void );
+#ifdef BDSBASE
+	bool				IsAllowedToTaunt(bool bHoldingCYOAPDA = false);
+	bool				IsAllowedToViewCYOAPDA(void);
+#else
+	bool				IsAllowedToTaunt(void);
+#endif
 	
 	virtual bool	IsOverridingViewmodel( void );
 	virtual int		DrawOverriddenViewmodel( C_BaseViewModel *pViewmodel, int flags );
