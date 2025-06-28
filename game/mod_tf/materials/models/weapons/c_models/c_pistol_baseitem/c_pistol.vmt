@@ -6,7 +6,6 @@
 	"$phongexponent" "25"
 	"$phongboost" "10"	
 	"$lightwarptexture" "models\lightwarps\weapon_lightwarp"
-	"$phongfresnelranges"	"[.25 .5 1]"
 
 	"$basemapalphaphongmask" "1"
 
@@ -14,7 +13,10 @@
 	"$rimlightexponent" "4"	
 	"$rimlightboost" "1"
 
+	"$phongfresnelranges"	"[.25 .5 1]"
+	"$halflambert" "1"
 	"$glowcolor" "1"
+	"$tempvar" "0"
 
 	// Cloaking
 	"$cloakPassEnabled" "1"

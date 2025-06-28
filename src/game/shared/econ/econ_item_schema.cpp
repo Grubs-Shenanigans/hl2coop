@@ -2468,7 +2468,7 @@ activity_on_wearable_t *GetOrCreatePlaybackActivity( perteamvisuals_t *pVisData,
 //-----------------------------------------------------------------------------
 void CEconItemDefinition::BInitVisualBlockFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> *pVecErrors )
 {
-#ifdef BDSBASE
+#ifdef BDSBASE_LEGACY_VIEWMODELS
 	//the flamethrower doesn't appear if it has any attached models....
 	if (IsUsingViewmodels())
 		return;
