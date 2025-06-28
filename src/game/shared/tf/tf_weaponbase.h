@@ -320,7 +320,7 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 	virtual const char *GetWorldModel( void ) const;
 
 #ifdef BDSBASE
-	bool IsUsingViewModel(void) const;
+	bool IsUsingViewModel(void);
 #endif
 
 	virtual Activity ActivityOverride( Activity baseAct, bool *pRequired ) OVERRIDE;

@@ -1427,7 +1427,7 @@ void CTFWeaponBase::OnActiveStateChanged( int iOldState )
 }
 
 #ifdef BDSBASE
-bool CTFWeaponBase::IsUsingViewModel(void) const
+bool CTFWeaponBase::IsUsingViewModel(void)
 {
 	bool usesVM = false;
 	CTFPlayer* pPlayer = ToTFPlayer(GetPlayerOwner());
@@ -2637,9 +2637,6 @@ Activity CTFWeaponBase::GetInspectActivity( TFWeaponInspectStage inspectStage )
 #ifdef BDSBASE
 bool CTFWeaponBase::CanInspect() const
 {
-	if (IsUsingViewModel())
-		return false;
-
 	const CEconItemView* pItem = GetAttributeContainer()->GetItem();
 	if (pItem)
 	{
