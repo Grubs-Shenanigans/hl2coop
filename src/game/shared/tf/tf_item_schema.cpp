@@ -1087,6 +1087,10 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 
 	m_bChanceRestricted = pKVInitValues->GetBool( "chance_restricted" );
 
+#ifdef BDSBASE
+	m_bCanInspect = pKVInitValues->GetBool("can_inspect", true);
+#endif
+
 	m_pszAdText = pKVInitValues->GetString( "ad_text", NULL );
 	m_pszAdResFile = pKVInitValues->GetString( "ad_res_file", "Resource/UI/econ/ItemAdDefault.res" );
 
