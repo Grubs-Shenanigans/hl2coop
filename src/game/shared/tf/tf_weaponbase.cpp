@@ -659,20 +659,6 @@ const char *CTFWeaponBase::GetViewModel( int iViewModel ) const
 
 	CTFPlayer *pPlayer = ToTFPlayer( GetOwner() );
 
-#ifdef BDSBASE
-	//before we check for handmodel, let's see if we should use our VM
-	const CEconItemView* pItem = GetAttributeContainer()->GetItem();
-
-	if (pPlayer && pItem->IsValid() && !pItem->GetStaticData()->ShouldAttachToHands() && pItem->GetStaticData()->GetViewModel())
-	{
-		//don't use GetTFWpnData().szViewModel, as it is not filled in for most weapons.
-		//instead, the item schema will load it.
-		//return GetTFWpnData().szViewModel;
-
-		return pItem->GetStaticData()->GetViewModel();
-	}
-#endif
-
 	int iHandModelIndex = 0;
 	if ( pPlayer )
 	{
@@ -680,9 +666,7 @@ const char *CTFWeaponBase::GetViewModel( int iViewModel ) const
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pPlayer, iHandModelIndex, wrench_builds_minisentry );			// ...the gunslinger is the only thing that uses this attribute for now
 	}
 
-#ifndef BDSBASE
-	const CEconItemView* pItem = GetAttributeContainer()->GetItem();
-#endif
+	const CEconItemView *pItem = GetAttributeContainer()->GetItem();
 	if ( pPlayer && pItem->IsValid() && pItem->GetStaticData()->ShouldAttachToHands() )
 	{
 		// Should always be valid, because players without classes shouldn't be carrying items

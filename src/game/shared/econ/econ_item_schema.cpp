@@ -2295,9 +2295,6 @@ m_pszBrassModelOverride( NULL ),
 m_bHideBodyGroupsDeployedOnly( false ),
 m_bAttachToHands( false ),
 m_bAttachToHandsVMOnly( false ),
-#ifdef BDSBASE
-m_pszViewmodel(NULL),
-#endif
 m_bProperName( false ),
 m_bFlipViewModel( false ),
 m_bActAsWearable( false ),
@@ -2768,13 +2765,6 @@ void CEconItemDefinition::GeneratePrecacheModelStrings( bool bDynamicLoad, CUtlV
 		out_pVecModelStrings->AddToTail( GetVisionFilteredDisplayModel() );
 	}
 
-#ifdef BDSBASE
-	if (GetViewModel())
-	{
-		out_pVecModelStrings->AddToTail(GetViewModel());
-	}
-#endif
-
 	// We don't need to cache the inventory model, because it's never loaded by the game
 }
 
@@ -3179,9 +3169,6 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	m_bHideBodyGroupsDeployedOnly = m_pKVItem->GetBool( "hide_bodygroups_deployed_only" );
 	m_bAttachToHands = m_pKVItem->GetInt( "attach_to_hands", 0 ) != 0;
 	m_bAttachToHandsVMOnly = m_pKVItem->GetInt( "attach_to_hands_vm_only", 0 ) != 0;
-#ifdef BDSBASE
-	m_pszViewmodel = m_pKVItem->GetString("model_view", NULL);
-#endif
 	m_bProperName = m_pKVItem->GetInt( "propername", 0 ) != 0;
 	m_bFlipViewModel = m_pKVItem->GetInt( "flip_viewmodel", 0 ) != 0;
 	m_bActAsWearable = m_pKVItem->GetInt( "act_as_wearable", 0 ) != 0;
