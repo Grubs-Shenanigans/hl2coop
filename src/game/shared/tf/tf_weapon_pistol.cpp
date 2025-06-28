@@ -23,11 +23,6 @@
 //
 // Weapon Pistol tables.
 //
-#ifdef BDSBASE
-CREATE_SIMPLE_WEAPON_TABLE(TFPistol, tf_weapon_pistol)
-CREATE_SIMPLE_WEAPON_TABLE(TFPistol_Scout, tf_weapon_pistol_scout)
-CREATE_SIMPLE_WEAPON_TABLE(TFPistol_ScoutPrimary, tf_weapon_shotgun_primary)
-#else
 IMPLEMENT_NETWORKCLASS_ALIASED( TFPistol, DT_WeaponPistol )
 
 BEGIN_NETWORK_TABLE( CTFPistol, DT_WeaponPistol )
@@ -44,7 +39,6 @@ PRECACHE_WEAPON_REGISTER( tf_weapon_pistol );
 BEGIN_DATADESC( CTFPistol )
 END_DATADESC()
 #endif
-
 
 //============================
 
@@ -71,7 +65,6 @@ END_PREDICTION_DATA()
 
 LINK_ENTITY_TO_CLASS( tf_weapon_handgun_scout_primary, CTFPistol_ScoutPrimary );
 PRECACHE_WEAPON_REGISTER( tf_weapon_handgun_scout_primary );
-#endif
 
 
 //-----------------------------------------------------------------------------

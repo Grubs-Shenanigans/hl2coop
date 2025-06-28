@@ -2296,7 +2296,7 @@ m_bHideBodyGroupsDeployedOnly( false ),
 m_bAttachToHands( false ),
 m_bAttachToHandsVMOnly( false ),
 #ifdef BDSBASE
-m_pszBaseViewmodel(NULL),
+m_pszViewmodel(NULL),
 #endif
 m_bProperName( false ),
 m_bFlipViewModel( false ),
@@ -2769,9 +2769,9 @@ void CEconItemDefinition::GeneratePrecacheModelStrings( bool bDynamicLoad, CUtlV
 	}
 
 #ifdef BDSBASE
-	if (GetBaseViewModel())
+	if (GetViewModel())
 	{
-		out_pVecModelStrings->AddToTail(GetBaseViewModel());
+		out_pVecModelStrings->AddToTail(GetViewModel());
 	}
 #endif
 
@@ -3180,7 +3180,7 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	m_bAttachToHands = m_pKVItem->GetInt( "attach_to_hands", 0 ) != 0;
 	m_bAttachToHandsVMOnly = m_pKVItem->GetInt( "attach_to_hands_vm_only", 0 ) != 0;
 #ifdef BDSBASE
-	m_pszBaseViewmodel = m_pKVItem->GetString("model_view", NULL);
+	m_pszViewmodel = m_pKVItem->GetString("model_view", NULL);
 #endif
 	m_bProperName = m_pKVItem->GetInt( "propername", 0 ) != 0;
 	m_bFlipViewModel = m_pKVItem->GetInt( "flip_viewmodel", 0 ) != 0;

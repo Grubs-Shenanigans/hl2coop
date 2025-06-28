@@ -1291,7 +1291,7 @@ public:
 	bool		ShouldAttachToHands( void ) const	{ return m_bAttachToHands; }
 	bool		ShouldAttachToHandsVMOnly( void ) const	{ return m_bAttachToHandsVMOnly; }
 #ifdef BDSBASE
-	const char* GetBaseViewModel(void) const { return m_pszBaseViewmodel; }
+	const char* GetViewModel(void) const { return m_pszViewmodel; }
 #endif
 	bool		ShouldFlipViewmodels( void ) const	{ return m_bFlipViewModel; }
 	int			GetInventoryImagePosition( int iIndex ) const	{ Assert( iIndex >= 0 && iIndex < 2); return m_iInventoryImagePosition[iIndex]; }
@@ -1555,7 +1555,7 @@ private:
 	bool			m_bAttachToHandsVMOnly;
 
 #ifdef BDSBASE
-	const char*		m_pszBaseViewmodel;
+	const char*		m_pszViewmodel;
 #endif
 
 	// If set, we will force the view model to render flipped. Good for models built left handed.

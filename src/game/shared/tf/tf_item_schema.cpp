@@ -898,9 +898,6 @@ void CTFItemDefinition::InternalInitialize()
 		m_iLoadoutSlots[i] = LOADOUT_POSITION_INVALID;
 		m_pszPlayerDisplayModel[i] = NULL;
 		m_pszPlayerDisplayModelAlt[i] = NULL;
-#ifdef BDSBASE
-		m_pszViewModel[i] = NULL;
-#endif
 	}
 
 	m_pTauntData = NULL;
@@ -1031,10 +1028,6 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	InitPerClassStringArray( pKVInitValues->FindKey( "model_player_per_class" ), m_pszPlayerDisplayModel );
 	InitPerClassStringArray( pKVInitValues->FindKey( "model_player_per_class_alt" ), m_pszPlayerDisplayModelAlt );
 
-#ifdef BDSBASE
-	InitPerClassStringArray(pKVInitValues->FindKey("model_view_per_class"), m_pszViewModel);
-#endif
-
 #if defined DEBUG && defined CLIENT_DLL
 	for ( int i = 0; i < m_vbClassUsability.GetNumBits(); i++ )
 	{
@@ -1066,13 +1059,6 @@ bool CTFItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> 
 	{
 		m_pszPlayerDisplayModel[0] = GetBasePlayerDisplayModel();
 	}
-
-#ifdef BDSBASE
-	if (!m_pszViewModel[0])
-	{
-		m_pszViewModel[0] = GetBaseViewModel();
-	}
-#endif
 
 	// Auto-generated tags based on slot/class.
 	m_vecTags.AddToTail( GetItemSchema()->GetHandleForTag( CFmtStr( "auto__slot_%s", pszLoadoutSlot ).Get() ) );
@@ -1218,15 +1204,6 @@ void CTFItemDefinition::GeneratePrecacheModelStrings( bool bDynamicLoad, CUtlVec
 			{
 				out_pVecModelStrings->AddToTail( pszModelAlt );
 			}
-
-#ifdef BDSBASE
-			// Per-class view models
-			const char* pszModelVM = GetViewModel(i);
-			if (pszModelVM && pszModelVM[0])
-			{
-				out_pVecModelStrings->AddToTail(pszModelVM);
-			}
-#endif
 
 			// Per-class custom taunt prop
 			if ( GetTauntData() )
