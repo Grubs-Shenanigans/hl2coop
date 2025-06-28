@@ -785,11 +785,7 @@ public:
 
 	CNetworkVar( float, m_flObservedCritChance );
 
-#ifdef BDSBASE
-	virtual bool CanInspect() const;
-#else
 	virtual bool CanInspect() const { return true; }
-#endif
 	void HandleInspect();
 #ifdef BDSBASE
 	void StopInspect();

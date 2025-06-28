@@ -2634,22 +2634,6 @@ Activity CTFWeaponBase::GetInspectActivity( TFWeaponInspectStage inspectStage )
 	return act;
 }
 
-#ifdef BDSBASE
-bool CTFWeaponBase::CanInspect() const
-{
-	const CEconItemView* pItem = GetAttributeContainer()->GetItem();
-	if (pItem)
-	{
-		CTFItemDefinition* pData = pItem->GetStaticData();
-		if (pData)
-		{
-			return pData->CanUseInspectAnims();
-		}
-	}
-
-	return true;
-}
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose:
