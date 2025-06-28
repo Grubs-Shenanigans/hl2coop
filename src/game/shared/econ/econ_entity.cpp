@@ -1085,16 +1085,7 @@ void CEconEntity::UpdateAttachmentModels( void )
 #ifdef BDSBASE_LEGACY_VIEWMODELS
 	if (pItemDef)
 	{
-		CTFPlayer* pPlayer = ToTFPlayer(GetOwnerEntity());
-
-		int iHandModelIndex = 0;
-		if (pPlayer)
-		{
-			//CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pPlayer, iHandModelIndex, override_hand_model_index );		// this is a cleaner way of doing it, but...
-			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pPlayer, iHandModelIndex, wrench_builds_minisentry);			// ...the gunslinger is the only thing that uses this attribute for now
-		}
-
-		if (pItemDef->IsUsingViewmodels() && iHandModelIndex == 0)
+		if (pItemDef->IsUsingViewmodels())
 		{
 			return;
 		}
@@ -1914,16 +1905,7 @@ int	CEconEntity::DrawOverriddenViewmodel( C_BaseViewModel *pViewmodel, int flags
 #ifdef BDSBASE_LEGACY_VIEWMODELS
 	if (pItem)
 	{
-		CTFPlayer* pPlayer = ToTFPlayer(GetOwnerEntity());
-
-		int iHandModelIndex = 0;
-		if (pPlayer)
-		{
-			//CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pPlayer, iHandModelIndex, override_hand_model_index );		// this is a cleaner way of doing it, but...
-			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pPlayer, iHandModelIndex, wrench_builds_minisentry);			// ...the gunslinger is the only thing that uses this attribute for now
-		}
-
-		if (pItem->GetStaticData()->IsUsingViewmodels() && iHandModelIndex == 0)
+		if (pItem->GetStaticData()->IsUsingViewmodels())
 		{
 			//ret is 0 at this point.
 			return ret;

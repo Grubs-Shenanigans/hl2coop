@@ -2976,16 +2976,7 @@ bool CTFWeaponBase::UsesForcedViewModel(void) const
 {
 	const CEconItemView* pItem = GetAttributeContainer()->GetItem();
 
-	CTFPlayer* pPlayer = ToTFPlayer(GetOwner());
-
-	int iHandModelIndex = 0;
-	if (pPlayer)
-	{
-		//CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pPlayer, iHandModelIndex, override_hand_model_index );		// this is a cleaner way of doing it, but...
-		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pPlayer, iHandModelIndex, wrench_builds_minisentry);			// ...the gunslinger is the only thing that uses this attribute for now
-	}
-
-	if (pItem->IsValid() && pItem->GetStaticData()->IsUsingViewmodels() && iHandModelIndex == 0)
+	if (pItem->IsValid() && pItem->GetStaticData()->IsUsingViewmodels())
 	{
 		return true;
 	}
