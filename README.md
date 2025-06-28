@@ -33,7 +33,10 @@ BDSBASE_NPC:
 
 BDSBASE_DISCORD: 
 - Games: All
-- Enables Discord integration. Note that this is a Windows only feature due to the instability of Discord clients on Linux, and the Discord RPC library will be included with your solution. Mod authors can change the DiscordAppId parameter in their gameinfo.txt file. Mods can also use the DiscordAllowMapIcons option to allow map specific icons. Mod icons must be named "ModImage" and map icons must be named the map name.
+- Enables Discord integration. Note that this is a Windows only feature due to the instability of Discord clients on Linux, and the Discord RPC library will be included with your solution. 
+- Mod authors can change the DiscordAppId parameter in their gameinfo.txt file. 
+- Mods can also use the DiscordAllowMapIcons option to allow map specific icons. 
+- Mod icons must be named "ModImage" and map icons must be named the map name.
 
 BDSBASE_USE_LOCAL_SCHEMA
 - Games: TF2
@@ -49,11 +52,23 @@ BDSBASE_LEGACY_MAINMENU
 
 BDSBASE_CURATED_ITEMS
 - Games: TF2
-- Prevents non-stock items from showing up in the loadout panel and loads whitelisted items for a curated item selection. To add an item to the curated item list, simply add "stock_whitelist" in its item definition. You may re-enable cosmetics and weapon stranges, reskins, etc by using BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS. Items that represent reskins must have "reskin" set to 1 in your desired item schema definitions. Using this with BDSBASE_CUSTOM_SCHEMA would also allow custom items to be allowed with this option. If you only need BDSBASE_CUSTOM_SCHEMA for custom attributes, use BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS.
+- Prevents non-stock items from showing up in the loadout panel and loads whitelisted items for a curated item selection. 
+- To add an item to the curated item list, simply add "stock_whitelist" in its item definition. 
+- You may re-enable cosmetics and weapon stranges, reskins, etc by using BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS. 
+- Items that represent reskins must have "reskin" set to 1 in your desired item schema definitions. 
+- Using this with BDSBASE_CUSTOM_SCHEMA would also allow custom items to be allowed with this option. If you only need BDSBASE_CUSTOM_SCHEMA for custom attributes, use BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS.
 
 BDSBASE_ECON_LOADOUT_ONLY
 - Games: TF2
 - Disables access to the backpack or other econ panels.
+
+BDSBASE_LEGACY_VIEWMODELS
+- Games: TF2
+- All stock items will use the legacy view models. This will only apply to the "base" default items, allowing botkillers, skins, etc to function properly. 
+- Strange versions of stock weapons won't have these legacy view models, as adding them would break the other weapons listed as "Upgradeable".
+- Some stock items don't get the viewmodel treatment, due to bugs, visual problems, or other factors. These include the Pistol, the Shotgun, the Fists, the PDAs, the Sapper, and the Toolbox. 
+- The Spy's Disguise Kit and the Invis Watch both already use view models, so they aren't affected by this definition.
+
 
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.

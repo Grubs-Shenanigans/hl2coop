@@ -2307,6 +2307,7 @@ m_pOwningPackBundle( NULL ),
 m_bIsPackItem( false ),
 m_bBaseItem( false ),
 #ifdef BDSBASE
+m_bUseViewmodels(false),
 m_bSoloItem(false),
 m_bIsReskin(false),
 #endif
@@ -2467,6 +2468,12 @@ activity_on_wearable_t *GetOrCreatePlaybackActivity( perteamvisuals_t *pVisData,
 //-----------------------------------------------------------------------------
 void CEconItemDefinition::BInitVisualBlockFromKV( KeyValues *pKVItem, CUtlVector<CUtlString> *pVecErrors )
 {
+#ifdef BDSBASE
+	//the flamethrower doesn't appear if it has any attached models....
+	if (IsUsingViewmodels())
+		return;
+#endif
+
 	// Visuals
 	for ( int team = 0; team < TEAM_VISUAL_SECTIONS; team++ )
 	{
@@ -3173,6 +3180,9 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	m_bFlipViewModel = m_pKVItem->GetInt( "flip_viewmodel", 0 ) != 0;
 	m_bActAsWearable = m_pKVItem->GetInt( "act_as_wearable", 0 ) != 0;
 	m_bActAsWeapon = m_pKVItem->GetInt( "act_as_weapon", 0 ) != 0;
+#ifdef BDSBASE
+	m_bUseViewmodels = m_pKVItem->GetBool("use_viewmodels", 0) != 0;
+#endif
 	m_bIsTool = m_pKVItem->GetBool( "is_tool", 0 ) || ( GetItemClass() && !V_stricmp( GetItemClass(), "tool" ) );
 	m_iDropType = StringFieldToInt( m_pKVItem->GetString("drop_type"), g_szDropTypeStrings, ARRAYSIZE(g_szDropTypeStrings) );
 	m_pszCollectionReference = m_pKVItem->GetString( "collection_reference", NULL );

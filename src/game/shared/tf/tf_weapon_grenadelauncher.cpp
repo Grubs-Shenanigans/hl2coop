@@ -326,16 +326,22 @@ bool CTFGrenadeLauncher::SendWeaponAnim( int iActivity )
 		m_flBarrelRotateBeginTime = gpGlobals->curtime;
 	} 
 
+#ifdef BDSBASE_LEGACY_VIEWMODELS
 	// When we start firing, play the startup firing anim first
-	if ( iActivity == ACT_VM_PRIMARYATTACK )
+	if (!UsesForcedViewModel())
 	{
-		// If we're already playing the fire anim, let it continue. It loops.
-		if ( GetActivity() == ACT_VM_PRIMARYATTACK )
-			return true;
+#endif
+		if ( iActivity == ACT_VM_PRIMARYATTACK )
+		{
+			if ( GetActivity() == ACT_VM_PRIMARYATTACK )
+				return true;
 
-		// Otherwise, play the start it
-		return BaseClass::SendWeaponAnim( ACT_VM_PRIMARYATTACK );
+			// Otherwise, play the start it
+			return BaseClass::SendWeaponAnim( ACT_VM_PRIMARYATTACK );
+		}
+#ifdef BDSBASE_LEGACY_VIEWMODELS
 	}
+#endif
 
 	return BaseClass::SendWeaponAnim( iActivity );
 }

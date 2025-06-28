@@ -169,7 +169,19 @@ void CTFBreakableMelee::SwitchBodyGroups( void )
 		C_BaseAnimating *pViewWpn = GetAppropriateWorldOrViewModel();
 		if ( pViewWpn != this )
 		{
-			pViewWpn->SetBodygroup( TF_BREAKABLE_MELEE_BREAK_BODYGROUP, iState );
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+			if (UsesForcedViewModel())
+			{
+				//EXTREMELY hacky here, but it's only used for this one instance.....
+				pViewWpn->SetBodygroup(TF_BREAKABLE_MELEE_BREAK_BODYGROUP+1, iState);
+			}
+			else
+			{
+				pViewWpn->SetBodygroup(TF_BREAKABLE_MELEE_BREAK_BODYGROUP, iState);
+			}
+#else
+			pViewWpn->SetBodygroup(TF_BREAKABLE_MELEE_BREAK_BODYGROUP, iState);
+#endif
 		}
 	}
 #else // CLIENT_DLL

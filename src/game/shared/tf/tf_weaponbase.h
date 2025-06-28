@@ -535,6 +535,10 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 	virtual bool		IsBroken( void ) const { return false; }
 	virtual void		SetBroken( bool bBroken ) {}
 
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+	bool				UsesForcedViewModel(void) const;
+#endif
+
 // Server specific.
 #if !defined( CLIENT_DLL )
 

@@ -1082,6 +1082,25 @@ void CEconEntity::UpdateAttachmentModels( void )
 	CEconItemView *pItem = GetAttributeContainer()->GetItem();
 	GameItemDefinition_t *pItemDef = pItem && pItem->IsValid() ? pItem->GetStaticData() : NULL;
 
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+	if (pItemDef)
+	{
+		CTFPlayer* pPlayer = ToTFPlayer(GetOwnerEntity());
+
+		int iHandModelIndex = 0;
+		if (pPlayer)
+		{
+			//CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pPlayer, iHandModelIndex, override_hand_model_index );		// this is a cleaner way of doing it, but...
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pPlayer, iHandModelIndex, wrench_builds_minisentry);			// ...the gunslinger is the only thing that uses this attribute for now
+		}
+
+		if (pItemDef->IsUsingViewmodels() && iHandModelIndex == 0)
+		{
+			return;
+		}
+	}
+#endif
+
 	// Update the state of additional model attachments
 	m_vecAttachedModels.Purge();
 	if ( pItemDef && AttachmentModelsShouldBeVisible() )
@@ -1891,6 +1910,27 @@ int	CEconEntity::DrawOverriddenViewmodel( C_BaseViewModel *pViewmodel, int flags
 	bool bUseOverride = false;
 	
 	CEconItemView *pItem = GetAttributeContainer()->GetItem();
+
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+	if (pItem)
+	{
+		CTFPlayer* pPlayer = ToTFPlayer(GetOwnerEntity());
+
+		int iHandModelIndex = 0;
+		if (pPlayer)
+		{
+			//CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pPlayer, iHandModelIndex, override_hand_model_index );		// this is a cleaner way of doing it, but...
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pPlayer, iHandModelIndex, wrench_builds_minisentry);			// ...the gunslinger is the only thing that uses this attribute for now
+		}
+
+		if (pItem->GetStaticData()->IsUsingViewmodels() && iHandModelIndex == 0)
+		{
+			//ret is 0 at this point.
+			return ret;
+		}
+	}
+#endif
+
 	bool bAttachesToHands = ( pItem->IsValid() && (pItem->GetStaticData()->ShouldAttachToHands() || pItem->GetStaticData()->ShouldAttachToHandsVMOnly()));
 
 	// If the attachment is translucent, we need to render the viewmodel first
