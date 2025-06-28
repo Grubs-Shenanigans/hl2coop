@@ -319,10 +319,6 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 	virtual const char *GetViewModel( int iViewModel = 0 ) const;
 	virtual const char *GetWorldModel( void ) const;
 
-#ifdef BDSBASE
-	bool IsUsingViewModel(void);
-#endif
-
 	virtual Activity ActivityOverride( Activity baseAct, bool *pRequired ) OVERRIDE;
 	
 	virtual poseparamtable_t* GetPlayerPoseParamList( int &iPoseParamCount );
