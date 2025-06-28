@@ -329,8 +329,13 @@ bool CTFGrenadeLauncher::SendWeaponAnim( int iActivity )
 	// When we start firing, play the startup firing anim first
 	if ( iActivity == ACT_VM_PRIMARYATTACK )
 	{
+#ifdef BDSBASE
 		// If we're already playing the fire anim, let it continue. It loops.
-		if ( GetActivity() == ACT_VM_PRIMARYATTACK )
+		if (GetActivity() == ACT_VM_PRIMARYATTACK && !IsUsingViewModel())
+#else
+		// If we're already playing the fire anim, let it continue. It loops.
+		if (GetActivity() == ACT_VM_PRIMARYATTACK)
+#endif
 			return true;
 
 		// Otherwise, play the start it

@@ -850,8 +850,15 @@ void CTFWeaponBase::Equip( CBaseCombatCharacter *pOwner )
 
 	BaseClass::Equip( pOwner );
 
-	// If we attach to our hands, we need to update our viewmodel when we get a new owner.
-	UpdateHands();
+#ifdef BDSBASE
+	if (!IsUsingViewModel())
+	{
+#endif
+		// If we attach to our hands, we need to update our viewmodel when we get a new owner.
+		UpdateHands();
+#ifdef BDSBASE
+	}
+#endif
 
 	CEconItemView *pItem = GetAttributeContainer()->GetItem();
 	if ( pItem->IsValid() )
@@ -1418,6 +1425,26 @@ void CTFWeaponBase::OnActiveStateChanged( int iOldState )
 #endif
 	}
 }
+
+#ifdef BDSBASE
+bool CTFWeaponBase::IsUsingViewModel(void)
+{
+	bool usesVM = false;
+	CTFPlayer* pPlayer = ToTFPlayer(GetPlayerOwner());
+	if (pPlayer)
+	{
+		const CEconItemView* pItem = GetAttributeContainer()->GetItem();
+		const char* pVMName = pItem->GetViewModel(pPlayer->GetPlayerClass()->GetClassIndex(), pPlayer->GetTeamNumber());
+
+		if (pVMName)
+		{
+			usesVM = true;
+		}
+	}
+
+	return usesVM;
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose:
