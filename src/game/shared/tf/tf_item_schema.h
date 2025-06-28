@@ -279,6 +279,10 @@ public:
 
 	bool		IsChanceRestricted() const { return m_bChanceRestricted; }
 
+#ifdef BDSBASE
+	bool		CanUseInspectAnims() const { return m_bCanInspect; }
+#endif
+
 private:
 	void InternalInitialize();
 
@@ -301,6 +305,10 @@ private:
 	int				m_iLoadoutSlots[LOADOUT_COUNT];		// Slot that each class places the item into.
 	EEquipType_t	m_eEquipType;
 	bool			m_bChanceRestricted = false;
+
+#ifdef BDSBASE
+	bool			m_bCanInspect = true;
+#endif
 
 	mutable CUtlVector< uint32 > m_vecValidPaintkitDefs;
 	mutable bool m_bValidPaintkitsGenerated;
