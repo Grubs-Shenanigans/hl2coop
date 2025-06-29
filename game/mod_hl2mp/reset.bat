@@ -19,6 +19,7 @@ del cfg\settings.scr
 del cfg\user.scr
 del cfg\steam_autocloud.vdf
 del cfg\local_loadout.txt
+del cfg\server_blacklist.txt
 del bin\client.pdb
 del bin\gamepadui.pdb
 del bin\server.pdb

@@ -22,6 +22,7 @@ $Project "client"
     "game\client\client_lostcoast.vpc"		[$LOSTCOAST]
     //BDS PROJECTS GO HERE
 	"game\client\client_survivor2.vpc"		[$SURVIVOR2]
+	"game\client\client_quiver.vpc"			[$QUIVER]
 }
 
 $Project "fgdlib"
@@ -62,6 +63,7 @@ $Project "server"
     "game\server\server_lostcoast.vpc"		[$LOSTCOAST]
     //BDS PROJECTS GO HERE
 	"game\server\server_survivor2.vpc"		[$SURVIVOR2]
+	"game\server\server_quiver.vpc"			[$QUIVER]
 }
 
 $Project "launcher_main"
@@ -73,6 +75,7 @@ $Project "launcher_main"
     "launcher_main\launcher_main_mod_lostcoast.vpc" [$LOSTCOAST]
     //BDS PROJECTS GO HERE
     "launcher_main\launcher_main_mod_survivor2.vpc" [$SURVIVOR2]
+	"launcher_main\launcher_main_mod_quiver.vpc" [$QUIVER]
 }
 
 $Project "mathlib"

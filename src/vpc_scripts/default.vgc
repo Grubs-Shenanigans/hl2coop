@@ -22,7 +22,8 @@ $Games
 	"SDK"
 	"TF"
     //BDS PROJECTS GO HERE
-    "SURVIVOR2"
+    "SURVIVOR2",
+	"QUIVER"
 }
 
 $Include "vpc_scripts\projects.vgc"

@@ -24,7 +24,7 @@ fi
 solution_out="_vpc_/ninja/sdk_everything_bds_$VPC_NINJA_BUILD_MODE"
 
 if [[ ! -e "$solution_out.ninja" ]]; then
-    devtools/bin/vpc /survivor2 /linux64 /ninja /define:SOURCESDK /define:BDSBASE +everything /mksln "$solution_out"
+    devtools/bin/vpc /survivor2 /quiver /linux64 /ninja /define:SOURCESDK /define:BDSBASE +everything /mksln "$solution_out"
 
     # Generate compile commands.
     ninja -f "$solution_out.ninja" -t compdb > compile_commands.json
