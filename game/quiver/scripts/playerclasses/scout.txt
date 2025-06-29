@@ -9,12 +9,11 @@ PlayerClass
 	"model_hwm"		"models/player/hwm/scout.mdl"
 	"model_hands"	"models/weapons/c_models/c_scout_arms.mdl"
 	"localize_name"	"TF_Class_Name_Scout"
-//	"speed_max"		"450"
 	"speed_max"		"400"
 //	"health_max"		"75"
 //	"armor_max"		"25"
 	"health_max"		"125"
-	"armor_max"		"0"
+	"armor_max"		"100"
 
 	// Grenades.
 	"grenade1"		"TF_WEAPON_GRENADE_CALTROP"

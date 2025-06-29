@@ -49,6 +49,10 @@ public:
 	void				ApplyBuildingHealthUpgrade( void );
 
 	void				OnFriendlyBuildingHit( CBaseObject *pObject, CTFPlayer *pPlayer, Vector hitLoc );
+
+#ifdef QUIVER_DLL
+	void				OnFriendlyPlayerHit( CTFPlayer* pOtherPlayer, CTFPlayer* pPlayer, Vector hitLoc );
+#endif
 #else
 	virtual void		ItemPostFrame();
 #endif

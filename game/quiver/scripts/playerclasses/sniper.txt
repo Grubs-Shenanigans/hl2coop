@@ -13,7 +13,7 @@ PlayerClass
 //	"health_max"		"95"
 //	"armor_max"		"25"
 	"health_max"		"125"
-	"armor_max"		"0"
+	"armor_max"		"100"
 
 	// Grenades.
 	"grenade1"		"TF_WEAPON_GRENADE_NORMAL"

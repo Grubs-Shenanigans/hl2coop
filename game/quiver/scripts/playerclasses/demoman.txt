@@ -11,7 +11,7 @@ PlayerClass
 	"localize_name"		"TF_Class_Name_Demoman"
 	"speed_max"		"280"
 	"health_max"		"175"
-	"armor_max"		"0"
+	"armor_max"		"100"
 
 	// Grenades.
 	"grenade1"		"TF_WEAPON_GRENADE_NORMAL"

@@ -153,6 +153,53 @@ void CTFWrench::OnFriendlyBuildingHit( CBaseObject *pObject, CTFPlayer *pPlayer,
 		}
 	}
 }
+
+#ifdef QUIVER_DLL
+void CTFWrench::OnFriendlyPlayerHit(CTFPlayer* pOtherPlayer, CTFPlayer* pPlayer, Vector hitLoc)
+{
+	float flAmount = GetRepairAmount();
+	float flRepairMod = 1.f;
+	float flRepairToMetalRatio = 3.f;
+	bool bUsefulHit = false;
+
+	float flRepairAmountMax = flAmount * flRepairMod;
+	int iRepairAmount = Min(RoundFloatToInt(flRepairAmountMax), GetMaxHealth() - RoundFloatToInt(GetHealth()));
+	int iRepairCost = ceil((float)(iRepairAmount) / flRepairToMetalRatio);
+	if (iRepairCost > pPlayer->GetBuildResources())
+	{
+		// What can we afford?
+		iRepairCost = pPlayer->GetBuildResources();
+	}
+
+	if (iRepairCost > 0)
+	{
+		//we get the armor from the player.
+		float flCurArmor = pOtherPlayer->ArmorValue();
+		float flMaxArmor = pOtherPlayer->GetPlayerClass()->GetMaxArmor();
+
+		iRepairAmount = iRepairCost * flRepairToMetalRatio;
+		float flNewHealth = Min((float)flMaxArmor, flCurArmor + iRepairAmount);
+		// remove the repair cost
+		pPlayer->RemoveBuildResources(iRepairCost);
+		pOtherPlayer->IncrementArmorValue(flNewHealth);
+
+		bUsefulHit = true;
+	}
+
+	CDisablePredictionFiltering disabler;
+
+	if (bUsefulHit)
+	{
+		// play success sound
+		WeaponSound(SPECIAL1);
+	}
+	else
+	{
+		// play failure sound
+		WeaponSound(SPECIAL2);
+	}
+}
+#endif
 #endif
 
 void CTFWrench::Smack( void )
@@ -192,11 +239,24 @@ void CTFWrench::Smack( void )
 	// We hit, setup the smack.
 	if ( trace.fraction < 1.0f &&
 		 trace.m_pEnt &&
+#ifndef QUIVER_DLL
 		 trace.m_pEnt->IsBaseObject() &&
+#endif
 		 trace.m_pEnt->GetTeamNumber() == pPlayer->GetTeamNumber() )
 	{
 #ifdef GAME_DLL
+#ifdef QUIVER_DLL
+		if (trace.m_pEnt->IsPlayer())
+		{
+			OnFriendlyPlayerHit(ToTFPlayer(trace.m_pEnt), pPlayer, trace.endpos);
+		}
+		else if (trace.m_pEnt->IsBaseObject())
+		{
+			OnFriendlyBuildingHit(dynamic_cast<CBaseObject*>(trace.m_pEnt), pPlayer, trace.endpos);
+		}
+#else
 		OnFriendlyBuildingHit( dynamic_cast< CBaseObject * >( trace.m_pEnt ), pPlayer, trace.endpos );
+#endif
 #else
 		// NVNT if the local player is the owner of this wrench 
 		//   Notify the haptics system we just repaired something.
