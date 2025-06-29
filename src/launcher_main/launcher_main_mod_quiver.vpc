@@ -16,7 +16,7 @@ $Project "Launcher Main (Quiver)"
 {
     $Folder "Resource Files" [$WINDOWS]
     {
-        $File   "launcher_main_mod_tf.rc"
-        $File   "res\mod_tf.ico"
+        $File   "launcher_main_mod_quiver.rc"
+        $File   "res\quiver.ico"
     }
 }
