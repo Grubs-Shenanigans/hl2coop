@@ -70,6 +70,14 @@ BDSBASE_LEGACY_VIEWMODELS
 - Some stock items don't get the viewmodel treatment, due to bugs, visual problems, or other factors. These include the Pistol, the Shotgun, the Fists, the PDAs, the Sapper, and the Toolbox. 
 - The Spy's Disguise Kit and the Invis Watch both already use view models, so they aren't affected by this definition.
 
+Explanations for the cut weapon models:
+
+- The Pistol has a problem where it rapidly plays the draw animation when switching classes. The gunslinger is also why this is. I made a c_pistol model used for the base item version that replicates the v_model version's lighting, so it doesn't stand out.
+- The Shotgun models work, however all of them have an annoying texture seam on the top of the gun and the viewmodels don't add as much of a visual improvment in comparison to the c_model, so I just used the c_model, which fixes the seam issue and has comprable visual fidelity. Also, the gunslinger. I'll do a similar thing I did with the Pistol, where there will be a model used for the baseitem that uses the same lighting as the viewmodel.
+- The PDA's and Toolbox's models work, but they were cut because of the Gunslinger.
+- The Sapper's model kept switching to the Toolbox's in most instances, so it was changed to the c_model.
+
+The Gunslinger is the reason for some of these cuts since it is a sperate bodygroup on the c_model arms, making the idea of using any of the legacy viewmodels on Engineer (except for the wrench) unviable
 
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.
