@@ -2629,6 +2629,9 @@ public:
 #ifdef BDSBASE
 	typedef CUtlMap<int, CEconItemDefinition*, int>	SoloItemDefinitionMap_t;
 	const SoloItemDefinitionMap_t& GetSoloItemDefinitionMap() const { return m_mapSoloItems; }
+
+	typedef CUtlMap<int, CEconItemDefinition*, int>	BaseAndSoloItemDefinitionMap_t;
+	const BaseAndSoloItemDefinitionMap_t& GetBaseAndSoloItemDefinitionMap() const { return m_mapBaseAndSoloItems; }
 #endif
 
 	typedef CUtlDict<CEconLootListDefinition *>	LootListDefinitionMap_t;
@@ -2954,6 +2957,7 @@ private:
 #ifdef BDSBASE
 	// List of all solo items, is a sublist of mapItems
 	SoloItemDefinitionMap_t								m_mapSoloItems;
+	BaseAndSoloItemDefinitionMap_t						m_mapBaseAndSoloItems;
 #endif
 
 #if defined(CLIENT_DLL) || defined(GAME_DLL)

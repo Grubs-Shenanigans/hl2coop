@@ -1102,13 +1102,21 @@ void CBackpackPanel::AssignItemToPanel( CItemModelPanel *pPanel, int iIndex )
 	{
 		const CEconItemDefinition* pItemDef = NULL;
 
+#ifdef BDSBASE
+		const CEconItemSchema::BaseAndSoloItemDefinitionMap_t& mapItems = GetItemSchema()->GetBaseAndSoloItemDefinitionMap();
+#else
 		const CEconItemSchema::BaseItemDefinitionMap_t& mapItems = GetItemSchema()->GetBaseItemDefinitionMap();
+#endif
 		int iStart = iIndex == 0 ? mapItems.FirstInorder() : mapItems.NextInorder( iLastMapItem );
 		for ( int it = iStart; it != mapItems.InvalidIndex(); it = mapItems.NextInorder( it ) )
 		{
 			iLastMapItem = it;
 
-			if ( mapItems[it]->IsBaseItem() && !mapItems[it]->IsHidden() )
+#ifdef BDSBASE
+			if ( (mapItems[it]->IsBaseItem() || mapItems[it]->IsSoloItem()) && !mapItems[it]->IsHidden() )
+#else
+			if (mapItems[it]->IsBaseItem() && !mapItems[it]->IsHidden())
+#endif
 			{
 #ifdef BDSBASE
 #if (defined(BDSBASE_CURATED_ITEMS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS))
@@ -1133,7 +1141,18 @@ void CBackpackPanel::AssignItemToPanel( CItemModelPanel *pPanel, int iIndex )
 					pItemDef = mapItems[it];
 				}
 
-				tempItem.Init( pItemDef->GetDefinitionIndex(), AE_UNIQUE, AE_USE_SCRIPT_VALUE, true );
+#ifdef QUIVER_CLIENT_DLL
+				if (mapItems[it]->IsSoloItem())
+				{
+					tempItem.Init(pItemDef->GetDefinitionIndex(), AE_CUSTOMIZED, AE_USE_SCRIPT_VALUE, true);
+				}
+				else
+				{
+					tempItem.Init(pItemDef->GetDefinitionIndex(), AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
+				}
+#else
+				tempItem.Init(pItemDef->GetDefinitionIndex(), AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
+#endif
 
 				// skip this item if the tool cannot be applied to it
 				if ( bInToolSelection && !CEconSharedToolSupport::ToolCanApplyTo( &m_ToolSelectionItem, &tempItem ) )

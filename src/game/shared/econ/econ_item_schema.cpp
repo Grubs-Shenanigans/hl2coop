@@ -3854,6 +3854,7 @@ CEconItemSchema::CEconItemSchema( )
 ,	m_mapBaseItems( DefLessFunc(int) )
 #ifdef BDSBASE
 ,	m_mapSoloItems(DefLessFunc(int))
+,	m_mapBaseAndSoloItems(DefLessFunc(int))
 #endif
 ,	m_unVersion( 0 )
 #if defined(CLIENT_DLL) || defined(GAME_DLL)
@@ -4354,6 +4355,7 @@ void CEconItemSchema::Reset( void )
 	m_mapBaseItems.Purge();
 #ifdef BDSBASE
 	m_mapSoloItems.Purge();
+	m_mapBaseAndSoloItems.Purge();
 #endif
 	m_mapRecipes.PurgeAndDeleteElements();
 	m_vecTimedRewards.Purge();
@@ -5346,6 +5348,7 @@ bool CEconItemSchema::BInitItems( KeyValues *pKVItems, CUtlVector<CUtlString> *p
 	m_mapBaseItems.Purge();
 #ifdef BDSBASE
 	m_mapSoloItems.Purge();
+	m_mapBaseAndSoloItems.Purge();
 #endif
 	m_vecBundles.Purge();
 	m_mapQuestObjectives.PurgeAndDeleteElements();
@@ -5418,12 +5421,16 @@ bool CEconItemSchema::BInitItems( KeyValues *pKVItems, CUtlVector<CUtlString> *p
 				if ( pItemDef->IsBaseItem() )
 				{
 					m_mapBaseItems.Insert( nItemIndex, pItemDef );
+#ifdef BDSBASE
+					m_mapBaseAndSoloItems.Insert(nItemIndex, pItemDef);
+#endif
 				}
 
 #ifdef BDSBASE
 				if (pItemDef->IsSoloItem())
 				{
 					m_mapSoloItems.Insert(nItemIndex, pItemDef);
+					m_mapBaseAndSoloItems.Insert(nItemIndex, pItemDef);
 				}
 #endif
 

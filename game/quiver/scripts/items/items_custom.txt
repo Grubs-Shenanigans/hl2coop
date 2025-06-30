@@ -2,6 +2,223 @@
  
 "items_game"
 {
+	"prefabs"
+	{
+		"weapon_quiver_generic_demoshield"
+		{
+			"enabled"		"1"
+			"item_class"		"tf_wearable_demoshield"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_be_equipped_by_soldier_or_demo"	"1"
+			}
+			"base_item_name"	"Shield"
+			"show_in_armory"	"1"
+			"item_type_name" 	"#TF_Wearable_Shield"
+			"item_name"		"#Quiver_Shield"
+			"item_description"	"#TF_Unique_Achievement_Shield_Desc"
+			"item_slot"		"secondary"
+			"equip_region"	"arms"
+			"anim_slot"		"FORCE_NOT_USED"
+			"item_quality"		"unique"
+			"propername"		"1"
+			"min_ilevel"		"1"
+			"max_ilevel"		"99"
+			"item_logname"	"demoshield"
+			"item_iconname"	"demoshield"
+			"image_inventory"	"backpack/weapons/c_models/c_targe/c_targe"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"inspect_panel_dist" 			"33"
+			"model_player"	"models/weapons/c_models/c_targe/c_targe.mdl"
+			"act_as_wearable" "1"
+			"attach_to_hands"	"0"
+			"attach_to_hands_vm_only"	"1"
+			"drop_type"	"drop"
+			"used_by_classes"
+			{
+				"demoman"	"1"
+			}
+			"attributes"
+			{
+				"dmg taken from fire reduced"
+				{
+					"attribute_class"	"mult_dmgtaken_from_fire"
+					"value"			"0.3"
+				}
+				"dmg taken from blast reduced"
+				{
+					"attribute_class"	"mult_dmgtaken_from_explosions"
+					"value"			"0.6"
+				}
+				"charge recharge rate increased"
+				{
+					"attribute_class"	"charge_recharge_rate"
+					"value"			"1.5"
+				}
+				"charge impact damage increased"
+				{
+					"attribute_class"	"charge_impact_damage"
+					"value"			"1.5"
+				}
+				"lose demo charge on damage when charging"
+				{
+					"attribute_class"	"lose_demo_charge_on_damage_when_charging"
+					"value"				"1"
+				}
+				"mult charge turn control"
+				{
+					"attribute_class"	"charge_turn_control"
+					"value"			"3"
+				}
+				"kill refills meter"
+				{
+					"attribute_class"	"kill_refills_meter"
+					"value"			"0.50"
+				}
+				"allowed in medieval mode"
+				{
+					"attribute_class"	"allowed_in_medieval_mode"
+					"value"	"1"
+				}
+			}
+			"mouse_pressed_sound"	"ui/item_wood_pole_pickup.wav"
+			"drop_sound"		"ui/item_wood_pole_drop.wav"
+			"xifier_class_remap"	"weapon_targe"
+		}
+	}
+
+	"items"
+	{
+		// pre-added items/rebalances
+		"39"
+		{
+			"name"	"The Flare Gun"
+			"prefab"	"valve weapon_flaregun"
+			"first_sale_date"	"2011/04/14"
+			"customitem" "1"
+			"stock_whitelist" "1"
+		}
+		"1081"
+		{
+			"name"			"Festive Flare Gun"
+			"prefab"	"weapon_flaregun"
+			"propername"	"0"
+			"craft_class"	""
+			"item_name"			"#TF_Weapon_Flaregun_Festive2013"
+			"min_ilevel"	"1"
+			"max_ilevel"	"99"
+			"reskin"		"1"
+			"image_inventory"	"backpack/weapons/c_models/c_xms_flaregun/c_xms_flaregun"
+			"model_player"		"models/weapons/c_models/c_xms_flaregun/c_xms_flaregun.mdl"
+			"static_attrs"
+			{
+				"limited quantity item"		"1"
+			}
+		}
+		"1178"
+		{
+			"name"	"The Dragon's Fury"
+			"prefab"	"paintkit_base"
+			"item_class"	"tf_weapon_rocketlauncher_fireball"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"		"1"
+				"can_deal_posthumous_damage"	"1"
+				"can_be_festivized"		"1"
+			}
+			"show_in_armory"	"1"
+			"item_type_name"	"#TF_Weapon_FireballLauncher"
+			"particle_suffix"	"dragons_fury"
+			"propername"	"1"
+			"item_name"	"#TF_Weapon_DragonsFury"
+			"item_description"	"#TF_Weapon_DragonsFury_Desc"
+			"item_slot"	"primary"
+			"anim_slot"		"primary"
+			"customitem" "1"
+			"stock_whitelist" "1"
+			"min_ilevel"	"1"
+			"max_ilevel"	"100"
+			"item_logname"	"dragons_fury"
+			"item_iconname"	"dragons_fury"
+			"image_inventory"	"backpack/weapons/c_models/c_flameball/c_flameball"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"model_player"	"models/weapons/c_models/c_flameball/c_flameball.mdl"
+			"attach_to_hands" "1"
+			"inspect_panel_dist" "91"
+			"used_by_classes"
+			{
+				"pyro"	"1"
+			}
+			"static_attrs"
+			{
+				"min_viewmodel_offset"					"10 -3 -10"
+				"item_meter_charge_type"							"1"
+				"item_meter_charge_rate"				"0.8"
+				"meter_label"							"#TF_Pressure"
+				"hidden primary max ammo bonus"			"0.2"
+				"airblast cost scale hidden"			"0.25"
+				"dragons fury neutral properties"		"1"
+				"dragons fury positive properties"		"1"
+				"dragons fury negative properties"		"1"
+				"extinguish restores health"			"20"
+			}
+			"visuals"
+			{
+				"attached_models_festive"
+				{
+					"0"
+					{
+						"model"	"models/weapons/c_models/c_flameball/c_flameball_festivizer.mdl"
+					}
+				}
+				"sound_single_shot"		"Weapon_Airstrike.AltFire"
+				"sound_special1"		"Weapon_Airstrike.Explosion"
+				"animation_replacement"
+				{
+					"ACT_VM_PRIMARYATTACK"		"ACT_PRIMARY_VM_PRIMARYATTACK_3"
+
+					"ACT_PRIMARY_VM_INSPECT_START"		"ACT_ITEM4_VM_INSPECT_START"
+					"ACT_PRIMARY_VM_INSPECT_IDLE"		"ACT_ITEM4_VM_INSPECT_IDLE"
+					"ACT_PRIMARY_VM_INSPECT_END"		"ACT_ITEM4_VM_INSPECT_END"
+
+					"ACT_MP_ATTACK_CROUCH_PRIMARY"		"ACT_MP_ATTACK_CROUCH_PRIMARY_ALT"
+					"ACT_MP_ATTACK_STAND_PRIMARY"		"ACT_MP_ATTACK_STAND_PRIMARY_ALT"
+					"ACT_MP_ATTACK_SWIM_PRIMARY"		"ACT_MP_ATTACK_SWIM_PRIMARY_ALT"
+
+					"ACT_MP_ATTACK_CROUCH_SECONDARYFIRE"	"ACT_MP_ATTACK_CROUCH_PRIMARY_ALT"
+					"ACT_MP_ATTACK_STAND_SECONDARYFIRE"		"ACT_MP_ATTACK_STAND_PRIMARY_ALT"
+					"ACT_MP_ATTACK_SWIM_SECONDARYFIRE"		"ACT_MP_ATTACK_SWIM_PRIMARY_ALT"
+				}
+			}
+			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
+			"drop_sound"		"ui/item_heavy_gun_drop.wav"
+		}
+		// custom items
+		"34400"
+		{
+			"name"		"Shield"
+			"prefab"	"valve weapon_quiver_generic_demoshield"
+			"first_sale_date"	"2010/09/29"
+			"xifier_class_remap"	"weapon_quiver_generic_demoshield"
+			"customitem" "1"
+		}
+	}
+
 	"attributes"
 	{
 		"892"
