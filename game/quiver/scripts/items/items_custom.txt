@@ -2,4 +2,95 @@
  
 "items_game"
 {
+	"attributes"
+	{
+		"892"
+		{
+			"name"	"max armor additive bonus"
+			"attribute_class"	"add_maxarmor"
+			"description_string"	"#Attrib_MaxArmor_Positive"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"893"
+		{
+			"name"	"max armor additive penalty"
+			"attribute_class"	"add_maxarmor"
+			"description_string"	"#Attrib_MaxArmor_Negative"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"894"
+		{
+			"name"	"armor taken reduced"
+			"attribute_class"	"mult_armor"
+			"description_string"	"#Attrib_Armor_ReducedDamage"
+			"description_format"	"value_is_inverted_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"895"
+		{
+			"name"	"armor taken increased"
+			"attribute_class"	"mult_armor"
+			"description_string"	"#Attrib_Armor_IncreasedDamage"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"896"
+		{
+			"name"	"armor taken from dispensers increased"
+			"attribute_class"	"mult_dispenser_armor_rate"
+			"description_string"	"#Attrib_Armor_FasterRate"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"897"
+		{
+			"name"	"armor taken from dispensers decreased"
+			"attribute_class"	"mult_dispenser_armor_rate"
+			"description_string"	"#Attrib_Armor_SlowerRate"
+			"description_format"	"value_is_inverted_percentage"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"898"
+		{
+			"name"	"health taken from dispensers increased"
+			"attribute_class"	"mult_dispenser_rate"
+			"description_string"	"#Attrib_Health_FasterRate"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"899"
+		{
+			"name"	"health taken from dispensers decreased"
+			"attribute_class"	"mult_dispenser_rate"
+			"description_string"	"#Attrib_Health_SlowerRate"
+			"description_format"	"value_is_inverted_percentage"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+	}
 }

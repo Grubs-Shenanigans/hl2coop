@@ -66,6 +66,11 @@ public:
 	float		GetMaxSpeed( void )								{ return GetPlayerClassData( m_iClass )->m_flMaxSpeed; }
 	int			GetMaxHealth( void ) const						{ return GetPlayerClassData( m_iClass )->m_nMaxHealth; }
 	int			GetMaxArmor( void )	const						{ return GetPlayerClassData( m_iClass )->m_nMaxArmor; }
+#ifdef QUIVER_DLL
+	float		GetArmorRatio(void)	const						{ return GetPlayerClassData(m_iClass)->m_nArmorRatio; }
+	float		GetArmorAdditionalCostMult(void) const			{ return GetPlayerClassData(m_iClass)->m_nArmorAdditionalCostMult; }
+	float		GetArmorMetalPenaltyMult(void) const			{ return GetPlayerClassData(m_iClass)->m_nArmorMetalPenaltyMult; }
+#endif
 	Vector		GetCustomModelOffset( void ) const				{ return m_vecCustomModelOffset.Get(); }
 	QAngle		GetCustomModelRotation( void ) const			{ return m_angCustomModelRotation.Get(); }
 	bool		CustomModelRotationSet( void )					{ return m_bCustomModelRotationSet.Get(); }

@@ -588,6 +588,10 @@ public:
 	bool IsThreatFiringAtMe( CBaseEntity *threat ) const;		// return true if the given threat is aiming in our direction and firing its weapon
 	bool IsInCombat( void ) const;								// return true if we are engaged in active combat
 
+#ifdef QUIVER_DLL
+	float DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage);
+#endif
+
 	void PlayerUse( void );
 
 #ifndef BDSBASE

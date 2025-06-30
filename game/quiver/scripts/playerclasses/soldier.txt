@@ -14,6 +14,12 @@ PlayerClass
 //	"armor_max"		"250"
 	"health_max"		"200"
 	"armor_max"		"100"
+	
+	//armor stats
+	//medium armor
+	"armor_ratio"					"0.6"
+	"armor_additionalcost_mult"		"1.5"
+	"armor_metalpenalty_mult"		"2.0"
 
 	// Grenades.
 	"grenade1"		"TF_WEAPON_GRENADE_NORMAL"

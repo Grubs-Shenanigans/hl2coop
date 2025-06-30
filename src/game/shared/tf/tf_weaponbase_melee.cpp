@@ -15,6 +15,11 @@
 #include "tf_gamestats.h"
 #include "ilagcompensationmanager.h"
 #include "tf_passtime_logic.h"
+
+#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#include "tf_weapon_wrench.h"
+#endif
+
 // Client specific.
 #else
 #include "c_tf_gamestats.h"
@@ -699,6 +704,16 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 					pPlayer->TakeDamage( info );
 				}
 			}
+
+#ifdef QUIVER_DLL
+			//do the same for armor. Wrenches only, mainly.
+			CTFWrench* pWrench = dynamic_cast<CTFWrench*>(this);
+
+			if (pWrench)
+			{
+				pWrench->OnFriendlyPlayerHit(pTargetPlayer, pPlayer, trace.endpos);
+			}
+#endif
 		}
 		else
 		{

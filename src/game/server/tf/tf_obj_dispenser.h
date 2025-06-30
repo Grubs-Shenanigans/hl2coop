@@ -145,6 +145,9 @@ public:
 	virtual void DispenseSouls() { /* Do nothing */}
 
 	virtual float GetHealRate() const;
+#ifdef QUIVER_DLL
+	virtual float GetArmorRepairRate() const;
+#endif
 	virtual void StartHealing( CBaseEntity *pOther );
 	void StopHealing( CBaseEntity *pOther );
 

@@ -225,6 +225,79 @@ private:
 	void UpdateHalloweenStatus( void );
 };
 
+#ifdef QUIVER_CLIENT_DLL
+//-----------------------------------------------------------------------------
+// Purpose:  Clips the health image to the appropriate percentage
+//-----------------------------------------------------------------------------
+class CTFArmorPanel : public vgui::Panel
+{
+public:
+	DECLARE_CLASS_SIMPLE(CTFArmorPanel, vgui::Panel);
+
+	CTFArmorPanel(vgui::Panel* parent, const char* name);
+	virtual void Paint();
+	void SetArmor(float flArmor) { m_flArmor = (flArmor <= 1.0) ? flArmor : 1.0f; }
+
+private:
+
+	float	m_flArmor; // percentage from 0.0 -> 1.0
+	int		m_iMaterialIndex;
+};
+
+//-----------------------------------------------------------------------------
+// Purpose:  Displays player health data
+//-----------------------------------------------------------------------------
+class CTFHudPlayerArmor : public vgui::EditablePanel
+{
+	DECLARE_CLASS_SIMPLE(CTFHudPlayerArmor, EditablePanel);
+
+public:
+
+	CTFHudPlayerArmor(Panel* parent, const char* name);
+	~CTFHudPlayerArmor();
+
+	virtual const char* GetResFilename(void) { return "resource/UI/HudPlayerArmor.res"; }
+	virtual void ApplySchemeSettings(vgui::IScheme* pScheme);
+	virtual void Reset();
+	virtual bool IsVisible(void);
+
+	void	SetArmor(int iNewHealth, int iMaxHealth);
+	void	HideArmorBonusImage(void);
+	void	SetAllowAnimations(bool bValue) { m_bAnimate = bValue; }
+
+protected:
+
+	virtual void OnThink();
+
+protected:
+	float				m_flNextThink;
+
+private:
+	CTFArmorPanel* m_pArmorImage;
+	vgui::ImagePanel* m_pArmorBonusImage;
+	vgui::ImagePanel* m_pArmorImageBG;
+#ifdef BDSBASE
+	CExLabel* m_pPlayerArmorLabel;
+	CExLabel* m_pPlayerMaxArmorLabel;
+#endif
+
+	int					m_nArmor;
+	int					m_nMaxArmor;
+
+	int					m_nBonusArmorOrigX;
+	int					m_nBonusArmorOrigY;
+	int					m_nBonusArmorOrigW;
+	int					m_nBonusArmorOrigH;
+
+	int					m_iAnimState;
+	bool				m_bAnimate;
+
+	CPanelAnimationVar(int, m_nArmorBonusPosAdj, "ArmorBonusPosAdj", "25");
+	CPanelAnimationVar(float, m_flArmorDeathWarning, "ArmorDeathWarning", "0.49");
+	CPanelAnimationVar(Color, m_clrArmorDeathWarningColor, "ArmorDeathWarningColor", "HUDDeathWarning");
+};
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose:  Parent panel for the player class/health displays
 //-----------------------------------------------------------------------------
@@ -242,6 +315,9 @@ private:
 
 	CTFHudPlayerClass	*m_pHudPlayerClass;
 	CTFHudPlayerHealth	*m_pHudPlayerHealth;
+#ifdef QUIVER_CLIENT_DLL
+	CTFHudPlayerArmor* m_pHudPlayerArmor;
+#endif
 };
 
 #endif	// TF_HUD_PLAYERSTATUS_H

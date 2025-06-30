@@ -1218,6 +1218,368 @@ void CTFHudPlayerHealth::UpdateHalloweenStatus( void )
 	}
 }
 
+#ifdef QUIVER_CLIENT_DLL
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+CTFArmorPanel::CTFArmorPanel(Panel* parent, const char* name) : vgui::Panel(parent, name)
+{
+	m_flArmor = 1.0f;
+
+	m_iMaterialIndex = surface()->DrawGetTextureId("hud/armor_color");
+	if (m_iMaterialIndex == -1) // we didn't find it, so create a new one
+	{
+		m_iMaterialIndex = surface()->CreateNewTextureID();
+		surface()->DrawSetTextureFile(m_iMaterialIndex, "hud/armor_color", true, false);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CTFArmorPanel::Paint()
+{
+	BaseClass::Paint();
+
+	int x, y, w, h;
+	GetBounds(x, y, w, h);
+
+	Vertex_t vert[4];
+	float uv1 = 0.0f;
+	float uv2 = 1.0f;
+	int xpos = 0, ypos = 0;
+
+	if (m_flArmor > 0)
+	{
+		float flDamageY = h * (1.0f - m_flArmor);
+
+		// blend in the red "damage" part
+		surface()->DrawSetTexture(m_iMaterialIndex);
+
+		Vector2D uv11(uv1, uv2 - m_flArmor);
+		Vector2D uv21(uv2, uv2 - m_flArmor);
+		Vector2D uv22(uv2, uv2);
+		Vector2D uv12(uv1, uv2);
+
+		vert[0].Init(Vector2D(xpos, flDamageY), uv11);
+		vert[1].Init(Vector2D(xpos + w, flDamageY), uv21);
+		vert[2].Init(Vector2D(xpos + w, ypos + h), uv22);
+		vert[3].Init(Vector2D(xpos, ypos + h), uv12);
+
+		surface()->DrawSetColor(GetFgColor());
+	}
+
+	surface()->DrawTexturedPolygon(4, vert);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+CTFHudPlayerArmor::CTFHudPlayerArmor(Panel* parent, const char* name) : EditablePanel(parent, name)
+{
+	m_pArmorImage = new CTFArmorPanel(this, "PlayerStatusArmorImage");
+	m_pArmorImageBG = new ImagePanel(this, "PlayerStatusArmorImageBG");
+	m_pArmorBonusImage = new ImagePanel(this, "PlayerStatusArmorBonusImage");
+
+	m_flNextThink = 0.0f;
+
+	m_nBonusArmorOrigX = -1;
+	m_nBonusArmorOrigY = -1;
+	m_nBonusArmorOrigW = -1;
+	m_nBonusArmorOrigH = -1;
+
+	m_iAnimState = HUD_HEALTH_NO_ANIM;
+	m_bAnimate = true;
+
+#ifdef BDSBASE
+	m_pPlayerArmorLabel = NULL;
+	m_pPlayerMaxArmorLabel = NULL;
+#endif
+}
+
+CTFHudPlayerArmor::~CTFHudPlayerArmor()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CTFHudPlayerArmor::IsVisible(void)
+{
+	if (m_nArmor <= 0)
+	{
+		return false;
+	}
+
+	return BaseClass::IsVisible();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CTFHudPlayerArmor::Reset()
+{
+	m_flNextThink = gpGlobals->curtime + 0.05f;
+	m_nArmor = -1;
+
+	m_iAnimState = HUD_HEALTH_NO_ANIM;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CTFHudPlayerArmor::ApplySchemeSettings(IScheme* pScheme)
+{
+	// load control settings...
+	LoadControlSettings(GetResFilename());
+
+	if (m_pArmorBonusImage)
+	{
+		m_pArmorBonusImage->GetBounds(m_nBonusArmorOrigX, m_nBonusArmorOrigY, m_nBonusArmorOrigW, m_nBonusArmorOrigH);
+	}
+
+	m_flNextThink = 0.0f;
+
+	BaseClass::ApplySchemeSettings(pScheme);
+
+#ifdef BDSBASE
+	m_pPlayerArmorLabel = dynamic_cast<CExLabel*>(FindChildByName("PlayerStatusArmorValue"));
+	m_pPlayerMaxArmorLabel = dynamic_cast<CExLabel*>(FindChildByName("PlayerStatusMaxArmorValue"));
+#endif
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CTFHudPlayerArmor::SetArmor(int iNewHealth, int iMaxHealth)
+{
+#ifdef BDSBASE
+	if (m_nArmor != iNewHealth || m_nMaxArmor != iMaxHealth)
+	{
+		// set our health
+		m_nArmor = iNewHealth;
+		m_nMaxArmor = iMaxHealth;
+
+		m_pArmorImage->SetArmor((float)(m_nArmor) / (float)(m_nMaxArmor));
+		m_pArmorImage->SetFgColor(Color(255, 255, 255, 255));
+
+		if (m_nArmor <= 0)
+		{
+			if (m_pArmorImageBG->IsVisible())
+			{
+				m_pArmorImageBG->SetVisible(false);
+			}
+
+			HideArmorBonusImage();
+
+			if (m_pPlayerArmorLabel && m_pPlayerArmorLabel->IsVisible())
+			{
+				m_pPlayerArmorLabel->SetVisible(false);
+			}
+			if (m_pPlayerMaxArmorLabel && m_pPlayerMaxArmorLabel->IsVisible())
+			{
+				m_pPlayerMaxArmorLabel->SetVisible(false);
+			}
+		}
+		else
+		{
+			if (!m_pArmorImageBG->IsVisible())
+			{
+				m_pArmorImageBG->SetVisible(true);
+			}
+
+			// are we close to dying?
+			if (m_nArmor < m_nMaxArmor * m_flArmorDeathWarning)
+			{
+				if (m_pArmorBonusImage && m_nBonusArmorOrigW != -1)
+				{
+					if (!m_pArmorBonusImage->IsVisible())
+					{
+						m_pArmorBonusImage->SetVisible(true);
+					}
+
+					if (m_bAnimate && m_iAnimState != HUD_HEALTH_DYING_ANIM)
+					{
+						g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudArmorDyingPulse");
+
+						m_iAnimState = HUD_HEALTH_DYING_ANIM;
+					}
+
+					m_pArmorBonusImage->SetDrawColor(m_clrArmorDeathWarningColor);
+
+					// scale the flashing image based on how much health bonus we currently have
+					float flBoostMaxAmount = m_nMaxArmor * m_flArmorDeathWarning;
+					float flPercent = (flBoostMaxAmount - m_nArmor) / flBoostMaxAmount;
+
+					int nPosAdj = RoundFloatToInt(flPercent * m_nArmorBonusPosAdj);
+					int nSizeAdj = 2 * nPosAdj;
+
+					m_pArmorBonusImage->SetBounds(m_nBonusArmorOrigX - nPosAdj,
+						m_nBonusArmorOrigY - nPosAdj,
+						m_nBonusArmorOrigW + nSizeAdj,
+						m_nBonusArmorOrigH + nSizeAdj);
+				}
+
+				m_pArmorImage->SetFgColor(m_clrArmorDeathWarningColor);
+			}
+			// turn it off
+			else
+			{
+				HideArmorBonusImage();
+			}
+			if (m_pPlayerArmorLabel && !m_pPlayerArmorLabel->IsVisible())
+			{
+				m_pPlayerArmorLabel->SetVisible(true);
+			}
+
+			if (m_pPlayerMaxArmorLabel)
+			{
+				bool bVisible = (m_nMaxArmor - m_nArmor >= 5) ? true : false;
+				if (m_pPlayerMaxArmorLabel->IsVisible() != bVisible)
+				{
+					m_pPlayerMaxArmorLabel->SetVisible(bVisible);
+				}
+			}
+		}
+
+		// set our health display value
+		SetDialogVariable("Armor", m_nArmor);
+		SetDialogVariable("MaxArmor", m_nMaxArmor);
+	}
+#else
+	// set our health
+	m_nArmor = iNewHealth;
+	m_nMaxArmor = iMaxHealth;
+	m_pArmorImage->SetArmor((float)(m_nArmor) / (float)(m_nMaxArmor));
+
+	if (m_pArmorImage)
+	{
+		m_pArmorImage->SetFgColor(Color(255, 255, 255, 255));
+	}
+
+	if (m_nArmor <= 0)
+	{
+		if (m_pArmorImageBG->IsVisible())
+		{
+			m_pArmorImageBG->SetVisible(false);
+		}
+
+		HideArmorBonusImage();
+	}
+	else
+	{
+		if (!m_pArmorImageBG->IsVisible())
+		{
+			m_pArmorImageBG->SetVisible(true);
+		}
+
+		// are we close to dying?
+		if (m_nArmor < m_nMaxArmor * m_flArmorDeathWarning)
+		{
+			if (m_pArmorBonusImage && m_nBonusArmorOrigW != -1)
+			{
+				if (!m_pArmorBonusImage->IsVisible())
+				{
+					m_pArmorBonusImage->SetVisible(true);
+				}
+
+				if (m_bAnimate && m_iAnimState != HUD_HEALTH_DYING_ANIM)
+				{
+					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudArmorDyingPulse");
+
+					m_iAnimState = HUD_HEALTH_DYING_ANIM;
+				}
+
+				m_pArmorBonusImage->SetDrawColor(m_clrArmorDeathWarningColor);
+
+				// scale the flashing image based on how much health bonus we currently have
+				float flBoostMaxAmount = m_nMaxArmor * m_flArmorDeathWarning;
+				float flPercent = (flBoostMaxAmount - m_nArmor) / flBoostMaxAmount;
+
+				int nPosAdj = RoundFloatToInt(flPercent * m_nArmorBonusPosAdj);
+				int nSizeAdj = 2 * nPosAdj;
+
+				m_pArmorBonusImage->SetBounds(m_nBonusArmorOrigX - nPosAdj,
+					m_nBonusArmorOrigY - nPosAdj,
+					m_nBonusArmorOrigW + nSizeAdj,
+					m_nBonusArmorOrigH + nSizeAdj);
+			}
+
+			if (m_pArmorImage)
+			{
+				m_pArmorImage->SetFgColor(m_clrArmorDeathWarningColor);
+			}
+		}
+		// turn it off
+		else
+		{
+			HideArmorBonusImage();
+		}
+	}
+
+	// set our health display value
+	if (m_nArmor > 0)
+	{
+		SetDialogVariable("Armor", m_nArmor);
+
+		if (m_nMaxArmor - m_nArmor >= 5)
+		{
+			SetDialogVariable("MaxArmor", m_nMaxArmor);
+		}
+		else
+		{
+			SetDialogVariable("MaxArmor", "");
+		}
+	}
+	else
+	{
+		SetDialogVariable("Armor", "");
+		SetDialogVariable("MaxArmor", "");
+	}
+#endif	
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CTFHudPlayerArmor::HideArmorBonusImage(void)
+{
+	if (m_pArmorBonusImage && m_pArmorBonusImage->IsVisible())
+	{
+		if (m_nBonusArmorOrigW != -1)
+		{
+			m_pArmorBonusImage->SetBounds(m_nBonusArmorOrigX, m_nBonusArmorOrigY, m_nBonusArmorOrigW, m_nBonusArmorOrigH);
+		}
+		m_pArmorBonusImage->SetVisible(false);
+		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudArmorDyingPulseStop");
+
+		m_iAnimState = HUD_HEALTH_NO_ANIM;
+	}
+}
+
+void CTFHudPlayerArmor::OnThink()
+{
+	if (m_flNextThink < gpGlobals->curtime)
+	{
+		C_TFPlayer* pPlayer = ToTFPlayer(C_BasePlayer::GetLocalPlayer());
+
+		if (pPlayer)
+		{
+			SetArmor(pPlayer->ArmorValue(), pPlayer->GetPlayerClass()->GetMaxArmor());
+
+			int color_offset = ((int)(gpGlobals->realtime * 10)) % 5;
+
+			// Find our starting point, just above the health '+'
+			int nXOffset, y;
+			m_pArmorImage->GetPos(nXOffset, y);
+			// Nudge over a bit to get centered
+			nXOffset += 25;
+		}
+
+		m_flNextThink = gpGlobals->curtime + 0.05f;
+	}
+}
+#endif
 
 DECLARE_HUDELEMENT( CTFHudPlayerStatus );
 
@@ -1231,6 +1593,9 @@ CTFHudPlayerStatus::CTFHudPlayerStatus( const char *pElementName ) : CHudElement
 
 	m_pHudPlayerClass = new CTFHudPlayerClass( this, "HudPlayerClass" );
 	m_pHudPlayerHealth = new CTFHudPlayerHealth( this, "HudPlayerHealth" );
+#ifdef QUIVER_CLIENT_DLL
+	m_pHudPlayerArmor = new CTFHudPlayerArmor(this, "HudPlayerArmor");
+#endif
 
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD );
 }
@@ -1294,6 +1659,13 @@ void CTFHudPlayerStatus::Reset()
 	{
 		m_pHudPlayerHealth->Reset();
 	}
+
+#ifdef QUIVER_CLIENT_DLL
+	if (m_pHudPlayerArmor)
+	{
+		m_pHudPlayerArmor->Reset();
+	}
+#endif
 }
 
 //-----------------------------------------------------------------------------

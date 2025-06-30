@@ -97,6 +97,16 @@ float g_flDispenserHealRates[4] =
 	20.0
 };
 
+#ifdef QUIVER_DLL
+float g_flDispenserArmorRepairRates[4] =
+{
+	0,
+	5.0,
+	10.0,
+	15.0
+};
+#endif
+
 float g_flDispenserAmmoRates[4] = 
 {
 	0,
@@ -551,6 +561,16 @@ bool CObjectDispenser::DispenseAmmo( CTFPlayer *pPlayer )
 		iTotalPickedUp += DispenseMetal( pPlayer );
 	}
 
+#ifdef QUIVER_DLL
+	//dispensers repair armor from the same beam
+	float flArmorRate = GetArmorRepairRate();
+	float flMaxArmor = pPlayer->GetPlayerClass()->GetMaxArmor();
+
+	pPlayer->IncrementArmorValue(flArmorRate, flMaxArmor);
+
+	iTotalPickedUp += flArmorRate;
+#endif
+
 	if ( iTotalPickedUp > 0 )
 	{
 		if ( m_bPlayAmmoPickupSound )
@@ -851,6 +871,16 @@ float CObjectDispenser::GetHealRate() const
 
 	return flHealRate;
 }
+
+#ifdef QUIVER_DLL
+float CObjectDispenser::GetArmorRepairRate() const
+{
+	float flRepairRate = g_flDispenserArmorRepairRates[GetUpgradeLevel()];
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(GetBuilder(), flRepairRate, mult_dispenser_armor_rate);
+
+	return flRepairRate;
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Try to start healing this target

@@ -55,6 +55,11 @@ TFPlayerClassData_t::TFPlayerClassData_t()
 	m_flMaxSpeed = 0.0f;
 	m_nMaxHealth = 0;
 	m_nMaxArmor = 0;
+#ifdef QUIVER_DLL
+	m_nArmorRatio = 0.0f;
+	m_nArmorAdditionalCostMult = 0.0f;
+	m_nArmorMetalPenaltyMult = 0.0f;
+#endif
 
 #ifdef GAME_DLL
 	for ( int i = 0; i < ARRAYSIZE( m_szDeathSound ); ++i )
@@ -152,6 +157,12 @@ void TFPlayerClassData_t::ParseData( KeyValues *pKeyValuesData )
 	m_flMaxSpeed = pKeyValuesData->GetFloat( "speed_max" );
 	m_nMaxHealth = pKeyValuesData->GetInt( "health_max" );
 	m_nMaxArmor = pKeyValuesData->GetInt( "armor_max" );
+
+#ifdef QUIVER_DLL
+	m_nArmorRatio = pKeyValuesData->GetFloat("armor_ratio");
+	m_nArmorAdditionalCostMult = pKeyValuesData->GetFloat("armor_additionalcost_mult");
+	m_nArmorMetalPenaltyMult = pKeyValuesData->GetFloat("armor_metalpenalty_mult");
+#endif
 
 	// Weapons.
 	int i;

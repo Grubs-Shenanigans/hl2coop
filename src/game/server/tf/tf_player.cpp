@@ -905,6 +905,10 @@ IMPLEMENT_SERVERCLASS_ST( CTFPlayer, DT_TFPlayer )
 #endif
 	SendPropBool( SENDINFO( m_bViewingCYOAPDA ) ),
 	SendPropBool( SENDINFO( m_bRegenerating ) ),
+
+#ifdef QUIVER_DLL
+	SendPropInt( SENDINFO( m_ArmorValue ) ),
+#endif
 END_SEND_TABLE()
 
 // -------------------------------------------------------------------------------- //
@@ -4334,11 +4338,14 @@ void CTFPlayer::Regenerate( bool bRefillHealthAndAmmo /*= true*/ )
 //-----------------------------------------------------------------------------
 void CTFPlayer::InitClass( void )
 {
-	SetArmorValue( GetPlayerClass()->GetMaxArmor() );
-
 #ifdef QUIVER_DLL
-	//quiver allows for armor.
-	DevMsg("ARMOR CURRENTLY %i\n", ArmorValue());
+	int iArmor = GetPlayerClass()->GetMaxArmor();
+
+	CALL_ATTRIB_HOOK_INT(iArmor, add_maxarmor);
+
+	SetArmorValue(iArmor);
+#else
+	SetArmorValue(GetPlayerClass()->GetMaxArmor());
 #endif
 
 	// Init the anim movement vars
@@ -9035,6 +9042,43 @@ void HandleRageGain( CTFPlayer *pPlayer, unsigned int iRequiredBuffFlags, float 
 // we want to ship this...do not remove
 ConVar tf_debug_damage( "tf_debug_damage", "0", FCVAR_CHEAT );
 
+#ifdef QUIVER_DLL
+float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage)
+{
+	float damage = info.GetDamage();
+
+	//quiver allows for armor.
+	float flRatio = GetPlayerClass()->GetArmorRatio(); //modern armor ratio. this should be changed for every armor type.
+	float flAdditionalCost = GetPlayerClass()->GetArmorAdditionalCostMult(); //should be changed for all armor types
+
+	// armor doesn't protect against fall or drown damage!
+	// also against self-inflicted damage or bleeding.
+	if (ArmorValue() > 0 &&
+		pTFAttacker != this &&
+		(bitsDamage != DMG_GENERIC &&
+		!(bitsDamage & (DMG_DROWN | DMG_FALL | DMG_BURN) &&
+		(info.GetDamageCustom() != TF_DMG_CUSTOM_BLEEDING &&
+		info.GetDamageCustom() != TF_DMG_CUSTOM_BACKSTAB &&
+		info.GetDamageCustom() != TF_DMG_CUSTOM_HEADSHOT))))
+	{
+		float flNew = (damage * flRatio);
+		float flArmor = (flNew * flAdditionalCost);
+		CALL_ATTRIB_HOOK_FLOAT(flArmor, mult_armor);
+
+		IncrementArmorValue(-flArmor, 0);
+
+		if (ArmorValue() <= 0)
+		{
+			SetArmorValue(0);
+		}
+
+		damage = flNew;
+	}
+
+	return damage;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -9552,6 +9596,15 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 				}
 			}
 		}
+	}
+#endif
+
+#ifdef QUIVER_DLL
+	float armorCalculate = DamageArmor(info, pTFAttacker, bitsDamage);
+
+	if (armorCalculate > 0.0f)
+	{
+		info.SetDamage(armorCalculate);
 	}
 #endif
 
@@ -10286,45 +10339,6 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	{
 		g_pPasstimeLogic->OnBallCarrierDamaged( this, pTFAttacker, info );
 	}
-
-#ifdef QUIVER_DLL
-	DevMsg("ARMOR CURRENTLY %i\n", ArmorValue());
-
-	//quiver allows for armor.
-	// we do this before any damage calculations
-	float flRatio = 0.2f; //modern armor ratio. this should be chanegd for every armor type.
-	float flBonus = 1.0f;
-
-	if ((info.GetDamageType() & DMG_BLAST) && g_pGameRules->IsMultiplayer())
-	{
-		// blasts damage armor more.
-		flBonus *= 2;
-	}
-
-	// armor doesn't protect against fall or drown damage!
-	// also against self-inflicted damage or bleeding.
-	if (ArmorValue() > 0 && 
-		pTFAttacker != this && 
-		(bitsDamage != DMG_GENERIC && 
-		!(bitsDamage & (DMG_DROWN | DMG_FALL | DMG_BURN) && 
-		info.GetDamageCustom() != TF_DMG_CUSTOM_BLEEDING)))
-	{
-		float flNew = (info.GetDamage() * flRatio);
-		float flArmor = (flNew * flBonus);
-
-		IncrementArmorValue(-flArmor);
-
-		// Does this use more armor than we have?
-		if (ArmorValue() <= 0)
-		{
-			SetArmorValue(0);
-		}
-
-		info.SetDamage(flNew);
-
-		DevMsg("ARMOR NOW %i\n", ArmorValue());
-	}
-#endif
 
 	return info.GetDamage();
 }

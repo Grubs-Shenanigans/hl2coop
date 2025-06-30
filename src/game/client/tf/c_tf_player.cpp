@@ -3981,6 +3981,9 @@ IMPLEMENT_CLIENTCLASS_DT( C_TFPlayer, DT_TFPlayer, CTFPlayer )
 	RecvPropInt(RECVINFO(m_nRestrictAchievements)),
 	RecvPropInt(RECVINFO(m_nRestrictQuests)),
 #endif
+#ifdef QUIVER_CLIENT_DLL
+	RecvPropInt(RECVINFO(m_ArmorValue)),
+#endif
 END_RECV_TABLE()
 
 
@@ -4001,6 +4004,9 @@ BEGIN_PREDICTION_DATA( C_TFPlayer )
 	DEFINE_PRED_FIELD( m_flVehicleReverseTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_flInspectTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_flHelpmeButtonPressTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
+#ifdef QUIVER_CLIENT_DLL
+	DEFINE_PRED_FIELD(m_ArmorValue, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_ONLY_ERROR_IF_ABOVE_ZERO_TO_ZERO_OR_BELOW_ETC),
+#endif
 END_PREDICTION_DATA()
 
 // ------------------------------------------------------------------------------------------ //
@@ -4138,6 +4144,10 @@ C_TFPlayer::C_TFPlayer() :
 	m_flHandScale = 1.f;
 #ifdef BDSBASE
 	m_flNeckScale = 1.f;
+#endif
+
+#ifdef QUIVER_CLIENT_DLL
+	m_ArmorValue = 0.0f;
 #endif
 
 	m_bIsMiniBoss = false;

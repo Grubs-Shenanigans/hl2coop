@@ -545,6 +545,10 @@ public:
 
 	bool	IsPlayerOnSteamFriendsList( C_BasePlayer *pPlayer );
 
+#ifdef QUIVER_CLIENT_DLL
+	int		ArmorValue(void) { return m_ArmorValue; }	
+#endif
+
 protected:
 
 	void ResetFlexWeights( CStudioHdr *pStudioHdr );
@@ -732,6 +736,10 @@ private:
 	int				m_nTauntSequence;
 	float			m_flTauntStartTime;
 	float			m_flTauntDuration;
+
+#ifdef QUIVER_CLIENT_DLL
+	int				m_ArmorValue;
+#endif
 
 	CEconItemView	m_TauntEconItemView;
 
