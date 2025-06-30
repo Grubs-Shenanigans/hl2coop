@@ -9056,7 +9056,7 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 	if (ArmorValue() > 0 &&
 		pTFAttacker != this &&
 		(bitsDamage != DMG_GENERIC &&
-		!(bitsDamage & (DMG_DROWN | DMG_FALL | DMG_BURN) &&
+		!(bitsDamage & (DMG_DROWN | DMG_FALL) &&
 		(info.GetDamageCustom() != TF_DMG_CUSTOM_BLEEDING &&
 		info.GetDamageCustom() != TF_DMG_CUSTOM_BACKSTAB &&
 		info.GetDamageCustom() != TF_DMG_CUSTOM_HEADSHOT))))

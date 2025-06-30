@@ -2994,11 +2994,6 @@ void CTFPlayerShared::ConditionGameRulesThink( void )
 	
 				CTakeDamageInfo info( m_hBurnAttacker, m_hBurnAttacker, m_hBurnWeapon, flBurnDamage, DMG_BURN | DMG_PREVENT_PHYSICS_FORCE, nKillType );
 				
-#ifdef QUIVER_DLL
-				//armor gets damaged by afterburn
-				info.SetDamage(m_pOuter->DamageArmor(info, m_hBurnAttacker, info.GetDamageType()));
-#endif
-				
 				m_pOuter->TakeDamage( info );
 
 				// Give health to attacker if they are carrying the Vampire Powerup.
