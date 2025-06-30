@@ -2996,7 +2996,7 @@ void CTFPlayerShared::ConditionGameRulesThink( void )
 				
 #ifdef QUIVER_DLL
 				//armor gets damaged by afterburn
-				m_pOuter->DamageArmor(info, m_hBurnAttacker, info.GetDamageType());
+				info.SetDamage(m_pOuter->DamageArmor(info, m_hBurnAttacker, info.GetDamageType()));
 #endif
 				
 				m_pOuter->TakeDamage( info );
