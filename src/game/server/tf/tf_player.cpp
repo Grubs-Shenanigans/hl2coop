@@ -9100,9 +9100,8 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 		EmitSound("Game.ArmorBreakAll");
 
 		//say a jeers or a negative line
-		int lineType(random->RandomInt(0, 1) == 1 ? MP_CONCEPT_PLAYER_NEGATIVE : MP_CONCEPT_PLAYER_JEERS);
 
-		SpeakConceptIfAllowed(lineType);
+		SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_JEERS);
 
 		if (pTFAttacker != this)
 		{
