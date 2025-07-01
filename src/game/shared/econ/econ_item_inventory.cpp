@@ -2400,6 +2400,34 @@ CON_COMMAND_F( item_generate_all_descriptions, "Generate full item descriptions 
 }
 #endif // CLIENT_DLL
 
+#ifdef BDSBASE
+#if defined(CLIENT_DLL)
+CON_COMMAND_F(econ_refreshschema_cl, "Refreshes the client item schema.", FCVAR_NONE)
+{
+	CEconItemSystem* pItemSystem = ItemSystem();
+
+	if (!pItemSystem)
+	{
+		Msg("No item system available.\n");
+		return;
+	}
+
+	if ((engine->IsInGame() || engine->IsConnected()) && !engine->IsLevelMainMenuBackground())
+	{
+		Msg("This command is not available for use in-game.\n");
+		return;
+	}
+
+	Msg("Restarting the item system...\n");
+
+	pItemSystem->Shutdown();
+	pItemSystem->Init();
+
+	Msg("Item system restarted.\n");
+}
+#endif
+#endif
+
 #endif // STAGING_ONLY || _DEBUG
 
 

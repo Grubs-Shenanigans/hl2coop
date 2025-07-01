@@ -9103,7 +9103,7 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 		SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_JEERS);
 
-		if (pTFAttacker != this)
+		if (pTFAttacker && pTFAttacker != this)
 		{
 			CSingleUserRecipientFilter filter2(pTFAttacker);
 			EmitSound_t params;

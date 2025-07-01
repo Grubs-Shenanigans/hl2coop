@@ -210,6 +210,112 @@
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 			"xifier_class_remap"	"eyelander"
 		}
+		
+		"weapon_quiver_artillery_cannon"
+		{
+			"enabled"	"1"
+			"item_class"	"tf_weapon_minigun"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+				"can_craft_count"	"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_deal_critical_damage"	"1"
+				"can_deal_mvm_penetration_damage"	"1"
+				"can_deal_long_distance_damage"	"1"
+			}
+			"show_in_armory"	"1"
+			"item_type_name"	"#TF_Weapon_Minigun"
+			"item_name"	"#Quiver_Artillery_Cannon"
+			"item_slot"	"primary"
+			"item_logname"	"artillery_cannon"
+			"item_iconname"	"tomislav"
+			"image_inventory"	"backpack/workshop/weapons/c_models/c_tomislav/c_tomislav"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"model_player"	"models/weapons/c_models/c_tomislav/c_tomislav.mdl"
+			"attach_to_hands"	"1"
+			"inspect_panel_dist" "88"
+			"item_quality"	"unique"
+			"min_ilevel"		"1"
+			"max_ilevel"		"99"
+			"used_by_classes"
+			{
+				"heavy"	"1"
+			}
+			"static_attrs"
+			{
+				"min_viewmodel_offset"		"10 0 -9"
+			}
+			"visuals"
+			{
+				"sound_reload"	"Weapon_Gatling.Reload"
+				"sound_empty"	"Weapon_Tomislav.WindDown"
+				"sound_double_shot"	"Weapon_Tomislav.Fire"
+				"sound_burst"	"Weapon_Tomislav.FireCrit"
+				"sound_special1"	"Weapon_Tomislav.WindUp"
+				"sound_special2"	"Weapon_Tomislav.WindDown"
+				"styles"
+				{
+					"0"
+					{
+						"skin_red"	"4"
+						"skin_blu"	"5"
+						"selectable"	"0"
+					}
+				}
+			}
+			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
+			"drop_sound"		"ui/item_heavy_gun_drop.wav"
+			"attributes"
+			{
+				"minigun spinup time decreased"
+				{
+					"attribute_class"	"mult_minigun_spinup_time"
+					"value" "0.8"
+				}
+				"damage bonus"
+				{
+					"attribute_class"	"mult_dmg"
+					"value"	"1.60"
+				}
+				"dmg falloff decreased renamed"
+				{
+					"attribute_class"	"mult_dmg_falloff"
+					"value"	"1.35"
+				}
+				"fire rate penalty"
+				{
+					"attribute_class"	"mult_postfiredelay"
+					"value"	"2"
+				}
+				"bullets per shot penalty"
+				{
+					"attribute_class" 	"mult_bullets_per_shot"
+					"value" "0.3"
+				}
+				"weapon spread bonus"
+				{
+					"attribute_class"	"mult_spread_scale"
+					"value"	"0.5"
+				}
+				"item style override"
+				{
+					"attribute_class"	"item_style_override"
+					"value"	"0"
+				}
+				"armor damage taken increased"
+				{
+					"attribute_class"	"mult_armor"
+					"value"			"1.45"
+				}
+			}
+		}
 	}
 
 	"items"
@@ -220,6 +326,14 @@
 			"name"	"The Flare Gun"
 			"prefab"	"valve weapon_flaregun"
 			"first_sale_date"	"2011/04/14"
+			"customitem" "1"
+			"stock_whitelist" "1"
+		}
+		"42"
+		{
+			"name"	"The Sandvich"
+			"first_sale_date"	"2010/09/29"
+			"prefab"	"valve weapon_sandvich"
 			"customitem" "1"
 			"stock_whitelist" "1"
 		}
@@ -285,6 +399,100 @@
 					}
 				}
 			}
+		}
+		"1150"
+		{
+			"name"	"The Quickiebomb Launcher"
+			"first_sale_date"	"2014/12/23"
+			"item_class"	"tf_weapon_pipebomblauncher"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"		"1"
+				"can_deal_gib_damage"	"1"
+				"can_be_equipped_by_soldier_or_demo"	"1"
+				"can_deal_critical_damage"	"1"
+				"can_deal_long_distance_damage"	"1"
+			}
+			"show_in_armory"	"1"
+			"item_type_name"	"#TF_Weapon_PipebombLauncher"
+			"item_name" "#TF_Weapon_Sticky_Quickie"
+			"item_slot"	"secondary"
+			"anim_slot"	"primary"
+			"item_quality"	"unique"
+			"propername"	"1"
+			"customitem" "1"
+			"stock_whitelist" "1"
+			"reskin" "1"
+			"item_logname"	"quickiebomb_launcher"
+			"item_iconname"	"quickiebomb_launcher"
+			"min_ilevel"	"1"
+			"max_ilevel"	"99"
+			"image_inventory"	"backpack/workshop/weapons/c_models/c_kingmaker_sticky/c_kingmaker_sticky"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"inspect_panel_dist" 			"50"
+			"model_player"	"models/workshop/weapons/c_models/c_kingmaker_sticky/c_kingmaker_sticky.mdl"
+			"attach_to_hands"	"1"
+			"used_by_classes"
+			{
+				"demoman"	"1"
+			}
+			"static_attrs"
+			{
+				"min_viewmodel_offset"		"10 0 -10"				
+			}
+			"attributes"
+			{
+				"sticky arm time bonus"
+				{
+					"attribute_class"	"sticky_arm_time"
+					"value"	"-0.2"
+				}
+				"stickybomb charge rate"
+				{
+					"attribute_class"	"stickybomb_charge_rate"
+					"value"	"0.3"
+				}
+				"stickybomb_charge_damage_increase"
+				{
+					"attribute_class"	"stickybomb_charge_damage_increase"
+					"value"	"1.35"
+				}
+				"stickies detonate stickies"
+				{
+					"attribute_class"	"stickies_detonate_stickies"
+					"value"	"1"
+				}
+				"clip size penalty"
+				{
+					"attribute_class"	"mult_clipsize"
+					"value"	"0.5"
+				}
+				"damage penalty"
+				{
+					"attribute_class"	"mult_dmg"
+					"value"	"0.85"
+				}
+				"custom projectile model"
+				{
+					"attribute_class"	"custom_projectile_model"
+					"value"				"models/workshop/weapons/c_models/c_kingmaker_sticky/w_kingmaker_stickybomb.mdl"
+				}
+			}
+			"visuals"
+			{
+				"sound_single_shot"		"Weapon_AirBurster.Single"
+				"sound_burst"			"Weapon_AirBurster.SingleCrit"
+				"sound_special1"		"Weapon_AirBurster.Explode"
+			}
+			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
+			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
 		"1151"
 		{
@@ -496,6 +704,14 @@
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 			"xifier_class_remap"	"Horseman's Headtaker"
 		}
+		"34405"
+		{
+			"name"		"Artillery Cannon"
+			"prefab"	"valve weapon_quiver_artillery_cannon"
+			"first_sale_date"	"2010/09/29"
+			"xifier_class_remap"	"weapon_quiver_artillery_cannon"
+			"customitem" "1"
+		}
 	}
 
 	"attributes"
@@ -586,6 +802,36 @@
 			"hidden"	"0"
 			"effect_type"	"negative"
 			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"900"
+		{
+			"name"	"bullets per shot penalty"
+			"attribute_class"	"mult_bullets_per_shot"
+			"description_string"	"#Attrib_BulletsPerShot_Penalty"
+			"description_format"	"value_is_inverted_percentage"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"901"
+		{
+			"name"	"dmg falloff increased renamed"
+			"attribute_class"	"mult_dmg_falloff"
+			"description_string"	"#Attrib_Dmg_Falloff_Increased_Generic"
+			"description_format"	"value_is_inverted_percentage"
+			"hidden"	"0"
+			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"902"
+		{
+			"name"	"dmg falloff decreased renamed"
+			"attribute_class"	"mult_dmg_falloff"
+			"description_string"	"#Attrib_Dmg_Falloff_Decreased_Generic"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
 			"stored_as_integer"	"0"
 		}
 	}

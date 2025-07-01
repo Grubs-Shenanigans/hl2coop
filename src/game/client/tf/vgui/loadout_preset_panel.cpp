@@ -235,7 +235,32 @@ equipped_preset_t CLoadoutPresetPanel::GetSelectedPresetID() const
 void CLoadoutPresetPanel::UpdatePresetButtonStates()
 {
 	equipped_preset_t unEquippedPresetID = GetSelectedPresetID();
+
+#ifdef BDSBASE
+	ISteamUser *pSteamUser = steamapicontext->SteamUser();
+	CSteamID localSteamID; 
+
+	if (pSteamUser)
+	{
+		localSteamID = pSteamUser->GetSteamID();
+	}
+	else
+	{
+		//can we use the local ID?
+		CSteamID localCheckSteamID = ClientSteamContext().GetLocalPlayerSteamID();
+		if (localCheckSteamID.IsValid())
+		{
+			localSteamID = localCheckSteamID;
+		}
+		else
+		{
+			//failure.
+			return;
+		}
+	}
+#else
 	CSteamID localSteamID = steamapicontext->SteamUser()->GetSteamID();
+#endif
 
 	CTFPlayerInventory *pInv = TFInventoryManager()->GetInventoryForPlayer(localSteamID);
 	if (pInv) {
