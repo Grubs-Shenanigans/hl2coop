@@ -8126,6 +8126,16 @@ void C_TFPlayer::AddDecal( const Vector& rayStart, const Vector& rayEnd,
 		g_pEffects->Ricochet( rayEnd - (vecDir * 8), -vecDir );
 		return;
 	}
+#ifdef QUIVER_CLIENT_DLL
+	else if (ArmorValue() > 0)
+	{
+		// Armor also ricochets.
+		Vector vecDir = rayEnd - rayStart;
+		VectorNormalize(vecDir);
+		g_pEffects->Ricochet(rayEnd - (vecDir * 8), -vecDir);
+		return;
+	}
+#endif
 
 #ifdef TF_RAID_MODE
 	// no decals for the BLUE team in Raid mode

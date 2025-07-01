@@ -1245,6 +1245,10 @@ private:
 	CNetworkVar( bool, m_bRegenerating );
 	bool				m_bRespawning;
 
+#ifdef QUIVER_DLL
+	int					m_iArmorBreakSpriteTexture;
+#endif
+
 	// Items.
 	CNetworkHandle( CTFItem, m_hItem );
 

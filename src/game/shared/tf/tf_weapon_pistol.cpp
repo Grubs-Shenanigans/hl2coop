@@ -170,7 +170,11 @@ void CTFPistol_ScoutPrimary::Push( void )
 		{
 			Vector vecToVictim = pVictim->GetAbsOrigin() - pOwner->GetAbsOrigin();
 			VectorNormalize( vecToVictim );
+#ifdef QUIVER_DLL
+			pVictim->ApplyGenericPushbackImpulse( vecToVictim * 800.f, pOwner );
+#else
 			pVictim->ApplyGenericPushbackImpulse( vecToVictim * 400.f, pOwner );
+#endif
 			float flDamage = 1.f;
 			CTakeDamageInfo info( pVictim, pOwner, this, flDamage, DMG_MELEE | DMG_NEVERGIB | DMG_CLUB, TF_DMG_CUSTOM_NONE );
 			CalculateMeleeDamageForce( &info, vecForward, GetAbsOrigin() + vecForward * flDist, 1.f / flDamage * 80.f );

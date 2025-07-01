@@ -3313,6 +3313,15 @@ void CTFPlayer::Precache()
 	*/
 	PrecacheTFPlayer();
 
+#ifdef QUIVER_DLL
+	//doing it here due to static errors....
+	int index = PrecacheModel("sprites/shockwave.vmt");
+	m_iArmorBreakSpriteTexture = index;
+
+	PrecacheScriptSound("Game.ArmorBreak");
+	PrecacheScriptSound("Game.ArmorBreakAll");
+#endif
+
 	BaseClass::Precache();
 }
 
@@ -8653,6 +8662,13 @@ void CTFPlayer::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, 
 		// Make bullet impacts
 		g_pEffects->Ricochet( ptr->endpos - (vecDir * 8), -vecDir );
 	}
+#ifdef QUIVER_DLL
+	else if (ArmorValue() > 0)
+	{
+		// Armor also ricochets.
+		g_pEffects->Ricochet(ptr->endpos - (vecDir * 8), -vecDir);
+	}
+#endif
 	else
 	{	
 		// Since this code only runs on the server, make sure it shows the tempents it creates.
@@ -9045,18 +9061,18 @@ ConVar tf_debug_damage( "tf_debug_damage", "0", FCVAR_CHEAT );
 #ifdef QUIVER_DLL
 float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage)
 {
-	float damage = info.GetDamage();
+	float realDamage = info.GetDamage();
+	float damage = realDamage;
 
 	//quiver allows for armor.
 	float flRatio = GetPlayerClass()->GetArmorRatio(); //modern armor ratio. this should be changed for every armor type.
 	float flAdditionalCost = GetPlayerClass()->GetArmorAdditionalCostMult(); //should be changed for all armor types
 
-	// armor doesn't protect against fall or drown damage!
-	// also against self-inflicted damage or bleeding.
+	// armor doesn't protect against drown damage!
+	// also against bleeding or other special damage types that should penetrate.
 	if (ArmorValue() > 0 &&
-		pTFAttacker != this &&
 		(bitsDamage != DMG_GENERIC &&
-		!(bitsDamage & (DMG_DROWN | DMG_FALL) &&
+		!(bitsDamage & (DMG_DROWN) &&
 		(info.GetDamageCustom() != TF_DMG_CUSTOM_BLEEDING &&
 		info.GetDamageCustom() != TF_DMG_CUSTOM_BACKSTAB &&
 		info.GetDamageCustom() != TF_DMG_CUSTOM_HEADSHOT))))
@@ -9073,6 +9089,40 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 		}
 
 		damage = flNew;
+	}
+
+	if (ArmorValue() <= 0)
+	{
+		// in most instances, we SHOULD have an inflictor.
+		CBroadcastRecipientFilter filter;
+		te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
+
+		EmitSound("Game.ArmorBreakAll");
+
+		//say a jeers or a negative line
+		int lineType(random->RandomInt(0, 1) == 1 ? MP_CONCEPT_PLAYER_NEGATIVE : MP_CONCEPT_PLAYER_JEERS);
+
+		SpeakConceptIfAllowed(lineType);
+
+		if (pTFAttacker != this)
+		{
+			CSingleUserRecipientFilter filter2(pTFAttacker);
+			EmitSound_t params;
+			if (bitsDamage & DMG_CRITICAL)
+			{
+				params.m_pSoundName = "Game.ArmorBreak";
+			}
+			else
+			{
+				params.m_pSoundName = "Game.ArmorBreakAll";
+			}
+
+			pTFAttacker->EmitSound(filter2, pTFAttacker->entindex(), params);
+		}
+	}
+	else
+	{
+		PlayDamageResistSound(damage, realDamage);
 	}
 
 	return damage;
@@ -9600,11 +9650,14 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 #endif
 
 #ifdef QUIVER_DLL
-	float armorCalculate = DamageArmor(info, pTFAttacker, bitsDamage);
-
-	if (armorCalculate > 0.0f)
+	if (ArmorValue() > 0)
 	{
-		info.SetDamage(armorCalculate);
+		float armorCalculate = DamageArmor(info, pTFAttacker, bitsDamage);
+
+		if (armorCalculate > 0.0f)
+		{
+			info.SetDamage(armorCalculate);
+		}
 	}
 #endif
 

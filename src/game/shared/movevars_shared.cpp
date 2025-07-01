@@ -57,7 +57,9 @@ ConVar	sv_specnoclip("sv_specnoclip", "1", FCVAR_ARCHIVE | FCVAR_NOTIFY | FCVAR_
 #endif
 
 #ifdef BDSBASE
-#if defined( TF_CLIENT_DLL ) || defined( TF_DLL )
+#if defined( QUIVER_CLIENT_DLL ) || defined( QUIVER_DLL )
+ConVar	sv_maxspeed("sv_maxspeed", "999", FCVAR_NOTIFY | FCVAR_CHEAT | FCVAR_REPLICATED);
+#elif defined( TF_CLIENT_DLL ) || defined( TF_DLL )
 ConVar	sv_maxspeed("sv_maxspeed", "520", FCVAR_NOTIFY | FCVAR_CHEAT | FCVAR_REPLICATED);
 #elif defined( HL2MP )
 ConVar	sv_maxspeed("sv_maxspeed", "320", FCVAR_NOTIFY | FCVAR_CHEAT | FCVAR_REPLICATED);

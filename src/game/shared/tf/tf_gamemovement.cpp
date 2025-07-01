@@ -94,6 +94,7 @@ extern ConVar mp_tournament_readymode_countdown;
 #ifdef BDSBASE
 extern ConVar sv_bhop;
 extern ConVar sv_bhop_mode;
+extern ConVar sv_bhop_boost;
 #endif
 
 #ifdef BDSBASE
@@ -1407,7 +1408,7 @@ bool CTFGameMovement::CheckJumpButton()
 			VectorNormalize(vecForward);
 			for (int iAxis = 0; iAxis < 2; ++iAxis)
 			{
-				vecForward[iAxis] *= (mv->m_flForwardMove * 0.1f);
+				vecForward[iAxis] *= (mv->m_flForwardMove * sv_bhop_boost.GetFloat());
 				//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardsprintscale.GetFloat() );
 			}
 			VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
@@ -1421,7 +1422,7 @@ bool CTFGameMovement::CheckJumpButton()
 
 			// We give a certain percentage of the current forward movement as a bonus to the jump speed.  That bonus is clipped
 			// to not accumulate over time.
-			float flSpeedBoostPerc = 0.1f;
+			float flSpeedBoostPerc = sv_bhop_boost.GetFloat();
 			float flSpeedAddition = fabs(mv->m_flForwardMove * flSpeedBoostPerc);
 			float flMaxSpeed = mv->m_flMaxSpeed + (mv->m_flMaxSpeed * flSpeedBoostPerc);
 			float flNewSpeed = (flSpeedAddition + mv->m_vecVelocity.Length2D());

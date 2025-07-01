@@ -886,7 +886,9 @@ bool CObjectSentrygun::FindTarget()
 		if ( pPointer && pPointer->HasLaserDot() && !IsDisposableBuilding() )
 		{
 			m_bPlayerControlled = true;
+#ifndef QUIVER_DLL
 			m_nShieldLevel.Set( SHIELD_NORMAL );
+#endif
 			m_flShieldFadeTime = gpGlobals->curtime + WRANGLER_DISABLE_TIME;
 
 			// If not target dummy, use laserdot, otherwise targetdummy overrides
@@ -936,10 +938,16 @@ bool CObjectSentrygun::FindTarget()
 		}
 	}
 
+#ifdef QUIVER_DLL
+	// Don't auto track to targets while under the effects of the player.
+	if (m_bPlayerControlled)
+		return false;
+#else
 	// Don't auto track to targets while under the effects of the player shield.
 	// The shield fades 3 seconds after we disengage from player control.
-	if ( m_nShieldLevel == SHIELD_NORMAL )
+	if (m_nShieldLevel == SHIELD_NORMAL)
 		return false;
+#endif
 
 	// is there an active truce?
 	bool bTruceActive = TFGameRules() && TFGameRules()->IsTruceActive();
@@ -1743,7 +1751,11 @@ void CObjectSentrygun::SentryRotate( void )
 	{
 		// Change direction
 
+#ifdef QUIVER_DLL
+		if ( IsDisabled() || m_bPlayerControlled )
+#else
 		if ( IsDisabled() || m_nShieldLevel == SHIELD_NORMAL )
+#endif
 		{
 			EmitSound( "Building_Sentrygun.Disabled" );
 			m_vecGoalAngles.x = 30;

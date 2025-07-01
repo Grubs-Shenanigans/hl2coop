@@ -68,8 +68,15 @@ ConVar player_limit_jump_speed( "player_limit_jump_speed", "1", FCVAR_REPLICATED
 ConVar option_duck_method("option_duck_method", "1", FCVAR_REPLICATED|FCVAR_ARCHIVE );// 0 = HOLD to duck, 1 = Duck is a toggle
 
 #ifdef BDSBASE
+#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+ConVar sv_bhop("sv_bhop", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY);
+ConVar sv_bhop_mode("sv_bhop_mode", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "1 = 2006 bhopping, 2 = orangebox accelerated backhopping");
+ConVar sv_bhop_boost("sv_bhop_boost", "0.2", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY);
+#else
 ConVar sv_bhop("sv_bhop", "0", FCVAR_REPLICATED | FCVAR_NOTIFY);
 ConVar sv_bhop_mode("sv_bhop_mode", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "1 = 2006 bhopping, 2 = orangebox accelerated backhopping");
+ConVar sv_bhop_boost("sv_bhop_boost", "0.1", FCVAR_REPLICATED | FCVAR_NOTIFY);
+#endif
 #endif
 
 // [MD] I'll remove this eventually. For now, I want the ability to A/B the optimizations.
@@ -2539,7 +2546,7 @@ bool CGameMovement::CheckJumpButton( void )
 			VectorNormalize(vecForward);
 			for (int iAxis = 0; iAxis < 2; ++iAxis)
 			{
-				vecForward[iAxis] *= (mv->m_flForwardMove * 0.1f);
+				vecForward[iAxis] *= (mv->m_flForwardMove * sv_bhop_boost.GetFloat());
 				//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardsprintscale.GetFloat() );
 			}
 			VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
@@ -2553,7 +2560,7 @@ bool CGameMovement::CheckJumpButton( void )
 
 			// We give a certain percentage of the current forward movement as a bonus to the jump speed.  That bonus is clipped
 			// to not accumulate over time.
-			float flSpeedBoostPerc = 0.1f;
+			float flSpeedBoostPerc = sv_bhop_boost.GetFloat();
 			float flSpeedAddition = fabs(mv->m_flForwardMove * flSpeedBoostPerc);
 			float flMaxSpeed = mv->m_flMaxSpeed + (mv->m_flMaxSpeed * flSpeedBoostPerc);
 			float flNewSpeed = (flSpeedAddition + mv->m_vecVelocity.Length2D());
