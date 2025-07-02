@@ -3318,8 +3318,11 @@ void CTFPlayer::Precache()
 	int index = PrecacheModel("sprites/shockwave.vmt");
 	m_iArmorBreakSpriteTexture = index;
 
-	PrecacheScriptSound("Game.ArmorBreak");
+	PrecacheScriptSound("Game.ArmorBreakCrit");
+	PrecacheScriptSound("Game.ArmorBreakHit");
 	PrecacheScriptSound("Game.ArmorBreakAll");
+
+	UTIL_PrecacheOther("sparktrail");
 #endif
 
 	BaseClass::Precache();
@@ -4348,9 +4351,19 @@ void CTFPlayer::Regenerate( bool bRefillHealthAndAmmo /*= true*/ )
 void CTFPlayer::InitClass( void )
 {
 #ifdef QUIVER_DLL
+	int iNoArmor = 0;
+	CALL_ATTRIB_HOOK_INT(iNoArmor, no_armor);
+
 	int iArmor = GetPlayerClass()->GetMaxArmor();
 
-	CALL_ATTRIB_HOOK_INT(iArmor, add_maxarmor);
+	if (!iNoArmor)
+	{
+		CALL_ATTRIB_HOOK_INT(iArmor, add_maxarmor);
+	}
+	else
+	{
+		iArmor = 0;
+	}
 
 	SetArmorValue(iArmor);
 #else
@@ -9059,6 +9072,81 @@ void HandleRageGain( CTFPlayer *pPlayer, unsigned int iRequiredBuffFlags, float 
 ConVar tf_debug_damage( "tf_debug_damage", "0", FCVAR_CHEAT );
 
 #ifdef QUIVER_DLL
+//Imported from HL2
+class CSparkTrail : public CPointEntity
+{
+	DECLARE_CLASS(CSparkTrail, CPointEntity);
+	void Spawn(void);
+	void SparkThink(void);
+
+	virtual void Precache();
+
+	DECLARE_DATADESC();
+};
+
+LINK_ENTITY_TO_CLASS(sparktrail, CSparkTrail);
+
+void CSparkTrail::Precache()
+{
+	BaseClass::Precache();
+
+	PrecacheScriptSound("DoSpark");
+}
+
+void CSparkTrail::Spawn()
+{
+	Precache();
+
+	EmitSound("DoSpark");
+
+	m_iHealth = 20 + random->RandomInt(0, 5);
+	UTIL_SetOrigin(this, GetOwnerEntity()->EyePosition());
+
+	Vector vecVelocity;
+
+	vecVelocity.x = random->RandomFloat(100, 400);
+	vecVelocity.y = random->RandomFloat(100, 400);
+	vecVelocity.z = random->RandomFloat(0, 100);
+
+	if (random->RandomInt(0, 1) == 0)
+		vecVelocity.x *= -1;
+
+	if (random->RandomInt(0, 1) == 0)
+		vecVelocity.y *= -1;
+
+	UTIL_SetSize(this, Vector(0, 0, 0), Vector(0, 0, 0));
+	SetMoveType(MOVETYPE_FLYGRAVITY);
+	SetSolid(SOLID_NONE);
+
+	if (random->RandomInt(0, 2) == 0)
+	{
+		vecVelocity *= 2.0;
+		m_iHealth /= 2;
+		SetMoveType(MOVETYPE_FLY);
+	}
+
+	SetAbsVelocity(vecVelocity);
+
+	SetThink(&CSparkTrail::SparkThink);
+	SetNextThink(gpGlobals->curtime);
+}
+
+void CSparkTrail::SparkThink()
+{
+	SetNextThink(gpGlobals->curtime + 0.05);
+
+	g_pEffects->Sparks(GetAbsOrigin());
+
+	if (m_iHealth-- < 1)
+	{
+		UTIL_Remove(this);
+	}
+}
+
+BEGIN_DATADESC(CSparkTrail)
+DEFINE_THINKFUNC(SparkThink),
+END_DATADESC()
+
 float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage)
 {
 	float realDamage = info.GetDamage();
@@ -9068,9 +9156,15 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 	float flRatio = GetPlayerClass()->GetArmorRatio(); //modern armor ratio. this should be changed for every armor type.
 	float flAdditionalCost = GetPlayerClass()->GetArmorAdditionalCostMult(); //should be changed for all armor types
 
+	int iAttackIgnoresArmor = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iAttackIgnoresArmor, mod_pierce_armor);
+
+	bool bArmorDamagedThisFrame = false;
+
 	// armor doesn't protect against drown damage!
 	// also against bleeding or other special damage types that should penetrate.
 	if (ArmorValue() > 0 &&
+		!iAttackIgnoresArmor &&
 		(bitsDamage != DMG_GENERIC &&
 		!(bitsDamage & (DMG_DROWN) &&
 		(info.GetDamageCustom() != TF_DMG_CUSTOM_BLEEDING &&
@@ -9089,39 +9183,51 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 		}
 
 		damage = flNew;
+		bArmorDamagedThisFrame = true;
 	}
 
-	if (ArmorValue() <= 0)
+	if (bArmorDamagedThisFrame)
 	{
-		// in most instances, we SHOULD have an inflictor.
-		CBroadcastRecipientFilter filter;
-		te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
-
-		EmitSound("Game.ArmorBreakAll");
-
-		//say a jeers or a negative line
-
-		SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_JEERS);
-
-		if (pTFAttacker && pTFAttacker != this)
+		if (ArmorValue() <= 0)
 		{
-			CSingleUserRecipientFilter filter2(pTFAttacker);
-			EmitSound_t params;
-			if (bitsDamage & DMG_CRITICAL)
+			// in most instances, we SHOULD have an inflictor.
+			CBroadcastRecipientFilter filter;
+			te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
+
+			EmitSound("Game.ArmorBreakAll");
+
+			CBaseEntity* pTrail;
+			for (int i = 0; i < 3; i++)
 			{
-				params.m_pSoundName = "Game.ArmorBreak";
-			}
-			else
-			{
-				params.m_pSoundName = "Game.ArmorBreakAll";
+				pTrail = CreateEntityByName("sparktrail");
+				pTrail->SetOwnerEntity(this);
+				DispatchSpawn(pTrail);
 			}
 
-			pTFAttacker->EmitSound(filter2, pTFAttacker->entindex(), params);
+			//say a jeers or a negative line
+			SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_JEERS);
+
+			if (pTFAttacker && pTFAttacker != this)
+			{
+				CSingleUserRecipientFilter filter2(pTFAttacker);
+				EmitSound_t params;
+				if (bitsDamage & DMG_CRITICAL)
+				{
+					params.m_pSoundName = "Game.ArmorBreakCrit";
+				}
+				else
+				{
+					params.m_pSoundName = "Game.ArmorBreakHit";
+				}
+
+				pTFAttacker->SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_CHEERS);
+				pTFAttacker->EmitSound(filter2, pTFAttacker->entindex(), params);
+			}
 		}
-	}
-	else
-	{
-		PlayDamageResistSound(damage, realDamage);
+		else
+		{
+			PlayDamageResistSound(damage, realDamage);
+		}
 	}
 
 	return damage;
@@ -9895,6 +10001,9 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	{
 		Warning( "    DEALT: Player took %.2f damage.\n", info.GetDamage() );
 		Warning( "    HEALTH LEFT: %d\n", GetHealth() );
+#ifdef QUIVER_DLL
+		Warning( "    ARMOR LEFT: %d\n", ArmorValue() );
+#endif
 	}
 
 	// Some weapons have the ability to impart extra moment just because they feel like it. Let their attributes

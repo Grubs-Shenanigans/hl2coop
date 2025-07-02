@@ -5863,7 +5863,7 @@ int CTFRadiusDamageInfo::ApplyToEntity( CBaseEntity *pEntity )
 			//NDebugOverlay::Line( tr.endpos, vecSpot, 255, 0, 0, false, 10 );
 			UTIL_TraceLine(tr.endpos, vecSpot, MASK_RADIUS_DAMAGE, &filter, &tr);
 
-			if (tr.fraction != 1.0 && tr.DidHitWorld()) 
+			if ( tr.fraction != 1.0 && tr.DidHitWorld() )
 			{
 				return 0;
 			}
@@ -5907,7 +5907,7 @@ int CTFRadiusDamageInfo::ApplyToEntity( CBaseEntity *pEntity )
 
 	flAdjustedDamage = RemapValClamped( flDistanceToEntity, 0, flRadius, dmgInfo->GetDamage(), dmgInfo->GetDamage() * flFalloff );
 
-	CTFWeaponBase *pWeapon = dynamic_cast<CTFWeaponBase *>(dmgInfo->GetWeapon());
+	CTFWeaponBase *pWeapon = dynamic_cast<CTFWeaponBase *>( dmgInfo->GetWeapon() );
 	
 	// Grenades & Pipebombs do less damage to ourselves.
 	if ( pEntity == dmgInfo->GetAttacker() && pWeapon )
@@ -6647,6 +6647,29 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 		bool bDoShortRangeDistanceIncrease = !bCrit || info.GetCritType() == CTakeDamageInfo::CRIT_MINI ;
 		bool bDoLongRangeDistanceDecrease = !bIgnoreLongRangeDmgEffects && ( bForceCritFalloff || ( !bCrit && info.GetCritType() != CTakeDamageInfo::CRIT_MINI  ) );
 
+#ifdef BDSBASE
+		int iNoDamageFalloff = 0;
+		int iNoDamageRampup = 0;
+
+		if (pWeapon)
+		{
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iNoDamageFalloff, no_damage_falloff);
+
+			if (iNoDamageFalloff)
+			{
+				bForceCritFalloff = false;
+				bDoLongRangeDistanceDecrease = false;
+			}
+
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iNoDamageRampup, no_damage_rampup);
+
+			if (iNoDamageRampup)
+			{
+				bDoShortRangeDistanceIncrease = false;
+			}
+		}
+#endif
+
 		// If we're doing any distance modification, we need to do that first
 		float flRandomDamage = info.GetDamage() * tf_damage_range.GetFloat();
 
@@ -6755,9 +6778,32 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 			}
 		}
 
+#ifdef BDSBASE
+		bool bDamageFalloff = (!iNoDamageFalloff && bDoLongRangeDistanceDecrease);
+#endif
+
 		// Random damage variance.
 		flDmgVariance = SimpleSplineRemapValClamped( flRandomRangeVal, 0, 1, -flRandomDamage, flRandomDamage );
+
+#ifdef BDSBASE
+		if (bDamageFalloff && flDmgVariance < 0.f)
+		{
+			if (pWeapon)
+			{
+				int iReverseDamageFalloff = 0;
+				CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iReverseDamageFalloff, reverse_damage_falloff);
+
+				if (iReverseDamageFalloff)
+				{
+					flDmgVariance *= -1.0f;
+				}
+			}
+		}
+
+		if ( (bDoShortRangeDistanceIncrease && flDmgVariance > 0.f) || bDamageFalloff)
+#else
 		if ( ( bDoShortRangeDistanceIncrease && flDmgVariance > 0.f ) || bDoLongRangeDistanceDecrease )
+#endif
 		{
 			flDamage += flDmgVariance;
 		}

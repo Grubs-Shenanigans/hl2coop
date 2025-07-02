@@ -1086,18 +1086,28 @@ float CTFMinigun::GetProjectileDamage( void )
 {
 	float flDamage = BaseClass::GetProjectileDamage();
 
-	// How long have we been spun up - sans the min period required to fire
-	float flPreFireWindUp = GetWindUpDuration() - TF_MINIGUN_SPINUP_TIME;
-	float flSpinTime = Max( flPreFireWindUp, GetFiringDuration() );
-	// DevMsg( "PreFireTime: %.2f\n", flPreFireWindUp );
+#ifdef BDSBASE
+	int iNoTimeBasedDamagePenalty = 0;
+	CALL_ATTRIB_HOOK_INT(iNoTimeBasedDamagePenalty, no_time_based_damage_penalty);
 
-	if ( flSpinTime < TF_MINIGUN_PENALTY_PERIOD )
+	if (!iNoTimeBasedDamagePenalty)
 	{
-		float flMod = 1.f;
-		flMod = RemapValClamped( flSpinTime, 0.2f, TF_MINIGUN_PENALTY_PERIOD, 0.5f, 1.f );
-		flDamage *= flMod;
-		//DevMsg( "DmgMod: %.2f\n", flMod );
+#endif
+		// How long have we been spun up - sans the min period required to fire
+		float flPreFireWindUp = GetWindUpDuration() - TF_MINIGUN_SPINUP_TIME;
+		float flSpinTime = Max( flPreFireWindUp, GetFiringDuration() );
+		// DevMsg( "PreFireTime: %.2f\n", flPreFireWindUp );
+
+		if ( flSpinTime < TF_MINIGUN_PENALTY_PERIOD )
+		{
+			float flMod = 1.f;
+			flMod = RemapValClamped( flSpinTime, 0.2f, TF_MINIGUN_PENALTY_PERIOD, 0.5f, 1.f );
+			flDamage *= flMod;
+			//DevMsg( "DmgMod: %.2f\n", flMod );
+		}
+#ifdef BDSBASE
 	}
+#endif
 	
 	return flDamage;
 }
@@ -1109,19 +1119,29 @@ float CTFMinigun::GetWeaponSpread( void )
 {
 	float flSpread = BaseClass::GetWeaponSpread();
 
-	// How long have we been spun up - sans the min period required to fire
-	float flPreFireWindUp = GetWindUpDuration() - TF_MINIGUN_SPINUP_TIME;
-	float flSpinTime = Max( flPreFireWindUp, GetFiringDuration() );
-	//DevMsg( "PreFireTime: %.2f\n", flPreFireWindUp );
+#ifdef BDSBASE
+	int iNoTimeBasedSpreadPenalty = 0;
+	CALL_ATTRIB_HOOK_INT(iNoTimeBasedSpreadPenalty, no_time_based_spread_penalty);
 
-	if ( flSpinTime < TF_MINIGUN_PENALTY_PERIOD )
+	if (!iNoTimeBasedSpreadPenalty)
 	{
-		const float flMaxSpread = 1.5f;
-		float flMod = RemapValClamped( flSpinTime, 0.f, TF_MINIGUN_PENALTY_PERIOD, flMaxSpread, 1.f );
-		//DevMsg( "SpreadMod: %.2f\n", flMod );
+#endif
+		// How long have we been spun up - sans the min period required to fire
+		float flPreFireWindUp = GetWindUpDuration() - TF_MINIGUN_SPINUP_TIME;
+		float flSpinTime = Max(flPreFireWindUp, GetFiringDuration());
+		//DevMsg( "PreFireTime: %.2f\n", flPreFireWindUp );
 
-		flSpread *= flMod;
+		if (flSpinTime < TF_MINIGUN_PENALTY_PERIOD)
+		{
+			const float flMaxSpread = 1.5f;
+			float flMod = RemapValClamped(flSpinTime, 0.f, TF_MINIGUN_PENALTY_PERIOD, flMaxSpread, 1.f);
+			//DevMsg( "SpreadMod: %.2f\n", flMod );
+
+			flSpread *= flMod;
+		}
+#ifdef BDSBASE
 	}
+#endif
 	
 	return flSpread;
 }

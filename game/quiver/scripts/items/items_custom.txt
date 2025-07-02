@@ -274,25 +274,25 @@
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 			"attributes"
 			{
-				"minigun spinup time decreased"
-				{
-					"attribute_class"	"mult_minigun_spinup_time"
-					"value" "0.8"
-				}
 				"damage bonus"
 				{
 					"attribute_class"	"mult_dmg"
-					"value"	"1.60"
+					"value"	"1.55"
 				}
-				"dmg falloff decreased renamed"
+				"reverse damage falloff"
 				{
-					"attribute_class"	"mult_dmg_falloff"
-					"value"	"1.35"
+					"attribute_class"	"reverse_damage_falloff"
+					"value"	"1"
+				}
+				"no damage rampup"
+				{
+					"attribute_class"	"no_damage_rampup"
+					"value"	"1"
 				}
 				"fire rate penalty"
 				{
 					"attribute_class"	"mult_postfiredelay"
-					"value"	"2"
+					"value"	"2.1"
 				}
 				"bullets per shot penalty"
 				{
@@ -302,17 +302,12 @@
 				"weapon spread bonus"
 				{
 					"attribute_class"	"mult_spread_scale"
-					"value"	"0.5"
+					"value"	"0.3"
 				}
 				"item style override"
 				{
 					"attribute_class"	"item_style_override"
 					"value"	"0"
-				}
-				"armor damage taken increased"
-				{
-					"attribute_class"	"mult_armor"
-					"value"			"1.45"
 				}
 			}
 		}
@@ -716,7 +711,7 @@
 
 	"attributes"
 	{
-		"892"
+		"900"
 		{
 			"name"	"max armor additive bonus"
 			"attribute_class"	"add_maxarmor"
@@ -727,7 +722,7 @@
 			"armory_desc"	"on_wearer"
 			"stored_as_integer"	"0"
 		}
-		"893"
+		"901"
 		{
 			"name"	"max armor additive penalty"
 			"attribute_class"	"add_maxarmor"
@@ -738,7 +733,7 @@
 			"armory_desc"	"on_wearer"
 			"stored_as_integer"	"0"
 		}
-		"894"
+		"902"
 		{
 			"name"	"armor damage taken reduced"
 			"attribute_class"	"mult_armor"
@@ -749,7 +744,7 @@
 			"armory_desc"	"on_wearer"
 			"stored_as_integer"	"0"
 		}
-		"895"
+		"903"
 		{
 			"name"	"armor damage taken increased"
 			"attribute_class"	"mult_armor"
@@ -760,7 +755,7 @@
 			"armory_desc"	"on_wearer"
 			"stored_as_integer"	"0"
 		}
-		"896"
+		"904"
 		{
 			"name"	"armor taken from dispensers increased"
 			"attribute_class"	"mult_dispenser_armor_rate"
@@ -771,7 +766,7 @@
 			"armory_desc"	"on_wearer"
 			"stored_as_integer"	"0"
 		}
-		"897"
+		"905"
 		{
 			"name"	"armor taken from dispensers decreased"
 			"attribute_class"	"mult_dispenser_armor_rate"
@@ -782,54 +777,23 @@
 			"armory_desc"	"on_wearer"
 			"stored_as_integer"	"0"
 		}
-		"898"
+		"906"
 		{
-			"name"	"health taken from dispensers increased"
-			"attribute_class"	"mult_dispenser_rate"
-			"description_string"	"#Attrib_Health_FasterRate"
-			"description_format"	"value_is_percentage"
-			"hidden"	"0"
-			"effect_type"	"positive"
-			"armory_desc"	"on_wearer"
-			"stored_as_integer"	"0"
-		}
-		"899"
-		{
-			"name"	"health taken from dispensers decreased"
-			"attribute_class"	"mult_dispenser_rate"
-			"description_string"	"#Attrib_Health_SlowerRate"
-			"description_format"	"value_is_inverted_percentage"
+			"name"	"no armor"
+			"attribute_class"	"no_armor"
+			"description_string"	"#Attrib_NoArmor"
+			"description_format"	"value_is_additive"
 			"hidden"	"0"
 			"effect_type"	"negative"
 			"armory_desc"	"on_wearer"
 			"stored_as_integer"	"0"
 		}
-		"900"
+		"907"
 		{
-			"name"	"bullets per shot penalty"
-			"attribute_class"	"mult_bullets_per_shot"
-			"description_string"	"#Attrib_BulletsPerShot_Penalty"
-			"description_format"	"value_is_inverted_percentage"
-			"hidden"	"0"
-			"effect_type"	"negative"
-			"stored_as_integer"	"0"
-		}
-		"901"
-		{
-			"name"	"dmg falloff increased renamed"
-			"attribute_class"	"mult_dmg_falloff"
-			"description_string"	"#Attrib_Dmg_Falloff_Increased_Generic"
-			"description_format"	"value_is_inverted_percentage"
-			"hidden"	"0"
-			"effect_type"	"negative"
-			"stored_as_integer"	"0"
-		}
-		"902"
-		{
-			"name"	"dmg falloff decreased renamed"
-			"attribute_class"	"mult_dmg_falloff"
-			"description_string"	"#Attrib_Dmg_Falloff_Decreased_Generic"
-			"description_format"	"value_is_percentage"
+			"name"	"dmg pierces armor"
+			"attribute_class"	"mod_pierce_armor"
+			"description_string"	"#Attrib_PierceArmor"
+			"description_format"	"value_is_additive"
 			"hidden"	"0"
 			"effect_type"	"positive"
 			"stored_as_integer"	"0"

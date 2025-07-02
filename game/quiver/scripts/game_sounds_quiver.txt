@@ -47,18 +47,27 @@
 //	SNDLVL_140dB	= 140,	// 0.2
 //	SNDLVL_150dB	= 150,	// 0.2
 
-"Game.ArmorBreak"
+"Game.ArmorBreakCrit"
 {
 	"channel"	"CHAN_ITEM"
  	"volume"	"1"
  	"pitch"		"100"
- 	"soundlevel"   "SNDLVL_NORM"
-	"wave"	"misc\armor_break.wav"
+ 	"soundlevel"   "SNDLVL_STATIC"
+	"wave"	"misc\armor_break_crit.wav"
+}
+
+"Game.ArmorBreakHit"
+{
+	"channel"	"CHAN_ITEM"
+ 	"volume"	"1"
+ 	"pitch"		"100"
+ 	"soundlevel"   "SNDLVL_STATIC"
+	"wave"	"misc\armor_break_hit.wav"
 }
 
 "Game.ArmorBreakAll"
 {
-	"channel"	"CHAN_ITEM"
+	"channel"	"CHAN_BODY"
  	"volume"	"1"
  	"pitch"		"100"
  	"soundlevel"   "SNDLVL_NORM"
