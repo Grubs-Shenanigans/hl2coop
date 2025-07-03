@@ -3033,6 +3033,7 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	// Set standard members
 	m_pKVItem = new KeyValues( pKVItem->GetName() );
 	MergeDefinitionPrefab( m_pKVItem, pKVItem );
+
 	m_bEnabled = m_pKVItem->GetBool( "enabled" );
 
     // initializing this one first so that it will be available for all the errors below
@@ -3204,8 +3205,6 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	m_bSoloItem = false;
 #endif
 
-
-
 #ifdef BDSBASE_CURATED_ITEMS
 #ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 	m_bIsReskin = m_pKVItem->GetInt("reskin", 0) != 0;
@@ -3311,6 +3310,7 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	m_pszStoreRemap = m_pKVItem->GetString( "store_remap", NULL );
 
 	m_pszXifierRemapClass = m_pKVItem->GetString( "xifier_class_remap", NULL );
+
 	m_pszBaseFunctionalItemName = m_pKVItem->GetString( "base_item_name", "" );
 	m_pszParticleSuffix = m_pKVItem->GetString( "particle_suffix", NULL );
 
@@ -3436,7 +3436,6 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	}
 
 	SCHEMA_INIT_SUBSTEP( BAddLootlistJobFromTemplates( m_pszItemBaseName, m_jobs, m_pKVItem->FindKey( "lootlist_job_templates" ), GetItemSchema(), pVecErrors ) );
-
 
 	return SCHEMA_INIT_SUCCESS();
 }
@@ -6386,6 +6385,67 @@ bool CEconItemSchema::BInitCommunityMarketRemaps( KeyValues *pKVCommunityMarketR
 
 	return SCHEMA_INIT_SUCCESS();
 }
+
+#ifdef BDSBASE
+bool CEconItemSchema::FindItemInWhitelist(int index)
+{
+	const CEconItemDefinition* pReskinItemDef = GetItemSchema()->GetItemDefinition(index);
+
+#if defined(TF_DLL) || defined(TF_CLIENT_DLL)
+	const CTFItemDefinition* pDef = dynamic_cast<const CTFItemDefinition*>(pReskinItemDef);
+	if (!pDef)
+		return false;
+#endif
+
+	if (pReskinItemDef != NULL)
+	{
+#ifdef BDSBASE_CURATED_ITEMS
+		bool bIsStock = pReskinItemDef->IsBaseItem();
+#ifdef BDSBASE_CUSTOM_SCHEMA
+#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
+		bool bShouldLoad = bIsStock;
+#else
+		bool bIsCustom = pReskinItemDef->IsSoloItem();
+		bool bShouldLoad = (bIsStock || bIsCustom);
+#endif
+#else
+		bool bShouldLoad = bIsStock;
+#endif
+#else
+		bool bShouldLoad = true;
+#endif
+
+#ifdef BDSBASE_CURATED_ITEMS
+		bool bIsReskin = pReskinItemDef->IsReskin();
+
+#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
+#if defined(TF_DLL) || defined(TF_CLIENT_DLL)
+		bool bIsWeapon = ((pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
+			(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
+			(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
+			(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
+			(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
+			(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
+#else
+		bool bIsWeapon = false; //????
+#endif
+
+		bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
+#else
+		bool bFinalCheck = (bShouldLoad || bIsReskin);
+#endif
+#else
+		bool bFinalCheck = bShouldLoad;
+#endif
+
+		// already on whitelist.
+		if (bFinalCheck)
+			return true;
+	}
+
+	return false;
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose:

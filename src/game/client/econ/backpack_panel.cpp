@@ -2960,43 +2960,9 @@ const char *CBackpackPanel::GetGreyOutItemPanelReason( CItemModelPanel *pItemPan
 	{
 		if (pItemPanel->HasItem())
 		{
-#ifdef BDSBASE_CURATED_ITEMS
 			CEconItemView* pItemView = pItemPanel->GetItem();
 			CTFItemDefinition* pDef = pItemView->GetStaticData();
-
-			bool bIsStock = pDef->IsBaseItem();
-#ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
-			bool bShouldLoad = bIsStock;
-#else
-			bool bIsCustom = pDef->IsSoloItem();
-			bool bShouldLoad = (bIsStock || bIsCustom);
-#endif
-#else
-			bool bShouldLoad = bIsStock;
-#endif
-#else
-			bool bShouldLoad = true;
-#endif
-
-#ifdef BDSBASE_CURATED_ITEMS
-			bool bIsReskin = pDef->IsReskin();
-
-#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
-			bool bIsWeapon = ((pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
-				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
-				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
-				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
-				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
-				(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
-
-			bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
-#else
-			bool bFinalCheck = (bShouldLoad || bIsReskin);
-#endif
-#else
-			bool bFinalCheck = bShouldLoad;
-#endif
+			bool bFinalCheck = GetItemSchema()->FindItemInWhitelist(pDef->GetDefinitionIndex());
 
 			//instead of deleting the item in the panel, grey the panel out.
 			if (!bFinalCheck)

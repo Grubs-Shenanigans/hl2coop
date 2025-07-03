@@ -2866,6 +2866,13 @@ private:
 	bool BInitCollectionReferences( CUtlVector<CUtlString> *pVecErrors );
 	bool BInitOperationDefinitions( KeyValues *pKVGameInfo, KeyValues *pOperations, CUtlVector<CUtlString> *pVecErrors );
 
+#ifdef BDSBASE
+public:
+	bool FindItemInWhitelist(int index);
+
+private:
+#endif
+
 #ifdef TF_CLIENT_DLL
 	bool BInitConcreteItemCounts( CUtlVector<CUtlString> *pVecErrors );
 	bool BInitSteamPackageLocalizationToken( KeyValues *pKVSteamPackages, CUtlVector<CUtlString> *pVecErrors );

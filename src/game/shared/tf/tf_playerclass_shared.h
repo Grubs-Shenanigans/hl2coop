@@ -66,10 +66,11 @@ public:
 	float		GetMaxSpeed( void )								{ return GetPlayerClassData( m_iClass )->m_flMaxSpeed; }
 	int			GetMaxHealth( void ) const						{ return GetPlayerClassData( m_iClass )->m_nMaxHealth; }
 	int			GetMaxArmor( void )	const						{ return GetPlayerClassData( m_iClass )->m_nMaxArmor; }
-#ifdef QUIVER_DLL
-	float		GetArmorRatio(void)	const						{ return GetPlayerClassData(m_iClass)->m_nArmorRatio; }
-	float		GetArmorAdditionalCostMult(void) const			{ return GetPlayerClassData(m_iClass)->m_nArmorAdditionalCostMult; }
-	float		GetArmorMetalPenaltyMult(void) const			{ return GetPlayerClassData(m_iClass)->m_nArmorMetalPenaltyMult; }
+#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+	float		GetArmorRatio(void)	const						{ return GetPlayerClassData(m_iClass)->m_flArmorRatio; }
+	float		GetArmorAdditionalCostMult(void) const			{ return GetPlayerClassData(m_iClass)->m_flArmorAdditionalCostMult; }
+	float		GetArmorMetalPenaltyMult(void) const			{ return GetPlayerClassData(m_iClass)->m_flArmorMetalPenaltyMult; }
+	float		GetBhopSpeedBoost(void) const					{ return GetPlayerClassData(m_iClass)->m_flBhopBoost; }
 #endif
 	Vector		GetCustomModelOffset( void ) const				{ return m_vecCustomModelOffset.Get(); }
 	QAngle		GetCustomModelRotation( void ) const			{ return m_angCustomModelRotation.Get(); }

@@ -348,7 +348,14 @@ public:
 	bool FindSplashTarget( CBaseEntity *target, float maxSplashRadius, Vector *splashTarget ) const;
 
 	void GiveRandomItem( loadout_positions_t loadoutPosition );
+#ifdef BDSBASE
+	void GiveRandomItems(void);
+	void ScriptGiveRandomItems(void) { GiveRandomItems(); }
+	void ScriptGenerateAndWearItem(const char* pszItemName) { if (pszItemName) AddItem(pszItemName); }
+	void Regenerate(bool bRefillHealthAndAmmo) OVERRIDE;
+#else
 	void ScriptGenerateAndWearItem( const char *pszItemName ) { if ( pszItemName ) BotGenerateAndWearItem( this, pszItemName ); }
+#endif
 
 	enum MissionType
 	{

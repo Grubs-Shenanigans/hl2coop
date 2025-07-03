@@ -260,7 +260,11 @@ public:
 	void				SetRememberLastWeapon( bool bRememberLastWeapon ) { m_bRememberLastWeapon = bRememberLastWeapon; }
 	void				SetRememberActiveWeapon( bool bRememberActiveWeapon ) { m_bRememberActiveWeapon = bRememberActiveWeapon; }
 
-	void				Regenerate( bool bRefillHealthAndAmmo = true );
+#ifdef BDSBASE
+	virtual void		Regenerate(bool bRefillHealthAndAmmo = true);
+#else
+	void				Regenerate(bool bRefillHealthAndAmmo = true);
+#endif
 	float				GetNextRegenTime( void ){ return m_flNextRegenerateTime; }
 	void				SetNextRegenTime( float flTime ){ m_flNextRegenerateTime = flTime; }
 

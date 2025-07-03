@@ -5,16 +5,16 @@
 	{
 		"ControlName"	"EditablePanel"
 		"fieldName"		"HudPlayerArmor"
-		"xpos"			"55"		[$WIN32]
+		"xpos"			"50"		[$WIN32]
 		"xpos_minmode"	"60"		[$WIN32]
-		"ypos"			"r130"	[$WIN32]
-		"ypos_minmode"	"r99"	[$WIN32]
+		"ypos"			"r127"	[$WIN32]
+		"ypos_minmode"	"r94"	[$WIN32]
 		"zpos"			"0"
 		"wide"			"250"
 		"tall"			"120"
 		"visible"		"1"
 		"enabled"		"1"	
-		"ArmorBonusPosAdj"	"35"
+		"ArmorBonusPosAdj"	"10"
 		"ArmorDeathWarning"	"0.49"
 		"ArmorDeathWarningColor"	"HUDDeathWarning"
 	}	
@@ -93,7 +93,7 @@
 		"fieldName"		"PlayerStatusMaxArmorValue"
 		"xpos"			"76"
 		"xpos_minmode"	"61"
-		"ypos"			"20"	[$WIN32]
+		"ypos"			"26"	[$WIN32]
 		"ypos"			"55"	[$X360]
 		"zpos"			"4"
 		"wide"			"50"

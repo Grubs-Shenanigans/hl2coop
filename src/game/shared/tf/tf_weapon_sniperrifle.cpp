@@ -2049,14 +2049,18 @@ void CTFSniperRifleClassic::ItemPostFrame( void )
 	}
 	else if ( m_bCharging )
 	{
-		if ( pPlayer->GetGroundEntity() )
+#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+		Fire(pPlayer);
+#else
+		if (pPlayer->GetGroundEntity())
 		{
-			Fire( pPlayer );
+			Fire(pPlayer);
 		}
 		else
 		{
-			pPlayer->EmitSound( "Player.DenyWeaponSelection" );
+			pPlayer->EmitSound("Player.DenyWeaponSelection");
 		}
+#endif
 
 		WeaponReset();
 	}

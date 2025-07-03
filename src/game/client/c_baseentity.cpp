@@ -1374,7 +1374,44 @@ void C_BaseEntity::UpdateVisibility()
 #ifdef TF_CLIENT_DLL
 	// TF prevents drawing of any entity attached to players that aren't items in the inventory of the player.
 	// This is to prevent servers creating fake cosmetic items and attaching them to players.
-	if ( !engine->IsPlayingDemo() )
+
+#ifdef BDSBASE
+	//except in some instances, where we need to show players items held by bots or any custom items from quiver.
+	bool bForceAllow = false;
+
+	C_BaseEntity* pParent = GetRootMoveParent();
+	if (pParent == this)
+		bForceAllow = true;
+
+	//allow bots to use wearables.
+	C_TFPlayer* pPlayer = ToTFPlayer(pParent);
+	if (pPlayer && pPlayer->IsABot())
+	{
+		bForceAllow = true;
+	}
+
+	//allow wearables if they're custom.
+	C_EconEntity* pEcon = assert_cast<C_EconEntity*>(this);
+	if (pEcon)
+	{
+		CEconItemView* pItem = pEcon->GetAttributeContainer()->GetItem();
+		if (pItem && pItem->IsValid())
+		{
+			CEconItemDefinition* pData = pItem->GetStaticData();
+			if (pData)
+			{
+				if (pData->IsSoloItem())
+				{
+					bForceAllow = true;
+				}
+			}
+		}
+	}
+
+	if (!engine->IsPlayingDemo() && !bForceAllow)
+#else
+	if (!engine->IsPlayingDemo())
+#endif
 	{
 		static bool bIsStaging = ( engine->GetAppID() == 810 );
 		if ( !m_bValidatedOwner )

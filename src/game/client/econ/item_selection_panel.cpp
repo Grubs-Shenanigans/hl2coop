@@ -1157,40 +1157,7 @@ const char *CEquipSlotItemSelectionPanel::GetItemNotSelectableReason( const CEco
 	CTFItemDefinition *pItemData = pItem->GetStaticData();
 
 #ifdef BDSBASE
-#ifdef BDSBASE_CURATED_ITEMS
-	bool bIsStock = pItemData->IsBaseItem();
-#ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
-	bool bShouldLoad = bIsStock;
-#else
-	bool bIsCustom = pItemData->IsSoloItem();
-	bool bShouldLoad = (bIsStock || bIsCustom);
-#endif
-#else
-	bool bShouldLoad = bIsStock;
-#endif
-#else
-	bool bShouldLoad = true;
-#endif
-
-#ifdef BDSBASE_CURATED_ITEMS
-	bool bIsReskin = pItemData->IsReskin();
-
-#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
-	bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
-
-	bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
-#else
-	bool bFinalCheck = (bShouldLoad || bIsReskin);
-#endif
-#else
-	bool bFinalCheck = bShouldLoad;
-#endif
+	bool bFinalCheck = GetItemSchema()->FindItemInWhitelist(pItemData->GetDefinitionIndex());
 
 	//instead of deleting the item in the panel, grey the panel out.
 	if (!bFinalCheck)
@@ -1429,40 +1396,7 @@ const char *CItemCriteriaSelectionPanel::GetItemNotSelectableReason( const CEcon
 	CTFItemDefinition *pItemData = pItem->GetStaticData();
 
 #ifdef BDSBASE
-#ifdef BDSBASE_CURATED_ITEMS
-	bool bIsStock = pItemData->IsBaseItem();
-#ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
-	bool bShouldLoad = bIsStock;
-#else
-	bool bIsCustom = pItemData->IsSoloItem();
-	bool bShouldLoad = (bIsStock || bIsCustom);
-#endif
-#else
-	bool bShouldLoad = bIsStock;
-#endif
-#else
-	bool bShouldLoad = true;
-#endif
-
-#ifdef BDSBASE_CURATED_ITEMS
-	bool bIsReskin = pItemData->IsReskin();
-
-#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
-	bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
-
-	bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
-#else
-	bool bFinalCheck = (bShouldLoad || bIsReskin);
-#endif
-#else
-	bool bFinalCheck = bShouldLoad;
-#endif
+	bool bFinalCheck = GetItemSchema()->FindItemInWhitelist(pItemData->GetDefinitionIndex());
 
 	//instead of deleting the item in the panel, grey the panel out.
 	if (!bFinalCheck)
@@ -1517,41 +1451,8 @@ const char *CCraftingItemSelectionPanel::GetItemNotSelectableReason( const CEcon
 		return NULL;
 
 #ifdef BDSBASE
-#ifdef BDSBASE_CURATED_ITEMS
 	CTFItemDefinition* pItemData = pItem->GetStaticData();
-	bool bIsStock = pItemData->IsBaseItem();
-#ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
-	bool bShouldLoad = bIsStock;
-#else
-	bool bIsCustom = pItemData->IsSoloItem();
-	bool bShouldLoad = (bIsStock || bIsCustom);
-#endif
-#else
-	bool bShouldLoad = bIsStock;
-#endif
-#else
-	bool bShouldLoad = true;
-#endif
-
-#ifdef BDSBASE_CURATED_ITEMS
-	bool bIsReskin = pItemData->IsReskin();
-
-#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
-	bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
-
-	bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
-#else
-	bool bFinalCheck = (bShouldLoad || bIsReskin);
-#endif
-#else
-	bool bFinalCheck = bShouldLoad;
-#endif
+	bool bFinalCheck = GetItemSchema()->FindItemInWhitelist(pItemData->GetDefinitionIndex());
 
 	//instead of deleting the item in the panel, grey the panel out.
 	if (!bFinalCheck)
@@ -1609,40 +1510,7 @@ const char *CAccountSlotItemSelectionPanel::GetItemNotSelectableReason( const CE
 	CTFItemDefinition *pItemData = pItem->GetStaticData();
 
 #ifdef BDSBASE
-#ifdef BDSBASE_CURATED_ITEMS
-	bool bIsStock = pItemData->IsBaseItem();
-#ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
-	bool bShouldLoad = bIsStock;
-#else
-	bool bIsCustom = pItemData->IsSoloItem();
-	bool bShouldLoad = (bIsStock || bIsCustom);
-#endif
-#else
-	bool bShouldLoad = bIsStock;
-#endif
-#else
-	bool bShouldLoad = true;
-#endif
-
-#ifdef BDSBASE_CURATED_ITEMS
-	bool bIsReskin = pItemData->IsReskin();
-
-#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
-	bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
-		(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
-
-	bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
-#else
-	bool bFinalCheck = (bShouldLoad || bIsReskin);
-#endif
-#else
-	bool bFinalCheck = bShouldLoad;
-#endif
+	bool bFinalCheck = GetItemSchema()->FindItemInWhitelist(pItemData->GetDefinitionIndex());
 
 	//instead of deleting the item in the panel, grey the panel out.
 	if (!bFinalCheck)

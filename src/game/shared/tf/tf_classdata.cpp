@@ -56,9 +56,9 @@ TFPlayerClassData_t::TFPlayerClassData_t()
 	m_nMaxHealth = 0;
 	m_nMaxArmor = 0;
 #ifdef QUIVER_DLL
-	m_nArmorRatio = 0.0f;
-	m_nArmorAdditionalCostMult = 0.0f;
-	m_nArmorMetalPenaltyMult = 0.0f;
+	m_flArmorRatio = 0.0f;
+	m_flArmorAdditionalCostMult = 0.0f;
+	m_flArmorMetalPenaltyMult = 0.0f;
 #endif
 
 #ifdef GAME_DLL
@@ -158,10 +158,12 @@ void TFPlayerClassData_t::ParseData( KeyValues *pKeyValuesData )
 	m_nMaxHealth = pKeyValuesData->GetInt( "health_max" );
 	m_nMaxArmor = pKeyValuesData->GetInt( "armor_max" );
 
-#ifdef QUIVER_DLL
-	m_nArmorRatio = pKeyValuesData->GetFloat("armor_ratio");
-	m_nArmorAdditionalCostMult = pKeyValuesData->GetFloat("armor_additionalcost_mult");
-	m_nArmorMetalPenaltyMult = pKeyValuesData->GetFloat("armor_metalpenalty_mult");
+#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+	m_flArmorRatio = pKeyValuesData->GetFloat("armor_ratio");
+	m_flArmorAdditionalCostMult = pKeyValuesData->GetFloat("armor_additionalcost_mult");
+	m_flArmorMetalPenaltyMult = pKeyValuesData->GetFloat("armor_metalpenalty_mult");
+
+	m_flBhopBoost = pKeyValuesData->GetFloat("bhop_speed_boost");
 #endif
 
 	// Weapons.

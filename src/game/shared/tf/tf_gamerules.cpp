@@ -6796,6 +6796,14 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 				if (iReverseDamageFalloff)
 				{
 					flDmgVariance *= -1.0f;
+
+					//kinda stupid for us to allow penalties but whatever.
+					float iReverseDamageFalloffMultDmg = 1.0f;
+					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, iReverseDamageFalloffMultDmg, reverse_damage_falloff_mult_dmg);
+					if (iReverseDamageFalloffMultDmg > 1.0f || iReverseDamageFalloffMultDmg < 1.0f)
+					{
+						flDmgVariance *= iReverseDamageFalloffMultDmg;
+					}
 				}
 			}
 		}

@@ -64,6 +64,8 @@ ConVar tf_bot_debug_tags( "tf_bot_debug_tags", "0", FCVAR_CHEAT, "ent_text will 
 
 #ifdef BDSBASE
 ConVar tf_bot_spawn_use_preset_roster("tf_bot_spawn_use_preset_roster", "0", FCVAR_NONE, "Bot will choose class from a preset class table.");
+
+ConVar tf_bot_give_items("tf_bot_give_items", "1", FCVAR_GAMEDLL);
 #else
 ConVar tf_bot_spawn_use_preset_roster("tf_bot_spawn_use_preset_roster", "1", FCVAR_CHEAT, "Bot will choose class from a preset class table.");
 #endif
@@ -713,6 +715,10 @@ DEFINE_SCRIPTFUNC( SetShouldQuickBuild, "Sets if the bot should build instantly"
 
 DEFINE_SCRIPTFUNC_WRAPPED( GetNearestKnownSappableTarget, "Gets the nearest known sappable target" )
 DEFINE_SCRIPTFUNC_WRAPPED( GenerateAndWearItem, "Give me an item!" )
+
+#ifdef BDSBASE
+DEFINE_SCRIPTFUNC_WRAPPED(GiveRandomItems, "Give me random items!")
+#endif
 
 DEFINE_SCRIPTFUNC( IsInASquad, "Checks if we are in a squad" )
 DEFINE_SCRIPTFUNC( LeaveSquad, "Makes us leave the current squad (if any)" )
@@ -1460,6 +1466,14 @@ void CTFBot::Spawn()
 	ClearSniperSpots();
 	ClearTags();
 
+#ifdef BDSBASE
+	// this makes us change our items....
+	if (tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
+	{
+		GiveRandomItems();
+	}
+#endif
+
 	m_hFollowingFlagTarget = NULL;
 
 	m_requiredWeaponStack.Clear();
@@ -1471,6 +1485,18 @@ void CTFBot::Spawn()
 	GetVisionInterface()->ForgetAllKnownEntities();
 }
 
+#ifdef BDSBASE
+void CTFBot::Regenerate(bool bRefillHealthAndAmmo)
+{
+	BaseClass::Regenerate();
+
+	// this makes us change our items....
+	if (tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
+	{
+		GiveRandomItems();
+	}
+}
+#endif
 
 //-----------------------------------------------------------------------------------------------------
 void CTFBot::SetMission( MissionType mission, bool resetBehaviorSystem )
@@ -4497,7 +4523,13 @@ void CTFBot::GiveRandomItem( loadout_positions_t loadoutPosition )
 	{
 		const CTFItemDefinition *pItemDef = dynamic_cast< const CTFItemDefinition * >( mapItemDefs[i] );
 
-		if ( pItemDef && pItemDef->GetLoadoutSlot( GetPlayerClass()->GetClassIndex() ) == loadoutPosition )
+#ifdef BDSBASE
+		bool isAllowed = ItemSystem()->GetItemSchema()->FindItemInWhitelist(pItemDef->GetDefinitionIndex());
+
+		if (pItemDef && isAllowed && pItemDef->GetLoadoutSlot(GetPlayerClass()->GetClassIndex()) == loadoutPosition)
+#else
+		if (pItemDef && pItemDef->GetLoadoutSlot(GetPlayerClass()->GetClassIndex()) == loadoutPosition)
+#endif
 		{
 			itemVector.AddToTail( pItemDef );
 		}
@@ -4514,10 +4546,26 @@ void CTFBot::GiveRandomItem( loadout_positions_t loadoutPosition )
 */
 
 		const char *itemName = itemVector[ which ]->GetDefinitionName();
-		BotGenerateAndWearItem( this, itemName );
+#ifdef BDSBASE
+		AddItem(itemName);
+#else
+		BotGenerateAndWearItem(this, itemName);
+#endif
 	}
 }
 
+#ifdef BDSBASE
+void CTFBot::GiveRandomItems(void)
+{
+	for (int i = FIRST_LOADOUT_SLOT_WITH_CHARGE_METER; i <= LAST_LOADOUT_SLOT_WITH_CHARGE_METER; ++i)
+	{
+		if (i == LOADOUT_POSITION_BUILDING)
+			continue;
+
+		GiveRandomItem((loadout_positions_t)i);
+	}
+}
+#endif
 
 //---------------------------------------------------------------------------------------------
 bool CTFBot::IsSquadmate( CTFPlayer *who ) const
@@ -5023,7 +5071,29 @@ void CTFBot::AddItem( const char* pszItemName )
 	criteria.SetQuality( AE_USE_SCRIPT_VALUE );
 	criteria.BAddCondition( "name", k_EOperator_String_EQ, pszItemName, true );
 
-	CBaseEntity *pItem = ItemGeneration()->GenerateRandomItem( &criteria, WorldSpaceCenter(), vec3_angle );
+#ifdef BDSBASE
+	CTFItemDefinition* pItemDef = NULL;
+	const char* pszVal = criteria.GetValueForFirstConditionOfType(k_EOperator_String_EQ);
+	if (pszVal && pszVal[0])
+	{
+		pItemDef = (CTFItemDefinition*)ItemSystem()->GetItemSchema()->GetItemDefinitionByName(pszVal);
+	}
+
+	CBaseEntity* pItem = NULL;
+
+	if (pItemDef)
+	{
+		const char* pTranslatedName = TranslateWeaponEntForClass(pItemDef->GetItemClass(), GetPlayerClass()->GetClassIndex());
+		pItem = ItemGeneration()->GenerateRandomItem(&criteria, WorldSpaceCenter(), vec3_angle, pTranslatedName);
+	}
+	else
+	{
+		pItem = ItemGeneration()->GenerateRandomItem(&criteria, WorldSpaceCenter(), vec3_angle);
+	}
+#else
+	CBaseEntity* pItem = ItemGeneration()->GenerateRandomItem(&criteria, WorldSpaceCenter(), vec3_angle);
+#endif
+
 	if ( pItem )
 	{
 		CEconItemView *pScriptItem = static_cast< CBaseCombatWeapon * >( pItem )->GetAttributeContainer()->GetItem();

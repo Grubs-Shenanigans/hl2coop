@@ -53,10 +53,12 @@ struct TFPlayerClassData_t
 	float		m_flMaxSpeed;
 	int			m_nMaxHealth;
 	int			m_nMaxArmor;
-#ifdef QUIVER_DLL
-	float		m_nArmorRatio;
-	float		m_nArmorAdditionalCostMult;
-	float		m_nArmorMetalPenaltyMult;
+#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+	float		m_flArmorRatio;
+	float		m_flArmorAdditionalCostMult;
+	float		m_flArmorMetalPenaltyMult;
+
+	float		m_flBhopBoost;
 #endif
 	int			m_aWeapons[TF_PLAYER_WEAPON_COUNT];
 	int			m_aGrenades[TF_PLAYER_GRENADE_COUNT];

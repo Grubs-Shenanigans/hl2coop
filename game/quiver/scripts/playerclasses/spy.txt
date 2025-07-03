@@ -14,6 +14,7 @@ PlayerClass
 //	"armor_max"		"100"
 	"health_max"		"125"
 	"armor_max"		"100"
+	"bhop_speed_boost" "0.1"
 	
 	//armor stats
 	//light armor

@@ -92,9 +92,11 @@ extern ConVar cl_sidespeed;
 extern ConVar mp_tournament_readymode_countdown;
 
 #ifdef BDSBASE
+#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
 extern ConVar sv_bhop;
 extern ConVar sv_bhop_mode;
 extern ConVar sv_bhop_boost;
+#endif
 #endif
 
 #ifdef BDSBASE
@@ -1314,10 +1316,12 @@ bool CTFGameMovement::CheckJumpButton()
 	}
 
 #ifdef BDSBASE
+#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
 	if (!sv_bhop.GetBool())
 	{
 		PreventBunnyJumping();
 	}
+#endif
 #else
 	PreventBunnyJumping();
 #endif
@@ -1396,6 +1400,20 @@ bool CTFGameMovement::CheckJumpButton()
 	}
 
 #ifdef BDSBASE
+#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+	float classBhopBoost = m_pTFPlayer->GetPlayerClass()->GetBhopSpeedBoost();
+
+	Vector vecForward;
+	AngleVectors(mv->m_vecViewAngles, &vecForward);
+	vecForward.z = 0;
+	VectorNormalize(vecForward);
+	for (int iAxis = 0; iAxis < 2; ++iAxis)
+	{
+		vecForward[iAxis] *= (mv->m_flForwardMove * classBhopBoost);
+		//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardsprintscale.GetFloat() );
+	}
+	VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
+#else
 	bool canBHop = ((sv_bhop.GetBool()) ? true : (gpGlobals->maxClients == 1));
 
 	if (canBHop)
@@ -1440,6 +1458,7 @@ bool CTFGameMovement::CheckJumpButton()
 			VectorAdd((vecForward * flSpeedAddition), mv->m_vecVelocity, mv->m_vecVelocity);
 		}
 	}
+#endif
 #endif
 
 	// Apply gravity.

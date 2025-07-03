@@ -9204,8 +9204,11 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 				DispatchSpawn(pTrail);
 			}
 
-			//say a jeers or a negative line
-			SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_JEERS);
+			if (IsAlive())
+			{
+				//say a jeers or a negative line if the damage doesn't kill us
+				SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_JEERS);
+			}
 
 			if (pTFAttacker && pTFAttacker != this)
 			{

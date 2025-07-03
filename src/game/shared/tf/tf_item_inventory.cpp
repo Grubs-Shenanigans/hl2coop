@@ -389,40 +389,7 @@ int	CTFInventoryManager::GetAllUsableItemsForSlot( int iClass, int iSlot, CUtlVe
 #ifdef BDSBASE
 		if (!bSkipStockItemCheck)
 		{
-#ifdef BDSBASE_CURATED_ITEMS
-			bool bIsStock = pItemData->IsBaseItem();
-#ifdef BDSBASE_CUSTOM_SCHEMA
-#ifdef BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS
-			bool bShouldLoad = bIsStock;
-#else
-			bool bIsCustom = pItemData->IsSoloItem();
-			bool bShouldLoad = (bIsStock || bIsCustom);
-#endif
-#else
-			bool bShouldLoad = bIsStock;
-#endif
-#else
-			bool bShouldLoad = true;
-#endif
-
-#ifdef BDSBASE_CURATED_ITEMS
-			bool bIsReskin = pItemData->IsReskin();
-
-#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
-			bool bIsWeapon = ((pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
-				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||
-				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_MELEE) ||
-				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA) ||
-				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PDA2) ||
-				(pItemData->GetDefaultLoadoutSlot() == LOADOUT_POSITION_BUILDING));
-
-			bool bFinalCheck = (bShouldLoad || bIsReskin || !bIsWeapon);
-#else
-			bool bFinalCheck = (bShouldLoad || bIsReskin);
-#endif
-#else
-			bool bFinalCheck = bShouldLoad;
-#endif
+			bool bFinalCheck = GetItemSchema()->FindItemInWhitelist(pItemData->GetDefinitionIndex());
 
 			if (!bFinalCheck)
 				continue;
