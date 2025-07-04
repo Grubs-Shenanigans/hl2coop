@@ -396,6 +396,17 @@ void CTFAmmoPack::PackTouch( CBaseEntity *pOther )
 		iAmmoTaken += pPlayer->GiveAmmo( ceil(iMaxGrenades1 * m_flAmmoRatio), TF_AMMO_GRENADES1 );
 	}
 
+#ifdef QUIVER_DLL
+	//lastly, grab some armor.
+	if (pPlayer->ArmorValue() < pPlayer->GetMaxArmor())
+	{
+		int iMaxArmor = pPlayer->GetMaxArmor();
+		int iArmor = ceil(iMaxArmor * m_flAmmoRatio);
+		pPlayer->IncrementArmorValue(iArmor, iMaxArmor);
+		iAmmoTaken += iArmor;
+	}
+#endif
+
 	if ( m_PackType == AP_HALLOWEEN )
 	{
 		// Send a message for the achievement tracking.

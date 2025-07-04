@@ -118,6 +118,17 @@ bool CAmmoPack::MyTouch( CBasePlayer *pPlayer )
 			}
 		}
 
+#ifdef QUIVER_DLL
+		//lastly, grab some armor.
+		if (pTFPlayer->ArmorValue() < pTFPlayer->GetMaxArmor())
+		{
+			int iMaxArmor = pTFPlayer->GetMaxArmor();
+			int iArmor = ceil(iMaxArmor * flPackRatio);
+			pTFPlayer->IncrementArmorValue(iArmor, iMaxArmor);
+			bSuccess = true;
+		}
+#endif
+
 		// did we give them anything?
 		if ( bSuccess )
 		{

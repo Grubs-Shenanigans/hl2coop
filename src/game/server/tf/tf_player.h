@@ -179,7 +179,11 @@ public:
 	virtual void		ResetPerRoundStats( void );
 
 	void				HandleCommand_JoinTeam( const char *pTeamName );
+#ifdef BDSBASE
+	virtual void		HandleCommand_JoinClass(const char* pClassName, bool bAllowSpawn = true);
+#else
 	void				HandleCommand_JoinClass( const char *pClassName, bool bAllowSpawn = true );
+#endif
 	void				HandleCommand_JoinTeam_NoMenus( const char *pTeamName );
 
 	void				CreateViewModel( int iViewModel = 0 );
@@ -594,6 +598,10 @@ public:
 
 #ifdef QUIVER_DLL
 	float DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage);
+	void SetMaxArmor(int iVal = 0);
+	int GetMaxArmor(void) { return m_iMaxArmor; }
+	void ScriptSetMaxArmor(int iVal) { SetMaxArmor(iVal); }
+	void ScriptSetArmor(int iVal, bool bAdd) { if (bAdd) { IncrementArmorValue(iVal); } else { SetArmorValue(iVal); } }
 #endif
 
 	void PlayerUse( void );
@@ -1251,6 +1259,7 @@ private:
 
 #ifdef QUIVER_DLL
 	int					m_iArmorBreakSpriteTexture;
+	CNetworkVar(int, m_iMaxArmor);
 #endif
 
 	// Items.

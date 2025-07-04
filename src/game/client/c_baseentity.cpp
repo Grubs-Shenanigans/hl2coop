@@ -1391,7 +1391,7 @@ void C_BaseEntity::UpdateVisibility()
 	}
 
 	//allow wearables if they're custom.
-	C_EconEntity* pEcon = assert_cast<C_EconEntity*>(this);
+	CEconEntity* pEcon = dynamic_cast<CEconEntity*>(this);
 	if (pEcon)
 	{
 		CEconItemView* pItem = pEcon->GetAttributeContainer()->GetItem();

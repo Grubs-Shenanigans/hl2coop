@@ -760,6 +760,12 @@ BEGIN_ENT_SCRIPTDESC( CTFPlayer, CBaseMultiplayerPlayer , "Team Fortress 2 Playe
 	DEFINE_SCRIPTFUNC_NAMED( ScriptGetCustomAttribute, "GetCustomAttribute", "Get a custom attribute float from the player" )
 
 	DEFINE_SCRIPTFUNC_WRAPPED( StunPlayer, "" )
+
+#ifdef QUIVER_DLL
+	DEFINE_SCRIPTFUNC_WRAPPED(SetMaxArmor, "")
+	DEFINE_SCRIPTFUNC_WRAPPED(SetArmor, "")
+#endif
+
 END_SCRIPTDESC();
 
 
@@ -908,6 +914,7 @@ IMPLEMENT_SERVERCLASS_ST( CTFPlayer, DT_TFPlayer )
 
 #ifdef QUIVER_DLL
 	SendPropInt( SENDINFO( m_ArmorValue ) ),
+	SendPropInt(SENDINFO(m_iMaxArmor)),
 #endif
 END_SEND_TABLE()
 
@@ -1006,7 +1013,12 @@ CTFPlayer::CTFPlayer()
 
 	m_PlayerAnimState = CreateTFPlayerAnimState( this );
 
-	SetArmorValue( 10 );
+#ifdef QUIVER_DLL
+	m_iMaxArmor = 10;
+	SetArmorValue(m_iMaxArmor);
+#else
+	SetArmorValue(10);
+#endif
 
 	m_hItem = NULL;
 	m_hTauntScene = NULL;
@@ -4350,23 +4362,7 @@ void CTFPlayer::Regenerate( bool bRefillHealthAndAmmo /*= true*/ )
 //-----------------------------------------------------------------------------
 void CTFPlayer::InitClass( void )
 {
-#ifdef QUIVER_DLL
-	int iNoArmor = 0;
-	CALL_ATTRIB_HOOK_INT(iNoArmor, no_armor);
-
-	int iArmor = GetPlayerClass()->GetMaxArmor();
-
-	if (!iNoArmor)
-	{
-		CALL_ATTRIB_HOOK_INT(iArmor, add_maxarmor);
-	}
-	else
-	{
-		iArmor = 0;
-	}
-
-	SetArmorValue(iArmor);
-#else
+#ifndef QUIVER_DLL
 	SetArmorValue(GetPlayerClass()->GetMaxArmor());
 #endif
 
@@ -4381,6 +4377,10 @@ void CTFPlayer::InitClass( void )
 	// Do it after items have been delivered, so items can modify it
 	SetMaxHealth( GetMaxHealth() );
 	SetHealth( GetMaxHealth() );
+
+#ifdef QUIVER_DLL
+	SetMaxArmor();
+#endif
 
 	TeamFortress_SetSpeed();
 
@@ -9235,6 +9235,33 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 	return damage;
 }
+
+void CTFPlayer::SetMaxArmor(int iVal)
+{
+	int iNoArmor = 0;
+	CALL_ATTRIB_HOOK_INT(iNoArmor, no_armor);
+
+	int iArmor = GetPlayerClass()->GetMaxArmor();
+
+	if (iVal > 0)
+	{
+		iArmor = iVal;
+	}
+
+	if (!iNoArmor)
+	{
+		CALL_ATTRIB_HOOK_INT(iArmor, add_maxarmor);
+	}
+	else
+	{
+		iArmor = 0;
+	}
+
+	m_iMaxArmor = iArmor;
+
+	SetArmorValue(m_iMaxArmor);
+}
+
 #endif
 
 //-----------------------------------------------------------------------------

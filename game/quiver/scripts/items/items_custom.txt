@@ -102,7 +102,7 @@
 				"kill refills meter"
 				{
 					"attribute_class"	"kill_refills_meter"
-					"value"			"0.50"
+					"value"			"0.35"
 				}
 				"allowed in medieval mode"
 				{
@@ -183,27 +183,22 @@
 				"max health additive penalty"
 				{
 					"attribute_class"	"add_maxhealth"
-					"value" "-35"
+					"value" "-40"
 				}
 				"damage bonus"
 				{
 					"attribute_class"	"mult_dmg"
-					"value"	"1.2"
+					"value"	"1.25"
 				}
 				"maxammo primary reduced"
 				{
 					"attribute_class"	"mult_maxammo_primary"
-					"value"				"0.60"
+					"value"				"0.65"
 				}
 				"maxammo secondary reduced"
 				{
 					"attribute_class"	"mult_maxammo_secondary"
-					"value"				"0.60"
-				}
-				"kill refills meter"
-				{
-					"attribute_class"	"kill_refills_meter"
-					"value"			"0.25"
+					"value"				"0.65"
 				}
 				"decapitate type"
 				{
@@ -224,6 +219,11 @@
 				{
 					"attribute_class"	"special_taunt"
 					"value" "1"
+				}
+				"max armor additive penalty"
+				{
+					"attribute_class"	"add_maxarmor"
+					"value" "-15"
 				}
 			}
 			"mouse_pressed_sound"	"ui/item_knife_large_pickup.wav"
@@ -338,7 +338,7 @@
 				"reverse damage falloff damage bonus"
 				{
 					"attribute_class"	"reverse_damage_falloff_mult_dmg"
-					"value"	"1.75"
+					"value"	"2"
 				}
 			}
 		}

@@ -1283,6 +1283,8 @@ public:
 #ifdef BDSBASE
 	bool		IsSoloItem(void) const				{ return m_bSoloItem; }
 	bool		IsReskin(void) const				{ return m_bIsReskin; }
+	bool		IsWhitelisted(void) const			{ return m_bWhitelisted; }
+	bool		IsAllowed(void) const				{ return (IsWhitelisted() || IsReskin()); }
 #endif
 	bool		IsBundle( void ) const				{ return m_BundleInfo != NULL; }
 	bool		HasProperName( void ) const			{ return m_bProperName; }
@@ -1615,6 +1617,7 @@ private:
 #ifdef BDSBASE
 	bool			m_bSoloItem;
 	bool			m_bIsReskin;
+	bool			m_bWhitelisted;
 #endif
 	bool			m_bImported;
 

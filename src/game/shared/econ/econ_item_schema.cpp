@@ -2310,6 +2310,7 @@ m_bBaseItem( false ),
 m_bUseViewmodels(false),
 m_bSoloItem(false),
 m_bIsReskin(false),
+m_bWhitelisted(false),
 #endif
 m_pszItemLogClassname( NULL ),
 m_pszItemIconClassname( NULL ),
@@ -3212,10 +3213,11 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	//allow if we're on the whitelist too
 	if (!m_bIsReskin)
 	{
-		m_bIsReskin = m_pKVItem->GetInt("stock_whitelist", 0) != 0;
+		m_bWhitelisted = m_pKVItem->GetInt("stock_whitelist", 0) != 0;
 	}
 #else
-	m_bIsReskin = m_pKVItem->GetInt("stock_whitelist", 0) != 0;
+	m_bWhitelisted = m_pKVItem->GetInt("stock_whitelist", 0) != 0;
+	m_bIsReskin = false;
 #endif
 #else
 	//if stock only w/ cosmetics aren't enabled, no reskins are allowed.
@@ -6416,7 +6418,7 @@ bool CEconItemSchema::FindItemInWhitelist(int index)
 #endif
 
 #ifdef BDSBASE_CURATED_ITEMS
-		bool bIsReskin = pReskinItemDef->IsReskin();
+		bool bIsReskin = pReskinItemDef->IsAllowed();
 
 #ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 #if defined(TF_DLL) || defined(TF_CLIENT_DLL)

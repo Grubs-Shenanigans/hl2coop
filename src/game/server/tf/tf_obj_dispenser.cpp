@@ -564,7 +564,7 @@ bool CObjectDispenser::DispenseAmmo( CTFPlayer *pPlayer )
 #ifdef QUIVER_DLL
 	//dispensers repair armor from the same beam
 	float flArmorRate = GetArmorRepairRate();
-	float flMaxArmor = pPlayer->GetPlayerClass()->GetMaxArmor();
+	float flMaxArmor = pPlayer->GetMaxArmor();
 
 	pPlayer->IncrementArmorValue(flArmorRate, flMaxArmor);
 

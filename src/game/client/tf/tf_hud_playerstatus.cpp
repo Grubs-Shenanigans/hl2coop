@@ -1565,7 +1565,7 @@ void CTFHudPlayerArmor::OnThink()
 
 		if (pPlayer)
 		{
-			SetArmor(pPlayer->ArmorValue(), pPlayer->GetPlayerClass()->GetMaxArmor());
+			SetArmor(pPlayer->ArmorValue(), pPlayer->GetMaxArmor());
 
 			int color_offset = ((int)(gpGlobals->realtime * 10)) % 5;
 

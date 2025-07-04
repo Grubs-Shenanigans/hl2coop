@@ -66,6 +66,7 @@ ConVar tf_bot_debug_tags( "tf_bot_debug_tags", "0", FCVAR_CHEAT, "ent_text will 
 ConVar tf_bot_spawn_use_preset_roster("tf_bot_spawn_use_preset_roster", "0", FCVAR_NONE, "Bot will choose class from a preset class table.");
 
 ConVar tf_bot_give_items("tf_bot_give_items", "1", FCVAR_GAMEDLL);
+ConVar tf_bot_give_items_skip_reskins("tf_bot_give_items_skip_reskins", "0", FCVAR_GAMEDLL);
 #else
 ConVar tf_bot_spawn_use_preset_roster("tf_bot_spawn_use_preset_roster", "1", FCVAR_CHEAT, "Bot will choose class from a preset class table.");
 #endif
@@ -292,6 +293,7 @@ const char *GetRandomBotName( void )
 		"BOT Connor",
 		"Scout's Father",
 		"coconut.jpg",
+		"Arthritis Morgan",
 #endif
 
 		NULL
@@ -717,7 +719,7 @@ DEFINE_SCRIPTFUNC_WRAPPED( GetNearestKnownSappableTarget, "Gets the nearest know
 DEFINE_SCRIPTFUNC_WRAPPED( GenerateAndWearItem, "Give me an item!" )
 
 #ifdef BDSBASE
-DEFINE_SCRIPTFUNC_WRAPPED(GiveRandomItems, "Give me random items!")
+DEFINE_SCRIPTFUNC_WRAPPED(HandleLoadout, "Give a bot a randomized loadout.")
 #endif
 
 DEFINE_SCRIPTFUNC( IsInASquad, "Checks if we are in a squad" )
@@ -1382,6 +1384,8 @@ CTFBot::CTFBot()
 	m_squad = NULL;
 #ifndef BDSBASE
 	m_didReselectClass = false;
+#else
+	iOldClassIndex = 0;
 #endif
 	m_enemySentry = NULL;
 	m_spotWhereEnemySentryLastInjuredMe = vec3_origin;
@@ -1443,6 +1447,10 @@ CTFBot::~CTFBot()
 		delete m_vision;
 
 	m_suspectedSpyVector.PurgeAndDeleteElements();
+
+#ifdef BDSBASE
+	vecSavedRandomLoadout.RemoveAll();
+#endif
 }
 
 
@@ -1450,6 +1458,17 @@ CTFBot::~CTFBot()
 void CTFBot::Spawn()
 {
 	BaseClass::Spawn();
+
+#ifdef BDSBASE
+	int newClass = GetPlayerClass()->GetClassIndex();
+
+	if (newClass != iOldClassIndex)
+	{
+		ResetLoadout();
+	}
+
+	m_InitialLoadoutLoadTimer.Start(RandomFloat(TFBOT_MIN_LOADOUT_WAIT, TFBOT_MAX_LOADOUT_WAIT));
+#endif
 
 	m_spawnArea = NULL;
 	m_justLostPointTimer.Invalidate();
@@ -1466,14 +1485,6 @@ void CTFBot::Spawn()
 	ClearSniperSpots();
 	ClearTags();
 
-#ifdef BDSBASE
-	// this makes us change our items....
-	if (tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
-	{
-		GiveRandomItems();
-	}
-#endif
-
 	m_hFollowingFlagTarget = NULL;
 
 	m_requiredWeaponStack.Clear();
@@ -1488,13 +1499,18 @@ void CTFBot::Spawn()
 #ifdef BDSBASE
 void CTFBot::Regenerate(bool bRefillHealthAndAmmo)
 {
-	BaseClass::Regenerate();
+	BaseClass::Regenerate(bRefillHealthAndAmmo);
 
-	// this makes us change our items....
-	if (tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
-	{
-		GiveRandomItems();
-	}
+	m_InitialLoadoutLoadTimer.Start(RandomFloat(TFBOT_MIN_LOADOUT_WAIT, TFBOT_MAX_LOADOUT_WAIT));
+}
+
+void CTFBot::HandleCommand_JoinClass(const char* pClassName, bool bAllowSpawn)
+{
+	iOldClassIndex = GetPlayerClass()->GetClassIndex();
+
+	BaseClass::HandleCommand_JoinClass(pClassName, bAllowSpawn);
+
+	m_InitialLoadoutLoadTimer.Start(RandomFloat(TFBOT_MIN_LOADOUT_WAIT, TFBOT_MAX_LOADOUT_WAIT) + TFBOT_CLASSSWITCH_LOADOUT_DELAY);
 }
 #endif
 
@@ -1564,6 +1580,15 @@ void CTFBot::PhysicsSimulate( void )
 		}
 	}
 
+#ifdef BDSBASE
+	if (IsAlive())
+	{
+		if (m_InitialLoadoutLoadTimer.IsElapsed() && !m_InitialLoadoutLoadTimer.HasStopped())
+		{
+			HandleLoadout();
+		}
+	}
+#endif
 
 	// If we're dead, choose a new class.
 	// We need to do this outside of the behavior system, since changing class can
@@ -4523,13 +4548,7 @@ void CTFBot::GiveRandomItem( loadout_positions_t loadoutPosition )
 	{
 		const CTFItemDefinition *pItemDef = dynamic_cast< const CTFItemDefinition * >( mapItemDefs[i] );
 
-#ifdef BDSBASE
-		bool isAllowed = ItemSystem()->GetItemSchema()->FindItemInWhitelist(pItemDef->GetDefinitionIndex());
-
-		if (pItemDef && isAllowed && pItemDef->GetLoadoutSlot(GetPlayerClass()->GetClassIndex()) == loadoutPosition)
-#else
 		if (pItemDef && pItemDef->GetLoadoutSlot(GetPlayerClass()->GetClassIndex()) == loadoutPosition)
-#endif
 		{
 			itemVector.AddToTail( pItemDef );
 		}
@@ -4546,23 +4565,174 @@ void CTFBot::GiveRandomItem( loadout_positions_t loadoutPosition )
 */
 
 		const char *itemName = itemVector[ which ]->GetDefinitionName();
-#ifdef BDSBASE
-		AddItem(itemName);
-#else
 		BotGenerateAndWearItem(this, itemName);
-#endif
 	}
 }
 
 #ifdef BDSBASE
-void CTFBot::GiveRandomItems(void)
+const CEconItemDefinition* CTFBot::GiveRandomItemEx(loadout_positions_t loadoutPosition)
 {
-	for (int i = FIRST_LOADOUT_SLOT_WITH_CHARGE_METER; i <= LAST_LOADOUT_SLOT_WITH_CHARGE_METER; ++i)
+	CUtlVector< const CEconItemDefinition* > itemVector;
+
+	const CEconItemSchema::ItemDefinitionMap_t& mapItemDefs = ItemSystem()->GetItemSchema()->GetItemDefinitionMap();
+	FOR_EACH_MAP_FAST(mapItemDefs, iItem)
 	{
-		if (i == LOADOUT_POSITION_BUILDING)
+		CTFItemDefinition* pItemDef = dynamic_cast<CTFItemDefinition*>(mapItemDefs[iItem]);
+
+		if (pItemDef->GetEconTool())
+		{
+			// no tools plz
+			continue;
+		}
+
+		if (pItemDef->IsTool())
+		{
+			// no tools plz
+			continue;
+		}
+
+		bool bCanBeUsedByClass = (pItemDef->CanBeUsedByClass(GetPlayerClass()->GetClassIndex()) && pItemDef->GetDefaultLoadoutSlot() == loadoutPosition);
+
+		if (!bCanBeUsedByClass)
+		{
+			// if you can't create it for this class, don't SPAWN it, dumbass!
+			continue;
+		}
+
+		bool isAllowed = (ItemSystem()->GetItemSchema()->FindItemInWhitelist(pItemDef->GetDefinitionIndex()));
+
+		if (!isAllowed)
+		{
+			// keep going until we find an item that's allowed
+			continue;
+		}
+
+		if (pItemDef->IsReskin() && tf_bot_give_items_skip_reskins.GetBool())
+		{
+			// if reskins aren't allowed, skip it.
+			continue;
+		}
+
+		if (pItemDef)
+		{
+			itemVector.AddToTail(pItemDef);
+		}
+	}
+
+	if (itemVector.Count() > 0)
+	{
+		// randomize the vector.
+		int m_nRandomSeed = RandomInt(0, 9999);
+		CUniformRandomStream randomize;
+		randomize.SetSeed(m_nRandomSeed);
+		itemVector.Shuffle(&randomize);
+
+		int which = randomize.RandomInt(0, itemVector.Count() - 1);
+		return itemVector[which];
+	}
+
+	return NULL;
+}
+
+void CTFBot::SelectRandomizedLoadout(void)
+{
+	// roll weapons first
+	for (int iSlot = LOADOUT_POSITION_PRIMARY; iSlot <= LOADOUT_POSITION_PDA2; ++iSlot)
+	{
+		if (iSlot == LOADOUT_POSITION_UTILITY)
 			continue;
 
-		GiveRandomItem((loadout_positions_t)i);
+		const CEconItemDefinition* pItem = GiveRandomItemEx((loadout_positions_t)iSlot);
+
+		if (pItem)
+		{
+			vecSavedRandomLoadout.AddToTail(pItem);
+		}
+	}
+
+	int iChosenSlotVal = RandomInt(0, 2);
+	int iCosmeticSlot = LOADOUT_POSITION_HEAD;
+
+	switch (iChosenSlotVal)
+	{
+		// 0 is default values above.
+		case 1:
+		{
+			iCosmeticSlot = LOADOUT_POSITION_MISC;
+			DevMsg("BOT %s CHOSE SLOT LOADOUT_POSITION_MISC\n", GetPlayerName());
+			break;
+		}
+
+		case 2:
+		{
+			iCosmeticSlot = LOADOUT_POSITION_MISC2;
+			DevMsg("BOT %s CHOSE SLOT LOADOUT_POSITION_MISC2\n", GetPlayerName());
+			break;
+		}
+
+		default:
+		{
+			DevMsg("BOT %s CHOSE SLOT LOADOUT_POSITION_HEAD\n", GetPlayerName());
+			break;
+		}
+	}
+
+	// then cosmetics
+	const CEconItemDefinition* pItem = GiveRandomItemEx((loadout_positions_t)iCosmeticSlot);
+
+	if (pItem)
+	{
+		vecSavedRandomLoadout.AddToTail(pItem);
+	}
+}
+
+void CTFBot::GiveSavedLoadout(void)
+{
+	for (int i = 0; i < vecSavedRandomLoadout.Count(); ++i)
+	{
+		if (vecSavedRandomLoadout[i])
+		{
+			CEconItemView* pItemData = new CEconItemView();
+			CSteamID ownerSteamID;
+			GetSteamID(&ownerSteamID);
+			pItemData->Init(vecSavedRandomLoadout[i]->GetDefinitionIndex(), AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, ownerSteamID.GetAccountID());
+			if (pItemData && pItemData->IsValid())
+			{
+				const char* itemName = pItemData->GetItemDefinition()->GetItemDefinitionName();
+				DevMsg("GIVING %s TO BOT %s [%i]\n", itemName, GetPlayerName(), ownerSteamID.GetAccountID());
+				BotGenerateAndWearItem(this, pItemData);
+			}
+		}
+	}
+}
+
+void CTFBot::HandleLoadout(void)
+{
+	if (tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
+	{
+		if (!m_InitialLoadoutLoadTimer.IsElapsed())
+			return;
+
+		if (vecSavedRandomLoadout.Count() > 0)
+		{
+			GiveSavedLoadout();
+		}
+		else
+		{
+			SelectRandomizedLoadout();
+			GiveSavedLoadout();
+		}
+
+		m_InitialLoadoutLoadTimer.Invalidate();
+	}
+}
+
+void CTFBot::ResetLoadout(void)
+{
+	if (tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
+	{
+		vecSavedRandomLoadout.RemoveAll();
+		SelectRandomizedLoadout();
 	}
 }
 #endif
@@ -5071,28 +5241,7 @@ void CTFBot::AddItem( const char* pszItemName )
 	criteria.SetQuality( AE_USE_SCRIPT_VALUE );
 	criteria.BAddCondition( "name", k_EOperator_String_EQ, pszItemName, true );
 
-#ifdef BDSBASE
-	CTFItemDefinition* pItemDef = NULL;
-	const char* pszVal = criteria.GetValueForFirstConditionOfType(k_EOperator_String_EQ);
-	if (pszVal && pszVal[0])
-	{
-		pItemDef = (CTFItemDefinition*)ItemSystem()->GetItemSchema()->GetItemDefinitionByName(pszVal);
-	}
-
-	CBaseEntity* pItem = NULL;
-
-	if (pItemDef)
-	{
-		const char* pTranslatedName = TranslateWeaponEntForClass(pItemDef->GetItemClass(), GetPlayerClass()->GetClassIndex());
-		pItem = ItemGeneration()->GenerateRandomItem(&criteria, WorldSpaceCenter(), vec3_angle, pTranslatedName);
-	}
-	else
-	{
-		pItem = ItemGeneration()->GenerateRandomItem(&criteria, WorldSpaceCenter(), vec3_angle);
-	}
-#else
-	CBaseEntity* pItem = ItemGeneration()->GenerateRandomItem(&criteria, WorldSpaceCenter(), vec3_angle);
-#endif
+	CBaseEntity* pItem = ItemGeneration()->GenerateRandomItem( &criteria, WorldSpaceCenter(), vec3_angle );
 
 	if ( pItem )
 	{

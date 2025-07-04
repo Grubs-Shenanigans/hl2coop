@@ -3983,6 +3983,7 @@ IMPLEMENT_CLIENTCLASS_DT( C_TFPlayer, DT_TFPlayer, CTFPlayer )
 #endif
 #ifdef QUIVER_CLIENT_DLL
 	RecvPropInt(RECVINFO(m_ArmorValue)),
+	RecvPropInt(RECVINFO(m_iMaxArmor)),
 #endif
 END_RECV_TABLE()
 

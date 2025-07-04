@@ -1619,7 +1619,7 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 
 	CEconItemView* pItemInSlot = GetDefaultItemInLoadout(iClass, iSlot);
 	CTFItemDefinition* pItemData = pItemInSlot->GetStaticData();
-	bIsReskin = pItemData->IsReskin();
+	bIsReskin = pItemData->IsAllowed();
 
 #ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
 	bool bIsWeapon = ((iSlot == LOADOUT_POSITION_PRIMARY) ||

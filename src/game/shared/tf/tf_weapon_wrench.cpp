@@ -165,7 +165,7 @@ void CTFWrench::OnFriendlyPlayerHit(CTFPlayer* pOtherPlayer, CTFPlayer* pPlayer,
 
 	bool bUsefulHit = false;
 	float flCurArmor = pOtherPlayer->ArmorValue();
-	float flMaxArmor = pOtherPlayer->GetPlayerClass()->GetMaxArmor();
+	float flMaxArmor = pOtherPlayer->GetMaxArmor();
 
 	// do we need fixing?
 	if (flCurArmor < flMaxArmor)

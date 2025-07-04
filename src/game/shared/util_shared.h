@@ -625,6 +625,13 @@ public:
 		return (m_timestamp > 0.0f) ? m_duration : 0.0f;
 	}
 
+#ifdef BDSBASE
+	bool HasStopped(void) const
+	{
+		return (m_timestamp == -1.0f);
+	}
+#endif
+
 private:
 	float m_duration;
 	float m_timestamp;
