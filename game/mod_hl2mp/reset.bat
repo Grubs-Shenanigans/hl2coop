@@ -51,7 +51,6 @@ del bin_linux\x64\server_srv.so.dbg
 del bin_linux\x64\gamepadui.so.dbg
 del bin_linux\x64\gamepadui_srv.so.dbg
 del sound\sound.cache
-rmdir /S /Q sound\
 rmdir /S /Q sound_workshop\
 rmdir /S /Q download\user_custom\
 rmdir /S /Q download\sound\
@@ -59,5 +58,4 @@ rmdir /S /Q download\materials\
 rmdir /S /Q download\models\
 rmdir /S /Q downloadlists\
 rmdir /S /Q save\
-rmdir /S /Q media\
 rmdir /S /Q replay\
