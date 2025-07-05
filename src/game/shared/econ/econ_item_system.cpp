@@ -720,20 +720,15 @@ CON_COMMAND_F( econ_show_items_with_tag, "Lists the item definitions that have a
 	}
 }
 
+#else
 #ifdef BDSBASE
-CON_COMMAND_F(econ_refreshschema, "Refreshes the item schema.", FCVAR_CLIENTDLL)
+CON_COMMAND_F(econ_refreshschema, "Refreshes the item schema.", FCVAR_CHEAT)
 {
 	CEconItemSystem* pItemSystem = ItemSystem();
 
 	if (!pItemSystem)
 	{
 		Msg("No item system available.\n");
-		return;
-	}
-
-	if ((engine->IsInGame() || engine->IsConnected()) && !engine->IsLevelMainMenuBackground())
-	{
-		Msg("This command is not available for use in-game.\n");
 		return;
 	}
 
@@ -745,6 +740,5 @@ CON_COMMAND_F(econ_refreshschema, "Refreshes the item schema.", FCVAR_CLIENTDLL)
 	Msg("Item system restarted.\n");
 }
 #endif
-
 #endif // CLIENT_DLL
 

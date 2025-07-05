@@ -43,6 +43,11 @@ const char *g_szArmoryFilterStrings[ARMFILT_TOTAL] =
 	"#ArmoryFilter_Spy",			// ARMFILT_CLASS_SPY,
 	"#ArmoryFilter_Engineer",		// ARMFILT_CLASS_ENGINEER,
 	"#ArmoryFilter_Donationitems",	// ARMFILT_DONATIONITEMS,
+#ifdef BDSBASE
+#ifdef BDSBASE_CUSTOM_SCHEMA
+	"#ArmoryFilter_Customitems",	// ARMFILT_CUSTOMITEMS,
+#endif
+#endif
 
 	"",								// ARMFILT_NUM_IN_DROPDOWN
 	"Not Used",						// ARMFILT_CUSTOM
@@ -640,6 +645,16 @@ bool CArmoryPanel::DefPassesFilter( const CTFItemDefinition *pDef, armory_filter
 			bInList = pDef->GetItemClass() && !V_strcmp( pDef->GetItemClass(), "map_token" );
 			break;
 		}
+
+#ifdef BDSBASE
+#ifdef BDSBASE_CUSTOM_SCHEMA
+	case ARMFILT_CUSTOMITEMS:
+		{
+			bInList = pDef->IsSoloItem();
+			break;
+		}
+#endif
+#endif
 	}
 
 	return bInList;
