@@ -52,7 +52,8 @@ $Configuration
 
 	$Compiler
 	{
-		$AdditionalIncludeDirectories	".\;$BASE;$SRCDIR\vgui2\include;$SRCDIR\vgui2\controls;$SRCDIR\game\shared;.\game_controls;$SRCDIR\thirdparty\sixensesdk\include"
+		$AdditionalIncludeDirectories	".\;$BASE;$SRCDIR\vgui2\include;$SRCDIR\vgui2\controls;$SRCDIR\game\shared;.\game_controls;$SRCDIR\thirdparty\sixensesdk\include" [!$BDSBASE]
+		$AdditionalIncludeDirectories	".\;$BASE;$SRCDIR\vgui2\include;$SRCDIR\vgui2\controls;$SRCDIR\game\shared;.\game_controls;$SRCDIR\thirdparty\sixensesdk\include;$SRCDIR\thirdparty\giflib-5.2.2" [$BDSBASE]
 		$PreprocessorDefinitions		"$BASE;NO_STRING_T;CLIENT_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead" 
 		$PreprocessorDefinitions		"$BASE;INCLUDED_STEAM2_USERID_STRUCTS" 
 		$PreprocessorDefinitions		"$BASE;fopen=dont_use_fopen" [$WIN32]
@@ -256,6 +257,7 @@ $Project
 		$File	"$SRCDIR\game\shared\gamestringpool.cpp"
 		$File	"gametrace_client.cpp"
 		$File	"$SRCDIR\game\shared\gamevars_shared.cpp"
+		$File	"$SRCDIR\common\gifhelper.cpp" [$BDSBASE]
 		$File	"glow_outline_effect.cpp"
 		$File	"glow_overlay.cpp"
 		$File	"$SRCDIR\game\shared\hintmessage.cpp"
@@ -675,6 +677,7 @@ $Project
 		$File	"fx_trail.h"
 		$File	"fx_water.h"
 		$File	"$SRCDIR\game\shared\GameEventListener.h"
+		$File	"$SRCDIR\common\gifhelper.h" [$BDSBASE]
 		$File	"glow_outline_effect.h"
 		$File	"glow_overlay.h"
 		$File	"$SRCDIR\game\shared\hintmessage.h"
@@ -1174,6 +1177,9 @@ $Project
 		$Libexternal $LIBCOMMON/libcrypto [$OSXALL]
 		$Libexternal "$SRCDIR\lib\common\$CRYPTOPPDIR\libcryptopp" [$LINUXALL&&!$SOURCESDK]
 		$Lib   "libz" [$WINDOWS]
+		
+		$Libexternal $LIBCOMMON/giflib [$WINDOWS && $BDSBASE]
+		$Libexternal $LIBCOMMON/libgiflib [$LINUXALL && $BDSBASE]
 
 		//$Libexternal	libz [$LINUXALL]
  	}

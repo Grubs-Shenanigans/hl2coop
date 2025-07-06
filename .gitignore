@@ -21,7 +21,7 @@ ipch
 *.sln
 
 # OSX/Linux build products
-*.a
+//*.a
 game/*_linux64
 *.mak
 *.mak.vpc_crc
@@ -150,7 +150,7 @@ mono_crash.*
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
+//[Rr]elease/
 [Rr]eleases/
 x86/
 [Ww][Ii][Nn]32/
