@@ -3549,7 +3549,11 @@ void CTFPlayer::ApplyAbsVelocityImpulse( const Vector &vecImpulse )
 	// Check for Attributes (mult_aiming_knockback_resistance)
 	Vector vecForce = vecImpulse;
 	float flImpulseScale = 1.0f;
-	if ( IsPlayerClass( TF_CLASS_SNIPER ) && m_Shared.InCond( TF_COND_AIMING ) )
+#ifdef QUIVER_DLL
+	if (m_Shared.InCond(TF_COND_AIMING))
+#else
+	if (IsPlayerClass(TF_CLASS_SNIPER) && m_Shared.InCond(TF_COND_AIMING))
+#endif
 	{		
 		CALL_ATTRIB_HOOK_FLOAT( flImpulseScale, mult_aiming_knockback_resistance );
 	}
