@@ -18,6 +18,9 @@
 #include <vgui_controls/EditablePanel.h>
 
 extern ConVar cl_use_tournament_specgui;
+#ifdef BDSBASE
+extern ConVar cl_spec_baralpha;
+#endif
 class CAvatarImagePanel;
 class CTFPlayerPanel;
 class CSCHintIcon;
@@ -65,7 +68,11 @@ public:
 	virtual bool ShouldShowPlayerLabel( int specmode ) { return false; }
 	void		 UpdateReinforcements( void );
 	virtual void ShowPanel(bool bShow);
-	virtual Color GetBlackBarColor( void ) { return Color(52,48,45, 255); }
+#ifdef BDSBASE
+	virtual Color GetBlackBarColor(void) { return Color(52, 48, 45, cl_spec_baralpha.GetInt()); }
+#else
+	virtual Color GetBlackBarColor(void) { return Color(52, 48, 45, 255); }
+#endif
 
 	void		UpdateKeyLabels( void );
 
