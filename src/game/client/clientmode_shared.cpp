@@ -94,6 +94,8 @@ ConVar cl_steam_overlay_toast_position("cl_steam_overlay_toast_position", "0", F
 ConVar cl_steam_overlay_toast_inset_horizontal("cl_steam_overlay_toast_inset_horizontal", "0", FCVAR_ARCHIVE, "Steam overlay notification toast horizontal inset", true, 0.0f, true, 1.0f, OnSteamToastConVarChanged);
 ConVar cl_steam_overlay_toast_inset_vertical("cl_steam_overlay_toast_inset_vertical", "0", FCVAR_ARCHIVE, "Steam overlay notification toast vertical inset", true, 0.0f, true, 1.0f, OnSteamToastConVarChanged);
 #endif
+
+ConVar cl_delete_temp_files("cl_delete_temp_files", "1", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Delete custom player sprays and other temp files during shutdown");
 #endif
 
 extern ConVar v_viewmodel_fov;
@@ -449,6 +451,14 @@ void ClientModeShared::VGui_Shutdown()
 //-----------------------------------------------------------------------------
 void ClientModeShared::Shutdown()
 {
+#ifdef BDSBASE
+	if (cl_delete_temp_files.GetBool())
+	{
+		RemoveFilesInPath("materials/temp");
+		RemoveFilesInPath("download/user_custom");
+		RemoveFilesInPath("sound/temp");
+	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1647,5 +1657,33 @@ void ClientModeShared::DeactivateInGameVGuiContext()
 	vgui::ivgui()->ActivateContext( DEFAULT_VGUI_CONTEXT );
 }
 
+#ifdef BDSBASE
+//----------------------------------------------------------------------------
+void ClientModeShared::RemoveFilesInPath(const char* pszPath) const
+{
+	FileFindHandle_t hFind = NULL;
 
+	const char* pszSearch = CFmtStr("%s/*", pszPath);
+	char const* szFileName = g_pFullFileSystem->FindFirstEx(pszSearch, "MOD", &hFind);
+	while (szFileName)
+	{
+		if (szFileName[0] != '.')
+		{
+			CFmtStr fmtFilename("%s/%s", pszPath, szFileName);
 
+			if (g_pFullFileSystem->IsDirectory(fmtFilename, "MOD"))
+			{
+				RemoveFilesInPath(fmtFilename);
+			}
+			else
+			{
+				g_pFullFileSystem->RemoveFile(fmtFilename, "MOD");
+			}
+		}
+
+		szFileName = g_pFullFileSystem->FindNext(hFind);
+	}
+
+	g_pFullFileSystem->FindClose(hFind);
+}
+#endif
