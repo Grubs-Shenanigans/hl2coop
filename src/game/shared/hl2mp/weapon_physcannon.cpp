@@ -1087,7 +1087,11 @@ bool CWeaponPhysCannon::Deploy( void )
 
 	if ( pOwner )
 	{
-		pOwner->SetNextAttack( gpGlobals->curtime );
+#ifdef BDSBASE
+		pOwner->SetNextAttack(gpGlobals->curtime + 0.25f);
+#else
+		pOwner->SetNextAttack(gpGlobals->curtime);
+#endif
 	}
 
 	return bReturn;
