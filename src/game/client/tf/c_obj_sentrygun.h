@@ -27,6 +27,27 @@ enum
 	SHIELD_MAX,		// 10% damage taken, no inactive period
 };
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: Wrangler shield
+//-----------------------------------------------------------------------------
+class C_SentrygunShield : public C_BaseAnimating
+{
+	DECLARE_CLASS(C_SentrygunShield, C_BaseAnimating);
+
+public:
+	static C_SentrygunShield* Create(const char* pszModelName);
+
+	virtual void ClientThink();
+
+	void StartFadeOut(float flDuration);
+
+private:
+	float m_flFadeOutStartTime;
+	float m_flFadeOutEndTime;
+};
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Sentry object
 //-----------------------------------------------------------------------------
@@ -124,7 +145,11 @@ private:
 	bool m_bRecreateLaserBeam;
 	float m_flNextNearMissCheck;
 
-	C_LocalTempEntity *m_pTempShield;
+#ifdef BDSBASE
+	CHandle<C_SentrygunShield> m_hShieldModel;
+#else
+	C_LocalTempEntity* m_pTempShield;
+#endif
 
 	HPARTICLEFFECT  m_hSirenEffect;
 	HPARTICLEFFECT  m_hShieldEffect;
