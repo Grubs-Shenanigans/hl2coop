@@ -178,10 +178,23 @@ void CTFChargedSMG::SecondaryAttack()
 void CTFChargedSMG::ApplyOnHitAttributes( CBaseEntity *pVictimBaseEntity, CTFPlayer *pAttacker, const CTakeDamageInfo &info )
 {
 	BaseClass::ApplyOnHitAttributes( pVictimBaseEntity, pAttacker, info );
+
+#ifdef BDSBASE
+	CTFPlayer* pVictim = ToTFPlayer(pVictimBaseEntity);
+	bool bIsVictimDisguised = false;
+	if (pVictim && pVictim->m_Shared.InCond(TF_COND_DISGUISED))
+		bIsVictimDisguised = true;
+#endif
+
 	if ( pAttacker )
 	{
 		CTFPlayer *pPlayer = ToTFPlayer( GetOwner() );
-		if ( pPlayer && !pPlayer->m_Shared.InCond( TF_COND_ENERGY_BUFF ) )
+#ifdef BDSBASE
+		if (pPlayer && !pPlayer->m_Shared.InCond(TF_COND_ENERGY_BUFF) &&
+			(!bIsVictimDisguised || (pVictim->GetHealth() - info.GetDamage() <= 0.f)))
+#else
+		if (pPlayer && !pPlayer->m_Shared.InCond(TF_COND_ENERGY_BUFF))
+#endif
 		{
 			float damage = info.GetDamage();
 			float flChargeRate = 0.0f;

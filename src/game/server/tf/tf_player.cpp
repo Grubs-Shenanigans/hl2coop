@@ -9591,43 +9591,49 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		CTFBonesaw* pBoneSaw = static_cast<CTFBonesaw*>(pWeapon);
 		if (pBoneSaw->GetBonesawType() == BONESAW_UBER_SAVEDONDEATH)
 		{
-			// Spawn their spleen
-			CPhysicsProp* pRandomInternalOrgan = dynamic_cast<CPhysicsProp*>(CreateEntityByName("prop_physics_override"));
-			if (pRandomInternalOrgan)
+			if (!m_Shared.InCond(TF_COND_DISGUISED) || (GetHealth() - info.GetDamage() <= 0.f))
 			{
-				pRandomInternalOrgan->SetCollisionGroup(COLLISION_GROUP_DEBRIS);
-				pRandomInternalOrgan->AddFlag(FL_GRENADE);
-				char buf[512];
-				Q_snprintf(buf, sizeof(buf), "%.10f %.10f %.10f", GetAbsOrigin().x, GetAbsOrigin().y, GetAbsOrigin().z);
-				pRandomInternalOrgan->KeyValue("origin", buf);
-				Q_snprintf(buf, sizeof(buf), "%.10f %.10f %.10f", GetAbsAngles().x, GetAbsAngles().y, GetAbsAngles().z);
-				pRandomInternalOrgan->KeyValue("angles", buf);
-				if (TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && BloodColor() == DONT_BLEED)
+				// Spawn their spleen
+				CPhysicsProp* pRandomInternalOrgan = dynamic_cast<CPhysicsProp*>(CreateEntityByName("prop_physics_override"));
+				if (pRandomInternalOrgan)
 				{
-					//robots don't have spleens....
-					pRandomInternalOrgan->KeyValue("model", "models/player/gibs/gibs_bolt.mdl");
-				}
-				else
-				{
-					pRandomInternalOrgan->KeyValue("model", "models/player/gibs/random_organ.mdl");
-				}
-				pRandomInternalOrgan->KeyValue("fademindist", "-1");
-				pRandomInternalOrgan->KeyValue("fademaxdist", "0");
-				pRandomInternalOrgan->KeyValue("fadescale", "1");
-				pRandomInternalOrgan->KeyValue("inertiaScale", "1.0");
-				pRandomInternalOrgan->KeyValue("physdamagescale", "0.1");
-				DispatchSpawn(pRandomInternalOrgan);
-				pRandomInternalOrgan->m_takedamage = DAMAGE_YES;	// Take damage, otherwise this can block trains
-				pRandomInternalOrgan->SetHealth(100);
-				pRandomInternalOrgan->Activate();
+					pRandomInternalOrgan->SetCollisionGroup(COLLISION_GROUP_DEBRIS);
+					pRandomInternalOrgan->AddFlag(FL_GRENADE);
+					char buf[512];
+					Q_snprintf(buf, sizeof(buf), "%.10f %.10f %.10f", GetAbsOrigin().x, GetAbsOrigin().y, GetAbsOrigin().z);
+					pRandomInternalOrgan->KeyValue("origin", buf);
+					Q_snprintf(buf, sizeof(buf), "%.10f %.10f %.10f", GetAbsAngles().x, GetAbsAngles().y, GetAbsAngles().z);
+					pRandomInternalOrgan->KeyValue("angles", buf);
+					if (TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && BloodColor() == DONT_BLEED)
+					{
+						//robots don't have spleens....
+						pRandomInternalOrgan->KeyValue("model", "models/player/gibs/gibs_bolt.mdl");
+					}
+					else
+					{
+						pRandomInternalOrgan->KeyValue("model", "models/player/gibs/random_organ.mdl");
+					}
+					pRandomInternalOrgan->KeyValue("fademindist", "-1");
+					pRandomInternalOrgan->KeyValue("fademaxdist", "0");
+					pRandomInternalOrgan->KeyValue("fadescale", "1");
+					pRandomInternalOrgan->KeyValue("inertiaScale", "1.0");
+					pRandomInternalOrgan->KeyValue("physdamagescale", "0.1");
+					DispatchSpawn(pRandomInternalOrgan);
+					pRandomInternalOrgan->m_takedamage = DAMAGE_YES;	// Take damage, otherwise this can block trains
+					pRandomInternalOrgan->SetHealth(100);
+					pRandomInternalOrgan->Activate();
 
-				Vector vecImpulse = RandomVector(-1.f, 1.f);
-				vecImpulse.z = 1.f;
-				VectorNormalize(vecImpulse);
-				Vector vecVelocity = vecImpulse * 250.0;
-				pRandomInternalOrgan->ApplyAbsVelocityImpulse(vecVelocity);
+					Vector vecImpulse = RandomVector(-1.f, 1.f);
+					vecImpulse.z = 1.f;
+					VectorNormalize(vecImpulse);
+					Vector vecVelocity = vecImpulse * 250.0;
+					pRandomInternalOrgan->ApplyAbsVelocityImpulse(vecVelocity);
 
-				pRandomInternalOrgan->ThinkSet(&CBaseEntity::SUB_Remove, gpGlobals->curtime + 5.f, "DieContext");
+					pRandomInternalOrgan->ThinkSet(&CBaseEntity::SUB_Remove, gpGlobals->curtime + 5.f, "DieContext");
+				}
+			}
+		}
+	}
 #else
 	if ( pTFAttacker && pTFAttacker->IsPlayerClass( TF_CLASS_MEDIC ) )
 	{
@@ -9667,10 +9673,10 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 					pRandomInternalOrgan->ThinkSet( &CBaseEntity::SUB_Remove, gpGlobals->curtime + 5.f, "DieContext" );
 				}
-#endif
 			}
 		}
 	}
+#endif
 
 	if ( bIsSoldierRocketJumping || bIsDemomanPipeJumping )
 	{
@@ -10286,7 +10292,14 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	{
 		// Buff flag 1: we get rage when we deal damage. Here, that means the soldier that attacked
 		// gets rage when we take damage.
-		HandleRageGain( pTFAttacker, kRageBuffFlag_OnDamageDealt, info.GetDamage() * flRageScale, 6.0f );
+#ifdef BDSBASE
+		if (!m_Shared.InCond(TF_COND_DISGUISED))
+		{
+			HandleRageGain(pTFAttacker, kRageBuffFlag_OnDamageDealt, info.GetDamage() * flRageScale, 6.0f);
+		}
+#else
+		HandleRageGain(pTFAttacker, kRageBuffFlag_OnDamageDealt, info.GetDamage()* flRageScale, 6.0f);
+#endif
 
 		// Buff flag 2: we get rage when we take damage.
 		if (  !( info.GetDamageType() & DMG_FALL ) )
@@ -11165,6 +11178,9 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	outParams.bSelfBlastDmg = false;
 	outParams.bSendPreFeignDamage = false;
 	outParams.bPlayDamageReductionSound = false;
+#ifdef BDSBASE
+	float flOldHealth = GetHealth();
+#endif
 	float realDamage = info.GetDamage();
 	int iPreFeignDamage = realDamage;
 	if ( TFGameRules() )
@@ -11317,7 +11333,11 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		if ( pSniper && ( pSniper->IsZoomed() || ( pSniper->GetWeaponID() == TF_WEAPON_SNIPERRIFLE_CLASSIC ) ) )
 		{
 			float flJarateTime = pSniper->GetJarateTime();
-			if ( flJarateTime >= 1.f )
+#ifdef BDSBASE
+			if (flJarateTime >= 1.f && (!m_Shared.InCond(TF_COND_DISGUISED) || (flOldHealth - realDamage <= 0.f)))
+#else
+			if (flJarateTime >= 1.f)
+#endif
 			{
 				if ( !m_Shared.IsInvulnerable() && !m_Shared.InCond( TF_COND_PHASE ) && !m_Shared.InCond( TF_COND_PASSTIME_INTERCEPTION ) )
 				{
@@ -11484,7 +11504,11 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 				DispatchParticleEffect( "bot_impact_heavy", GetAbsOrigin(), vec3_angle );
 			}
 		}
+#ifdef BDSBASE
+		else if (!m_Shared.InCond(TF_COND_DISGUISED))
+#else
 		else
+#endif
 		{
 			CPVSFilter filter( vDamagePos );
 			TE_TFBlood( filter, 0.0, vDamagePos, -vecDir, entindex() );

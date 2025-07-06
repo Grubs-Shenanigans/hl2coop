@@ -1039,15 +1039,30 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 
 	CBaseEntity *pInflictor = GetLauncher();
 
-	float flLifeTime = gpGlobals->curtime - m_flCreationTime;
-	if ( flLifeTime >= FLIGHT_TIME_TO_REDUCE_COOLDOWN )
+#ifdef BDSBASE
+	if (!pPlayer->m_Shared.InCond(TF_COND_DISGUISED))
 	{
-		auto pLauncher = dynamic_cast<CTFWeaponBase*>( pInflictor );
-		if ( pLauncher && pOwner != pPlayer && pLauncher->HasEffectBarRegeneration() )
+		float flLifeTime = gpGlobals->curtime - m_flCreationTime;
+		if (flLifeTime >= FLIGHT_TIME_TO_REDUCE_COOLDOWN)
 		{
-			pLauncher->DecrementBarRegenTime( 1.5f );
+			auto pLauncher = dynamic_cast<CTFWeaponBase*>(pInflictor);
+			if (pLauncher && pOwner != pPlayer && pLauncher->HasEffectBarRegeneration())
+			{
+				pLauncher->DecrementBarRegenTime(1.5f);
+			}
 		}
 	}
+#else
+	float flLifeTime = gpGlobals->curtime - m_flCreationTime;
+	if (flLifeTime >= FLIGHT_TIME_TO_REDUCE_COOLDOWN)
+	{
+		auto pLauncher = dynamic_cast<CTFWeaponBase*>(pInflictor);
+		if (pLauncher && pOwner != pPlayer && pLauncher->HasEffectBarRegeneration())
+		{
+			pLauncher->DecrementBarRegenTime(1.5f);
+		}
+	}
+#endif
 
 	// just do the bleed effect directly since the bleed
 	// attribute comes from the inflictor, which is the cleaver.
@@ -1088,7 +1103,18 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 	EmitSound( filter, entindex(), params );
 
 	CSingleUserRecipientFilter attackerFilter( pOwner );
-	EmitSound( attackerFilter, pOwner->entindex(), params );
+#ifdef BDSBASE
+	if (!pPlayer->m_Shared.InCond(TF_COND_DISGUISED))
+	{
+		EmitSound(attackerFilter, pOwner->entindex(), params);
+}
+	else
+	{
+		EmitSound(TF_WEAPON_CLEAVER_IMPACT_WORLD_SOUND);
+	}
+#else
+	EmitSound(attackerFilter, pOwner->entindex(), params);
+#endif
 
 	RemoveCleaver();
 
