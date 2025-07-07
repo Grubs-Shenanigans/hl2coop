@@ -5,5 +5,7 @@ Quiver Test 2:
 - Buffed the maximum damage potential of the Artillery Cannon.
 - Increased the number of bullets the Artillery Cannon fires.
 - Added a move speed penalty to the Artillery Cannon.
+- Fixed a bug where you can eat infinite sandviches if you haven't taken damage yet.
+- Fixed a bug where broken items don't fix themselves when going to a resupply closet.
 Quiver Test 1:
 - Initial playtesting release build.
