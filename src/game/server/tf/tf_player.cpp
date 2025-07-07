@@ -9210,20 +9210,23 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 	{
 		if (ArmorValue() <= 0)
 		{
-			// in most instances, we SHOULD have an inflictor.
-			CBroadcastRecipientFilter filter;
-			te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
+			if (!m_Shared.IsStealthed())
+			{
+				// in most instances, we SHOULD have an inflictor.
+				CBroadcastRecipientFilter filter;
+				te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
+
+				CBaseEntity* pTrail;
+				int sparkcount = RandomInt(1, 4);
+				for (int i = 0; i < sparkcount; i++)
+				{
+					pTrail = CreateEntityByName("sparktrail");
+					pTrail->SetOwnerEntity(this);
+					DispatchSpawn(pTrail);
+				}
+			}
 
 			EmitSound("Game.ArmorBreakAll");
-
-			CBaseEntity* pTrail;
-			int sparkcount = RandomInt(1,4);
-			for (int i = 0; i < sparkcount; i++)
-			{
-				pTrail = CreateEntityByName("sparktrail");
-				pTrail->SetOwnerEntity(this);
-				DispatchSpawn(pTrail);
-			}
 
 			/*if (IsAlive())
 			{

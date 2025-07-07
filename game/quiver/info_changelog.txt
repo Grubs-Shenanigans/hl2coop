@@ -7,6 +7,7 @@ Quiver Test 3:
 - Replaced health regen in MvM with a max health boost.
 - Armor can no longer be picked up by ammo crates if the player is on the losing team.
 - If your Armor breaks, you'll now be given mini-crits for 2.5 seconds to give you a chance to kill the responsible party. Medics with broken armor healing a teammate will share the mini crit bonus with their healing target. This bonus does NOT apply if your armor was broken through fall damage or self damage.
+- Spies who are cloaked will no longer show the armor break effect when cloaked, but the sound will still play.
 
 Quiver Test 2.5:
 - Fixed a bug where broken items don't fix themselves when going to a resupply closet (for real this time)
