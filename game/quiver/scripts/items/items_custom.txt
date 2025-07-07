@@ -633,7 +633,7 @@
 				"fire rate penalty"
 				{
 					"attribute_class"	"mult_postfiredelay"
-					"value"	"1.2"
+					"value"	"1.25"
 				}
 				"mod crit while airborne"
 				{
@@ -663,7 +663,7 @@
 				"armor damage taken increased"
 				{
 					"attribute_class"	"mult_armor"
-					"value"	"0.80"
+					"value"	"0.50"
 				}
 				"damage penalty"
 				{
@@ -673,7 +673,12 @@
 				"move speed penalty"
 				{
 					"attribute_class"	"mult_player_movespeed"
-					"value"	"0.85"
+					"value"	"0.75"
+				}
+				"reduced_healing_from_medics"
+				{
+					"attribute_class"	"mult_healing_from_medics"
+					"value" "0.15"
 				}
 			}
 			"visuals"
