@@ -555,7 +555,7 @@
 					"attribute_class"	"mult_dispenser_armor_rate"
 					"value"			"0.65"
 				}
-				"aiming knockback resistance"
+				"aiming knockback resistance heavy ver"
 				{
 					"attribute_class"	"mult_aiming_knockback_resistance"
 					"value"	"0.75"
@@ -933,6 +933,17 @@
 			"description_format"	"value_is_inverted_percentage"
 			"hidden"	"0"
 			"effect_type"	"negative"
+			"stored_as_integer"	"0"
+		}
+		"918"
+		{
+			"name"	"aiming knockback resistance heavy ver"
+			"attribute_class"	"mult_aiming_knockback_resistance"
+			"description_string"	"#Attrib_AimingKnockbackResistanceHeavy"
+			"description_format"	"value_is_inverted_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
 			"stored_as_integer"	"0"
 		}
 	}
