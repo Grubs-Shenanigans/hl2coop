@@ -80,11 +80,6 @@
 					"attribute_class"	"charge_impact_damage"
 					"value"			"1.5"
 				}
-				"lose demo charge on damage when charging"
-				{
-					"attribute_class"	"lose_demo_charge_on_damage_when_charging"
-					"value"				"1"
-				}
 				"mult charge turn control"
 				{
 					"attribute_class"	"charge_turn_control"
