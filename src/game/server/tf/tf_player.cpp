@@ -9231,6 +9231,20 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 				SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_JEERS);
 			}*/
 
+			//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
+			m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
+
+			//give our patient our mini-crit boost to help us.
+			CBaseEntity* pHealTarget = MedicGetHealTarget();
+			if (pHealTarget)
+			{
+				CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
+				if (pPatient)
+				{
+					pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
+				}
+			}
+
 			if (pTFAttacker && pTFAttacker != this)
 			{
 				CSingleUserRecipientFilter filter2(pTFAttacker);
