@@ -9231,35 +9231,48 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 				SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_JEERS);
 			}*/
 
-			//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
-			m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
-
-			//give our patient our mini-crit boost to help us.
-			CBaseEntity* pHealTarget = MedicGetHealTarget();
-			if (pHealTarget)
+			if (pTFAttacker)
 			{
-				CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
-				if (pPatient)
-				{
-					pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
-				}
-			}
+				bool isSelfAttacker = (pTFAttacker == this);
+				ETFCond iBonusCond = TF_COND_MINICRITBOOSTED;
+				float flTime = 2.5f;
 
-			if (pTFAttacker && pTFAttacker != this)
-			{
-				CSingleUserRecipientFilter filter2(pTFAttacker);
-				EmitSound_t params;
-				if (bitsDamage & DMG_CRITICAL)
+				if (!(bitsDamage & (DMG_FALL)) || !isSelfAttacker)
 				{
-					params.m_pSoundName = "Game.ArmorBreakCrit";
-				}
-				else
-				{
-					params.m_pSoundName = "Game.ArmorBreakHit";
+					//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
+					m_Shared.AddCond(iBonusCond, flTime);
+
+					//give our patient our mini-crit boost to help us.
+					if (IsPlayerClass(TF_CLASS_MEDIC))
+					{
+						CBaseEntity* pHealTarget = MedicGetHealTarget();
+						if (pHealTarget)
+						{
+							CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
+							if (pPatient)
+							{
+								pPatient->m_Shared.AddCond(iBonusCond, flTime);
+							}
+						}
+					}
 				}
 
-				//pTFAttacker->SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_CHEERS);
-				pTFAttacker->EmitSound(filter2, pTFAttacker->entindex(), params);
+				if (!isSelfAttacker)
+				{
+					CSingleUserRecipientFilter filter2(pTFAttacker);
+					EmitSound_t params;
+					if (bitsDamage & DMG_CRITICAL)
+					{
+						params.m_pSoundName = "Game.ArmorBreakCrit";
+					}
+					else
+					{
+						params.m_pSoundName = "Game.ArmorBreakHit";
+					}
+
+					//pTFAttacker->SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_CHEERS);
+					pTFAttacker->EmitSound(filter2, pTFAttacker->entindex(), params);
+				}
 			}
 		}
 		else
