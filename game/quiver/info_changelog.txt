@@ -1,10 +1,11 @@
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()
 - Fixed "MasterRequestRestart" errors.
-- Added armor upgrades to MvM (max armor and armor resistance).
+- Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).
 - Removed resistance upgrades from MvM and condenced them into the armor upgrade.
 - Removed metal regen from MvM as it's useless.
 - Replaced health regen in MvM with a max health boost.
+- Added a 
 Quiver Test 2.5:
 - Fixed a bug where broken items don't fix themselves when going to a resupply closet (for real this time)
 - Fixed a bug where ForceRegenerateAndRespawn() doesn't actually regenerate the player.

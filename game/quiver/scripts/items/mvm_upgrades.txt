@@ -473,6 +473,14 @@
 			"cap"		"1"			// 
 			"cost"		"400"
 		}
+		"58"
+		{
+			"attribute"	"dmg pierces resists absorbs"
+			"icon"		"mvm/upgradeicons/upgrade_resistance_bullet"
+			"increment"	"1"			// 
+			"cap"		"1"			// 
+			"cost"		"500"
+		}
 	}
 	
 	// PLAYER UPGRADES
