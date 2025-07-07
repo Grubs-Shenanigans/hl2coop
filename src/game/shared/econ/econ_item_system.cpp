@@ -720,9 +720,14 @@ CON_COMMAND_F( econ_show_items_with_tag, "Lists the item definitions that have a
 	}
 }
 
-#else
+#endif // CLIENT_DLL
+
 #ifdef BDSBASE
-CON_COMMAND_F(econ_refreshschema, "Refreshes the item schema.", FCVAR_CHEAT)
+#ifdef CLIENT_DLL
+CON_COMMAND_F(econ_refreshschema_cl, "Refreshes the item schema on the client.", FCVAR_CHEAT)
+#else
+CON_COMMAND_F(econ_refreshschema_sv, "Refreshes the item schema on the server.", FCVAR_CHEAT)
+#endif
 {
 	CEconItemSystem* pItemSystem = ItemSystem();
 
@@ -740,5 +745,4 @@ CON_COMMAND_F(econ_refreshschema, "Refreshes the item schema.", FCVAR_CHEAT)
 	Msg("Item system restarted.\n");
 }
 #endif
-#endif // CLIENT_DLL
 

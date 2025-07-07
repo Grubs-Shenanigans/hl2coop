@@ -9162,6 +9162,10 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 	int iAttackIgnoresArmor = 0;
 	CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iAttackIgnoresArmor, mod_pierce_armor);
+	if (!iAttackIgnoresArmor)
+	{
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iAttackIgnoresArmor, mod_pierce_resists_absorbs);
+	}
 
 	bool bArmorDamagedThisFrame = false;
 
