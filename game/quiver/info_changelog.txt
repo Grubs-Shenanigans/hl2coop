@@ -1,0 +1,5 @@
+Quiver Test 2:
+- Removed speed and damage penalty from the Vitality Glitch.
+- Added the The Hitman's Heatmaker and the The Bazaar Bargain to the whitelist.
+Quiver Test 1:
+- Initial playtesting release build.

@@ -1,0 +1,22 @@
+Quiver Fortress:
+
+- Powered by the BDS (Bitl Development Studio) Base fork of the Source SDK, which implements item whitelisting, legacy viewmodels, Discord RPC, the implementation of over 200+ community-made pull requests from the official Source SDK repo, and more.
+- Run speeds have been increased across all 9 classes. However, one aspect remains: Heavies are the slowest, Scouts are the fastest.
+- Source 2006-styled bunnyhopping is enabled. All classes have different bunnyhopping speed boosts, with Heavy having the lowest and Scout having the highest.
+- Random critical hits have been disabled. 
+- Armor has been added as an additional layer of damage resistance. How strong it is depends on the class. Armor can also be penetrated by backstabs and headshots, and won't protect against bleed damage. Armor can be repaired by Dispensers, resupply cabinets, or by friendly Engineers hitting you with their wrench. Armor can also be picked up from Ammo crates.
+- The weapon list has been curated to fit the faster playstyle. Weapon reskins of stock weapons are allowed, alongside normal and reskin versions of the unlocks in whitelist.txt
+- All Demoknight swords and shields have been truncated into the Charge Shield and the Sword.
+	- The Charge Shield provides fast turning control, the ability to refill 35% of your charge through melee kills and increased armor durability at the expense of getting a slower armor repair rate from dispensers.
+	- The Sword is similar to the Eyelander, but it offers a 20% damage bonus in return for 35% of both primary and secondary ammo, 15 less armor, and 40 less maximum health.
+	- When both weapons are used, Demoknights have tougher armor and use a more powerful melee than stock in exchange for your secondary, a portion of your health and armor, and your grenade launcher's ammo supply. Due to the Sword's speed and health bonus, a Demoknight can gain up to 200 health, and run nearly as fast as a Scout.
+	-  Alternative versions of the Sword are available, replicating the look of various versions of the Eyelander.
+- Heavy gets a minigun to go alongside his regular one, known as the Artillery Cannon. It is fires powerful, accurate rounds at the expense of bullet count and fire rate.
+- The Wrangler's shield has been disabled. Its sole function is now purely to control your sentry gun.
+- The Shortstop's shove has a doubled puchback force (from 400 to 800).
+- Legacy menu and legacy weapon viewmodels have been restored.
+- The Sniper has an alternative Sniper Rifle called the Railgun, allowing the Sniper to fire charged shots without zooming and penetrate through multiple targets at the expense of armor durability.
+- The Engineer has an alternative PDA called the Valkyrie 3S, which increases your sentry turn rate in return for your buildings' maximum health.
+- Heavy gets another minigun, called the Ludmila, which increases the Heavy's survivability in exchange for damage and minigun spinup time.
+- The Soldier gets a melee that's a blast from the past, The Vitality Glitch, which increases the damage and move speed of the user when on low health, in return for part of their base move speed, damage, and armor durability.
+

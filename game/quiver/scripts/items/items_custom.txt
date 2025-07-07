@@ -665,16 +665,6 @@
 					"attribute_class"	"mult_armor"
 					"value"	"0.50"
 				}
-				"damage penalty"
-				{
-					"attribute_class"	"mult_dmg"
-					"value"	"0.75"
-				}
-				"move speed penalty"
-				{
-					"attribute_class"	"mult_player_movespeed"
-					"value"	"0.75"
-				}
 				"reduced_healing_from_medics"
 				{
 					"attribute_class"	"mult_healing_from_medics"
