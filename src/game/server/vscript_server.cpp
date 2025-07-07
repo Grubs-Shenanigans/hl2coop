@@ -1696,35 +1696,35 @@ void CScriptUserMessage::WriteValue(const char* pszValue, int iType)
 void CScriptUserMessage::WriteByte(int iValue)
 {
 	char szBuffer[512];
-	itoa(iValue, szBuffer, 10);
+	Q_snprintf(szBuffer, sizeof(szBuffer), "%i", iValue);
 	WriteValue(szBuffer, TYPE_BYTE);
 }
 
 void CScriptUserMessage::WriteChar(int iValue)
 {
 	char szBuffer[512];
-	itoa(iValue, szBuffer, 10);
+	Q_snprintf(szBuffer, sizeof(szBuffer), "%i", iValue);
 	WriteValue(szBuffer, TYPE_CHAR);
 }
 
 void CScriptUserMessage::WriteShort(int iValue)
 {
 	char szBuffer[512];
-	itoa(iValue, szBuffer, 10);
+	Q_snprintf(szBuffer, sizeof(szBuffer), "%i", iValue);
 	WriteValue(szBuffer, TYPE_SHORT);
 }
 
 void CScriptUserMessage::WriteWord(int iValue)
 {
 	char szBuffer[512];
-	itoa(iValue, szBuffer, 10);
+	Q_snprintf(szBuffer, sizeof(szBuffer), "%i", iValue);
 	WriteValue(szBuffer, TYPE_WORD);
 }
 
 void CScriptUserMessage::WriteLong(int iValue)
 {
 	char szBuffer[512];
-	itoa(iValue, szBuffer, 10);
+	Q_snprintf(szBuffer, sizeof(szBuffer), "%i", iValue);
 	WriteValue(szBuffer, TYPE_LONG);
 }
 
