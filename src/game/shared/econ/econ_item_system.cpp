@@ -724,11 +724,19 @@ CON_COMMAND_F( econ_show_items_with_tag, "Lists the item definitions that have a
 
 #ifdef BDSBASE
 #ifdef CLIENT_DLL
-CON_COMMAND_F(econ_refreshschema_cl, "Refreshes the item schema on the client.", FCVAR_CHEAT)
+CON_COMMAND_F(econ_refreshschema_cl, "Refreshes the item schema on the client.", FCVAR_NONE)
 #else
 CON_COMMAND_F(econ_refreshschema_sv, "Refreshes the item schema on the server.", FCVAR_CHEAT)
 #endif
 {
+#ifdef CLIENT_DLL
+	if ((engine->IsInGame() || engine->IsConnected()) && !engine->IsLevelMainMenuBackground())
+	{
+		Msg("This command is not available for use in-game.\n");
+		return;
+	}
+#endif
+
 	CEconItemSystem* pItemSystem = ItemSystem();
 
 	if (!pItemSystem)

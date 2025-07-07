@@ -3,5 +3,7 @@ Quiver Test 2:
 - Added the The Hitman's Heatmaker and the The Bazaar Bargain to the whitelist.
 - Fixed a bug where some animated avatars wouldn't play properly if the users switches their avatars.
 - Buffed the maximum damage potential of the Artillery Cannon.
+- Increased the number of bullets the Artillery Cannon fires.
+- Added a move speed penalty to the Artillery Cannon.
 Quiver Test 1:
 - Initial playtesting release build.
