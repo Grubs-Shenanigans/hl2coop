@@ -9205,7 +9205,8 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 			EmitSound("Game.ArmorBreakAll");
 
 			CBaseEntity* pTrail;
-			for (int i = 0; i < 3; i++)
+			int sparkcount = RandomInt(1,4);
+			for (int i = 0; i < sparkcount; i++)
 			{
 				pTrail = CreateEntityByName("sparktrail");
 				pTrail->SetOwnerEntity(this);
