@@ -59,3 +59,4 @@ rmdir /S /Q download\models\
 rmdir /S /Q downloadlists\
 rmdir /S /Q save\
 rmdir /S /Q replay\
+rmdir /S /Q screenshots\
