@@ -4492,7 +4492,7 @@ void CGameMovement::HandleDuckingSpeedCrop( void )
 #else
 	C_HL2MP_Player* pHL2Player = dynamic_cast<C_HL2MP_Player*>(player);
 #endif
-#endif
+
 
 	if ((m_iSpeedCropped & SPEED_CROPPED_DUCK) ||
 		!(player->GetFlags() & FL_DUCKING) ||
@@ -4514,6 +4514,16 @@ void CGameMovement::HandleDuckingSpeedCrop( void )
 	mv->m_flSideMove *= frac;
 	mv->m_flUpMove *= frac;
 	m_iSpeedCropped |= SPEED_CROPPED_DUCK;
+#else
+	if (!(m_iSpeedCropped & SPEED_CROPPED_DUCK) && (player->GetFlags() & FL_DUCKING) && (player->GetGroundEntity() != NULL))
+	{
+		float frac = 0.33333333f;
+		mv->m_flForwardMove *= frac;
+		mv->m_flSideMove *= frac;
+		mv->m_flUpMove *= frac;
+		m_iSpeedCropped |= SPEED_CROPPED_DUCK;
+	}
+#endif
 #else
 	if (!(m_iSpeedCropped & SPEED_CROPPED_DUCK) && (player->GetFlags() & FL_DUCKING) && (player->GetGroundEntity() != NULL))
 	{
