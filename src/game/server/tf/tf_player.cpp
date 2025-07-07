@@ -4354,6 +4354,18 @@ void CTFPlayer::Regenerate( bool bRefillHealthAndAmmo /*= true*/ )
 		}
 	}
 
+#ifdef BDSBASE
+	// fix any broken weapons.
+	for (int i = 0; i < MAX_WEAPONS; ++i)
+	{
+		CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(GetWeapon(i));
+		if (pWeapon && pWeapon->IsBroken())
+		{
+			pWeapon->SetBroken(true);
+		}
+	}
+#endif
+
 	IGameEvent *event = gameeventmanager->CreateEvent( "player_regenerate" );
 	if ( event )
 	{
