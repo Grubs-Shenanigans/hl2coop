@@ -16,7 +16,7 @@ Quiver Test 2.5:
 
 Quiver Test 2:
 - Removed speed and damage penalty from the Vitality Glitch.
-- Added the The Hitman's Heatmaker and the The Bazaar Bargain to the whitelist.
+- Added The Hitman's Heatmaker and The Bazaar Bargain to the whitelist.
 - Fixed a bug where some animated avatars wouldn't play properly if the user switches their avatars.
 - Buffed the maximum damage potential of the Artillery Cannon.
 - Increased the number of bullets the Artillery Cannon fires.
@@ -24,7 +24,7 @@ Quiver Test 2:
 - Fixed a bug where you can eat infinite sandviches if you haven't taken damage yet.
 - Fixed a bug where broken items don't fix themselves when going to a resupply closet.
 - The Charge Shield now will restore 85% of your charge on a kill.
-- Increased the turning rate of the Charge Shield.
+- Increased the turning rate of The Charge Shield.
 
 Quiver Test 1:
 - Initial playtesting release build.
