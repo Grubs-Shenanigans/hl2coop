@@ -1780,7 +1780,7 @@ void CScriptUserMessage::WriteString(const char* pszValue)
 void CScriptUserMessage::WriteBool(bool bValue)
 {
 	char szBuffer[512];
-	itoa(!!bValue, szBuffer, 10);
+	Q_snprintf(szBuffer, sizeof(szBuffer), "%s", bValue ? "true" : "fasle");
 	WriteValue(szBuffer, TYPE_BOOL);
 }
 
