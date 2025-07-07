@@ -1,5 +1,6 @@
 Quiver Test 2:
 - Removed speed and damage penalty from the Vitality Glitch.
 - Added the The Hitman's Heatmaker and the The Bazaar Bargain to the whitelist.
+- Fixed a bug where some animated avatars wouldn't play properly if the users switches their avatars.
 Quiver Test 1:
 - Initial playtesting release build.
