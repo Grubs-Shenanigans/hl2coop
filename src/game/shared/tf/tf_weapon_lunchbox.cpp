@@ -297,7 +297,11 @@ void CTFLunchBox::SecondaryAttack( void )
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
+#ifdef BDSBASE
+void CTFLunchBox::DrainAmmo(void)
+#else
 void CTFLunchBox::DrainAmmo(bool bForceCooldown)
+#endif
 {
 	CTFPlayer *pOwner = ToTFPlayer( GetPlayerOwner() );
 	if ( !pOwner )
@@ -305,11 +309,16 @@ void CTFLunchBox::DrainAmmo(bool bForceCooldown)
 
 #ifdef GAME_DLL
 
+#ifndef BDSBASE
 	int iLunchboxType = GetLunchboxType();
+#endif
 
 	// If we're damaged while eating/taunting, bForceCooldown will be true
 	if ( pOwner->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) )
 	{
+#ifdef BDSBASE
+		pOwner->m_Shared.SetItemChargeMeter(LOADOUT_POSITION_SECONDARY, 0.f);
+#else
 		if (pOwner->GetHealth() < pOwner->GetMaxHealth() || GetLunchboxType() == LUNCHBOX_ADDS_MINICRITS || iLunchboxType == LUNCHBOX_CHOCOLATE_BAR || iLunchboxType == LUNCHBOX_FISHCAKE || bForceCooldown)
 		{
 			pOwner->m_Shared.SetItemChargeMeter(LOADOUT_POSITION_SECONDARY, 0.f);
@@ -318,6 +327,7 @@ void CTFLunchBox::DrainAmmo(bool bForceCooldown)
 		{
 			return;
 		}
+#endif
 	}
 	else if ( pOwner->IsPlayerClass( TF_CLASS_SCOUT ) )
 	{
@@ -382,8 +392,71 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 {
 	SetBroken( true );
 
+#ifdef BDSBASE
+	bool bDrainAmmo = false;
+#endif
+
 	int nLunchBoxType = GetLunchboxType();
 
+#ifdef BDSBASE
+	if (nLunchBoxType == LUNCHBOX_ADDS_MINICRITS)
+	{
+		static const float STEAK_SANDVICH_DURATION = 16.f;
+		pPlayer->m_Shared.AddCond(TF_COND_ENERGY_BUFF, STEAK_SANDVICH_DURATION);
+		pPlayer->m_Shared.AddCond(TF_COND_CANNOT_SWITCH_FROM_MELEE, STEAK_SANDVICH_DURATION);
+		bDrainAmmo = true;
+}
+	else
+	{
+		static const float DALOKOHS_MAXHEALTH_BUFF = 50.f;
+
+		if (nLunchBoxType == LUNCHBOX_CHOCOLATE_BAR || nLunchBoxType == LUNCHBOX_FISHCAKE)
+		{
+			// Add 50 health to player for 30 seconds
+			pPlayer->AddCustomAttribute("hidden maxhealth non buffed", DALOKOHS_MAXHEALTH_BUFF, 30.f);
+			bDrainAmmo = true;
+		}
+
+		// Then heal the player
+		int iHeal = (nLunchBoxType == LUNCHBOX_CHOCOLATE_BAR || nLunchBoxType == LUNCHBOX_FISHCAKE) ? 25 : 75;
+		int iHealType = DMG_GENERIC;
+		if ((nLunchBoxType == LUNCHBOX_CHOCOLATE_BAR || nLunchBoxType == LUNCHBOX_FISHCAKE)
+			&& pPlayer->GetHealth() < (300.f + DALOKOHS_MAXHEALTH_BUFF))
+		{
+			iHealType = DMG_IGNORE_MAXHEALTH;
+			iHeal = Min(25, 350 - pPlayer->GetHealth());
+		}
+
+		float flHealScale = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT(flHealScale, lunchbox_healing_scale);
+		iHeal = iHeal * flHealScale;
+
+		int iHealed = pPlayer->TakeHealth(iHeal, iHealType);
+		if (iHealed > 0)
+		{
+			CTF_GameStats.Event_PlayerHealedOther(pPlayer, iHealed);
+			bDrainAmmo = true;
+		}
+
+		// Restore ammo if applicable
+		if (nLunchBoxType == LUNCHBOX_ADDS_AMMO)
+		{
+			int maxPrimary = pPlayer->GetMaxAmmo(TF_AMMO_PRIMARY);
+			int iAmmoGiven = pPlayer->GiveAmmo(maxPrimary * 0.25, TF_AMMO_PRIMARY, true);
+			if (iAmmoGiven > 0)
+			{
+				bDrainAmmo = true;
+			}
+		}
+	}
+
+	// Drain ammo on the first bite that applied an effect
+	if (bDrainAmmo && !pPlayer->m_Shared.m_bBiteEffectWasApplied)
+	{
+		DrainAmmo();
+		pPlayer->m_Shared.SetBiteEffectWasApplied();
+	}
+#else
 	const float DALOKOHS_MAXHEALTH_BUFF = 50.f;
 
 	if (nLunchBoxType == LUNCHBOX_CHOCOLATE_BAR || nLunchBoxType == LUNCHBOX_FISHCAKE)
@@ -429,6 +502,7 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 		int maxPrimary = pPlayer->GetMaxAmmo(TF_AMMO_PRIMARY);
 		pPlayer->GiveAmmo(maxPrimary * 0.25, TF_AMMO_PRIMARY, true);
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
