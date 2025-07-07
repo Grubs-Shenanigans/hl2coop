@@ -9212,11 +9212,11 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 				DispatchSpawn(pTrail);
 			}
 
-			if (IsAlive())
+			/*if (IsAlive())
 			{
 				//say a jeers or a negative line if the damage doesn't kill us
 				SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_JEERS);
-			}
+			}*/
 
 			if (pTFAttacker && pTFAttacker != this)
 			{
@@ -9231,7 +9231,7 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 					params.m_pSoundName = "Game.ArmorBreakHit";
 				}
 
-				pTFAttacker->SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_CHEERS);
+				//pTFAttacker->SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_CHEERS);
 				pTFAttacker->EmitSound(filter2, pTFAttacker->entindex(), params);
 			}
 		}
