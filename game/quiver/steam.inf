@@ -1,6 +1,6 @@
-PatchVersion=0000
-ClientVersion=0000
-ServerVersion=0000
+PatchVersion=10300
+ClientVersion=10300
+ServerVersion=10300
 ProductName=quiver
 appID=243750
 ServerAppID=244310

@@ -4361,7 +4361,7 @@ void CTFPlayer::Regenerate( bool bRefillHealthAndAmmo /*= true*/ )
 		CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(GetWeapon(i));
 		if (pWeapon && pWeapon->IsBroken())
 		{
-			pWeapon->SetBroken(true);
+			pWeapon->SetBroken(false);
 		}
 	}
 #endif
@@ -15256,9 +15256,15 @@ void CTFPlayer::EndPowerupModeDominant( void )
 //-----------------------------------------------------------------------------
 void CTFPlayer::ForceRegenerateAndRespawn( void )
 {
-	m_bRegenerating.Set( true );
+#ifndef BDSBASE
+	m_bRegenerating.Set(true);
+#endif
 	ForceRespawn();
-	m_bRegenerating.Set( false );
+#ifndef BDSBASE
+	m_bRegenerating.Set(false);
+#else
+	Regenerate();
+#endif
 }
 
 //-----------------------------------------------------------------------------
