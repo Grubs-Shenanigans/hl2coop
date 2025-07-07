@@ -119,13 +119,16 @@ bool CAmmoPack::MyTouch( CBasePlayer *pPlayer )
 		}
 
 #ifdef QUIVER_DLL
-		//lastly, grab some armor.
-		if (pTFPlayer->ArmorValue() < pTFPlayer->GetMaxArmor())
+		//lastly, grab some armor. as long as we're not in the losing team
+		if (!(TFGameRules()->State_Get() == GR_STATE_TEAM_WIN && TFGameRules()->GetWinningTeam() != GetTeamNumber()))
 		{
-			int iMaxArmor = pTFPlayer->GetMaxArmor();
-			int iArmor = ceil(iMaxArmor * flPackRatio);
-			pTFPlayer->IncrementArmorValue(iArmor, iMaxArmor);
-			bSuccess = true;
+			if (pTFPlayer->ArmorValue() < pTFPlayer->GetMaxArmor())
+			{
+				int iMaxArmor = pTFPlayer->GetMaxArmor();
+				int iArmor = ceil(iMaxArmor * flPackRatio);
+				pTFPlayer->IncrementArmorValue(iArmor, iMaxArmor);
+				bSuccess = true;
+			}
 		}
 #endif
 
