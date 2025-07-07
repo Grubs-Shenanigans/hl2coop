@@ -513,14 +513,6 @@
 		}
 		"5"
 		{
-			"attribute"	"metal regen"
-			"icon"		"achievements/tf_engineer_dispenser_extinguish"
-			"increment"	"5"
-			"cap"		"25"
-			"cost"		"200"
-		}
-		"6"
-		{
 			"attribute"	"increased jump height"
 			"icon"		"achievements/tf_scout_double_jumps"
 			"increment"	"0.2"
