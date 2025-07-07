@@ -18,7 +18,7 @@ Quiver Fortress:
 - The Sniper has an alternative Sniper Rifle called the Railgun, allowing the Sniper to fire charged shots without zooming and penetrate through multiple targets at the expense of armor durability.
 - The Engineer has an alternative PDA called the Valkyrie 3S, which increases your sentry turn rate in return for your buildings' maximum health.
 - Heavy gets another minigun, called the Ludmila, which increases the Heavy's survivability in exchange for damage and minigun spinup time.
-- The Soldier gets a melee that's a blast from the past, The Vitality Glitch, which increases the damage and move speed of the user when on low health, in return for part of their base move speed, damage, and armor durability.
+- The Soldier gets a melee that's a blast from the past, The Vitality Glitch, which increases the damage and move speed of the user when on low health, in return for healing from Medics and armor durability.
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).
 - Removed resistance upgrades from MvM and condenced them into the armor upgrade.
 - Removed metal regen from MvM as it's useless.
