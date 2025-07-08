@@ -665,6 +665,16 @@
 					"attribute_class"	"mult_healing_from_medics"
 					"value" "0.10"
 				}
+				"damage penalty"
+				{
+					"attribute_class"	"mult_dmg"
+					"value"	"0.75"
+				}
+				"move speed penalty"
+				{
+					"attribute_class"	"mult_player_movespeed"
+					"value"	"0.85"
+				}
 			}
 			"visuals"
 			{
