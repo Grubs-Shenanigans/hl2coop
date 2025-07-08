@@ -9189,7 +9189,8 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 		!(bitsDamage & (DMG_DROWN) &&
 		(info.GetDamageCustom() != TF_DMG_CUSTOM_BLEEDING &&
 		info.GetDamageCustom() != TF_DMG_CUSTOM_BACKSTAB &&
-		info.GetDamageCustom() != TF_DMG_CUSTOM_HEADSHOT))))
+		info.GetDamageCustom() != TF_DMG_CUSTOM_HEADSHOT) && 
+		!IsTauntDmg(info.GetDamageCustom()))))
 	{
 		float flNew = (damage * flRatio);
 		float flArmor = (flNew * flAdditionalCost);
