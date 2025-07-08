@@ -5,6 +5,7 @@ Quiver Test 4:
 - Whitelisted the Market Gardener.
 - Replaced the reduced healing from medics attribute with a mark for death attribute on the Vitality Glitch.
 - Added a mark for death penalty for 3.5 seconds when your armor breaks.
+- Removed the Ambassador from the whitelist.
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()
