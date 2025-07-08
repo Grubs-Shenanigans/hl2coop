@@ -9240,7 +9240,7 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 				ETFCond iBonusCond = TF_COND_MINICRITBOOSTED;
 				float flTime = 2.5f;
 
-				if (!(bitsDamage & (DMG_FALL)) || !isSelfAttacker)
+				if (!(bitsDamage & (DMG_FALL)) && !isSelfAttacker)
 				{
 					//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
 					m_Shared.AddCond(iBonusCond, flTime);
