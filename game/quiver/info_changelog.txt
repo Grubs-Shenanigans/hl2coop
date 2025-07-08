@@ -4,6 +4,7 @@ Quiver Test 4:
 - Re-added the speed and damage penalty to the Vitality Glitch.
 - Whitelisted the Market Gardener.
 - Replaced the reduced healing from medics attribute with a mark for death attribute on the Vitality Glitch.
+- Added a mark for death penalty for 3.5 seconds when your armor breaks.
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()

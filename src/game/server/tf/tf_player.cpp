@@ -9239,13 +9239,13 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 			if (pTFAttacker)
 			{
 				bool isSelfAttacker = (pTFAttacker == this);
-				ETFCond iBonusCond = TF_COND_MINICRITBOOSTED;
-				float flTime = 3.0f;
 
 				if (!(bitsDamage & (DMG_FALL)) && !isSelfAttacker)
 				{
 					//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
-					m_Shared.AddCond(iBonusCond, flTime);
+					m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
+					//mark us for death too...
+					m_Shared.AddCond(TF_COND_MARKEDFORDEATH, 3.5f);
 
 					//give our patient our mini-crit boost to help us.
 					if (IsPlayerClass(TF_CLASS_MEDIC))
@@ -9256,7 +9256,8 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 							CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
 							if (pPatient)
 							{
-								pPatient->m_Shared.AddCond(iBonusCond, flTime);
+								pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
+								pPatient->m_Shared.AddCond(TF_COND_MARKEDFORDEATH, 3.5f);
 							}
 						}
 					}

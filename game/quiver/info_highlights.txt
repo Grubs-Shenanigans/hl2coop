@@ -5,7 +5,7 @@ Quiver Fortress:
 - Source 2006-styled bunnyhopping is enabled. All classes have different bunnyhopping speed boosts, with Heavy having the lowest and Scout having the highest.
 - Random critical hits have been disabled. 
 - Armor has been added as an additional layer of damage resistance. How strong it is depends on the class. Armor can also be penetrated by backstabs, taunt kills, and headshots, and won't protect against bleed damage. Armor can be repaired by Dispensers, resupply cabinets, or by friendly Engineers hitting you with their wrench. Armor can also be picked up from Ammo crates.
-	- If your Armor breaks, you'll be given mini-crits for 2.5 seconds to give you a chance to kill the responsible party. Medics with broken armor healing a teammate will share the mini crit bonus with their healing target. This bonus does NOT apply if your armor was broken through fall damage or self damage.
+	- If your Armor breaks, you'll be given mini-crits for 3 seconds to give you a chance to kill the responsible party. Medics with broken armor healing a teammate will share the mini crit bonus with their healing target. This bonus does NOT apply if your armor was broken through fall damage or self damage. When the bonus applies, you'll also be marked for death for 3.5 seconds.
 	- Spies who are cloaked will no longer show the armor break effect when cloaked, but the sound will still play.
 - The weapon list has been curated to fit the faster playstyle. Weapon reskins of stock weapons are allowed, alongside normal and reskin versions of some unlocks (see info_whitelist.txt).
 - All Demoknight swords and shields have been truncated into the Charge Shield and the Sword.
