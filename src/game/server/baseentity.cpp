@@ -8091,6 +8091,19 @@ void CC_Ent_Show_Response_Criteria( const CCommand& args )
 }
 static ConCommand ent_show_response_criteria("ent_show_response_criteria", CC_Ent_Show_Response_Criteria, "Print, to the console, an entity's current criteria set used to select responses.\n\tArguments:   	{entity_name} / {class_name} / no argument picks what player is looking at ", FCVAR_CHEAT);
 
+#ifdef BDSBASE
+//------------------------------------------------------------------------------
+void CC_Ent_Show_Self_Response_Criteria(const CCommand& args)
+{
+	CBaseEntity* pEntity = UTIL_GetCommandClient();
+	if (pEntity)
+	{
+		pEntity->DumpResponseCriteria();
+	}
+}
+static ConCommand ent_show_self_response_criteria("ent_show_self_response_criteria", CC_Ent_Show_Response_Criteria, "Print, to the console, the current user's current criteria set used to select responses.", FCVAR_CHEAT);
+#endif
+
 //------------------------------------------------------------------------------
 // Purpose: Show an entity's autoaim radius
 //------------------------------------------------------------------------------

@@ -208,7 +208,11 @@ float CTFShovel::GetForceScale( void )
 //-----------------------------------------------------------------------------
 int CTFShovel::GetDamageCustom()
 {
-	if ( GetShovelType() == SHOVEL_SPEED_BOOST || GetShovelType() == SHOVEL_DAMAGE_BOOST )
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	if (GetShovelType() == SHOVEL_SPEED_DAMAGE_BOOST || GetShovelType() == SHOVEL_SPEED_BOOST || GetShovelType() == SHOVEL_DAMAGE_BOOST)
+#else
+	if (GetShovelType() == SHOVEL_SPEED_BOOST || GetShovelType() == SHOVEL_DAMAGE_BOOST)
+#endif
 	{
 		return TF_DMG_CUSTOM_PICKAXE;
 	}

@@ -21,6 +21,9 @@ enum shovel_weapontypes_t
 	SHOVEL_STANDARD = 0,
 	SHOVEL_DAMAGE_BOOST,
 	SHOVEL_SPEED_BOOST,
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	SHOVEL_SPEED_DAMAGE_BOOST,
+#endif
 };
 
 //=============================================================================
@@ -40,8 +43,13 @@ public:
 	virtual void	PrimaryAttack();
 
 	int				GetShovelType( void ) { int iMode = 0; CALL_ATTRIB_HOOK_INT( iMode, set_weapon_mode ); return iMode; };
-	virtual bool	HasDamageBoost( void ) { return (GetShovelType() == SHOVEL_DAMAGE_BOOST); }
-	virtual bool	HasSpeedBoost( void ) { return (GetShovelType() == SHOVEL_SPEED_BOOST); }
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	virtual bool	HasDamageBoost(void) { return (GetShovelType() == SHOVEL_SPEED_DAMAGE_BOOST || GetShovelType() == SHOVEL_DAMAGE_BOOST); }
+	virtual bool	HasSpeedBoost(void) { return (GetShovelType() == SHOVEL_SPEED_DAMAGE_BOOST || GetShovelType() == SHOVEL_SPEED_BOOST); }
+#else
+	virtual bool	HasDamageBoost(void) { return (GetShovelType() == SHOVEL_DAMAGE_BOOST); }
+	virtual bool	HasSpeedBoost(void) { return (GetShovelType() == SHOVEL_SPEED_BOOST); }
+#endif
 	virtual void	ItemPreFrame( void ) OVERRIDE;
 	virtual float	GetMeleeDamage( CBaseEntity *pTarget, int* piDamageType, int* piCustomDamage );
 	virtual float	GetSpeedMod( void );

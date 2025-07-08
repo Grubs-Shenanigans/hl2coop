@@ -650,15 +650,10 @@
 					"attribute_class"	"provide_on_active"
 					"value" "1"
 				}
-				"mod shovel speed boost"
+				"mod shovel speed and damage boost"
 				{
 					"attribute_class"	"set_weapon_mode"
-					"value"	"2"
-				}
-				"mod shovel damage boost"
-				{
-					"attribute_class"	"set_weapon_mode"
-					"value"	"1"
+					"value"	"3"
 				}
 				"special taunt"
 				{
@@ -944,6 +939,16 @@
 			"hidden"	"0"
 			"effect_type"	"positive"
 			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"919"
+		{
+			"name"	"mod shovel speed and damage boost"
+			"attribute_class"	"set_weapon_mode"
+			"description_string"	"#Attrib_ShovelSpeedDamageBoost"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
 			"stored_as_integer"	"0"
 		}
 	}

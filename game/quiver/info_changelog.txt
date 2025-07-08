@@ -10,6 +10,8 @@ Quiver Test 3:
 - Spies who are cloaked will no longer show the armor break effect when cloaked, but the sound will still play.
 - Added The Bushwacka to the whitelist.
 - Rephrased the knockback stat on the Ludmila to reflect other Heavy weapons.
+- Fixed the Vitality Glitch's bonuses and taunt not working.
+- Taunt kills now pierce armor.
 
 Quiver Test 2.5:
 - Fixed a bug where broken items don't fix themselves when going to a resupply closet (for real this time)
