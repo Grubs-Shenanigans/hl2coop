@@ -3,6 +3,7 @@ Quiver Test 4:
 - Removed airborne crits from the Vitality Glitch.
 - Re-added the speed and damage penalty to the Vitality Glitch.
 - Whitelisted the Market Gardener.
+- Replaced the reduced healing from medics attribute to a mark for death attribute on the Vitality Glitch.
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()

@@ -638,7 +638,7 @@
 				"fire rate penalty"
 				{
 					"attribute_class"	"mult_postfiredelay"
-					"value"	"1.35"
+					"value"	"1.25"
 				}
 				"provide on active"
 				{
@@ -660,10 +660,10 @@
 					"attribute_class"	"mult_armor"
 					"value"	"0.50"
 				}
-				"reduced_healing_from_medics"
+				"self mark for death"
 				{
-					"attribute_class"	"mult_healing_from_medics"
-					"value" "0.10"
+					"attribute_class"	"self_mark_for_death"
+					"value"	"1"
 				}
 				"damage penalty"
 				{
