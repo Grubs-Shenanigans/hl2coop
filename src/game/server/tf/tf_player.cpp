@@ -9239,7 +9239,7 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 			{
 				bool isSelfAttacker = (pTFAttacker == this);
 				ETFCond iBonusCond = TF_COND_MINICRITBOOSTED;
-				float flTime = 2.5f;
+				float flTime = 3.0f;
 
 				if (!(bitsDamage & (DMG_FALL)) && !isSelfAttacker)
 				{
