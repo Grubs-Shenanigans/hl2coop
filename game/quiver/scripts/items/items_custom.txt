@@ -678,7 +678,7 @@
 				"move speed penalty"
 				{
 					"attribute_class"	"mult_player_movespeed"
-					"value"	"0.85"
+					"value"	"0.75"
 				}
 			}
 			"visuals"
