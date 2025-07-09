@@ -420,6 +420,11 @@
 					"attribute_class"	"mult_armor"
 					"value"	"0.80"
 				}
+				"sniper charge per sec"
+				{
+					"attribute_class"	"mult_sniper_charge_per_sec"
+					"value"	"1.25"
+				}
 			}
 			"visuals"
 			{
@@ -795,166 +800,6 @@
 			"xifier_class_remap"	"weapon_quiver_pickaxe"
 		}
 	}
-
-	"attributes"
-	{
-		"905"
-		{
-			"name"	"max armor additive bonus"
-			"attribute_class"	"add_maxarmor"
-			"description_string"	"#Attrib_MaxArmor_Positive"
-			"description_format"	"value_is_additive"
-			"hidden"	"0"
-			"effect_type"	"positive"
-			"armory_desc"	"on_wearer"
-			"stored_as_integer"	"0"
-		}
-		"906"
-		{
-			"name"	"max armor additive penalty"
-			"attribute_class"	"add_maxarmor"
-			"description_string"	"#Attrib_MaxArmor_Negative"
-			"description_format"	"value_is_additive"
-			"hidden"	"0"
-			"effect_type"	"negative"
-			"armory_desc"	"on_wearer"
-			"stored_as_integer"	"0"
-		}
-		"907"
-		{
-			"name"	"armor damage taken reduced"
-			"attribute_class"	"mult_armor"
-			"description_string"	"#Attrib_Armor_ReducedDamage"
-			"description_format"	"value_is_inverted_percentage"
-			"hidden"	"0"
-			"effect_type"	"positive"
-			"armory_desc"	"on_wearer"
-			"stored_as_integer"	"0"
-		}
-		"908"
-		{
-			"name"	"armor damage taken increased"
-			"attribute_class"	"mult_armor"
-			"description_string"	"#Attrib_Armor_IncreasedDamage"
-			"description_format"	"value_is_percentage"
-			"hidden"	"0"
-			"effect_type"	"negative"
-			"armory_desc"	"on_wearer"
-			"stored_as_integer"	"0"
-		}
-		"909"
-		{
-			"name"	"armor taken from dispensers increased"
-			"attribute_class"	"mult_dispenser_armor_rate"
-			"description_string"	"#Attrib_Armor_FasterRate"
-			"description_format"	"value_is_percentage"
-			"hidden"	"0"
-			"effect_type"	"positive"
-			"armory_desc"	"on_wearer"
-			"stored_as_integer"	"0"
-		}
-		"910"
-		{
-			"name"	"armor taken from dispensers decreased"
-			"attribute_class"	"mult_dispenser_armor_rate"
-			"description_string"	"#Attrib_Armor_SlowerRate"
-			"description_format"	"value_is_inverted_percentage"
-			"hidden"	"0"
-			"effect_type"	"negative"
-			"armory_desc"	"on_wearer"
-			"stored_as_integer"	"0"
-		}
-		"911"
-		{
-			"name"	"no armor"
-			"attribute_class"	"no_armor"
-			"description_string"	"#Attrib_NoArmor"
-			"description_format"	"value_is_additive"
-			"hidden"	"0"
-			"effect_type"	"negative"
-			"armory_desc"	"on_wearer"
-			"stored_as_integer"	"0"
-		}
-		"912"
-		{
-			"name"	"dmg pierces armor"
-			"attribute_class"	"mod_pierce_armor"
-			"description_string"	"#Attrib_PierceArmor"
-			"description_format"	"value_is_additive"
-			"hidden"	"0"
-			"effect_type"	"positive"
-			"stored_as_integer"	"0"
-		}
-		"913"
-		{
-			"name"	"given item"
-			"attribute_class"	"given_item"
-			"description_string"	"#Quiver_Given"
-			"description_format"	"value_is_additive"
-			"hidden"	"0"
-			"effect_type"	"neutral"
-			"stored_as_integer"	"0"
-		}
-		"914"
-		{
-			"name"	"custom item"
-			"attribute_class"	"custom_item"
-			"description_string"	"#Quiver_Custom"
-			"description_format"	"value_is_additive"
-			"hidden"	"0"
-			"effect_type"	"neutral"
-			"stored_as_integer"	"0"
-		}
-		"915"
-		{
-			"name"	"sentry turn rate bonus"
-			"attribute_class"	"mod_sentry_turn_rate"
-			"description_string"	"#Attrib_SentryTurnRate_Bonus"
-			"description_format"	"value_is_percentage"
-			"hidden"	"0"
-			"effect_type"	"positive"
-			"stored_as_integer"	"0"
-		}
-		"916"
-		{
-			"name"	"sentry turn rate penalty"
-			"attribute_class"	"mod_sentry_turn_rate"
-			"description_string"	"#Attrib_SentryTurnRate_Penalty"
-			"description_format"	"value_is_inverted_percentage"
-			"hidden"	"0"
-			"effect_type"	"negative"
-			"stored_as_integer"	"0"
-		}
-		"917"
-		{
-			"name"	"engy building health penalty"
-			"attribute_class"	"mult_engy_building_health"
-			"description_string"	"#Attrib_EngyBuildingHealth_Penalty"
-			"description_format"	"value_is_inverted_percentage"
-			"hidden"	"0"
-			"effect_type"	"negative"
-			"stored_as_integer"	"0"
-		}
-		"918"
-		{
-			"name"	"aiming knockback resistance heavy ver"
-			"attribute_class"	"mult_aiming_knockback_resistance"
-			"description_string"	"#Attrib_AimingKnockbackResistanceHeavy"
-			"description_format"	"value_is_inverted_percentage"
-			"hidden"	"0"
-			"effect_type"	"positive"
-			"armory_desc"	"on_wearer"
-			"stored_as_integer"	"0"
-		}
-		"919"
-		{
-			"name"	"mod shovel speed and damage boost"
-			"attribute_class"	"set_weapon_mode"
-			"description_string"	"#Attrib_ShovelSpeedDamageBoost"
-			"description_format"	"value_is_additive"
-			"hidden"	"0"
-			"effect_type"	"positive"
-			"stored_as_integer"	"0"
-		}
-	}
+	
+	// attributes are moved to items_game.txt
 }

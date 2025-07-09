@@ -70,6 +70,6 @@
 	"channel"	"CHAN_BODY"
  	"volume"	"1"
  	"pitch"		"100"
- 	"soundlevel"   "SNDLVL_NORM"
+ 	"soundlevel"   "SNDLVL_80dB"
 	"wave"	"misc\armor_break_all.wav"
 }

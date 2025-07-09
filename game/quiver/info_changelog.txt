@@ -6,6 +6,9 @@ Quiver Test 4:
 - Replaced the reduced healing from medics attribute with a mark for death attribute on the Vitality Glitch.
 - Added a mark for death penalty for 3.5 seconds when your armor breaks.
 - Removed the Ambassador from the whitelist.
+- Slightly increased the volume of the armor break sound.
+- Enhanced the armor break event.
+- Added a 25% boost to charge rate on the Railgun.
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()

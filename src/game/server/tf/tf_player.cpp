@@ -9218,7 +9218,7 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 				te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
 
 				CBaseEntity* pTrail;
-				int sparkcount = RandomInt(1, 4);
+				int sparkcount = RandomInt(2, 3);
 				for (int i = 0; i < sparkcount; i++)
 				{
 					pTrail = CreateEntityByName("sparktrail");
@@ -9229,42 +9229,33 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 			EmitSound("Game.ArmorBreakAll");
 
-			float curHealth = (float)GetHealth();
-			if (damage < curHealth)
-			{
-				//say a jeers or a negative line if the damage doesn't kill us
-				SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_JEERS);
-			}
-
 			if (pTFAttacker)
 			{
-				bool isSelfAttacker = (pTFAttacker == this);
-
-				if (!(bitsDamage & (DMG_FALL)) && !isSelfAttacker)
+				if (pTFAttacker != this)
 				{
-					//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
-					m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
-					//mark us for death too...
-					m_Shared.AddCond(TF_COND_MARKEDFORDEATH, 3.5f);
-
-					//give our patient our mini-crit boost to help us.
-					if (IsPlayerClass(TF_CLASS_MEDIC))
+					if (!(bitsDamage & (DMG_FALL)))
 					{
-						CBaseEntity* pHealTarget = MedicGetHealTarget();
-						if (pHealTarget)
+						//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
+						m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
+						//mark us for death too...
+						m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
+
+						//give our patient our mini-crit boost to help us.
+						if (IsPlayerClass(TF_CLASS_MEDIC))
 						{
-							CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
-							if (pPatient)
+							CBaseEntity* pHealTarget = MedicGetHealTarget();
+							if (pHealTarget)
 							{
-								pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
-								pPatient->m_Shared.AddCond(TF_COND_MARKEDFORDEATH, 3.5f);
+								CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
+								if (pPatient)
+								{
+									pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
+									pPatient->m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
+								}
 							}
 						}
 					}
-				}
 
-				if (!isSelfAttacker)
-				{
 					CSingleUserRecipientFilter filter2(pTFAttacker);
 					EmitSound_t params;
 					if (bitsDamage & DMG_CRITICAL)
