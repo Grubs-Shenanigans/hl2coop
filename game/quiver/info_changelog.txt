@@ -23,7 +23,7 @@ Quiver Test 4:
 - Bots on difficulties higher than Normal will now actively look for armor.
 - Fixed a bug where armor could be broken if you're invulnerable.
 - Fixed a bug with armor damage resistance sounds not playing correctly.
-- Buffed bunnyhop speed boosts for all classes.
+- Adjusted bunnyhop speed boosts across all classes.
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()
