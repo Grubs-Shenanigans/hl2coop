@@ -108,7 +108,7 @@
 				"charge allow jump for charge"
 				{
 					"attribute_class"	"charge_allow_jump_for_charge"
-					"value"			"0.15"
+					"value"			"0.20"
 				}
 			}
 			"mouse_pressed_sound"	"ui/item_wood_pole_pickup.wav"

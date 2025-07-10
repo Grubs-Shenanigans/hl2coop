@@ -96,10 +96,16 @@ extern ConVar cl_sidespeed;
 extern ConVar mp_tournament_readymode_countdown;
 
 #ifdef BDSBASE
-#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
 extern ConVar sv_bhop;
 extern ConVar sv_bhop_mode;
+#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
 extern ConVar sv_bhop_boost;
+#endif
+ConVar sv_bhop_tf_cap("sv_bhop_tf_cap", "1", FCVAR_REPLICATED | FCVAR_NOTIFY);
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+ConVar sv_bhop_tf_cap_boost("sv_bhop_tf_cap_boost", "1.5", FCVAR_REPLICATED | FCVAR_NOTIFY);
+#else
+ConVar sv_bhop_tf_cap_boost("sv_bhop_tf_cap_boost", "1.2", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #endif
 #endif
 
@@ -1148,7 +1154,9 @@ void CTFGameMovement::AirDash( void )
 }
 
 // Only allow bunny jumping up to 1.2x server / player maxspeed setting
+#ifndef BDSBASE
 #define BUNNYJUMP_MAX_SPEED_FACTOR 1.2f
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1159,7 +1167,11 @@ void CTFGameMovement::PreventBunnyJumping()
 		return;
 
 	// Speed at which bunny jumping is limited
+#ifdef BDSBASE
+	float maxscaledspeed = sv_bhop_tf_cap_boost.GetFloat() * player->m_flMaxspeed;
+#else
 	float maxscaledspeed = BUNNYJUMP_MAX_SPEED_FACTOR * player->m_flMaxspeed;
+#endif
 	if ( maxscaledspeed <= 0.0f )
 		return;
 
@@ -1338,12 +1350,10 @@ bool CTFGameMovement::CheckJumpButton()
 	}
 
 #ifdef BDSBASE
-#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
-	if (!sv_bhop.GetBool())
+	if (sv_bhop_tf_cap.GetBool())
 	{
 		PreventBunnyJumping();
 	}
-#endif
 #else
 	PreventBunnyJumping();
 #endif
@@ -1423,19 +1433,10 @@ bool CTFGameMovement::CheckJumpButton()
 
 #ifdef BDSBASE
 #if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
-	float classBhopBoost = m_pTFPlayer->GetPlayerClass()->GetBhopSpeedBoost();
-
-	Vector vecForward;
-	AngleVectors(mv->m_vecViewAngles, &vecForward);
-	vecForward.z = 0;
-	VectorNormalize(vecForward);
-	for (int iAxis = 0; iAxis < 2; ++iAxis)
-	{
-		vecForward[iAxis] *= (mv->m_flForwardMove * classBhopBoost);
-		//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardsprintscale.GetFloat() );
-	}
-	VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
+	float flBhopBoost = m_pTFPlayer->GetPlayerClass()->GetBhopSpeedBoost();
 #else
+	float flBhopBoost = sv_bhop_boost.GetFloat();
+#endif
 	bool canBHop = ((sv_bhop.GetBool()) ? true : (gpGlobals->maxClients == 1));
 
 	if (canBHop)
@@ -1448,8 +1449,7 @@ bool CTFGameMovement::CheckJumpButton()
 			VectorNormalize(vecForward);
 			for (int iAxis = 0; iAxis < 2; ++iAxis)
 			{
-				vecForward[iAxis] *= (mv->m_flForwardMove * sv_bhop_boost.GetFloat());
-				//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardsprintscale.GetFloat() );
+				vecForward[iAxis] *= (mv->m_flForwardMove * flBhopBoost);
 			}
 			VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
 		}
@@ -1462,7 +1462,7 @@ bool CTFGameMovement::CheckJumpButton()
 
 			// We give a certain percentage of the current forward movement as a bonus to the jump speed.  That bonus is clipped
 			// to not accumulate over time.
-			float flSpeedBoostPerc = sv_bhop_boost.GetFloat();
+			float flSpeedBoostPerc = flBhopBoost;
 			float flSpeedAddition = fabs(mv->m_flForwardMove * flSpeedBoostPerc);
 			float flMaxSpeed = mv->m_flMaxSpeed + (mv->m_flMaxSpeed * flSpeedBoostPerc);
 			float flNewSpeed = (flSpeedAddition + mv->m_vecVelocity.Length2D());
@@ -1480,7 +1480,6 @@ bool CTFGameMovement::CheckJumpButton()
 			VectorAdd((vecForward * flSpeedAddition), mv->m_vecVelocity, mv->m_vecVelocity);
 		}
 	}
-#endif
 #endif
 
 	// Apply gravity.

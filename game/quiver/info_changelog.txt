@@ -24,6 +24,7 @@ Quiver Test 4:
 - Fixed a bug where armor could be broken if you're invulnerable.
 - Fixed a bug with armor damage resistance sounds not playing correctly.
 - Adjusted bunnyhop speed boosts across all classes.
+- Bunnyhopping speed is now capped across all classes to 1.5x of the default move speed.
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()
