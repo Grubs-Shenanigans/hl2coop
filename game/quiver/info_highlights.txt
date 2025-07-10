@@ -8,6 +8,7 @@ Hightlights:
 - The weapon list has been curated to fit the faster playstyle. Weapon reskins of stock weapons are allowed, alongside normal and reskin versions of some unlocks (see info_whitelist.txt).
 - Some unlockable weapons have been rebalanced to fit the faster pace of combat and the new gamepaly mechanics.
 - Added several custom weapons, inspired by new and old concepts. These custom weapons were made to add new and more inventive ways to play your favorite classes
+- Bots now equip items, will actively look out for armor (on higher difficulties) and have random difficulties, giving a more dynamic single-player experience.
 
 Class changes:
 - Run speeds have been increased across all 9 classes. However, one aspect remains: Heavies are the slowest, Scouts are the fastest.

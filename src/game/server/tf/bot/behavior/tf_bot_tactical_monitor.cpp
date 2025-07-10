@@ -21,6 +21,9 @@
 #include "bot/behavior/tf_bot_taunt.h"
 #include "bot/behavior/tf_bot_get_health.h"
 #include "bot/behavior/tf_bot_get_ammo.h"
+#if defined(QUIVER_DLL)
+#include "quiver/bot/behavior/tf_bot_get_armor.h"
+#endif
 #include "bot/behavior/tf_bot_destroy_enemy_sentry.h"
 #include "bot/behavior/tf_bot_use_teleporter.h"
 #include "bot/behavior/nav_entities/tf_bot_nav_ent_destroy_entity.h"
@@ -37,6 +40,10 @@
 
 extern ConVar tf_bot_health_ok_ratio;
 extern ConVar tf_bot_health_critical_ratio;
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+extern ConVar tf_bot_armor_ok_ratio;
+extern ConVar tf_bot_armor_critical_ratio;
+#endif
 
 ConVar tf_bot_force_jump( "tf_bot_force_jump", "0", FCVAR_CHEAT, "Force bots to continuously jump" );
 
@@ -310,6 +317,26 @@ ActionResult< CTFBot >	CTFBotTacticalMonitor::Update( CTFBot *me, float interval
 		{
 			return SuspendFor( new CTFBotGetHealth, "Grabbing nearby health" );
 		}
+
+#if defined(QUIVER_DLL)
+		//prioritise armor more than ammo, but prioritize health more than armor..
+		bool isArmorDamaged = false;
+
+		if (me->IsInCombat() || me->IsPlayerClass(TF_CLASS_SNIPER))
+		{
+			// stay in the fight until we're nearly dead
+			isArmorDamaged = ((float)me->ArmorValue() / (float)me->GetMaxArmor()) < tf_bot_armor_critical_ratio.GetFloat();
+		}
+		else
+		{
+			isArmorDamaged = me->m_Shared.InCond(TF_COND_BURNING) || ((float)me->ArmorValue() / (float)me->GetMaxArmor()) < tf_bot_armor_ok_ratio.GetFloat();
+		}
+
+		if (isArmorDamaged && CTFBotGetArmor::IsPossible(me))
+		{
+			return SuspendFor(new CTFBotGetArmor, "Grabbing nearby armor");
+		}
+#endif
 
 		if ( me->IsAmmoLow() && CTFBotGetAmmo::IsPossible( me ) )
 		{

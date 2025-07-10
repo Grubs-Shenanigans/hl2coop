@@ -22,7 +22,11 @@
 // Creates and sets CTFBotManager as the NextBotManager singleton
 static CTFBotManager sTFBotManager;
 
-ConVar tf_bot_difficulty( "tf_bot_difficulty", "1", FCVAR_NONE, "Defines the skill of bots joining the game.  Values are: 0=easy, 1=normal, 2=hard, 3=expert." );
+#ifdef BDSBASE
+ConVar tf_bot_difficulty("tf_bot_difficulty", "-1", FCVAR_NONE, "Defines the skill of bots joining the game.  Values are: -1=random, 0=easy, 1=normal, 2=hard, 3=expert.");
+#else
+ConVar tf_bot_difficulty("tf_bot_difficulty", "1", FCVAR_NONE, "Defines the skill of bots joining the game.  Values are: 0=easy, 1=normal, 2=hard, 3=expert.");
+#endif
 ConVar tf_bot_quota( "tf_bot_quota", "0", FCVAR_NONE, "Determines the total number of tf bots in the game." );
 ConVar tf_bot_quota_mode( "tf_bot_quota_mode", "normal", FCVAR_NONE, "Determines the type of quota.\nAllowed values: 'normal', 'fill', and 'match'.\nIf 'fill', the server will adjust bots to keep N players in the game, where N is bot_quota.\nIf 'match', the server will maintain a 1:N ratio of humans to bots, where N is bot_quota." );
 ConVar tf_bot_join_after_player( "tf_bot_join_after_player", "1", FCVAR_NONE, "If nonzero, bots wait until a player joins before entering the game." );
@@ -485,6 +489,7 @@ void CTFBotManager::MaintainBotQuota()
 				// give the bot a proper name
 				char name[256];
 				CTFBot::DifficultyType skill = pBot->GetDifficulty();
+
 				CreateBotName( pBot->GetTeamNumber(), pBot->GetPlayerClass()->GetClassIndex(), skill, name, sizeof( name ) );
 				engine->SetFakeClientConVarValue( pBot->edict(), "name", name );
 

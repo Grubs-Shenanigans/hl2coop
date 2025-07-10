@@ -393,7 +393,17 @@ CON_COMMAND_F( tf_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 	const char *classname = NULL;
 	const char *teamname = "auto";
 	const char *pszBotNameViaArg = NULL;
+#ifdef BDSBASE
+	// -1 is random.
+	CTFBot::DifficultyType skill = CTFBot::UNDEFINED;
+
+	if (tf_bot_difficulty.GetInt() != CTFBot::UNDEFINED)
+	{
+		skill = clamp((CTFBot::DifficultyType)tf_bot_difficulty.GetInt(), CTFBot::EASY, CTFBot::EXPERT);
+	}
+#else
 	CTFBot::DifficultyType skill = clamp( (CTFBot::DifficultyType)tf_bot_difficulty.GetInt(), CTFBot::EASY, CTFBot::EXPERT );
+#endif
 
 	int i;
 	for( i=1; i<args.ArgC(); ++i )
@@ -1400,7 +1410,17 @@ CTFBot::CTFBot()
 	}
 	else
 	{
+#ifdef BDSBASE
+		// -1 is random.
+		m_difficulty = CTFBot::UNDEFINED;
+
+		if (tf_bot_difficulty.GetInt() != CTFBot::UNDEFINED)
+		{
+			m_difficulty = clamp((CTFBot::DifficultyType)tf_bot_difficulty.GetInt(), CTFBot::EASY, CTFBot::EXPERT);
+		}
+#else
 		m_difficulty = clamp( (CTFBot::DifficultyType)tf_bot_difficulty.GetInt(), CTFBot::EASY, CTFBot::EXPERT );
+#endif
 	}
 
 	m_actionPoint = NULL;
@@ -1494,6 +1514,19 @@ void CTFBot::Spawn()
 	SetBrokenFormation( false );
 
 	GetVisionInterface()->ForgetAllKnownEntities();
+
+#ifdef BDSBASE
+	if (tf_bot_difficulty.GetInt() == CTFBot::UNDEFINED && m_difficulty == CTFBot::UNDEFINED)
+	{
+		int m_nRandomSeed = RandomInt(0, 9999);
+		CUniformRandomStream randomize;
+		randomize.SetSeed(m_nRandomSeed);
+
+		SetDifficulty((CTFBot::DifficultyType)randomize.RandomInt(CTFBot::EASY, CTFBot::EXPERT));
+	}
+
+	DevMsg("%s chooses skill %s\n", GetPlayerName(), DifficultyLevelToString(m_difficulty));
+#endif
 }
 
 #ifdef BDSBASE

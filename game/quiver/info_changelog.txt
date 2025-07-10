@@ -19,6 +19,10 @@ Quiver Test 4:
 - Increased the Jag's repair rate penalty from 20% to 33%
 - Default cloak time is now 1.5 seconds (originally 2.0 seconds).
 - Lowered the Gunslinger's max health bonus to 15 and added a 10 max armor bonus.
+- Bots will now randomly choose a difficulty by default.
+- Bots on difficulties higher than Normal will now actively look for armor.
+- Fixed a bug where armor could be broken if you're invulnerable.
+- Fixed a bug with armor damage resistance sounds not playing correctly.
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()

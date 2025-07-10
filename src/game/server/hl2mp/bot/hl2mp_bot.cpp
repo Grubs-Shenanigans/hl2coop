@@ -157,7 +157,17 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 	int botCount = 1;
 	const char *teamname = "auto";
 	const char *pszBotNameViaArg = NULL;
-	CHL2MPBot::DifficultyType skill = clamp( (CHL2MPBot::DifficultyType)hl2mp_bot_difficulty.GetInt(), CHL2MPBot::EASY, CHL2MPBot::EXPERT );
+#ifdef BDSBASE
+	// -1 is random.
+	CHL2MPBot::DifficultyType skill = CHL2MPBot::UNDEFINED;
+
+	if (hl2mp_bot_difficulty.GetInt() != CHL2MPBot::UNDEFINED)
+	{
+		skill = clamp((CHL2MPBot::DifficultyType)hl2mp_bot_difficulty.GetInt(), CHL2MPBot::EASY, CHL2MPBot::EXPERT);
+	}
+#else
+	CHL2MPBot::DifficultyType skill = clamp((CHL2MPBot::DifficultyType)hl2mp_bot_difficulty.GetInt(), CHL2MPBot::EASY, CHL2MPBot::EXPERT);
+#endif
 
 	int i;
 	for( i=1; i<args.ArgC(); ++i )
@@ -635,7 +645,18 @@ CHL2MPBot::CHL2MPBot()
 	m_attentionFocusEntity = NULL;
 	m_noisyTimer.Invalidate();
 
+
+#ifdef BDSBASE
+	// -1 is random.
+	m_difficulty = CHL2MPBot::UNDEFINED;
+
+	if (hl2mp_bot_difficulty.GetInt() != CHL2MPBot::UNDEFINED)
+	{
+		m_difficulty = clamp((CHL2MPBot::DifficultyType)hl2mp_bot_difficulty.GetInt(), CHL2MPBot::EASY, CHL2MPBot::EXPERT);
+	}
+#else
 	m_difficulty = clamp( (CHL2MPBot::DifficultyType)hl2mp_bot_difficulty.GetInt(), CHL2MPBot::EASY, CHL2MPBot::EXPERT );
+#endif
 
 	m_actionPoint = NULL;
 	m_proxy = NULL;
@@ -692,6 +713,19 @@ void CHL2MPBot::Spawn()
 	SetBrokenFormation( false );
 
 	GetVisionInterface()->ForgetAllKnownEntities();
+
+#ifdef BDSBASE
+	if (hl2mp_bot_difficulty.GetInt() == CHL2MPBot::UNDEFINED && m_difficulty == CHL2MPBot::UNDEFINED)
+	{
+		int m_nRandomSeed = RandomInt(0, 9999);
+		CUniformRandomStream randomize;
+		randomize.SetSeed(m_nRandomSeed);
+
+		SetDifficulty((CHL2MPBot::DifficultyType)randomize.RandomInt(CHL2MPBot::EASY, CHL2MPBot::EXPERT));
+	}
+
+	DevMsg("%s chooses skill %s\n", GetPlayerName(), DifficultyLevelToString(m_difficulty));
+#endif
 }
 
 

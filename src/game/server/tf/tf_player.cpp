@@ -9168,6 +9168,9 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 	float realDamage = info.GetDamage();
 	float damage = realDamage;
 
+	if (m_Shared.IsInvulnerable())
+		return damage;
+
 	//quiver allows for armor.
 	float flRatio = GetPlayerClass()->GetArmorRatio(); //modern armor ratio. this should be changed for every armor type.
 	float flAdditionalCost = GetPlayerClass()->GetArmorAdditionalCostMult(); //should be changed for all armor types
@@ -9178,8 +9181,6 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 	{
 		CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iAttackIgnoresArmor, mod_pierce_resists_absorbs);
 	}
-
-	bool bArmorDamagedThisFrame = false;
 
 	// armor doesn't protect against drown damage!
 	// also against bleeding or other special damage types that should penetrate.
@@ -9204,78 +9205,74 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 		}
 
 		damage = flNew;
-		bArmorDamagedThisFrame = true;
 	}
 
-	if (bArmorDamagedThisFrame)
+	if (ArmorValue() <= 0)
 	{
-		if (ArmorValue() <= 0)
+		if (!m_Shared.IsStealthed())
 		{
-			if (!m_Shared.IsStealthed())
-			{
-				// in most instances, we SHOULD have an inflictor.
-				CBroadcastRecipientFilter filter;
-				te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
+			// in most instances, we SHOULD have an inflictor.
+			CBroadcastRecipientFilter filter;
+			te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
 
-				CBaseEntity* pTrail;
-				int sparkcount = RandomInt(2, 3);
-				for (int i = 0; i < sparkcount; i++)
-				{
-					pTrail = CreateEntityByName("sparktrail");
-					pTrail->SetOwnerEntity(this);
-					DispatchSpawn(pTrail);
-				}
+			CBaseEntity* pTrail;
+			int sparkcount = RandomInt(2, 3);
+			for (int i = 0; i < sparkcount; i++)
+			{
+				pTrail = CreateEntityByName("sparktrail");
+				pTrail->SetOwnerEntity(this);
+				DispatchSpawn(pTrail);
 			}
+		}
 
-			EmitSound("Game.ArmorBreakAll");
+		EmitSound("Game.ArmorBreakAll");
 
-			if (pTFAttacker)
+		if (pTFAttacker)
+		{
+			if (pTFAttacker != this)
 			{
-				if (pTFAttacker != this)
+				if (!(bitsDamage & (DMG_FALL)))
 				{
-					if (!(bitsDamage & (DMG_FALL)))
-					{
-						//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
-						m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
-						//mark us for death too...
-						m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
+					//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
+					m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
+					//mark us for death too...
+					m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
 
-						//give our patient our mini-crit boost to help us.
-						if (IsPlayerClass(TF_CLASS_MEDIC))
+					//give our patient our mini-crit boost to help us.
+					if (IsPlayerClass(TF_CLASS_MEDIC))
+					{
+						CBaseEntity* pHealTarget = MedicGetHealTarget();
+						if (pHealTarget)
 						{
-							CBaseEntity* pHealTarget = MedicGetHealTarget();
-							if (pHealTarget)
+							CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
+							if (pPatient)
 							{
-								CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
-								if (pPatient)
-								{
-									pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
-									pPatient->m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
-								}
+								pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
+								pPatient->m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
 							}
 						}
 					}
-
-					CSingleUserRecipientFilter filter2(pTFAttacker);
-					EmitSound_t params;
-					if (bitsDamage & DMG_CRITICAL)
-					{
-						params.m_pSoundName = "Game.ArmorBreakCrit";
-					}
-					else
-					{
-						params.m_pSoundName = "Game.ArmorBreakHit";
-					}
-
-					pTFAttacker->SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_CHEERS);
-					pTFAttacker->EmitSound(filter2, pTFAttacker->entindex(), params);
 				}
+
+				CSingleUserRecipientFilter filter2(pTFAttacker);
+				EmitSound_t params;
+				if (bitsDamage & DMG_CRITICAL)
+				{
+					params.m_pSoundName = "Game.ArmorBreakCrit";
+				}
+				else
+				{
+					params.m_pSoundName = "Game.ArmorBreakHit";
+				}
+
+				pTFAttacker->SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_CHEERS);
+				pTFAttacker->EmitSound(filter2, pTFAttacker->entindex(), params);
 			}
 		}
-		else
-		{
-			PlayDamageResistSound(damage, realDamage);
-		}
+	}
+	else
+	{
+		PlayDamageResistSound(realDamage, damage);
 	}
 
 	return damage;
