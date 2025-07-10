@@ -33,6 +33,8 @@ Quiver Test 4:
 	- #1405: Remove ammo metal prediction if the weapon has add_onhit_ammo
 	- #1407: Make trigger_hurt double w/ forgiveness actually forgive
 	- #1408: Fix MoveableSubPanel showing while dead
+	- #1409: Fix sentry "buffering" wrangler inputs
+	- #1410: Fix Switching from the medigun while healing someone screwing with viewmodels
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()
