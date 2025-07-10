@@ -12780,6 +12780,11 @@ bool CTFPlayer::CanPickupBuilding( CBaseObject *pPickupObject )
 	if ( pPickupObject->GetUpgradeLevel() != pPickupObject->GetHighestUpgradeLevel() )
 		return false;
 
+#ifdef BDSBASE
+	if (!IsAlive())
+		return false;
+#endif
+
 	if ( m_Shared.IsCarryingObject() )
 		return false;
 
