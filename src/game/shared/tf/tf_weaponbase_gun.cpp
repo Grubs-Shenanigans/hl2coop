@@ -384,7 +384,19 @@ void CTFWeaponBaseGun::RemoveProjectileAmmo( CTFPlayer *pPlayer )
 	{
 		if ( m_iWeaponMode == TF_WEAPON_PRIMARY_MODE )
 		{
+#ifdef BDSBASE
+#if CLIENT_DLL
+			// delay removing metal when we could give it right back
+			int iAmmoOnHit = 0;
+			CALL_ATTRIB_HOOK_INT(iAmmoOnHit, add_onhit_addammo)
+			if (!(iAmmoOnHit && m_iPrimaryAmmoType == TF_AMMO_METAL))
+#endif
+			{
+				pPlayer->RemoveAmmo(GetAmmoPerShot(), m_iPrimaryAmmoType);
+			}
+#else
 			pPlayer->RemoveAmmo( GetAmmoPerShot(), m_iPrimaryAmmoType );
+#endif
 
 #ifndef CLIENT_DLL
 			// delayed ammo adding for the onhit attribute
@@ -397,7 +409,19 @@ void CTFWeaponBaseGun::RemoveProjectileAmmo( CTFPlayer *pPlayer )
 		}
 		else
 		{
+#ifdef BDSBASE
+#if CLIENT_DLL
+			// delay removing metal when we could give it right back
+			int iAmmoOnHit = 0;
+			CALL_ATTRIB_HOOK_INT(iAmmoOnHit, add_onhit_addammo)
+			if (!(iAmmoOnHit && m_iSecondaryAmmoType == TF_AMMO_METAL))
+#endif
+			{
+				pPlayer->RemoveAmmo(GetAmmoPerShot(), m_iSecondaryAmmoType);
+			}
+#else
 			pPlayer->RemoveAmmo( GetAmmoPerShot(), m_iSecondaryAmmoType );
+#endif
 
 #ifndef CLIENT_DLL
 			// delayed ammo adding for the onhit attribute

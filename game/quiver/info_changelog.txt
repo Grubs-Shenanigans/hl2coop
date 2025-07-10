@@ -25,6 +25,12 @@ Quiver Test 4:
 - Fixed a bug with armor damage resistance sounds not playing correctly.
 - Adjusted bunnyhop speed boosts across all classes.
 - Bunnyhopping speed is now capped across all classes to 1.5x of their default move speed.
+- Added cl_holdzoom to the advanced options menu.
+- Added the following Source SDK Pull Requests:
+	- #1402: Fix mouse mode not working in MvM scoreboard
+	- #1403: Fix long weapon names extending the panel off screen
+	- #1404: Add metal change number batching
+	- #1405: Remove ammo metal prediction if the weapon has add_onhit_ammo
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()
