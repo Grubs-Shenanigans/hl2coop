@@ -1,15 +1,15 @@
 - All "stock" weapons and reskins
 - All-Class melees
 - The Flare Gun
-- The Wrangler
-- The Shortstop
+- The Wrangler (w/ balance changes)
+- The Shortstop (w/ balance changes)
 - The Crusader's Crossbow
 - The Iron Bomber
 - The Dragon's Fury
 - The Quickiebomb Launcher
 - The Sandvich
 - The Gunslinger
-- The Jag
+- The Jag (w/ balance changes)
 - The Pretty Boy's Pocket Pistol
 - The Flying Guillotine
 - The Direct Hit
@@ -21,7 +21,7 @@
 - The Scottish Resistance
 - The Loch-n-Load
 - The Loose Cannon
-- The Ullapool Caber
+- The Ullapool Caber (w/ balance changes)
 - The Family Business
 - The Kritzkrieg
 - The Quick-Fix

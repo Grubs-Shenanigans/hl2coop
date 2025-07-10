@@ -16,6 +16,8 @@ Quiver Test 4:
 - The Ullapool Caber's explosion damage was increased by 35%.
 - The Ullapool Caber now has a 45 second recharge.
 - Added a taunt kill for the Ullapool Caber.
+- Increased the Jag's repair rate penalty from 20% to 33%
+- Default cloak time is now 1.5 seconds (originally 2.0 seconds).
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()
