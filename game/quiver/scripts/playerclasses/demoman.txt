@@ -13,7 +13,7 @@ PlayerClass
 	"health_max"		"175"
 	"armor_max"		"100"
 	"bhop_speed_boost" "0.085"
-	"airspeed_cap_mult" "1.75"
+	"airspeed_cap_mult" "2.20"
 	
 	//armor stats
 	//medium armor
