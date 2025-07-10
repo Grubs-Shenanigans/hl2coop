@@ -36,6 +36,7 @@ Quiver Test 4:
 	- #1409: Fix sentry "buffering" wrangler inputs
 	- #1410: Fix Switching from the medigun while healing someone screwing with viewmodels
 	- #1411: Make the "Pass to me!" voice menu command only show in Passtime
+	- #1413: Adds vscript functions to point_populator_interface
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()
