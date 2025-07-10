@@ -568,7 +568,7 @@
 				"armor taken from dispensers decreased"
 				{
 					"attribute_class"	"mult_dispenser_armor_rate"
-					"value"			"0.65"
+					"value"			"0.85"
 				}
 				"aiming knockback resistance heavy ver"
 				{

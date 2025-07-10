@@ -4741,7 +4741,8 @@ void CTFBot::GiveSavedLoadout(void)
 
 void CTFBot::HandleLoadout(void)
 {
-	if (tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
+	bool bLoggedIntoSteam = steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn();
+	if (bLoggedIntoSteam && tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
 	{
 		if (!m_InitialLoadoutLoadTimer.IsElapsed())
 			return;
@@ -4762,7 +4763,8 @@ void CTFBot::HandleLoadout(void)
 
 void CTFBot::ResetLoadout(void)
 {
-	if (tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
+	bool bLoggedIntoSteam = steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn();
+	if (bLoggedIntoSteam && tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
 	{
 		vecSavedRandomLoadout.RemoveAll();
 		SelectRandomizedLoadout();
