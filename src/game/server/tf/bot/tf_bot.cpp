@@ -397,7 +397,7 @@ CON_COMMAND_F( tf_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 	// -1 is random.
 	CTFBot::DifficultyType skill = CTFBot::UNDEFINED;
 
-	if (tf_bot_difficulty.GetInt() != CTFBot::UNDEFINED)
+	if (tf_bot_difficulty.GetInt() != CTFBot::UNDEFINED && tf_bot_difficulty.GetInt() <= CTFBot::EXPERT)
 	{
 		skill = clamp((CTFBot::DifficultyType)tf_bot_difficulty.GetInt(), CTFBot::EASY, CTFBot::EXPERT);
 	}
@@ -1414,7 +1414,7 @@ CTFBot::CTFBot()
 		// -1 is random.
 		m_difficulty = CTFBot::UNDEFINED;
 
-		if (tf_bot_difficulty.GetInt() != CTFBot::UNDEFINED)
+		if (tf_bot_difficulty.GetInt() != CTFBot::UNDEFINED && tf_bot_difficulty.GetInt() <= CTFBot::EXPERT)
 		{
 			m_difficulty = clamp((CTFBot::DifficultyType)tf_bot_difficulty.GetInt(), CTFBot::EASY, CTFBot::EXPERT);
 		}
@@ -1516,7 +1516,7 @@ void CTFBot::Spawn()
 	GetVisionInterface()->ForgetAllKnownEntities();
 
 #ifdef BDSBASE
-	if (tf_bot_difficulty.GetInt() == CTFBot::UNDEFINED && m_difficulty == CTFBot::UNDEFINED)
+	if ((tf_bot_difficulty.GetInt() == CTFBot::UNDEFINED || tf_bot_difficulty.GetInt() > CTFBot::EXPERT) && m_difficulty == CTFBot::UNDEFINED)
 	{
 		int m_nRandomSeed = RandomInt(0, 9999);
 		CUniformRandomStream randomize;

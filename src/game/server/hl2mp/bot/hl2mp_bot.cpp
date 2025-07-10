@@ -161,7 +161,7 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 	// -1 is random.
 	CHL2MPBot::DifficultyType skill = CHL2MPBot::UNDEFINED;
 
-	if (hl2mp_bot_difficulty.GetInt() != CHL2MPBot::UNDEFINED)
+	if (hl2mp_bot_difficulty.GetInt() != CHL2MPBot::UNDEFINED && hl2mp_bot_difficulty.GetInt() <= CHL2MPBot::EXPERT)
 	{
 		skill = clamp((CHL2MPBot::DifficultyType)hl2mp_bot_difficulty.GetInt(), CHL2MPBot::EASY, CHL2MPBot::EXPERT);
 	}
@@ -650,7 +650,7 @@ CHL2MPBot::CHL2MPBot()
 	// -1 is random.
 	m_difficulty = CHL2MPBot::UNDEFINED;
 
-	if (hl2mp_bot_difficulty.GetInt() != CHL2MPBot::UNDEFINED)
+	if (hl2mp_bot_difficulty.GetInt() != CHL2MPBot::UNDEFINED && hl2mp_bot_difficulty.GetInt() <= CHL2MPBot::EXPERT)
 	{
 		m_difficulty = clamp((CHL2MPBot::DifficultyType)hl2mp_bot_difficulty.GetInt(), CHL2MPBot::EASY, CHL2MPBot::EXPERT);
 	}
@@ -715,7 +715,7 @@ void CHL2MPBot::Spawn()
 	GetVisionInterface()->ForgetAllKnownEntities();
 
 #ifdef BDSBASE
-	if (hl2mp_bot_difficulty.GetInt() == CHL2MPBot::UNDEFINED && m_difficulty == CHL2MPBot::UNDEFINED)
+	if ((hl2mp_bot_difficulty.GetInt() == CHL2MPBot::UNDEFINED || hl2mp_bot_difficulty.GetInt() > CHL2MPBot::EXPERT) && m_difficulty == CHL2MPBot::UNDEFINED)
 	{
 		int m_nRandomSeed = RandomInt(0, 9999);
 		CUniformRandomStream randomize;
