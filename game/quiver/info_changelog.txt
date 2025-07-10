@@ -18,6 +18,7 @@ Quiver Test 4:
 - Added a taunt kill for the Ullapool Caber.
 - Increased the Jag's repair rate penalty from 20% to 33%
 - Default cloak time is now 1.5 seconds (originally 2.0 seconds).
+- Lowered the Gunslinger's max health bonus to 15 and added a 10 max armor bonus.
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()
