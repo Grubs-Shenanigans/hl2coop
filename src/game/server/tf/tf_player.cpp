@@ -20046,7 +20046,12 @@ void CTFPlayer::DoTauntAttack( void )
 						else
 						{
 							// if the stickbomb exploded, launch them a bit.
-							pTarget->TakeDamage(CTakeDamageInfo(this, this, GetActiveTFWeapon(), vecForward * 8500, pTarget->WorldSpaceCenter(), 500.0f, DMG_BULLET | DMG_PREVENT_PHYSICS_FORCE));
+							pTarget->SetAbsVelocity(vec3_origin);
+
+							pTarget->ApplyPunchImpulseX(RandomInt(2, 5));
+
+							AngleVectors(QAngle(-45, m_angEyeAngles[YAW], 0), &vecForward);
+							pTarget->TakeDamage(CTakeDamageInfo(this, this, GetActiveTFWeapon(), vecForward * 8500, WorldSpaceCenter(), 500.0f, DMG_BULLET));
 						}
 					}
 				}
