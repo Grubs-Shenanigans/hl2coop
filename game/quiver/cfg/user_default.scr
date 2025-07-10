@@ -277,6 +277,14 @@ DESCRIPTION INFO_OPTIONS
 		{ BOOL }
 		{ "1" }
 	}
+	
+	"cl_holdzoom"
+	{
+		"#TF_holdzoom"
+		"#Tooltip_holdzoom"
+		{ BOOL }
+		{ "0" }
+	}		
 
 	"tf_hud_no_crosshair_on_scope_zoom"
 	{
@@ -285,6 +293,14 @@ DESCRIPTION INFO_OPTIONS
 		{ BOOL }
 		{ "0" }
 	}	
+	
+	"hud_metalaccounttext_batching"
+	{
+		"#TF_metalaccounttext_batching"
+		"#Tooltip_metalaccounttext_batching"
+		{ BOOL }
+		{ "1" }
+	}
 	
 	"tf_medigun_autoheal"
 	{
