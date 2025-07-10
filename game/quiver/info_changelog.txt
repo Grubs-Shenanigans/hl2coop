@@ -15,7 +15,7 @@ Quiver Test 4:
 - The Ullapool Caber's explosion radius was increased by 15%.
 - The Ullapool Caber's explosion damage was increased by 35%.
 - The Ullapool Caber now has a 45 second recharge.
-- Added a taunt kill for the Ullapool Caber.
+- Added a taunt kill for the Ullapool Caber (The Show-and-Tell/Caber Swing).
 - Increased the Jag's repair rate penalty from 20% to 33%
 - Default cloak time is now 1.5 seconds (originally 2.0 seconds).
 - Lowered the Gunslinger's max health bonus to 15 and added a 10 max armor bonus.

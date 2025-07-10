@@ -41,7 +41,7 @@ Unlockable weapon balance changes:
 - The Ullapool Caber's explosion radius was increased by 15%.
 - The Ullapool Caber's explosion damage was increased by 35%.
 - The Ullapool Caber now has a 45 second recharge.
-- Added a taunt kill for the Ullapool Caber.
+- Added a taunt kill for the Ullapool Caber (The Show-and-Tell/Caber Swing).
 - Increased the Jag's repair rate penalty from 20% to 33%
 - Lowered the Gunslinger's max health bonus to 15 and added a 10 max armor bonus.
 - The Gunslinger now has a 5% slower armor repair rate from dispensers.

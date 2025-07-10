@@ -20003,7 +20003,7 @@ void CTFPlayer::DoTauntAttack( void )
 		// Same box logic as hadouken & pyro knockback.
 		Vector vecForward;
 		AngleVectors(QAngle(0, m_angEyeAngles[YAW], 0), &vecForward);
-		Vector vecCenter = WorldSpaceCenter() + vecForward * 64;
+		Vector vecCenter = WorldSpaceCenter() + vecForward * 128;
 		Vector vecSize = Vector(24, 24, 24);
 		CBaseEntity* pObjects[256];
 		int count = UTIL_EntitiesInBox(pObjects, 256, vecCenter - vecSize, vecCenter + vecSize, FL_CLIENT | FL_OBJECT);
