@@ -20039,7 +20039,15 @@ void CTFPlayer::DoTauntAttack( void )
 					CTFStickBomb* pBomb = dynamic_cast<CTFStickBomb*>(pWeapon);
 					if (pBomb)
 					{
-						pBomb->Detonate(true);
+						if (!pBomb->GetDetonated())
+						{
+							pBomb->Detonate(true);
+						}
+						else
+						{
+							// if the stickbomb exploded, launch them a bit.
+							pTarget->TakeDamage(CTakeDamageInfo(this, this, GetActiveTFWeapon(), vecForward * 8500, pTarget->WorldSpaceCenter(), 500.0f, DMG_BULLET | DMG_PREVENT_PHYSICS_FORCE));
+						}
 					}
 				}
 			}

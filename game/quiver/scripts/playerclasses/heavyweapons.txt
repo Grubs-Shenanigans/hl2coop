@@ -14,7 +14,7 @@ PlayerClass
 //	"armor_max"		"400"
 	"health_max"		"300"
 	"armor_max"		"100"
-	"bhop_speed_boost" "0.065"
+	"bhop_speed_boost" "0.085"
 	"airspeed_cap_mult" "1.75"
 	
 	//armor stats
