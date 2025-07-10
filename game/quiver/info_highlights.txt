@@ -6,7 +6,7 @@ Hightlights:
 - Added Armor, a damage resistance layer that protects each class. How strong the armor is depends on each class.
 - Legacy menu and legacy weapon viewmodels have been restored.
 - The weapon list has been curated to fit the faster playstyle. Weapon reskins of stock weapons are allowed, alongside normal and reskin versions of some unlocks (see info_whitelist.txt).
-- Some unlockable weapons have been rebalanced to fit the faster pace of combat.
+- Some unlockable weapons have been rebalanced to fit the faster pace of combat and the new gamepaly mechanics.
 - Added several custom weapons, inspired by new and old concepts. These custom weapons were made to add new and more inventive ways to play your favorite classes
 
 Class changes:
@@ -43,6 +43,7 @@ Unlockable weapon balance changes:
 - Added a taunt kill for the Ullapool Caber.
 - Increased the Jag's repair rate penalty from 20% to 33%
 - Lowered the Gunslinger's max health bonus to 15 and added a 10 max armor bonus.
+- The Gunslinger now has a 5% slower armor repair rate from dispensers.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).
