@@ -203,6 +203,10 @@ public:
 
 	virtual void SetProportional(bool state);
 
+#ifdef BDSBASE
+	virtual void SetMouseInputEnabled(bool state);
+#endif
+
 	HFont GetHeaderFont( void ) const;
 	void SetHeaderFont( HFont hFont );
 	HFont GetRowFont( void ) const;
