@@ -8,7 +8,14 @@ Quiver Test 4:
 - Removed the Ambassador from the whitelist.
 - Slightly increased the volume of the armor break sound.
 - Enhanced the armor break event.
-- Added a 25% boost to charge rate on the Railgun.
+- Added a 25% charge rate boost on the Railgun.
+- Added increased air control to all classes. Each class has a different amount of air control.
+- Added jumping while charging to the Charge Shield. Jumping while charging will use 15% of your charge.
+- Increased the default build rate of all of Engineer's buildings by 20%.
+- The Ullapool Caber's explosion radius was increased by 15%.
+- The Ullapool Caber's explosion damage was increased by 35%.
+- The Ullapool Caber now has a 45 second recharge.
+- Added a taunt kill for the Ullapool Caber.
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()

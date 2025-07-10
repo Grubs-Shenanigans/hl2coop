@@ -23,6 +23,10 @@
 #include "halloween/tf_weapon_spellbook.h"
 #include "tf_logic_player_destruction.h"
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#include "basetypes.h"
+#endif
+
 #ifdef CLIENT_DLL
 	#include "c_tf_player.h"
 	#include "c_world.h"
@@ -546,6 +550,24 @@ bool CTFGameMovement::ChargeMove()
 	mv->m_flMaxSpeed = tf_max_charge_speed.GetFloat();
 
 	int oldbuttons = mv->m_nButtons;
+
+#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+	float flChargeForJump = 0.0f;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(m_pTFPlayer, flChargeForJump, charge_allow_jump_for_charge);
+
+	if (flChargeForJump > 0)
+	{
+		if (mv->m_nButtons & IN_JUMP)
+		{
+			CheckJumpButton();
+			m_pTFPlayer->m_Shared.SetDemomanChargeMeter(Max(m_pTFPlayer->m_Shared.GetDemomanChargeMeter() - flChargeForJump, 0.0f));
+		}
+		else
+		{
+			mv->m_nOldButtons &= ~IN_JUMP;
+		}
+	}
+#endif
 
 	// Handle demoman shield charge.
 	mv->m_flForwardMove = tf_max_charge_speed.GetFloat();
@@ -2186,6 +2208,13 @@ float CTFGameMovement::GetAirSpeedCap( void )
 	{
 		float flCap = BaseClass::GetAirSpeedCap();
 
+#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+		float flCapMult = m_pTFPlayer->GetPlayerClass()->GetSpeedCapMultiplier();
+		if (flCapMult > 0.0f)
+		{
+			flCap *= flCapMult;
+		}
+#endif
 /*
 #ifdef STAGING_ONLY
 		if ( m_pTFPlayer->m_Shared.InCond( TF_COND_SPACE_GRAVITY ) )

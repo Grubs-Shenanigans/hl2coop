@@ -239,12 +239,104 @@ void CTFStickBomb::Precache( void )
 	PrecacheModel( TF_WEAPON_STICKBOMB_BROKEN_MODEL );
 }
 
+#ifdef BDSBASE
+void CTFStickBomb::Detonate(bool bTaunting)
+{
+	CTFPlayer* pTFPlayer = ToTFPlayer(GetOwner());
+	if (!pTFPlayer)
+		return;
+
+	bool connectedHit = (!bTaunting) ? ConnectedHit() : true;
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	int iBombCount = pTFPlayer->GetAmmoCount(TF_AMMO_GRENADES1);
+
+	if ((iBombCount > 0) && m_iDetonated == 0 && connectedHit)
+#else
+	if (m_iDetonated == 0 && connectedHit)
+#endif
+	{
+		m_iDetonated = 1;
+		m_bBroken = true;
+		SwitchBodyGroups();
+
+#ifdef GAME_DLL
+
+		if (pTFPlayer)
+		{
+			Vector vecForward;
+			AngleVectors(pTFPlayer->EyeAngles(), &vecForward);
+			Vector vecSwingStart = pTFPlayer->Weapon_ShootPosition();
+			Vector vecSwingEnd = vecSwingStart + vecForward * GetSwingRange();
+
+			Vector explosion = vecSwingStart;
+
+			CPVSFilter filter(explosion);
+
+			// Halloween Spell
+			int iHalloweenSpell = 0;
+			int iCustomParticleIndex = INVALID_STRING_INDEX;
+			if (TF_IsHolidayActive(kHoliday_HalloweenOrFullMoon))
+			{
+				CALL_ATTRIB_HOOK_INT_ON_OTHER(this, iHalloweenSpell, halloween_pumpkin_explosions);
+				if (iHalloweenSpell > 0)
+				{
+					iCustomParticleIndex = GetParticleSystemIndex("halloween_explosion");
+				}
+			}
+
+			TE_TFExplosion(filter, 0.0f, explosion, Vector(0, 0, 1), TF_WEAPON_GRENADELAUNCHER, pTFPlayer->entindex(), -1, SPECIAL1, iCustomParticleIndex);
+
+			int dmgType = DMG_BLAST | DMG_USEDISTANCEMOD;
+			if (IsCurrentAttackACrit())
+				dmgType |= DMG_CRITICAL;
+
+			else if (m_bMiniCrit)
+				dmgType |= DMG_RADIUS_MAX;
+
+			float flDamage = TF_STICKBOMB_DAMAGE;
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+			CALL_ATTRIB_HOOK_FLOAT(flDamage, mult_dmg_caber);
+#else
+			CALL_ATTRIB_HOOK_FLOAT(flDamage, mult_dmg);
+#endif
+			// instantly kill the target if we're in a taunt.
+			if (bTaunting)
+			{
+				flDamage = 999.0f;
+			}
+
+			CTakeDamageInfo info(pTFPlayer, pTFPlayer, this, explosion, explosion, flDamage, dmgType, TF_DMG_CUSTOM_STICKBOMB_EXPLOSION, &explosion);
+
+			float flRadius = TF_STICKBOMB_EXPLOSION_RADIUS;
+			CALL_ATTRIB_HOOK_FLOAT(flRadius, mult_explosion_radius);
+
+			CTFRadiusDamageInfo radiusinfo(&info, explosion, flRadius);
+
+			TFGameRules()->RadiusDamage(radiusinfo);
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+			pTFPlayer->RemoveAmmo(1, TF_AMMO_GRENADES1);
+#endif
+		}
+#endif
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+		StartEffectBarRegen();
+#endif
+	}
+}
+#endif
+
 void CTFStickBomb::Smack( void )
 {
 	CTFWeaponBaseMelee::Smack();
 
 	// Stick bombs detonate once, on impact.
-	if ( m_iDetonated == 0 && ConnectedHit() )
+#ifdef BDSBASE
+	Detonate();
+#else
+	if (m_iDetonated == 0 && ConnectedHit())
 	{
 		m_iDetonated = 1;
 		m_bBroken = true;
@@ -252,6 +344,7 @@ void CTFStickBomb::Smack( void )
 
 #ifdef GAME_DLL
 		CTFPlayer *pTFPlayer = ToTFPlayer( GetOwner() );
+
 		if ( pTFPlayer )
 		{
 			Vector vecForward; 
@@ -280,17 +373,13 @@ void CTFStickBomb::Smack( void )
 			int dmgType = DMG_BLAST | DMG_USEDISTANCEMOD;
 			if ( IsCurrentAttackACrit() )
 				dmgType |= DMG_CRITICAL;
-#ifdef BDSBASE
-			else if (m_bMiniCrit)
-				dmgType |= DMG_RADIUS_MAX;
-#endif
-
-			CTakeDamageInfo info( pTFPlayer, pTFPlayer, this, explosion, explosion, 75.0f, dmgType, TF_DMG_CUSTOM_STICKBOMB_EXPLOSION, &explosion );
-			CTFRadiusDamageInfo radiusinfo( &info, explosion, 100.f );
+			CTakeDamageInfo info(pTFPlayer, pTFPlayer, this, explosion, explosion, 75.0f, dmgType, TF_DMG_CUSTOM_STICKBOMB_EXPLOSION, &explosion);
+			CTFRadiusDamageInfo radiusinfo(&info, explosion, 100.f);
 			TFGameRules()->RadiusDamage( radiusinfo );
 		}
 #endif
 	}
+#endif
 }
 
 void CTFStickBomb::WeaponReset( void )
@@ -339,6 +428,23 @@ const char *CTFStickBomb::GetWorldModel( void ) const
 		return BaseClass::GetWorldModel();
 	}
 }
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+void CTFStickBomb::OnEffectBarRegenFinished(void)
+{
+	CTFPlayer* pTFPlayer = ToTFPlayer(GetOwner());
+	if (!pTFPlayer)
+		return;
+
+	int iBombCount = pTFPlayer->GetAmmoCount(TF_AMMO_GRENADES1);
+
+	if (iBombCount > 0)
+	{
+		m_iDetonated = 0;
+		SetBroken(false);
+	}
+}
+#endif
 
 #ifdef CLIENT_DLL
 int CTFStickBomb::GetWorldModelIndex( void )

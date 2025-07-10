@@ -100,6 +100,16 @@
 					"attribute_class"	"allowed_in_medieval_mode"
 					"value"	"1"
 				}
+				"charge allow jump cosmetic"
+				{
+					"attribute_class"	"charge_allow_jump_cosmetic"
+					"value"			"1"
+				}
+				"charge allow jump for charge"
+				{
+					"attribute_class"	"charge_allow_jump_for_charge"
+					"value"			"0.15"
+				}
 			}
 			"mouse_pressed_sound"	"ui/item_wood_pole_pickup.wav"
 			"drop_sound"		"ui/item_wood_pole_drop.wav"

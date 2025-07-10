@@ -1067,6 +1067,7 @@ static const char* taunt_attack_name[] =
 
 #ifdef BDSBASE
 	"TAUNTATK_ALLCLASS_GUITAR_RIFF_EXPLODE",
+	"TAUNTATK_DEMOMAN_CABER_SWING",
 #endif
 };
 

@@ -71,6 +71,7 @@ public:
 	float		GetArmorAdditionalCostMult(void) const			{ return GetPlayerClassData(m_iClass)->m_flArmorAdditionalCostMult; }
 	float		GetArmorMetalPenaltyMult(void) const			{ return GetPlayerClassData(m_iClass)->m_flArmorMetalPenaltyMult; }
 	float		GetBhopSpeedBoost(void) const					{ return GetPlayerClassData(m_iClass)->m_flBhopBoost; }
+	float		GetSpeedCapMultiplier(void) const				{ return GetPlayerClassData(m_iClass)->m_flAirSpeedCapMultiplier; }
 #endif
 	Vector		GetCustomModelOffset( void ) const				{ return m_vecCustomModelOffset.Get(); }
 	QAngle		GetCustomModelRotation( void ) const			{ return m_angCustomModelRotation.Get(); }

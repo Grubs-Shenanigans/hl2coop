@@ -650,6 +650,10 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 	float			GetEffectBarRechargeTime( void ) { float flTime = InternalGetEffectBarRechargeTime(); CALL_ATTRIB_HOOK_FLOAT( flTime, effectbar_recharge_rate ); return flTime; }
 	void			DecrementBarRegenTime( float flTime ) { m_flEffectBarRegenTime -= flTime; }
 
+#ifdef BDSBASE
+	virtual void	OnEffectBarRegenFinished(void) {}
+#endif
+
 	bool			IsHonorBound( void ) const;
 
 	virtual bool	CanPickupOtherWeapon() const { return true; }

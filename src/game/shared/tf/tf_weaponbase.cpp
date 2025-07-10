@@ -6696,6 +6696,10 @@ void CTFWeaponBase::EffectBarRegenFinished( void )
 		{
 			StartEffectBarRegen();
 		}
+
+#ifdef BDSBASE
+		OnEffectBarRegenFinished();
+#endif
 	}
 }
 

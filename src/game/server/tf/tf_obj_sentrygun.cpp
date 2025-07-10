@@ -1870,7 +1870,7 @@ bool CObjectSentrygun::MoveTurret( void )
 		iBaseTurnRate *= 1.35f;
 	}
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#ifdef QUIVER_DLL
 	float flMultTurn = 1.0f;
 	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(GetOwner(), flMultTurn, mod_sentry_turn_rate);
 	iBaseTurnRate *= flMultTurn;

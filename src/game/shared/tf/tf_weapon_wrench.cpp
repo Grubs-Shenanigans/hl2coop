@@ -396,7 +396,11 @@ void CTFWrench::ApplyBuildingHealthUpgrade( void )
 #endif
 
 // STAGING_ENGY
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+ConVar tf_construction_build_rate_multiplier("tf_construction_build_rate_multiplier", "1.8f", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY);
+#else
 ConVar tf_construction_build_rate_multiplier( "tf_construction_build_rate_multiplier", "1.5f", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
+#endif
 float CTFWrench::GetConstructionValue( void )
 {
 	float flValue = tf_construction_build_rate_multiplier.GetFloat();

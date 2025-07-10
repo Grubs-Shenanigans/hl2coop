@@ -59,6 +59,7 @@ TFPlayerClassData_t::TFPlayerClassData_t()
 	m_flArmorRatio = 0.0f;
 	m_flArmorAdditionalCostMult = 0.0f;
 	m_flArmorMetalPenaltyMult = 0.0f;
+	m_flAirSpeedCapMultiplier = 0.0f;
 #endif
 
 #ifdef GAME_DLL
@@ -164,6 +165,8 @@ void TFPlayerClassData_t::ParseData( KeyValues *pKeyValuesData )
 	m_flArmorMetalPenaltyMult = pKeyValuesData->GetFloat("armor_metalpenalty_mult");
 
 	m_flBhopBoost = pKeyValuesData->GetFloat("bhop_speed_boost");
+
+	m_flAirSpeedCapMultiplier = pKeyValuesData->GetFloat("airspeed_cap_mult");
 #endif
 
 	// Weapons.

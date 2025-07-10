@@ -75,6 +75,11 @@ public:
 	virtual int			GetWeaponID( void ) const OVERRIDE { return TF_WEAPON_BREAKABLE_SIGN; }
 };
 
+#ifdef BDSBASE
+#define TF_STICKBOMB_DAMAGE 75.0f
+#define TF_STICKBOMB_EXPLOSION_RADIUS 100.f
+#endif
+
 //=============================================================================
 //
 // StickBomb class.
@@ -105,6 +110,18 @@ public:
 
 	void				SetDetonated( int iVal ) { m_iDetonated = iVal; }
 	int					GetDetonated( void ) { return m_iDetonated; }
+
+#ifdef BDSBASE
+	virtual void		Detonate(bool bTaunting = false);
+#endif
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	float				GetProgress(void) { return GetEffectBarProgress(); }
+	virtual const char* GetEffectLabelText(void) { return "#Quiver_Caber"; }
+	virtual float		InternalGetEffectBarRechargeTime(void) { return 45.f; }
+	virtual int			GetEffectBarAmmo(void) { return TF_AMMO_GRENADES1; }
+	virtual void		OnEffectBarRegenFinished(void);
+#endif
 
 private:
 
