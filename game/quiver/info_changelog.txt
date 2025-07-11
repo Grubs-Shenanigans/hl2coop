@@ -1,4 +1,4 @@
-Quiver Test 4:
+Quiver Test 4 (WIP):
 - Re-enabled shield break responses.
 - Removed airborne crits from the Vitality Glitch.
 - Re-added the speed and damage penalty to the Vitality Glitch.
