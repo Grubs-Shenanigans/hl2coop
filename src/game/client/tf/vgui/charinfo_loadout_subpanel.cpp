@@ -507,18 +507,9 @@ void CCharInfoLoadoutSubPanel::OnCommand( const char *command )
 {
 	if ( !Q_strnicmp( command, "loadout ", 8 ) )
 	{
-#ifdef BDSBASE
-		// button will be enabled if we have any items.
-#ifndef BDSBASE_CUSTOM_SCHEMA
 		// Ignore selection while we don't have a steam connection
-		if (!TFInventoryManager()->GetLocalTFInventory()->RetrievedInventoryFromSteam())
+		if ( !TFInventoryManager()->GetLocalTFInventory()->RetrievedInventoryFromSteam() )
 			return;
-#endif
-#else
-		// Ignore selection while we don't have a steam connection
-		if (!TFInventoryManager()->GetLocalTFInventory()->RetrievedInventoryFromSteam())
-			return;
-#endif
 
 		m_flStartExplanationsAt = 0;
 
@@ -987,17 +978,6 @@ void CCharInfoLoadoutSubPanel::UpdateLabelFromClass( int nClass )
 		m_pItemsLabel->SetText(wTemp);
 		m_pItemsLabel->SetColorStr(m_ItemColor);
 	}
-#endif
-
-#ifdef BDSBASE
-#ifdef BDSBASE_CUSTOM_SCHEMA
-	// if we're disabled, and we have custom items, enable our button.
-	bool bEnabled = m_pClassButtons[nClass]->IsEnabled();
-	if (iNumItems > 0 && !bEnabled)
-	{
-		m_pClassButtons[nClass]->SetEnabled(true);
-	}
-#endif
 #endif
 
 	int iPos = 0;
