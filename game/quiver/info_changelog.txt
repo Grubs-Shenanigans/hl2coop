@@ -27,7 +27,6 @@ Quiver Test 4:
 - Bunnyhopping speed is now capped across all classes to 1.5x of their default move speed.
 - Added cl_holdzoom to the advanced options menu.
 - Reduced the Ludmila's dispenser armor repair rate penalty.
-- Made it so users can equip custom weapons for the session if Steam servers are offline and there are any custom items for a specific class. If there's no custom items, the loadout is rendered unaccessible.
 - Added the following Source SDK Pull Requests:
 	- #1402: Fix mouse mode not working in MvM scoreboard
 	- #1403: Fix long weapon names extending the panel off screen
