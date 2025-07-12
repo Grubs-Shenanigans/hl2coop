@@ -621,20 +621,12 @@ void CTargetID::PerformLayout( void )
 		iWidth += m_pAvatarImage->GetWide() + XRES( 2 );
 	}
 
-#ifdef BDSBASE
-	int iTextW;
-#else
 	int iTextW, iTextH;
-#endif
 	int iDataW, iDataH;
 
 	if ( m_pTargetNameLabel && m_pTargetDataLabel )
 	{
-#ifdef BDSBASE
-		m_pTargetNameLabel->GetTextImage()->GetDrawWidth(iTextW);
-#else
-		m_pTargetNameLabel->GetContentSize(iTextW, iTextH);
-#endif
+		m_pTargetNameLabel->GetContentSize( iTextW, iTextH );
 		m_pTargetDataLabel->GetContentSize( iDataW, iDataH );
 		iWidth += MAX(iTextW,iDataW);
 
