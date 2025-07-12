@@ -9184,14 +9184,20 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 	// armor doesn't protect against drown damage!
 	// also against bleeding or other special damage types that should penetrate.
-	if (ArmorValue() > 0 &&
-		!iAttackIgnoresArmor &&
-		(bitsDamage != DMG_GENERIC &&
-		!(bitsDamage & (DMG_DROWN) &&
-		(info.GetDamageCustom() != TF_DMG_CUSTOM_BLEEDING &&
-		info.GetDamageCustom() != TF_DMG_CUSTOM_BACKSTAB &&
-		info.GetDamageCustom() != TF_DMG_CUSTOM_HEADSHOT) && 
-		!IsTauntDmg(info.GetDamageCustom()))))
+
+	bool bCanDamageArmor = (!iAttackIgnoresArmor &&
+							(bitsDamage != DMG_GENERIC &&
+							!(bitsDamage & (DMG_DROWN) &&
+								(info.GetDamageCustom() != TF_DMG_CUSTOM_BLEEDING &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_BACKSTAB &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_HEADSHOT) &&
+							!IsTauntDmg(info.GetDamageCustom()))));
+
+	// if the attack pierces armor, we shouldn't calculate armor here.
+	if (!bCanDamageArmor)
+		return damage;
+
+	if (ArmorValue() > 0)
 	{
 		float flNew = (damage * flRatio);
 		float flArmor = (flNew * flAdditionalCost);
@@ -9206,6 +9212,10 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 		damage = flNew;
 	}
+
+	// if the damage kills us, don't play the armor break event.
+	if (damage > GetHealth())
+		return damage;
 
 	if (ArmorValue() <= 0)
 	{
@@ -20003,7 +20013,7 @@ void CTFPlayer::DoTauntAttack( void )
 		// Same box logic as hadouken & pyro knockback.
 		Vector vecForward;
 		AngleVectors(QAngle(0, m_angEyeAngles[YAW], 0), &vecForward);
-		Vector vecCenter = WorldSpaceCenter() + vecForward * 128;
+		Vector vecCenter = WorldSpaceCenter() + vecForward * 64;
 		Vector vecSize = Vector(24, 24, 24);
 		CBaseEntity* pObjects[256];
 		int count = UTIL_EntitiesInBox(pObjects, 256, vecCenter - vecSize, vecCenter + vecSize, FL_CLIENT | FL_OBJECT);
@@ -20051,7 +20061,7 @@ void CTFPlayer::DoTauntAttack( void )
 							pTarget->ApplyPunchImpulseX(RandomInt(2, 5));
 
 							AngleVectors(QAngle(-45, m_angEyeAngles[YAW], 0), &vecForward);
-							pTarget->TakeDamage(CTakeDamageInfo(this, this, GetActiveTFWeapon(), vecForward * 8500, WorldSpaceCenter(), 500.0f, DMG_BULLET));
+							pTarget->TakeDamage(CTakeDamageInfo(this, this, GetActiveTFWeapon(), vecForward * 8500, WorldSpaceCenter(), TF_STICKBOMB_KILLTAUNT_DAMAGE, DMG_BULLET));
 						}
 					}
 				}

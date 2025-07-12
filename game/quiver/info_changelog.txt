@@ -21,12 +21,24 @@ Quiver Test 4 (WIP):
 - Lowered the Gunslinger's max health bonus to 15 and added a 10 max armor bonus.
 - Bots will now randomly choose a difficulty by default.
 - Bots on difficulties higher than Normal will now actively look for armor.
-- Fixed a bug where armor could be broken if you're invulnerable.
+- Fixed a bug where armor could be damged/broken if you're invulnerable.
 - Fixed a bug with armor damage resistance sounds not playing correctly.
 - Adjusted bunnyhop speed boosts across all classes.
 - Bunnyhopping speed is now capped across all classes to 1.5x of their default move speed.
 - Added cl_holdzoom to the advanced options menu.
-- Reduced the Ludmila's dispenser armor repair rate penalty.
+- Lowered the Artillery Cannon's fire rate penalty from 110% to 90%.
+- Reduced the damage potential of the Artillery Cannon's reverse damage falloff from 250% to 150%
+- Reduced the bullets-per-shot penalty.
+- Added Training Mode to the main menu (ugh).
+- Added The Enforcer, The Tomislav, and The L'Etranger to the Whitelist.
+- Changed the Enforcer's 20% damage bonus while disguised to a normal 20% damage bonus.
+- Nerfed the Heavy's move speed from 300 to 280.
+- Fixed a bug where the armor breaks if the damage kills the player.
+- Fixed reverse damage fall off not working with mini crits.
+- Removed damage spread from the Artillery Cannon for more consistent damage.
+- Remove the Ludmila's armor benefits in favor of making it pierce armor.
+- The Ludmila now gives you 15 more max armor to put it closer to it's design goal (more survivability and ability to slow down enemy pushes)
+- Added a new tecture to the Artillery Cannon.
 - Added the following Source SDK Pull Requests:
 	- #1402: Fix mouse mode not working in MvM scoreboard
 	- #1403: Fix long weapon names extending the panel off screen
@@ -52,7 +64,7 @@ Quiver Test 3:
 - Added The Bushwacka to the whitelist.
 - Rephrased the knockback stat on the Ludmila to reflect other Heavy weapons.
 - Fixed the Vitality Glitch's bonuses and taunt not working.
-- Taunt kills now pierce armor.
+- Most Taunt kills now pierce armor.
 
 Quiver Test 2.5:
 - Fixed a bug where broken items don't fix themselves when going to a resupply closet (for real this time)

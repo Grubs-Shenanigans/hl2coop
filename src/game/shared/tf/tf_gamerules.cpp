@@ -6743,8 +6743,21 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 			}
 		}
 		//Msg("Range: %.2f - %.2f\n", flMin, flMax );
+
+#ifdef BDSBASE
+		int iDisableDamageSpread = 0;
+
+		if (pWeapon)
+		{
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iDisableDamageSpread, no_damage_spread);
+		}
+
+		float flRandomRangeVal;
+		if ((tf_damage_disablespread.GetBool() || iDisableDamageSpread) || (pTFAttacker && pTFAttacker->m_Shared.GetCarryingRuneType() == RUNE_PRECISION))
+#else
 		float flRandomRangeVal;
 		if ( tf_damage_disablespread.GetBool() || ( pTFAttacker && pTFAttacker->m_Shared.GetCarryingRuneType() == RUNE_PRECISION ) )
+#endif
 		{
 			flRandomRangeVal = flMin + flRandomDamageSpread;
 		}
@@ -6803,16 +6816,27 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 		flDmgVariance = SimpleSplineRemapValClamped( flRandomRangeVal, 0, 1, -flRandomDamage, flRandomDamage );
 
 #ifdef BDSBASE
-		if (bDamageFalloff && flDmgVariance < 0.f)
+		int iReverseDamageFalloff = 0;
+
+		if ((bDamageFalloff || info.GetCritType() > CTakeDamageInfo::CRIT_NONE) && flDmgVariance < 0.f)
 		{
 			if (pWeapon)
 			{
-				int iReverseDamageFalloff = 0;
 				CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iReverseDamageFalloff, reverse_damage_falloff);
 
 				if (iReverseDamageFalloff)
 				{
+					if (bDebug)
+					{
+						Warning("    REVERSE DAMAGE FALLOFF: Original: %.2f\n", flDmgVariance);
+					}
+
 					flDmgVariance *= -1.0f;
+
+					if (bDebug)
+					{
+						Warning("            Pre Adjusted: %.2f\n", flDmgVariance);
+					}
 
 					//kinda stupid for us to allow penalties but whatever.
 					float iReverseDamageFalloffMultDmg = 1.0f;
@@ -6820,12 +6844,21 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 					if (iReverseDamageFalloffMultDmg > 1.0f || iReverseDamageFalloffMultDmg < 1.0f)
 					{
 						flDmgVariance *= iReverseDamageFalloffMultDmg;
+						if (bDebug)
+						{
+							Warning("            Attribute Value: %.2f\n", iReverseDamageFalloffMultDmg);
+						}
+					}
+
+					if (bDebug)
+					{
+						Warning("            Final Adjusted: %.2f\n", flDmgVariance);
 					}
 				}
 			}
 		}
 
-		if ( (bDoShortRangeDistanceIncrease && flDmgVariance > 0.f) || bDamageFalloff)
+		if ( (bDoShortRangeDistanceIncrease && flDmgVariance > 0.f) || bDamageFalloff || iReverseDamageFalloff)
 #else
 		if ( ( bDoShortRangeDistanceIncrease && flDmgVariance > 0.f ) || bDoLongRangeDistanceDecrease )
 #endif

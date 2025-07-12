@@ -257,7 +257,7 @@
 			"item_slot"	"primary"
 			"item_logname"	"artillery_cannon"
 			"item_iconname"	"tomislav"
-			"image_inventory"	"backpack/workshop/weapons/c_models/c_tomislav/c_tomislav"
+			"image_inventory"	"backpack/quiver/weapons/c_tomislav_artillery"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_tomislav/c_tomislav.mdl"
@@ -309,15 +309,20 @@
 					"attribute_class"	"no_damage_rampup"
 					"value"	"1"
 				}
+				"no_damage_spread"
+				{
+					"attribute_class"	"no_damage_spread"
+					"value"	"1"
+				}
 				"fire rate penalty"
 				{
 					"attribute_class"	"mult_postfiredelay"
-					"value"	"2.1"
+					"value"	"1.9"
 				}
 				"bullets per shot penalty"
 				{
 					"attribute_class" 	"mult_bullets_per_shot"
-					"value" "0.5"
+					"value" "0.65"
 				}
 				"aiming movespeed decreased"
 				{
@@ -347,7 +352,7 @@
 				"reverse damage falloff damage bonus"
 				{
 					"attribute_class"	"reverse_damage_falloff_mult_dmg"
-					"value"	"3.5"
+					"value"	"2.50"
 				}
 			}
 		}
@@ -560,15 +565,15 @@
 			}
 			"attributes"
 			{
-				"armor damage taken reduced"
+				"max armor additive bonus"
 				{
-					"attribute_class"	"mult_armor"
-					"value"			"0.7"
+					"attribute_class"	"add_maxarmor"
+					"value" "15"
 				}
-				"armor taken from dispensers decreased"
+				"dmg pierces armor"
 				{
-					"attribute_class"	"mult_dispenser_armor_rate"
-					"value"			"0.85"
+					"attribute_class"	"mod_pierce_armor"
+					"value"	"1"
 				}
 				"aiming knockback resistance heavy ver"
 				{

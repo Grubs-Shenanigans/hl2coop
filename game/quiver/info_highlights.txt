@@ -45,6 +45,7 @@ Unlockable weapon balance changes:
 - Increased the Jag's repair rate penalty from 20% to 33%
 - Lowered the Gunslinger's max health bonus to 15 and added a 10 max armor bonus.
 - The Gunslinger now has a 5% slower armor repair rate from dispensers.
+- The Enforcer's 20% damage bonus is now a normal 20% damage bonus.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

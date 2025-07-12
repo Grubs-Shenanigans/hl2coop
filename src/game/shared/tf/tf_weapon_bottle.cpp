@@ -303,7 +303,7 @@ void CTFStickBomb::Detonate(bool bTaunting)
 			// instantly kill the target if we're in a taunt.
 			if (bTaunting)
 			{
-				flDamage = 500.0f;
+				flDamage = TF_STICKBOMB_KILLTAUNT_DAMAGE;
 			}
 
 			CTakeDamageInfo info(pTFPlayer, pTFPlayer, this, explosion, explosion, flDamage, dmgType, TF_DMG_CUSTOM_STICKBOMB_EXPLOSION, &explosion);

@@ -74,6 +74,12 @@
 	}
 	"12"
 	{
+		"label"	"#GameUI_GameMenu_OfflinePractice"
+		"command" "engine training_showdlg"
+		"OnlyInLegacyMode"	"1"
+	}
+	"12"
+	{
 		"label"	"#GameUI_LoadCommentary"
 		"command" "OpenLoadSingleplayerCommentaryDialog"
 		"OnlyInLegacyMode"	"1"
