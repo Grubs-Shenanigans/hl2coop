@@ -8,6 +8,7 @@ del demoheader.tmp
 del textwindow_temp.html
 del console.log
 del singleplayerconfig.vdf
+del OfflinePracticeconfig.vdf
 del stats.txt
 del gamestate.txt
 del videoconfig_linux.cfg
