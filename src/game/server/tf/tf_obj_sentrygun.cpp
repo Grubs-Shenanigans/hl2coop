@@ -68,7 +68,7 @@ extern ConVar tf_nav_in_combat_range;
 #define DISPOSABLE_SCALE			0.65f
 #define SMALL_SENTRY_SCALE			0.80f
 
-#ifdef BDSBASE
+#ifdef QUIVER_DLL
 #define WRANGLER_DISABLE_TIME		1.5f
 #else
 #define WRANGLER_DISABLE_TIME		3.0f
