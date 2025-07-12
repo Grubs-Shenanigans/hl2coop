@@ -39,6 +39,8 @@ Quiver Test 4 (WIP):
 - Remove the Ludmila's armor benefits in favor of making it pierce armor.
 - The Ludmila now gives you 15 more max armor to put it closer to it's design goal (more survivability and ability to slow down enemy pushes)
 - Added a new tecture to the Artillery Cannon.
+- Fixed the Wrangler not disabling the sentry when switching from it.
+- Set the Wrangler disable time to 1.5 seconds.
 - Added the following Source SDK Pull Requests:
 	- #1402: Fix mouse mode not working in MvM scoreboard
 	- #1403: Fix long weapon names extending the panel off screen

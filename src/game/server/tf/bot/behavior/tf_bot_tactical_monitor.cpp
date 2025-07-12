@@ -40,7 +40,7 @@
 
 extern ConVar tf_bot_health_ok_ratio;
 extern ConVar tf_bot_health_critical_ratio;
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#ifdef QUIVER_DLL
 extern ConVar tf_bot_armor_ok_ratio;
 extern ConVar tf_bot_armor_critical_ratio;
 #endif
