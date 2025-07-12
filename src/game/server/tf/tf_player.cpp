@@ -18606,6 +18606,21 @@ void CTFPlayer::Taunt( taunts_t iTauntIndex, int iTauntConcept )
 	}
 
 #ifdef BDSBASE
+	// HACK: fixes the gunslinger VM showing up when taunting.
+	CTFWeaponBase* pActiveWeapon = m_Shared.GetActiveTFWeapon();
+
+	if (pActiveWeapon)
+	{
+		int iHandModelIndex = 0;
+		//CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pActiveWeapon, iHandModelIndex, override_hand_model_index );		// this is a cleaner way of doing it, but...
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pActiveWeapon, iHandModelIndex, wrench_builds_minisentry);			// ...the gunslinger is the only thing that uses this attribute for now
+
+		if (iHandModelIndex > 0)
+		{
+			pActiveWeapon->AddEffects(EF_NODRAW);
+		}
+	}
+
 	// Allow voice commands, etc to be interrupted.
 	CMultiplayer_Expresser* pExpresser = GetMultiplayerExpresser();
 	Assert(pExpresser);
@@ -18708,7 +18723,9 @@ void CTFPlayer::Taunt( taunts_t iTauntIndex, int iTauntConcept )
 		return;
 	}
 	
+#ifndef BDSBASE
 	CTFWeaponBase *pActiveWeapon = m_Shared.GetActiveTFWeapon();
+#endif
 	if ( iTauntIndex == TAUNT_BASE_WEAPON )
 	{
 		// phlogistinator
@@ -18977,6 +18994,23 @@ void CTFPlayer::StopTaunt( bool bForceRemoveProp /* = true */ )
 	{
 		SetFOV( this, m_iPreTauntFOV );
 	}
+
+#ifdef BDSBASE
+	// HACK: fixes the gunslinger VM showing up when taunting.
+	CTFWeaponBase* pActiveWeapon = m_Shared.GetActiveTFWeapon();
+
+	if (pActiveWeapon)
+	{
+		int iHandModelIndex = 0;
+		//CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pActiveWeapon, iHandModelIndex, override_hand_model_index );		// this is a cleaner way of doing it, but...
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pActiveWeapon, iHandModelIndex, wrench_builds_minisentry);			// ...the gunslinger is the only thing that uses this attribute for now
+
+		if (iHandModelIndex > 0)
+		{
+			pActiveWeapon->RemoveEffects(EF_NODRAW);
+		}
+	}
+#endif
 
 	m_hHighFivePartner = NULL;
 	m_bAllowMoveDuringTaunt = false;

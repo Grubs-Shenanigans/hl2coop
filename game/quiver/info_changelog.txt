@@ -43,7 +43,6 @@ Quiver Test 4 (WIP):
 - Set the Wrangler disable time to 1.5 seconds.
 - Added the following Source SDK Pull Requests:
 	- #1402: Fix mouse mode not working in MvM scoreboard
-	- #1403: Fix long weapon names extending the panel off screen
 	- #1404: Add metal change number batching
 	- #1405: Remove ammo metal prediction if the weapon has add_onhit_ammo
 	- #1407: Make trigger_hurt double w/ forgiveness actually forgive

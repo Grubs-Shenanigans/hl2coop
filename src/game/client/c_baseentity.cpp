@@ -43,6 +43,9 @@
 
 #ifdef TF_CLIENT_DLL
 #include "c_tf_player.h"
+#ifdef BDSBASE
+#include "tf_dropped_weapon.h"
+#endif
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -1380,14 +1383,21 @@ void C_BaseEntity::UpdateVisibility()
 	bool bForceAllow = false;
 
 	C_BaseEntity* pParent = GetRootMoveParent();
-	if (pParent == this)
-		bForceAllow = true;
 
-	//allow bots to use wearables.
-	C_TFPlayer* pPlayer = ToTFPlayer(pParent);
-	if (pPlayer && pPlayer->IsABot())
+	if (pParent)
 	{
-		bForceAllow = true;
+		//allow bots to use wearables.
+		C_TFPlayer* pPlayer = ToTFPlayer(pParent);
+		if (pPlayer && pPlayer->IsABot())
+		{
+			bForceAllow = true;
+		}
+
+		C_TFDroppedWeapon* pDroppedWeapon = dynamic_cast<C_TFDroppedWeapon*>(pParent);
+		if (pDroppedWeapon)
+		{
+			bForceAllow = true;
+		}
 	}
 
 	//allow wearables if they're custom.
