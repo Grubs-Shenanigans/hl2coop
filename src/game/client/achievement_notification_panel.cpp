@@ -91,8 +91,8 @@ void CAchievementNotificationPanel::PerformLayout( void )
 	m_pLabelTitle->SetBgColor( Color( 0, 0, 0, 0 ) );
 
 #ifdef BDSBASE
-	Color defualtColor = Color(62, 70, 55, 200);
-	Color c = defualtColor;
+	Color defaultColor = Color(62, 70, 55, 200);
+	Color c = defaultColor;
 	
 #ifdef BDSBASE_ACHIEVEMENT_NOTIFICATIONS
 	vgui::IScheme* pSourceScheme = vgui::scheme()->GetIScheme(vgui::scheme()->GetScheme("SourceScheme"));
@@ -100,15 +100,11 @@ void CAchievementNotificationPanel::PerformLayout( void )
 	{
 		if (cl_achievements_theme.GetInt() == 0)
 		{
-			c = pSourceScheme->GetColor("AchievementsLightGrey", defualtColor);
+			c = pSourceScheme->GetColor("AchievementsLightGrey", defaultColor);
 		}
 		else if (cl_achievements_theme.GetInt() == 1)
 		{
-			c = pSourceScheme->GetColor("AchievementsDarkGrey", defualtColor);
-		}
-		else if (cl_achievements_theme.GetInt() == 2)
-		{
-			c = pSourceScheme->GetColor("SteamLightGreen", defualtColor);
+			c = pSourceScheme->GetColor("AchievementsDarkGrey", defaultColor);
 		}
 	}
 #endif
