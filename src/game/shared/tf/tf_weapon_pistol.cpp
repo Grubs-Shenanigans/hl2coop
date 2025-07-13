@@ -200,6 +200,35 @@ void CTFPistol_ScoutPrimary::Push( void )
 #endif
 }
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  :  - 
+//-----------------------------------------------------------------------------
+void CTFPistol_ScoutPrimary::ItemBusyFrame()
+{
+	BaseClass::ItemBusyFrame();
+
+	CTFPlayer* pOwner = ToTFPlayer(GetOwner());
+	if (!pOwner)
+		return;
+
+	if (!m_bInAttack2)
+		return;
+
+	// These are checked in SecondaryAttack too, but reload shouldn't be aborted if these fail
+	if (!CanAttack() || m_flNextSecondaryAttack > gpGlobals->curtime)
+		return;
+
+	if (m_bInReload)
+	{
+		AbortReload();
+		pOwner->m_flNextAttack = gpGlobals->curtime;
+		SecondaryAttack();
+	}
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  :  - 
