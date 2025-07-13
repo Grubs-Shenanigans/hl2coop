@@ -1082,6 +1082,7 @@ void CEconEntity::UpdateAttachmentModels( void )
 	CEconItemView *pItem = GetAttributeContainer()->GetItem();
 	GameItemDefinition_t *pItemDef = pItem && pItem->IsValid() ? pItem->GetStaticData() : NULL;
 
+#ifdef BDSBASE
 #ifdef BDSBASE_LEGACY_VIEWMODELS
 	if (pItemDef)
 	{
@@ -1090,6 +1091,7 @@ void CEconEntity::UpdateAttachmentModels( void )
 			return;
 		}
 	}
+#endif
 #endif
 
 	// Update the state of additional model attachments
@@ -1902,6 +1904,7 @@ int	CEconEntity::DrawOverriddenViewmodel( C_BaseViewModel *pViewmodel, int flags
 	
 	CEconItemView *pItem = GetAttributeContainer()->GetItem();
 
+#ifdef BDSBASE
 #ifdef BDSBASE_LEGACY_VIEWMODELS
 	if (pItem)
 	{
@@ -1911,6 +1914,7 @@ int	CEconEntity::DrawOverriddenViewmodel( C_BaseViewModel *pViewmodel, int flags
 			return ret;
 		}
 	}
+#endif
 #endif
 
 	bool bAttachesToHands = ( pItem->IsValid() && (pItem->GetStaticData()->ShouldAttachToHands() || pItem->GetStaticData()->ShouldAttachToHandsVMOnly()));

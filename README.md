@@ -7,8 +7,8 @@ This will feature sources for some currently updated and future Bitl Development
 This base is specific to multiplayer mod projects.
 
 ## Projects using this base:
-- SURVIVOR II (Based on HL2DM)
-- Quiver Fortress (Based on TF2)
+- SURVIVOR II (Based on HL2DM, Shelved)
+- Quiver Fortress (Based on TF2, Active Development)
 
 ## Features:
 - Restored game project generator scripts. No more having to generate every project!
@@ -77,7 +77,12 @@ Explanations for the cut weapon models:
 - The PDA's and Toolbox's models work, but they were cut because of the Gunslinger.
 - The Sapper's model kept switching to the Toolbox's in most instances, so it was changed to the c_model.
 
-The Gunslinger is the reason for some of these cuts since it is a sperate bodygroup on the c_model arms, making the idea of using any of the legacy viewmodels on Engineer (except for the wrench) unviable
+The Gunslinger is the reason for some of these cuts since it is a seperate bodygroup on the c_model arms, making the idea of using any of the legacy viewmodels on Engineer (except for the wrench) unviable
+
+BDSBASE_ACHIEVEMENT_NOTIFICATIONS
+- Games: All
+- This mode enables the Xbox 360-styled achievement notifications.
+- This allows users to easily see unlocked achievements and achievement progress.
 
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.

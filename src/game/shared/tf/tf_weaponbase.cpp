@@ -671,6 +671,7 @@ const char *CTFWeaponBase::GetViewModel( int iViewModel ) const
 	}
 
 	const CEconItemView *pItem = GetAttributeContainer()->GetItem();
+#ifdef BDSBASE
 #ifdef BDSBASE_LEGACY_VIEWMODELS
 	if (pPlayer && pItem->IsValid())
 	{
@@ -689,6 +690,16 @@ const char *CTFWeaponBase::GetViewModel( int iViewModel ) const
 			return pszHandModel;
 		}
 	}
+#else
+	if (pPlayer && pItem->IsValid() && pItem->GetStaticData()->ShouldAttachToHands())
+	{
+		// Should always be valid, because players without classes shouldn't be carrying items
+		const char* pszHandModel = pPlayer->GetPlayerClass()->GetHandModelName(iHandModelIndex);
+		Assert(pszHandModel);
+
+		return pszHandModel;
+	}
+#endif
 #else
 	if (pPlayer && pItem->IsValid() && pItem->GetStaticData()->ShouldAttachToHands())
 	{
@@ -857,14 +868,18 @@ void CTFWeaponBase::Equip( CBaseCombatCharacter *pOwner )
 
 	BaseClass::Equip( pOwner );
 
+#ifdef BDSBASE
 #ifdef BDSBASE_LEGACY_VIEWMODELS
 	if (!UsesForcedViewModel())
 	{
 #endif
+#endif
 		// If we attach to our hands, we need to update our viewmodel when we get a new owner.
 		UpdateHands();
+#ifdef BDSBASE
 #ifdef BDSBASE_LEGACY_VIEWMODELS
 	}
+#endif
 #endif
 
 	CEconItemView *pItem = GetAttributeContainer()->GetItem();
@@ -2999,6 +3014,7 @@ const char *CTFWeaponBase::GetTracerType( void )
 	return BaseClass::GetTracerType();
 }
 
+#ifdef BDSBASE
 #ifdef BDSBASE_LEGACY_VIEWMODELS
 bool CTFWeaponBase::UsesForcedViewModel(void) const
 {
@@ -3011,6 +3027,7 @@ bool CTFWeaponBase::UsesForcedViewModel(void) const
 
 	return false;
 }
+#endif
 #endif
 
 //=============================================================================
@@ -3222,6 +3239,7 @@ C_BaseAnimating *CTFWeaponBase::GetAppropriateWorldOrViewModel()
 		// For w_* models the viewmodel itself is just arms+hands. And attached to them is the actual weapon.
 		const CEconItemView *pItem = GetAttributeContainer()->GetItem();
 
+#ifdef BDSBASE
 #ifdef BDSBASE_LEGACY_VIEWMODELS
 		if (pItem->IsValid())
 		{
@@ -3244,6 +3262,16 @@ C_BaseAnimating *CTFWeaponBase::GetAppropriateWorldOrViewModel()
 				}
 			}
 		}
+#else
+		if (pItem->IsValid() && pItem->GetStaticData()->ShouldAttachToHands())
+		{
+			C_BaseAnimating* pVMAttach = GetViewmodelAttachment();
+			if (pVMAttach != NULL)
+			{
+				return pVMAttach;
+			}
+		}
+#endif
 #else
 		if (pItem->IsValid() && pItem->GetStaticData()->ShouldAttachToHands())
 		{
@@ -4596,11 +4624,13 @@ Activity CTFWeaponBase::TranslateViewmodelHandActivityInternal( Activity actBase
 	CEconItemView *pEconItemView = GetAttributeContainer()->GetItem();
 	if ( pEconItemView && pEconItemView->IsValid() && GetOwnerEntity() )
 	{
+#ifdef BDSBASE
 #ifdef BDSBASE_LEGACY_VIEWMODELS
 		if (UsesForcedViewModel())
 		{
 			return actBase;
 		}
+#endif
 #endif
 
 		Activity translatedActivity = pEconItemView->GetStaticData()->GetActivityOverride( GetOwnerEntity()->GetTeamNumber(), actBase );
