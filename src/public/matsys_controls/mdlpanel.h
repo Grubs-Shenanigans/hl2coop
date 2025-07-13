@@ -27,6 +27,10 @@ namespace vgui
 	class IScheme;
 }
 
+#ifdef BDSBASE
+class CIKContext;
+#endif
+
 // 
 struct MDLAnimEventState_t
 {
@@ -118,6 +122,9 @@ protected:
 		float		m_flCycleStartTime;
 		CStudioHdr	*m_pStudioHdr;
 		uint32		m_unMdlCacheSerial;
+#ifdef BDSBASE
+		CIKContext* m_pIKContext;
+#endif
 	};
 
 	MDLData_t				m_RootMDL;
@@ -143,6 +150,11 @@ private:
 
 	void DrawCollisionModel();
 	void UpdateStudioRenderConfig( void );
+
+#ifdef BDSBASE
+	void SetupBones(MDLData_t& mdlData, int nMaxBoneCount, matrix3x4_t* pBoneToWorld,
+		const float* pflPoseParameters = NULL, MDLSquenceLayer_t* pSequenceLayers = NULL, int nNumSequenceLayers = 0 );
+#endif
 
 	CTextureReference m_DefaultEnvCubemap;
 	CTextureReference m_DefaultHDREnvCubemap;

@@ -56,6 +56,9 @@ Quiver Test 4 (WIP):
 	- #1410: Fix Switching from the medigun while healing someone screwing with viewmodels
 	- #1411: Make the "Pass to me!" voice menu command only show in Passtime
 	- #1413: Adds vscript functions to point_populator_interface
+	- #1414: Fix Eyelander/Sword's overheal drain rate & make health gain consistent with other weapons
+	- #1415: Fix the tf_projectile_arrow entity changing direction upon entering water
+	- #1420: Allow the Shortstop to shove while reloading
 
 Quiver Test 3:
 - Improved ForceRegenerateAndRespawn()
