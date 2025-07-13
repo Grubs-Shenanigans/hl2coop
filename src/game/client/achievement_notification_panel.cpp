@@ -29,6 +29,10 @@ using namespace vgui;
 
 #define ACHIEVEMENT_NOTIFICATION_DURATION 10.0f
 
+#ifdef BDSBASE
+ConVar cl_achievements_theme("cl_achievements_theme", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "0 = light grey, 1 = dark grey, 2 = light green (original)");
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -85,7 +89,34 @@ void CAchievementNotificationPanel::PerformLayout( void )
 	SetBgColor( Color( 0, 0, 0, 0 ) );
 	m_pLabelHeading->SetBgColor( Color( 0, 0, 0, 0 ) );
 	m_pLabelTitle->SetBgColor( Color( 0, 0, 0, 0 ) );
+
+#ifdef BDSBASE
+	Color defualtColor = Color(62, 70, 55, 200);
+	Color c = defualtColor;
+	
+#ifdef BDSBASE_ACHIEVEMENT_NOTIFICATIONS
+	vgui::IScheme* pSourceScheme = vgui::scheme()->GetIScheme(vgui::scheme()->GetScheme("SourceScheme"));
+	if (pSourceScheme)
+	{
+		if (cl_achievements_theme.GetInt() == 0)
+		{
+			c = pSourceScheme->GetColor("AchievementsLightGrey", defualtColor);
+		}
+		else if (cl_achievements_theme.GetInt() == 1)
+		{
+			c = pSourceScheme->GetColor("AchievementsDarkGrey", defualtColor);
+		}
+		else if (cl_achievements_theme.GetInt() == 2)
+		{
+			c = pSourceScheme->GetColor("SteamLightGreen", defualtColor);
+		}
+	}
+#endif
+
+	m_pPanelBackground->SetBgColor( c );
+#else
 	m_pPanelBackground->SetBgColor( Color( 62,70,55, 200 ) );
+#endif
 }
 
 //-----------------------------------------------------------------------------
