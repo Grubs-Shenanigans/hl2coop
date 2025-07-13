@@ -234,6 +234,9 @@ void CTFProjectile_Arrow::Spawn()
 	SetSolid( SOLID_BBOX );	
 
 	SetCollisionGroup( TFCOLLISION_GROUP_ROCKETS );
+#ifdef BDSBASE
+	AddEFlags(EFL_NO_WATER_VELOCITY_CHANGE);
+#endif
 	AddEffects( EF_NOSHADOW );
 	AddFlag( FL_GRENADE );
 
