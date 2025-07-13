@@ -8549,6 +8549,80 @@ float CTFPlayer::GetObjectBuildSpeedMultiplier( int iObjectType, bool bIsRedeplo
 	return flBuildRate - 1.0f; // sub out the initial 1 so the final result is added
 }
 
+#ifdef QUIVER_DLL
+ConVar qf_debug_armor_damage("qf_debug_armor_damage", "0", FCVAR_CHEAT);
+
+bool DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDamage)
+{
+	bool debug = qf_debug_armor_damage.GetBool();
+
+	int iAttackIgnoresArmor = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iAttackIgnoresArmor, mod_pierce_armor);
+	if (!iAttackIgnoresArmor)
+	{
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iAttackIgnoresArmor, mod_pierce_resists_absorbs);
+	}
+
+	if (iAttackIgnoresArmor && debug)
+	{
+		Warning("	DAMAGE PIERCES ARMOR BASED ON ATTRIBUTE\n");
+	}
+
+	// armor doesn't protect against drown damage!
+	// also against bleeding or other special damage types that should penetrate.
+
+
+	bool bHasBlacklistedDamgeTypes = (bitsDamage & (DMG_GENERIC)) ||
+									(bitsDamage & (DMG_DROWN)) ||
+									(bitsDamage & (DMG_VEHICLE));
+
+	if (debug && bHasBlacklistedDamgeTypes)
+	{
+		Warning("	DAMAGE TYPE PENETRATES ARMOR\n");
+	}
+
+	bool bHasBlacklistedCustomDamage = false;
+	if (info.GetDamageCustom())
+	{
+		bHasBlacklistedCustomDamage = (IsHeadshot(info.GetDamageCustom()) ||
+									IsTauntDmg(info.GetDamageCustom()) ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_BLEEDING ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_BACKSTAB ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_DECAPITATION_BOSS ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_DECAPITATION_BOSS_HAMMER ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_CROC ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_GIANT_HAMMER ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_EYEBALL_ROCKET ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_MERASMUS_ZAP ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_MERASMUS_PLAYER_BOMB ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_MERASMUS_DECAPITATION ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_MERASMUS_GRENADE ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_KRAMPUS_MELEE ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_KRAMPUS_RANGED ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_PENETRATE_ALL_PLAYERS ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_PENETRATE_MY_TEAM ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_PENETRATE_NONBURNING_TEAMMATE ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_SUICIDE ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_TELEFRAG ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_PUMPKIN_BOMB ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_TRIGGER_HURT ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_BOOTS_STOMP ||
+									info.GetDamageCustom() == TF_DMG_CUSTOM_SAPPER_RECORDER_DEATH);
+
+		if (debug && bHasBlacklistedCustomDamage)
+		{
+			Warning("	CUSTOM DAMAGE PENETRATES ARMOR\n");
+		}
+	}
+
+	bool bCanDamageArmor = (iAttackIgnoresArmor ||
+							bHasBlacklistedDamgeTypes ||
+							bHasBlacklistedCustomDamage);
+
+	return bCanDamageArmor;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -8694,8 +8768,23 @@ void CTFPlayer::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, 
 #ifdef QUIVER_DLL
 	else if (ArmorValue() > 0)
 	{
-		// Armor also ricochets.
-		g_pEffects->Ricochet(ptr->endpos - (vecDir * 8), -vecDir);
+		//penetrated types
+		bool bPenetrated = DoesDamagePenetrateArmor(info_modified, info_modified.GetDamageType());
+
+		if (bPenetrated)
+		{
+			// produce blood decals if it penetrated us.
+			// Since this code only runs on the server, make sure it shows the tempents it creates.
+			CDisablePredictionFiltering disabler;
+
+			// This does smaller splotches on the guy and splats blood on the world.
+			TraceBleed(info_modified.GetDamage(), vecDir, ptr, info_modified.GetDamageType());
+		}
+		else
+		{
+			// Armor also ricochets.
+			g_pEffects->Ricochet(ptr->endpos - (vecDir * 8), -vecDir);
+		}
 	}
 #endif
 	else
@@ -9165,57 +9254,41 @@ END_DATADESC()
 
 float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage)
 {
+	bool debug = qf_debug_armor_damage.GetBool();
+
+	if (debug)
+	{
+		Msg("ARMOR:\n");
+	}
+
 	float realDamage = info.GetDamage();
 	float damage = realDamage;
 
 	if (m_Shared.IsInvulnerable())
+	{
+		if (debug)
+		{
+			Warning("	PLAYER DAMAGED IS INVULNERABLE\n");
+		}
 		return damage;
+	}
 
 	//quiver allows for armor.
 	float flRatio = GetPlayerClass()->GetArmorRatio(); //modern armor ratio. this should be changed for every armor type.
 	float flAdditionalCost = GetPlayerClass()->GetArmorAdditionalCostMult(); //should be changed for all armor types
 
-	int iAttackIgnoresArmor = 0;
-	CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iAttackIgnoresArmor, mod_pierce_armor);
-	if (!iAttackIgnoresArmor)
-	{
-		CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iAttackIgnoresArmor, mod_pierce_resists_absorbs);
-	}
-
-	// armor doesn't protect against drown damage!
-	// also against bleeding or other special damage types that should penetrate.
-
-	bool bCanDamageArmor = (!iAttackIgnoresArmor &&
-							(bitsDamage != DMG_GENERIC &&
-							!(bitsDamage & (DMG_DROWN) &&
-								(info.GetDamageCustom() != TF_DMG_CUSTOM_BLEEDING &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_BACKSTAB &&
-								!IsHeadshot(info.GetDamageCustom()) &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_DECAPITATION_BOSS &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_DECAPITATION_BOSS_HAMMER &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_CROC &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_GIANT_HAMMER &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_EYEBALL_ROCKET && 
-								info.GetDamageCustom() != TF_DMG_CUSTOM_MERASMUS_ZAP &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_MERASMUS_PLAYER_BOMB &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_MERASMUS_DECAPITATION &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_MERASMUS_GRENADE &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_KRAMPUS_MELEE &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_KRAMPUS_RANGED &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_PENETRATE_ALL_PLAYERS &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_PENETRATE_MY_TEAM &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_PENETRATE_NONBURNING_TEAMMATE &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_SUICIDE &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_TELEFRAG &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_PUMPKIN_BOMB &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_TRIGGER_HURT &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_BOOTS_STOMP &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_SAPPER_RECORDER_DEATH &&
-								!IsTauntDmg(info.GetDamageCustom())))));
+	bool bCanDamageArmor = DoesDamagePenetrateArmor(info, bitsDamage);
 
 	// if the attack pierces armor, we shouldn't calculate armor here.
 	if (!bCanDamageArmor)
+	{
+		if (debug)
+		{
+			Warning("	DAMAGE PENETRATES ARMOR\n");
+		}
+
 		return damage;
+	}
 
 	if (ArmorValue() > 0)
 	{
@@ -9225,9 +9298,19 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 		IncrementArmorValue(-flArmor, 0);
 
+		if (debug)
+		{
+			Msg("	ARMOR REDUCED BY: %f\n", flArmor);
+		}
+
 		if (ArmorValue() <= 0)
 		{
 			SetArmorValue(0);
+		}
+
+		if (debug)
+		{
+			Msg("	NEW DAMAGE: %f\n", flNew);
 		}
 
 		damage = flNew;
@@ -9235,7 +9318,13 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 	// if the damage kills us, don't play the armor break event.
 	if (damage > GetHealth())
+	{
+		if (debug)
+		{
+			Warning("	ARMOR DAMAGE KILLS\n");
+		}
 		return damage;
+	}
 
 	if (ArmorValue() <= 0)
 	{
