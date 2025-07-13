@@ -1386,6 +1386,11 @@ void C_BaseEntity::UpdateVisibility()
 
 	if (pParent)
 	{
+		if (pParent == this)
+		{
+			bForceAllow = true;
+		}
+
 		//allow bots to use wearables.
 		C_TFPlayer* pPlayer = ToTFPlayer(pParent);
 		if (pPlayer && pPlayer->IsABot())
