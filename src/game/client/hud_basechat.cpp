@@ -41,6 +41,10 @@ ConVar cl_chatfilter_version( "cl_chatfilter_version", "0", FCVAR_CLIENTDLL | FC
 ConVar cl_mute_all_comms("cl_mute_all_comms", "1", FCVAR_ARCHIVE, "If 1, then all communications from a player will be blocked when that player is muted, including chat messages.");
 ConVar cl_enable_text_chat( "cl_enable_text_chat", "1", FCVAR_ARCHIVE, "Enable text chat in this game" );
 
+#ifdef BDSBASE
+ConVar cl_achievements_theme("cl_achievements_theme", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "0 = light grey, 1 = dark grey, 2 = light green (original)");
+#endif
+
 const int kChatFilterVersion = 1;
 
 Color g_ColorBlue( 153, 204, 255, 255 );
@@ -1406,7 +1410,26 @@ Color CBaseHudChat::GetTextColorForClient( TextColor colorNum, int clientIndex )
 			vgui::IScheme *pSourceScheme = vgui::scheme()->GetIScheme( vgui::scheme()->GetScheme( "SourceScheme" ) ); 
 			if ( pSourceScheme )
 			{
+#ifdef BDSBASE
+#ifdef BDSBASE_ACHIEVEMENT_NOTIFICATIONS
+				if (cl_achievements_theme.GetInt() == 0)
+				{
+					c = pSourceScheme->GetColor("AchievementsLightGrey", GetBgColor());
+				}
+				else if (cl_achievements_theme.GetInt() == 1)
+				{
+					c = pSourceScheme->GetColor("AchievementsDarkGrey", GetBgColor());
+				}
+				else if (cl_achievements_theme.GetInt() == 2)
+				{
+					c = pSourceScheme->GetColor("SteamLightGreen", GetBgColor());
+				}
+#else
 				c = pSourceScheme->GetColor( "SteamLightGreen", GetBgColor() );
+#endif
+#else
+				c = pSourceScheme->GetColor( "SteamLightGreen", GetBgColor() );
+#endif
 			}
 			else
 			{

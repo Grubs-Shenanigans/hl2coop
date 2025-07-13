@@ -8552,7 +8552,7 @@ float CTFPlayer::GetObjectBuildSpeedMultiplier( int iObjectType, bool bIsRedeplo
 #ifdef QUIVER_DLL
 ConVar qf_debug_armor_damage("qf_debug_armor_damage", "0", FCVAR_CHEAT);
 
-bool DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDamage)
+bool CTFPlayer::DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDamage)
 {
 	bool debug = qf_debug_armor_damage.GetBool();
 
@@ -9277,7 +9277,7 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 	float flRatio = GetPlayerClass()->GetArmorRatio(); //modern armor ratio. this should be changed for every armor type.
 	float flAdditionalCost = GetPlayerClass()->GetArmorAdditionalCostMult(); //should be changed for all armor types
 
-	bool bCanDamageArmor = DoesDamagePenetrateArmor(info, bitsDamage);
+	bool bCanDamageArmor = !DoesDamagePenetrateArmor(info, bitsDamage);
 
 	// if the attack pierces armor, we shouldn't calculate armor here.
 	if (!bCanDamageArmor)
@@ -9392,6 +9392,10 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 	else
 	{
 		PlayDamageResistSound(realDamage, damage);
+		if (debug)
+		{
+			Msg("	REMAINING ARMOR: %i\n", ArmorValue());
+		}
 	}
 
 	return damage;

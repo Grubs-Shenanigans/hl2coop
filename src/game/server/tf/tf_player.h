@@ -602,6 +602,7 @@ public:
 	int GetMaxArmor(void) { return m_iMaxArmor; }
 	void ScriptSetMaxArmor(int iVal) { SetMaxArmor(iVal); }
 	void ScriptSetArmor(int iVal, bool bAdd) { if (bAdd) { IncrementArmorValue(iVal); } else { SetArmorValue(iVal); } }
+	bool DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDamage);
 #endif
 
 	void PlayerUse( void );

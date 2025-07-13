@@ -39,6 +39,16 @@ void TFBloodSprayCallback( Vector vecOrigin, Vector vecNormal, ClientEntityHandl
 		bUnderwater = true;
 	}
 
+#ifdef QUIVER_CLIENT_DLL
+	if (pPlayer && pPlayer->ArmorValue() > 0)
+	{
+		//we don't bleed if we have armor, however, armor penetration will be represented by blood on the walls
+		// we still need a hit effect, so use the low violence one.
+		DispatchParticleEffect(bUnderwater ? "lowV_water_blood_impact_red_01" : "lowV_blood_impact_red_01", vecOrigin, vecAngles, pPlayer);
+		return;
+	}
+#endif
+
 	bool bPyroVision = false;
 #ifdef CLIENT_DLL
 	// Use birthday fun if the local player has an item that allows them to see it (Pyro Goggles)

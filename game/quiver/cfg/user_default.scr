@@ -723,6 +723,17 @@ DESCRIPTION INFO_OPTIONS
 		{ "1" }
 	}
 	
+	"cl_achievements_theme"
+	{
+		"#Quiver_Achievement_Theme"
+		{ LIST
+			"#Quiver_Achievement_Theme_Light" "0"
+			"#Quiver_Achievement_Theme_Dark" "1"
+			"#Quiver_Achievement_Theme_Green" "2"
+		}
+		{ "0" }
+	}
+	
 	"cl_notifications_show_ingame"
 	{
 		"#TF_ShowNotificationsInGame"
