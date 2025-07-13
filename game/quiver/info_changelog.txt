@@ -38,9 +38,14 @@ Quiver Test 4 (WIP):
 - Removed damage spread from the Artillery Cannon for more consistent damage.
 - Remove the Ludmila's armor benefits in favor of making it pierce armor.
 - The Ludmila now gives you 15 more max armor to put it closer to it's design goal (more survivability and ability to slow down enemy pushes)
-- Added a new tecture to the Artillery Cannon.
+- Added a new texture to the Artillery Cannon.
 - Fixed the Wrangler not disabling the sentry when switching from it.
 - Set the Wrangler disable time to 1.5 seconds.
+- Reduced the Sniper Rifle's ammo count from 25 to 16.
+- All Sniper Rifles now fire tracer rounds.
+- The Sword now pierces armor.
+- Fixed the Hitman's Heatmaker not piercing armor.
+- Added bosses, telefrags, hazards, and penetrated sniper shots into the list of things that can penetrate armor.
 - Added the following Source SDK Pull Requests:
 	- #1402: Fix mouse mode not working in MvM scoreboard
 	- #1404: Add metal change number batching

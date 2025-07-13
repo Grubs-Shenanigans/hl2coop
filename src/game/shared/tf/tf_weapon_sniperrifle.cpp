@@ -2050,9 +2050,15 @@ void CTFSniperRifleClassic::ItemPostFrame( void )
 	else if ( m_bCharging )
 	{
 #if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
-		Fire(pPlayer);
+		int iCanJump = 0;
+		CALL_ATTRIB_HOOK_INT(iCanJump, sniper_classic_allow_jump);
+
+		bool bAllowFire = iCanJump ? true : pPlayer->GetGroundEntity();
+
+		if (bAllowFire)
 #else
 		if (pPlayer->GetGroundEntity())
+#endif
 		{
 			Fire(pPlayer);
 		}
@@ -2060,7 +2066,7 @@ void CTFSniperRifleClassic::ItemPostFrame( void )
 		{
 			pPlayer->EmitSound("Player.DenyWeaponSelection");
 		}
-#endif
+
 
 		WeaponReset();
 	}

@@ -34,6 +34,8 @@ Stock weapon balance changes:
 - Random critical hits have been disabled. 
 - Increased the default construction rate of all of Engineer's buildings by 20%.
 - Default decloak time is now 1.5 seconds (originally 2.0 seconds).
+- Reduced the Sniper Rifle's ammo count from 25 to 16.
+- All Sniper Rifles now fire tracer rounds.
 
 Unlockable weapon balance changes:
 - The Wrangler's shield has been disabled. Its sole function is now purely to control your sentry gun.

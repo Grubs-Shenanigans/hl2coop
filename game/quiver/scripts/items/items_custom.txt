@@ -171,6 +171,11 @@
 			}
 			"attributes"
 			{
+				"dmg pierces armor"
+				{
+					"attribute_class"	"mod_pierce_armor"
+					"value"	"1"
+				}
 				"is_a_sword"
 				{
 					"attribute_class"	"is_a_sword"
@@ -410,7 +415,7 @@
 					"attribute_class"	"sniper_crit_no_scope"
 					"value" "1"
 				}
- 				"sniper fires tracer"
+				"sniper fires tracer"
  				{
 					"attribute_class"	"sniper_fires_tracer"
 					"value"	"1"
@@ -439,6 +444,11 @@
 				{
 					"attribute_class"	"mult_sniper_charge_per_sec"
 					"value"	"1.25"
+				}
+				"sniper classic allow jump"
+				{
+					"attribute_class"	"sniper_classic_allow_jump"
+					"value"	"1"
 				}
 			}
 			"visuals"

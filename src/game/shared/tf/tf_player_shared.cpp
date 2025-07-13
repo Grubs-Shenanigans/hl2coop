@@ -10437,17 +10437,38 @@ void CTFPlayer::MaybeDrawRailgunBeam( IRecipientFilter *pFilter, CTFWeaponBase *
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( pWeapon, iShouldFireTracer, sniper_fires_tracer_HIDDEN );
 	}
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	bool bHeatmakerCharged = m_Shared.InCond(TF_COND_SNIPERCHARGE_RAGE_BUFF) && pWeapon && WeaponID_IsSniperRifle(pWeapon->GetWeaponID());
+#endif
+
 	// Check for heatmaker
 	if ( !iShouldFireTracer )
 	{
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+		iShouldFireTracer = bHeatmakerCharged;
+#else
 		iShouldFireTracer = m_Shared.InCond( TF_COND_SNIPERCHARGE_RAGE_BUFF ) && pWeapon && WeaponID_IsSniperRifle( pWeapon->GetWeaponID() );
+#endif
 	}
 
 	if ( iShouldFireTracer )
 	{
 		const char *pParticleSystemName = pWeapon->GetTeamNumber() == TF_TEAM_BLUE ? "dxhr_sniper_rail_blue" : "dxhr_sniper_rail_red";
 		CTFSniperRifle *pRifle = dynamic_cast< CTFSniperRifle* >( pWeapon );
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+		int iShouldUseClassicTracer = 0;
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iShouldUseClassicTracer, sniper_classic_tracer);
+
+		if (bHeatmakerCharged)
+		{
+			iShouldUseClassicTracer = 0;
+		}
+
+		if (pRifle && (iShouldUseClassicTracer || pRifle->GetRifleType() == RIFLE_CLASSIC))
+#else
 		if ( pRifle && ( pRifle->GetRifleType() == RIFLE_CLASSIC ) )
+#endif
 		{
 			pParticleSystemName = "tfc_sniper_distortion_trail";
 		}

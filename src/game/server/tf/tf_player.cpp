@@ -9190,8 +9190,28 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 							!(bitsDamage & (DMG_DROWN) &&
 								(info.GetDamageCustom() != TF_DMG_CUSTOM_BLEEDING &&
 								info.GetDamageCustom() != TF_DMG_CUSTOM_BACKSTAB &&
-								info.GetDamageCustom() != TF_DMG_CUSTOM_HEADSHOT) &&
-							!IsTauntDmg(info.GetDamageCustom()))));
+								!IsHeadshot(info.GetDamageCustom()) &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_DECAPITATION_BOSS &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_DECAPITATION_BOSS_HAMMER &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_CROC &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_GIANT_HAMMER &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_EYEBALL_ROCKET && 
+								info.GetDamageCustom() != TF_DMG_CUSTOM_MERASMUS_ZAP &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_MERASMUS_PLAYER_BOMB &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_MERASMUS_DECAPITATION &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_MERASMUS_GRENADE &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_KRAMPUS_MELEE &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_KRAMPUS_RANGED &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_PENETRATE_ALL_PLAYERS &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_PENETRATE_MY_TEAM &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_PENETRATE_NONBURNING_TEAMMATE &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_SUICIDE &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_TELEFRAG &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_PUMPKIN_BOMB &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_TRIGGER_HURT &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_BOOTS_STOMP &&
+								info.GetDamageCustom() != TF_DMG_CUSTOM_SAPPER_RECORDER_DEATH &&
+								!IsTauntDmg(info.GetDamageCustom())))));
 
 	// if the attack pierces armor, we shouldn't calculate armor here.
 	if (!bCanDamageArmor)
