@@ -281,9 +281,25 @@ void CTFKnife::PrimaryAttack( void )
 	{
 		// Our health cap is 3x our default maximum health cap. This is so high to make up for
 		// the fact that our default is lowered by equipping the weapon.
+#ifdef BDSBASE
+		int iBaseMaxHealth = (pPlayer->GetMaxHealth() - pPlayer->GetRuneHealthBonus()) * 3;
+		int iNewHealth = MIN(pPlayer->GetHealth() + iBackstabVictimHealth, iBaseMaxHealth);
+
+		// if iDeltaHealthChange > 0, replace the kunai algorith with something that allows us to tune it easier.
+		int iDeltaHealthChange = 0;
+		CALL_ATTRIB_HOOK_INT(iDeltaHealthChange, sanguisuge_set_health);
+
+		if (iDeltaHealthChange > 0)
+		{
+			iNewHealth = MIN(pPlayer->GetHealth() + iDeltaHealthChange, pPlayer->GetMaxHealth() + iDeltaHealthChange);
+		}
+
+		int iDeltaHealth = iNewHealth - pPlayer->GetHealth();
+#else
 		int iBaseMaxHealth = ( pPlayer->GetMaxHealth() - pPlayer->GetRuneHealthBonus() ) * 3,
 			iNewHealth	   = MIN( pPlayer->GetHealth() + iBackstabVictimHealth, iBaseMaxHealth ),
 			iDeltaHealth   = iNewHealth - pPlayer->GetHealth();
+#endif
 
 		if ( TFGameRules() && TFGameRules()->IsPowerupMode() && ( nBackStabVictimRuneType == RUNE_REFLECT ) )
 		{

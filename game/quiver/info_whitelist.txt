@@ -40,3 +40,4 @@
 - The Enforcer (w/ balance changes)
 - The L'Etranger
 - The Tomislav
+- The Conniver's Kunai (w/ balance changes)
