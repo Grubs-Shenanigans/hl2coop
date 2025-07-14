@@ -1,4 +1,4 @@
-Quiver Test 4 (WIP):
+Quiver Test 4:
 - Re-enabled shield break responses.
 - Removed airborne crits from the Vitality Glitch.
 - Re-added the speed and damage penalty to the Vitality Glitch.
@@ -28,7 +28,7 @@ Quiver Test 4 (WIP):
 - Added cl_holdzoom to the advanced options menu.
 - Lowered the Artillery Cannon's fire rate penalty from 110% to 90%.
 - Reduced the damage potential of the Artillery Cannon's reverse damage falloff from 250% to 150%
-- Reduced the bullets-per-shot penalty.
+- Reduced the bullets-per-shot penalty on the Artillery Cannon.
 - Added Training Mode to the main menu (ugh).
 - Added The Enforcer, The Tomislav, and The L'Etranger to the Whitelist.
 - Changed the Enforcer's 20% damage bonus while disguised to a normal 20% damage bonus.
