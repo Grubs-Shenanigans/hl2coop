@@ -6,7 +6,7 @@ Quiver Test 5:
 - Lowered the Heavy's speed from 280 to 275.
 - Reduced the charge recharge rate bonus from 70% to 45% for the Charge Shield.
 - Reduced the Caber's recharge rate from 45 seconds to 30 seconds.
-- When your shield breaks, the game will slightly heal you 10 health per second over 3 seconds (up to 30 health), giving players a small health bonus for hiding in cover during the aftermath of their shield breaking. The healing effect doesn't transfer over to your heal patient.
+- When your shield breaks, the game will slightly heal you 10 health per second over 3 seconds (up to 30 health), giving players a small health bonus for hiding in cover during the aftermath of their shield breaking, and rewarding enemies who choose to attack quickly. The healing effect doesn't transfer over to your heal patient.
 
 Quiver Test 4:
 - Re-enabled shield break responses.
