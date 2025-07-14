@@ -73,7 +73,7 @@
 				"charge recharge rate increased"
 				{
 					"attribute_class"	"charge_recharge_rate"
-					"value"			"1.7"
+					"value"			"1.45"
 				}
 				"charge impact damage increased"
 				{

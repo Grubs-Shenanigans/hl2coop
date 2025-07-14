@@ -119,7 +119,7 @@ public:
 #if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
 	float				GetProgress(void) { return GetEffectBarProgress(); }
 	virtual const char* GetEffectLabelText(void) { return "#Quiver_Caber"; }
-	virtual float		InternalGetEffectBarRechargeTime(void) { return 45.f; }
+	virtual float		InternalGetEffectBarRechargeTime(void) { return 30.f; }
 	virtual int			GetEffectBarAmmo(void) { return TF_AMMO_GRENADES1; }
 	virtual void		OnEffectBarRegenFinished(void);
 #endif

@@ -432,6 +432,9 @@ static const char *g_aConditionNames[] =
 
 #ifdef BDSBASE
 	"TF_COND_MINICRITBOOSTED",					// = 131
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	"QF_COND_ARMORBREAKHEAL",					// = 132
+#endif
 #endif
 
 	// ******** Keep this block last! ********
