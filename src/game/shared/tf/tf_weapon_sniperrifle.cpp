@@ -1129,7 +1129,7 @@ bool CTFSniperRifle::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget
 	if (iRangedHeadShotPenalty != 0)
 	{
 		// Magic.
-		if (pTarget && (pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin()).Length2DSqr() > Square(2400.f))
+		if (pTarget && (pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin()).Length2DSqr() > Square(1200.f))
 			return false;
 	}
 #endif
