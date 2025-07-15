@@ -425,6 +425,11 @@
 					"attribute_class"	"sniper_no_headshot_without_full_charge"
 					"value" "1"
 				}
+				"sniper no headshots at long range"
+				{
+					"attribute_class"	"sniper_no_headshots_at_long_range"
+					"value" "1"
+				}
 				"crit on hard hit"
 				{
 					"attribute_class"	"crit_on_hard_hit"
@@ -435,20 +440,20 @@
 					"attribute_class"	"set_weapon_mode"
 					"value"	"2"
 				}
-				"armor damage taken increased"
-				{
-					"attribute_class"	"mult_armor"
-					"value"	"0.80"
-				}
-				"sniper charge per sec"
+				"sniper charge per sec penalty"
 				{
 					"attribute_class"	"mult_sniper_charge_per_sec"
-					"value"	"1.25"
+					"value"	"0.80"
 				}
 				"sniper classic allow jump"
 				{
 					"attribute_class"	"sniper_classic_allow_jump"
 					"value"	"1"
+				}
+				"no aiming movespeed penalty"
+				{
+					"attribute_class"	"player_no_aiming_movespeed_penalty"
+					"value" "1"
 				}
 			}
 			"visuals"

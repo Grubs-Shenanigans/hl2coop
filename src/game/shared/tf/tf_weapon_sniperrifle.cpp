@@ -1123,6 +1123,17 @@ bool CTFSniperRifle::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget
 		}
 	}
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	int iRangedHeadShotPenalty = 0;
+	CALL_ATTRIB_HOOK_INT(iRangedHeadShotPenalty, sniper_no_headshots_at_long_range);
+	if (iRangedHeadShotPenalty != 0)
+	{
+		// Magic.
+		if (pTarget && (pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin()).Length2DSqr() > Square(2400.f))
+			return false;
+	}
+#endif
+
 	m_bCurrentAttackIsCrit = true;
 	m_bCurrentShotIsHeadshot = bIsHeadshot;
 

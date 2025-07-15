@@ -11240,7 +11240,14 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 		maxfbspeed = MIN( flMaxDisguiseSpeed, maxfbspeed );
 	}
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	int iNoMoveSpeedPenalty = 0;
+	CALL_ATTRIB_HOOK_INT(iNoMoveSpeedPenalty, player_no_aiming_movespeed_penalty);
+
+	if ( !iNoMoveSpeedPenalty && ( !TFGameRules()->IsMannVsMachineMode() || !IsMiniBoss() ) ) // No aiming slowdown penalties for MiniBoss players in MVM
+#else
 	if ( !TFGameRules()->IsMannVsMachineMode() || !IsMiniBoss() ) // No aiming slowdown penalties for MiniBoss players in MVM
+#endif
 	{
 		// if they're a sniper, and they're aiming, their speed must be 80 or less
 		if ( m_Shared.InCond( TF_COND_AIMING ) )

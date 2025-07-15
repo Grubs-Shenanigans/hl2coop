@@ -8594,7 +8594,9 @@ bool CTFPlayer::DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDa
 	bool bHasBlacklistedCustomDamage = false;
 	if (info.GetDamageCustom())
 	{
-		bHasBlacklistedCustomDamage = (IsHeadshot(info.GetDamageCustom()) ||
+		bool bCanHeadshot = (LastHitGroup() == HITGROUP_HEAD && IsHeadshot(info.GetDamageCustom()));
+
+		bHasBlacklistedCustomDamage = (bCanHeadshot ||
 									IsTauntDmg(info.GetDamageCustom()) ||
 									info.GetDamageCustom() == TF_DMG_CUSTOM_BLEEDING ||
 									info.GetDamageCustom() == TF_DMG_CUSTOM_BACKSTAB ||
@@ -8609,9 +8611,6 @@ bool CTFPlayer::DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDa
 									info.GetDamageCustom() == TF_DMG_CUSTOM_MERASMUS_GRENADE ||
 									info.GetDamageCustom() == TF_DMG_CUSTOM_KRAMPUS_MELEE ||
 									info.GetDamageCustom() == TF_DMG_CUSTOM_KRAMPUS_RANGED ||
-									info.GetDamageCustom() == TF_DMG_CUSTOM_PENETRATE_ALL_PLAYERS ||
-									info.GetDamageCustom() == TF_DMG_CUSTOM_PENETRATE_MY_TEAM ||
-									info.GetDamageCustom() == TF_DMG_CUSTOM_PENETRATE_NONBURNING_TEAMMATE ||
 									info.GetDamageCustom() == TF_DMG_CUSTOM_SUICIDE ||
 									info.GetDamageCustom() == TF_DMG_CUSTOM_TELEFRAG ||
 									info.GetDamageCustom() == TF_DMG_CUSTOM_PUMPKIN_BOMB ||
@@ -8621,7 +8620,7 @@ bool CTFPlayer::DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDa
 
 		if (debug && bHasBlacklistedCustomDamage)
 		{
-			Warning("	CUSTOM DAMAGE PENETRATES ARMOR\n");
+			Warning("	CUSTOM DAMAGE #%i PENETRATES ARMOR\n", info.GetDamageCustom());
 		}
 	}
 
