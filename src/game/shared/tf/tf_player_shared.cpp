@@ -14577,7 +14577,7 @@ void CTFPlayerShared::UpdateCloakMeter( void )
 
 				if (!m_pOuter->GetGroundEntity())
 				{
-					flDrainRate = flDrainRate * 1.5f;
+					flDrainRate = flDrainRate * 2.0f;
 				}
 
 				m_flCloakMeter -= gpGlobals->frametime * flDrainRate;
