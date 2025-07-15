@@ -1,6 +1,6 @@
 Quiver Fortress:
 
-Hightlights:
+Highlights:
 - Powered by the BDS (Bitl Development Studio) Base fork of the Source SDK, which implements item whitelisting, animated avatar support, legacy viewmodels, Discord RPC, the implementation of over 200+ community-made pull requests from the official Source SDK repo, and more.
 - Faster paced than based TF2. Run speed on all classes has been increased, and all classes have the ability to bunny hop (up to 1.5x their normal move speed). Each class has different air speed caps and bunnyhop speed boosts, making each class feel unique to play.
 - Added Armor, a damage resistance layer that protects each class. How strong the armor is depends on each class.
@@ -50,6 +50,7 @@ Unlockable weapon balance changes:
 - The Enforcer's 20% damage bonus is now a normal 20% damage bonus.
 - The Wrangler's sentry disable time when switching from the weapon is now set to 1.5 seconds.
 - The per-backstab health bonus you get with the Conniver's Kunai was decreased from 140 health to 85, reducing the maximum health per backstab kill from 210 to 155.
+- The Flare Gun now deploys 15% faster.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

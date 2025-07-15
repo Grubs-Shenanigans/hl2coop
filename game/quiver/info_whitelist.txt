@@ -1,6 +1,6 @@
 - All "stock" weapons and reskins
 - All-Class melees
-- The Flare Gun
+- The Flare Gun (w/ balance changes)
 - The Wrangler (w/ balance changes)
 - The Shortstop (w/ balance changes)
 - The Crusader's Crossbow
