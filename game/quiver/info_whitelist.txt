@@ -1,7 +1,7 @@
 - All "stock" weapons and reskins
 - All-Class melees
 - The Flare Gun (w/ balance changes)
-- The Wrangler (w/ balance changes)
+- The Wrangler* (w/ balance changes)
 - The Shortstop (w/ balance changes)
 - The Crusader's Crossbow
 - The Iron Bomber
@@ -40,4 +40,8 @@
 - The Enforcer (w/ balance changes)
 - The L'Etranger
 - The Tomislav
-- The Conniver's Kunai (w/ balance changes)
+- The Conniver's Kunai* (w/ balance changes)
+- The Spy-cicle
+- The Eternal Reward/Wanga Prick
+
+* - Weapon was whitelisted as long as it got a rebalance.

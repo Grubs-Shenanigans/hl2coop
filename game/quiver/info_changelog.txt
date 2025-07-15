@@ -7,11 +7,12 @@ Quiver Test 5:
 - Reduced the charge recharge rate bonus from 70% to 45% for the Charge Shield.
 - Reduced the Caber's recharge rate from 45 seconds to 30 seconds.
 - When your shield breaks, the game will slightly heal you 10 health per second over 3 seconds (up to 30 health), giving players a small health bonus for hiding in cover during the aftermath of their shield breaking, and rewarding enemies who choose to attack quickly with a faster time to kill. The healing effect doesn't transfer over to your heal patient.
-- Whitelisted the Conniver's Kunai.
+- Whitelisted the Conniver's Kunai, the Spy-cicle, and the Eternal Reward/Wanga Prick.
 - The per-backstab health bonus you get with the Conniver's Kunai was decreased from 140 health to 85, reducing the maximum health per backstab kill from 210 to 155.
 - The Flare Gun now deploys 15% faster.
 - Fixed the commentary mode.
-- Cloak drain now increases 1.5x if you're jumping/bunnyhopping. When using the Cloak and Dagger, this increases to 2x.
+- Cloak drain now increases 3.5x if you're jumping/bunnyhopping. When using the Cloak and Dagger, this increases to 4x.
+- Melee kills with the Charge Shield will now refill only 50% of your charge, and not 85%.
 
 Quiver Test 4:
 - Re-enabled shield break responses.

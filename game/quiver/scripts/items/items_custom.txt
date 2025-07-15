@@ -88,7 +88,7 @@
 				"kill refills meter"
 				{
 					"attribute_class"	"kill_refills_meter"
-					"value"			"0.85"
+					"value"			"0.50"
 				}
 				"lose demo charge on damage when charging"
 				{

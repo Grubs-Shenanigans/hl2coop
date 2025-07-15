@@ -14575,9 +14575,9 @@ void CTFPlayerShared::UpdateCloakMeter( void )
 #if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
 				float flDrainRate = m_fCloakConsumeRate * fFactor * 1.5f;
 
-				if (!m_pOuter->GetGroundEntity())
+				if (!m_pOuter->GetGroundEntity() && m_pOuter->m_afButtonReleased & IN_JUMP)
 				{
-					flDrainRate = flDrainRate * 2.0f;
+					flDrainRate = flDrainRate * 4.0f;
 				}
 
 				m_flCloakMeter -= gpGlobals->frametime * flDrainRate;
@@ -14596,9 +14596,9 @@ void CTFPlayerShared::UpdateCloakMeter( void )
 #if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
 			float flDrainRate = m_fCloakConsumeRate;
 
-			if (!m_pOuter->GetGroundEntity())
+			if (!m_pOuter->GetGroundEntity() && m_pOuter->m_afButtonReleased & IN_JUMP)
 			{
-				flDrainRate = flDrainRate * 1.5f;
+				flDrainRate = flDrainRate * 3.5f;
 			}
 
 			m_flCloakMeter -= gpGlobals->frametime * flDrainRate;

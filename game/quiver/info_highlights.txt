@@ -36,7 +36,7 @@ Stock weapon balance changes:
 - Default decloak time is now 1.5 seconds (originally 2.0 seconds).
 - Reduced the Sniper Rifle's ammo count from 25 to 16.
 - All Sniper Rifles now fire tracer rounds.
-- Cloak drain now increases 1.5x if you're jumping/bunnyhopping.
+- Cloak drain now increases 3.5x if you're jumping/bunnyhopping.
 
 Unlockable weapon balance changes:
 - The Wrangler's shield has been disabled. Its sole function is now purely to control your sentry gun.
@@ -52,7 +52,7 @@ Unlockable weapon balance changes:
 - The Wrangler's sentry disable time when switching from the weapon is now set to 1.5 seconds.
 - The per-backstab health bonus you get with the Conniver's Kunai was decreased from 140 health to 85, reducing the maximum health per backstab kill from 210 to 155.
 - The Flare Gun now deploys 15% faster.
-- When using the Cloak and Dagger, the jumping/bunnyhopping cloak drain increases to 2x.
+- When using the Cloak and Dagger, the jumping/bunnyhopping cloak drain increases to 4x.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).
