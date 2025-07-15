@@ -14571,7 +14571,19 @@ void CTFPlayerShared::UpdateCloakMeter( void )
 				{
 					fFactor = 1.f;
 				}
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+				float flDrainRate = m_fCloakConsumeRate * fFactor * 1.5f;
+
+				if (!m_pOuter->GetGroundEntity())
+				{
+					flDrainRate = flDrainRate * 1.5f;
+				}
+
+				m_flCloakMeter -= gpGlobals->frametime * flDrainRate;
+#else
 				m_flCloakMeter -= gpGlobals->frametime * m_fCloakConsumeRate * fFactor * 1.5f;
+#endif
 				if ( m_flCloakMeter < 0.f )
 				{
 					m_flCloakMeter = 0.f;
@@ -14581,7 +14593,18 @@ void CTFPlayerShared::UpdateCloakMeter( void )
 		else
 		{
 			// Classic cloak: drain at a fixed rate.
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+			float flDrainRate = m_fCloakConsumeRate;
+
+			if (!m_pOuter->GetGroundEntity())
+			{
+				flDrainRate = flDrainRate * 1.5f;
+			}
+
+			m_flCloakMeter -= gpGlobals->frametime * flDrainRate;
+#else
 			m_flCloakMeter -= gpGlobals->frametime * m_fCloakConsumeRate;
+#endif
 		}
 
 		if ( m_flCloakMeter <= 0.0f && !m_bMotionCloak)	

@@ -293,7 +293,7 @@ void CTFWeaponInvis::SetCloakRates( void )
 	float fCloakConsumeRate = tf_spy_cloak_consume_rate.GetFloat();
 	float fCloakConsumeFactor = 1.0f;
 	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pOwner, fCloakConsumeFactor, mult_cloak_meter_consume_rate );	// Ask the owner since this attr may come from another weapon
-	
+
 	// This value is a inverse scale and does not match expectations on description
 	// so we subtract and invert to make it align
 	// ie 25% (0.75% in schema) makes 10seconds go to 13.3 when we want 12.5
