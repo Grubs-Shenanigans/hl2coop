@@ -57,7 +57,7 @@ using namespace vgui;
 #define TOURNAMENT_PANEL_UPDATE_INTERVAL 0.25f
 
 #ifdef BDSBASE
-ConVar cl_hud_tournament_always_centered("cl_hud_tournament_always_centered", "0", FCVAR_ARCHIVE, "Ensure that the client is always visible within the tournament HUD.");
+ConVar cl_hud_tournament_always_centered("cl_hud_tournament_always_centered", "1", FCVAR_ARCHIVE, "Ensure that the client is always visible within the tournament HUD.");
 #endif
 
 extern ConVar mp_timelimit;
