@@ -103,9 +103,21 @@ bool CTFRevolver::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget /*
 	if ( pPlayer && pPlayer->m_Shared.IsCritBoosted() )
 		return true;
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	// allow headshots when behind an enemy.
+	int iHeadshotBackAttack = 0;
+	CALL_ATTRIB_HOOK_INT(iHeadshotBackAttack, closerange_backattack_headshot);
+	if (iHeadshotBackAttack == 0)
+	{
+		// Magic.
+		if (pTarget && (pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin()).Length2DSqr() > Square(1200.f))
+			return false;
+	}
+#else
 	// Magic.
 	if ( pTarget && ( pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin() ).Length2DSqr() > Square( 1200.f ) )
 		return false;
+#endif
 
 	// can only fire a crit shot if this is a headshot, unless we're critboosted
 	if ( !bIsHeadshot )
@@ -114,7 +126,39 @@ bool CTFRevolver::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget /*
 		return !CanHeadshot();
 	}
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	// if we only headshot from the back, don't crit. we should only crit when we headshot from the back.
+	if (iHeadshotBackAttack == 1)
+	{
+		Vector toEnt = pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin();
+		if (toEnt.LengthSqr() < Square(256.0f) && bIsHeadshot)
+		{
+			Vector entForward;
+			AngleVectors(pTarget->EyeAngles(), &entForward);
+			toEnt.z = 0;
+			toEnt.NormalizeInPlace();
+
+			if (DotProduct(toEnt, entForward) < 0.259f)	// 75 degrees from center (total of 150)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return true;
+	}
+#else
 	return true;
+#endif
 }
 
 #ifdef BDSBASE

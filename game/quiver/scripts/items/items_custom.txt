@@ -455,6 +455,11 @@
 					"attribute_class"	"player_no_aiming_movespeed_penalty"
 					"value" "1"
 				}
+				"move speed penalty"
+				{
+					"attribute_class"	"mult_player_movespeed"
+					"value"	"0.85"
+				}
 			}
 			"visuals"
 			{
@@ -720,6 +725,82 @@
 			"mouse_pressed_sound"	"ui/item_metal_weapon_pickup.wav"
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"
 		}
+		
+		"weapon_quiver_hitmann"
+		{
+ 			"enabled"	"1"
+			"prefab"	"quiver_customweapon"
+			"item_class"	"tf_weapon_revolver"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"		"1"
+				"can_headshot"			"1"
+				"can_deal_critical_damage"	"1"
+				"can_deal_mvm_penetration_damage"	"1"
+				"can_deal_long_distance_damage"	"1"
+			}
+			"base_item_name"	"Hitmann"
+			"show_in_armory"	"1"
+			"item_type_name"	"#TF_Weapon_Revolver"
+			"item_name"			"#Quiver_Hitmann"
+			"item_slot"		"secondary"
+			"item_quality"	"unique"
+			"propername"	"1"
+			"item_logname"	"hitmans_executioner"
+			"item_iconname"	"ambassador"
+			"min_ilevel"	"5"
+			"max_ilevel"	"5"
+			"image_inventory"	"backpack/weapons/c_models/c_ambassador/parts/c_ambassador_opt"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"model_player"	"models/weapons/c_models/c_ambassador/c_ambassador.mdl"
+			"attach_to_hands" "1"
+			"inspect_panel_dist" "32"
+			"used_by_classes"
+			{
+				"spy"	"1"
+			}
+			"static_attrs"
+			{
+				"min_viewmodel_offset"		"10 0 -6"
+			}
+			"attributes"
+			{
+				"lunchbox adds minicrits"
+				{
+					"attribute_class"	"set_weapon_mode"
+					"value"	"1"
+				}
+				"closerange backattack headshot"
+				{
+					"attribute_class"	"closerange_backattack_headshot"
+					"value"				"1"
+				}
+				"minicrit dmg taken increased active"
+				{
+					"attribute_class"	"mult_dmgtaken_minicrits_active"
+					"value"	"1.3"
+				}
+				"fire rate penalty"
+				{
+					"attribute_class"	"mult_postfiredelay"
+					"value"	"1.2"
+				}
+			}
+			"visuals"
+			{
+				"sound_single_shot" "Weapon_Ambassador.Single"
+				"sound_burst" "Weapon_Ambassador.SingleCrit"
+			}
+			"mouse_pressed_sound"	"ui/item_light_gun_pickup.wav"
+			"drop_sound"		"ui/item_light_gun_drop.wav"
+		}
 	}
 
 	"items"
@@ -828,6 +909,13 @@
 			"prefab"	"weapon_quiver_pickaxe"
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_pickaxe"
+		}
+		"34410"
+		{
+			"name"		"Hitmann"
+			"prefab"	"weapon_quiver_hitmann"
+			"first_sale_date"	"2010/09/29"
+			"xifier_class_remap"	"weapon_quiver_hitmann"
 		}
 	}
 	

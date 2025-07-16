@@ -77,6 +77,7 @@ ConVar sv_bhop("sv_bhop", "0", FCVAR_REPLICATED | FCVAR_NOTIFY);
 ConVar sv_bhop_mode("sv_bhop_mode", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "1 = 2006 bhopping, 2 = orangebox accelerated backhopping");
 ConVar sv_bhop_boost("sv_bhop_boost", "0.1", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #endif
+ConVar sv_wallstrafe("sv_wallstrafe", "1", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #endif
 
 // [MD] I'll remove this eventually. For now, I want the ability to A/B the optimizations.
@@ -1893,8 +1894,15 @@ void CGameMovement::Accelerate( Vector& wishdir, float wishspeed, float accel )
 		return;
 
 	// See if we are changing direction a bit
-#if defined(BDSBASE) && defined(BDSBASE_NPC)
-	currentspeed = sqrt(DotProduct(mv->m_vecVelocity, mv->m_vecVelocity));
+#if defined(BDSBASE)
+	if (sv_wallstrafe.GetBool())
+	{
+		currentspeed = mv->m_vecVelocity.Dot(wishdir);
+	}
+	else
+	{
+		currentspeed = sqrt(DotProduct(mv->m_vecVelocity, mv->m_vecVelocity));
+	}
 #else
 	currentspeed = mv->m_vecVelocity.Dot(wishdir);
 #endif //BDSBASE

@@ -115,6 +115,13 @@ const wchar_t *CTFTips::GetRandomTip( int &iClassUsed )
 		return GetAbuseReportTip();
 	}
 
+#if defined(QUIVER_CLIENT_DLL)
+	if (RandomInt(0, 1) == 1)
+	{
+		return GetRandomQFTip(iClassUsed);
+	}
+#endif
+
 	// pick a random tip
 	int iTip = RandomInt( 0, m_iTipCountAll-1 );
 	// walk through each class until we find the class this tip lands in
@@ -152,6 +159,13 @@ const wchar_t *CTFTips::GetNextClassTip( int iClass )
 	{
 		return GetArenaTip();
 	}
+
+#if defined(QUIVER_CLIENT_DLL)
+	if (RandomInt(0, 1) == 1)
+	{
+		return GetRandomQFTip(iTipClass);
+	}
+#endif
 	
 	int iClassTipCount = m_iTipCount[iClass];
 	Assert( 0 != iClassTipCount );
@@ -260,6 +274,41 @@ const wchar_t *CTFTips::GetRandomMvMTip( int &iClassUsed )
 	iPrevMvMClass = iClassUsed;
 	return wzMvMTip;
 }
+
+#if defined(QUIVER_CLIENT_DLL)
+//-----------------------------------------------------------------------------
+// Purpose: Returns tip related to QF
+//-----------------------------------------------------------------------------
+const wchar_t* CTFTips::GetRandomQFTip(int& iClassUsed)
+{
+	static wchar_t wzQFTip[512] = L"";
+	static int iPrevQFClass = -1;
+
+	iClassUsed = RandomInt(TF_FIRST_NORMAL_CLASS, TF_LAST_NORMAL_CLASS);
+
+	if (iClassUsed == iPrevQFClass)
+	{
+		iClassUsed = (iClassUsed + 1) % TF_LAST_NORMAL_CLASS;
+	}
+	iPrevQFClass = iClassUsed;
+
+	// Get Tip Count
+	CFmtStr fmtTipCount("Tip_QF_%d_Count", iClassUsed);
+	int iQFTipCount = g_pVGuiLocalize->Find(fmtTipCount) ? _wtoi(g_pVGuiLocalize->Find(fmtTipCount)) : 1;
+
+	if (iQFTipCount == 0)
+		return GetRandomTip(iClassUsed);
+
+	int iTip = RandomInt(1, iQFTipCount);
+
+	// replace any commands with their bound keys
+	const wchar_t* wzFmt = g_pVGuiLocalize->Find(CFmtStr("#Tip_QF_%d_%d", iClassUsed, iTip));
+	UTIL_ReplaceKeyBindings(wzFmt, 0, wzQFTip, sizeof(wzQFTip));
+
+	iPrevQFClass = iClassUsed;
+	return wzQFTip;
+}
+#endif
 
 void CTFTips::GetRandomCaptainCanteenImages( const char **ppchBody, const char **ppchMisc, const char **ppchHat )
 {

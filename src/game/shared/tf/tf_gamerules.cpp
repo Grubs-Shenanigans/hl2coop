@@ -7547,6 +7547,14 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flRealDamage, mult_dmgtaken );
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim->GetActiveTFWeapon(), flRealDamage, mult_dmgtaken_active );
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+		if (info.GetCritType() == CTakeDamageInfo::CRIT_MINI)
+		{
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pVictim, flRealDamage, mult_dmgtaken_minicrits);
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pVictim->GetActiveTFWeapon(), flRealDamage, mult_dmgtaken_minicrits_active);
+		}
+#endif
+
 		if ( info.GetInflictor() && info.GetInflictor()->IsBaseObject() )
 		{
 			CObjectSentrygun* pSentry = dynamic_cast<CObjectSentrygun*>( info.GetInflictor() );
