@@ -1213,20 +1213,38 @@ void CHudUpgradePanel::UpdateJoystickControls( void )
 		return;
 	}
 
-	bool bUp = ::input->Joystick_GetForward() < 0.0f || ::input->Joystick_GetPitch() < 0.0f || vgui::input()->IsKeyDown( KEY_XBUTTON_UP ) || vgui::input()->IsKeyDown( KEY_UP );
-	bool bDown = ::input->Joystick_GetForward() > 0.0f || ::input->Joystick_GetPitch() > 0.0f || vgui::input()->IsKeyDown( KEY_XBUTTON_DOWN ) || vgui::input()->IsKeyDown( KEY_DOWN );
+#ifdef BDSBASE
+	bool bUp = ::input->Joystick_GetForward() < 0.0f || ::input->Joystick_GetPitch() < 0.0f || vgui::input()->IsKeyDown(KEY_XBUTTON_UP) || vgui::input()->IsKeyDown(KEY_UP) || vgui::input()->IsKeyDown(STEAMCONTROLLER_DPAD_UP);
+	bool bDown = ::input->Joystick_GetForward() > 0.0f || ::input->Joystick_GetPitch() > 0.0f || vgui::input()->IsKeyDown(KEY_XBUTTON_DOWN) || vgui::input()->IsKeyDown(KEY_DOWN) || vgui::input()->IsKeyDown(STEAMCONTROLLER_DPAD_DOWN);
+#else
+	bool bUp = ::input->Joystick_GetForward() < 0.0f || ::input->Joystick_GetPitch() < 0.0f || vgui::input()->IsKeyDown(KEY_XBUTTON_UP) || vgui::input()->IsKeyDown(KEY_UP);
+	bool bDown = ::input->Joystick_GetForward() > 0.0f || ::input->Joystick_GetPitch() > 0.0f || vgui::input()->IsKeyDown(KEY_XBUTTON_DOWN) || vgui::input()->IsKeyDown(KEY_DOWN);
+#endif
 	bool bNavUpDownPressed = bUp || bDown;
 
-	bool bLeft = ::input->Joystick_GetSide() < 0.0f || ::input->Joystick_GetYaw() < 0.0f || vgui::input()->IsKeyDown( KEY_XBUTTON_LEFT ) || vgui::input()->IsKeyDown( KEY_LEFT );
-	bool bRight = ::input->Joystick_GetSide() > 0.0f || ::input->Joystick_GetYaw() > 0.0f || vgui::input()->IsKeyDown( KEY_XBUTTON_RIGHT ) || vgui::input()->IsKeyDown( KEY_RIGHT );
+#ifdef BDSBASE
+	bool bLeft = ::input->Joystick_GetSide() < 0.0f || ::input->Joystick_GetYaw() < 0.0f || vgui::input()->IsKeyDown(KEY_XBUTTON_LEFT) || vgui::input()->IsKeyDown(KEY_LEFT) || vgui::input()->IsKeyDown(STEAMCONTROLLER_DPAD_LEFT);
+	bool bRight = ::input->Joystick_GetSide() > 0.0f || ::input->Joystick_GetYaw() > 0.0f || vgui::input()->IsKeyDown(KEY_XBUTTON_RIGHT) || vgui::input()->IsKeyDown(KEY_RIGHT) || vgui::input()->IsKeyDown(STEAMCONTROLLER_DPAD_RIGHT);
+#else
+	bool bLeft = ::input->Joystick_GetSide() < 0.0f || ::input->Joystick_GetYaw() < 0.0f || vgui::input()->IsKeyDown(KEY_XBUTTON_LEFT) || vgui::input()->IsKeyDown(KEY_LEFT);
+	bool bRight = ::input->Joystick_GetSide() > 0.0f || ::input->Joystick_GetYaw() > 0.0f || vgui::input()->IsKeyDown(KEY_XBUTTON_RIGHT) || vgui::input()->IsKeyDown(KEY_RIGHT);
+#endif
 	bool bNavLeftRightPressed = bLeft || bRight;
 
 	bool bAccept = vgui::input()->IsKeyDown( KEY_XBUTTON_A ) || vgui::input()->IsKeyDown( KEY_ENTER ) || vgui::input()->IsKeyDown( STEAMCONTROLLER_A );
 	bool bBack = vgui::input()->IsKeyDown( KEY_XBUTTON_X ) || vgui::input()->IsKeyDown( KEY_BACKSPACE ) || vgui::input()->IsKeyDown( STEAMCONTROLLER_X );
 	bool bDone = vgui::input()->IsKeyDown( KEY_XBUTTON_B ) || vgui::input()->IsKeyDown( KEY_ESCAPE ) || vgui::input()->IsKeyDown( STEAMCONTROLLER_B );
-	bool bNext = vgui::input()->IsKeyDown( KEY_XBUTTON_RIGHT_SHOULDER ) || vgui::input()->IsKeyDown( KEY_PAGEDOWN );
-	bool bPrev = vgui::input()->IsKeyDown( KEY_XBUTTON_LEFT_SHOULDER ) || vgui::input()->IsKeyDown( KEY_PAGEUP );
+	
+#ifdef BDSBASE
+	bool bRespec = vgui::input()->IsKeyDown(KEY_XBUTTON_Y) || vgui::input()->IsKeyDown(STEAMCONTROLLER_Y);
+	bool bNext = vgui::input()->IsKeyDown(KEY_XBUTTON_RIGHT_SHOULDER) || vgui::input()->IsKeyDown(KEY_PAGEDOWN) || vgui::input()->IsKeyDown(STEAMCONTROLLER_RIGHT_BUMPER);
+	bool bPrev = vgui::input()->IsKeyDown(KEY_XBUTTON_LEFT_SHOULDER) || vgui::input()->IsKeyDown(KEY_PAGEUP) || vgui::input()->IsKeyDown(STEAMCONTROLLER_LEFT_BUMPER);
+	bool bNavButtonPressed = bAccept || bBack || bDone || bRespec || bNext || bPrev;
+#else
+	bool bNext = vgui::input()->IsKeyDown(KEY_XBUTTON_RIGHT_SHOULDER) || vgui::input()->IsKeyDown(KEY_PAGEDOWN);
+	bool bPrev = vgui::input()->IsKeyDown(KEY_XBUTTON_LEFT_SHOULDER) || vgui::input()->IsKeyDown(KEY_PAGEUP);
 	bool bNavButtonPressed = bAccept || bBack || bDone || bNext || bPrev;
+#endif
 
 	if ( m_bNavUpDownPressed )
 	{
@@ -1364,6 +1382,12 @@ void CHudUpgradePanel::UpdateJoystickControls( void )
 		{
 			OnCommand( "prev" );
 		}
+#ifdef BDSBASE
+		else if (bRespec)
+		{
+			OnCommand("respec");
+		}
+#endif
 	}
 }
 
