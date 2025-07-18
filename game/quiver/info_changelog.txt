@@ -17,13 +17,20 @@ Quiver Test 5:
 - Fixed a bug where bodyshots counted as armor penetration for weapons that headshot.
 - Removed penetrated sniper shots from the list of things that can penetrate armor, due to problems found when implementing the above bug fix.
 - The Railgun no longer has a move speed penalty when charging, however headshots are disabled at longer ranges (over 2400 hammer units) and the weapon has a 15% slower move speed penalty regardless if you charge or not.
-- Removed the Railgun's 25% charge rate in favor of a 10% charge rate penalty.
+- Removed the Railgun's 25% charge rate.
 - Removed the Railgun's armor penalty.
 - Added an option to enable/disable wall strafing.
 - Added the Hitman's Executioner, a revolver for the Spy that allows you to fire close-range headshots if you're behind the enemy, alongside minicrits. In return, more mini-crit damage is taken when active.
 - Added loading screen tips.
 - Added Team Deathmatch. Maps without a specified gamemode (no gamemode logic or entities), or with dm_ or tdm_ prefixes will be considered Team Deathmatch maps. Disable qf_allow_tdm if you wish to disable Team Deathmatch on your server and restore the original "no gamemode" logic.
 - Added dm_ravine, dm_lumberyard, and dm_2fort, the first Team Deathmatch maps, built off the Arena/CTF maps of the same name.
+- Added the following Source SDK Pull Requests:
+	- #1428: Fix steam input not working for the upgrade station menu 
+	- #1424: Auto-equip powerup canteen when ForceUpgrades is enabled (Freaky Fair)
+	- #1432: Fix joining a new lobby while being revived locking up the camera
+	- #1433: Add client ConVars for changing viewmodel position and angle offsets
+- Updated the following Source SDK Pull Requests:
+	- #1417: Add inverse kinematics solving in model panels
 
 Quiver Test 4:
 - Re-enabled shield break responses.

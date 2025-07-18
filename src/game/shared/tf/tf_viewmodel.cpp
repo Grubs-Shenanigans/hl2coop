@@ -129,10 +129,22 @@ ConVar cl_gunlowerspeed( "cl_gunlowerspeed", "2", FCVAR_CLIENTDLL | FCVAR_CHEAT 
 
 ConVar tf_use_min_viewmodels( "tf_use_min_viewmodels", "0", FCVAR_ARCHIVE, "Use minimized viewmodels." );
 
-ConVar tf_viewmodels_offset_override( "tf_viewmodels_offset_override", "", FCVAR_CHEAT, "If set, this will override the position of all viewmodels. Usage 'x y z'" );
+#ifdef BDSBASE
+ConVar tf_viewmodels_offset_override("tf_viewmodels_offset_override", "", FCVAR_CHEAT, "If set, this will override the position and angles of all viewmodels. Usage 'x y z pitch yaw roll'");
+
+ConVar viewmodel_offset_x("viewmodel_offset_x", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+ConVar viewmodel_offset_y("viewmodel_offset_y", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+ConVar viewmodel_offset_z("viewmodel_offset_z", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+ConVar viewmodel_offset_pitch("viewmodel_offset_pitch", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+ConVar viewmodel_offset_yaw("viewmodel_offset_yaw", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+ConVar viewmodel_offset_roll("viewmodel_offset_roll", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+#else
+ConVar tf_viewmodels_offset_override("tf_viewmodels_offset_override", "", FCVAR_CHEAT, "If set, this will override the position of all viewmodels. Usage 'x y z'");
+#endif
 #endif
 
-void CTFViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePosition, const QAngle& eyeAngles )
+#ifdef BDSBASE
+void CTFViewModel::CalcViewModelView(CBasePlayer* owner, const Vector& eyePosition, const QAngle& eyeAngles)
 {
 #if defined( CLIENT_DLL )
 
@@ -140,59 +152,165 @@ void CTFViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePosit
 	QAngle vecNewAngles = eyeAngles;
 
 	// Check for lowering the weapon
-	C_TFPlayer *pPlayer = ToTFPlayer( owner );
+	C_TFPlayer* pPlayer = ToTFPlayer(owner);
 
-	Assert( pPlayer );
+	Assert(pPlayer);
 
 	bool bLowered = pPlayer->IsWeaponLowered();
 
-	QAngle vecLoweredAngles(0,0,0);
+	QAngle vecLoweredAngles(0, 0, 0);
 
-	m_vLoweredWeaponOffset.x = Approach( bLowered ? cl_gunlowerangle.GetFloat() : 0, m_vLoweredWeaponOffset.x, cl_gunlowerspeed.GetFloat() );
+	m_vLoweredWeaponOffset.x = Approach(bLowered ? cl_gunlowerangle.GetFloat() : 0, m_vLoweredWeaponOffset.x, cl_gunlowerspeed.GetFloat());
 	vecLoweredAngles.x += m_vLoweredWeaponOffset.x;
 
 	vecNewAngles += vecLoweredAngles;
 
-	CTFWeaponBase *pWeapon = assert_cast< CTFWeaponBase* >( GetWeapon() );
-	if ( pWeapon )
+	CTFWeaponBase* pWeapon = assert_cast<CTFWeaponBase*>(GetWeapon());
+	if (pWeapon)
 	{
 		bool bInspecting = pWeapon && pWeapon->GetInspectStage() != CTFWeaponBase::INSPECT_INVALID;
 
 		static float s_inspectInterp = 0.f;
-		if ( bInspecting )
+		if (bInspecting)
 		{
-			if ( pWeapon->GetInspectStage() == CTFWeaponBase::INSPECT_END )
+			if (pWeapon->GetInspectStage() == CTFWeaponBase::INSPECT_END)
 			{
 				// use the last second of the anim
 				const float flOutroDuration = 0.3f;
-				s_inspectInterp = Clamp( ( pWeapon->GetInspectAnimEndTime() - gpGlobals->curtime ) - flOutroDuration, 0.f, 1.f );
+				s_inspectInterp = Clamp((pWeapon->GetInspectAnimEndTime() - gpGlobals->curtime) - flOutroDuration, 0.f, 1.f);
 			}
 			else
 			{
-				s_inspectInterp = Clamp( s_inspectInterp + gpGlobals->frametime, 0.f, 1.f );
+				s_inspectInterp = Clamp(s_inspectInterp + gpGlobals->frametime, 0.f, 1.f);
 			}
 		}
 		else
 		{
-			s_inspectInterp = Clamp( s_inspectInterp - gpGlobals->frametime, 0.f, 1.f );
+			s_inspectInterp = Clamp(s_inspectInterp - gpGlobals->frametime, 0.f, 1.f);
 		}
 
 		// inspect custom offset
-		if ( bInspecting )
+		if (bInspecting)
 		{
 			CAttribute_String attrInspectOffsetVMOverride;
-			CALL_ATTRIB_HOOK_STRING_ON_OTHER( pWeapon, attrInspectOffsetVMOverride, inspect_viewmodel_offset );
-			const char *pszValue = attrInspectOffsetVMOverride.value().c_str();
-			if ( pszValue && *pszValue )
+			CALL_ATTRIB_HOOK_STRING_ON_OTHER(pWeapon, attrInspectOffsetVMOverride, inspect_viewmodel_offset);
+			const char* pszValue = attrInspectOffsetVMOverride.value().c_str();
+			if (pszValue && *pszValue)
 			{
 				Vector vmOffset;
-				UTIL_StringToVector( vmOffset.Base(), pszValue );
+				UTIL_StringToVector(vmOffset.Base(), pszValue);
 
 				Vector forward, right, up;
-				AngleVectors( eyeAngles, &forward, &right, &up );
+				AngleVectors(eyeAngles, &forward, &right, &up);
 
 				Vector vOffset = vmOffset.x * forward + vmOffset.y * right + vmOffset.z * up;
-				vOffset *= Gain( s_inspectInterp, 0.5f );
+				vOffset *= Gain(s_inspectInterp, 0.5f);
+				vecNewOrigin += vOffset;
+			}
+		}
+
+		// are we overriding vm offset?
+		const char* pszVMOffsetOverride = tf_viewmodels_offset_override.GetString();
+		bool bForceOverride = (pszVMOffsetOverride && *pszVMOffsetOverride);
+
+		Vector positionOffset(0, 0, 0);
+		QAngle anglesOffset(0, 0, 0);
+
+		if (bForceOverride)
+		{
+			float vmOffsets[6];
+			UTIL_StringToFloatArray(vmOffsets, 6, pszVMOffsetOverride);
+			positionOffset = Vector(vmOffsets[0], vmOffsets[1], vmOffsets[2]);
+			anglesOffset = QAngle(vmOffsets[3], vmOffsets[4], vmOffsets[5]);
+		}
+		else
+		{
+			// min mode custom offset
+			if (tf_use_min_viewmodels.GetBool())
+			{
+				positionOffset = pWeapon->GetViewmodelOffset();
+			}
+
+			positionOffset += Vector(viewmodel_offset_x.GetFloat(), viewmodel_offset_y.GetFloat(), viewmodel_offset_z.GetFloat());
+			anglesOffset += QAngle(viewmodel_offset_pitch.GetFloat(), viewmodel_offset_yaw.GetFloat(), viewmodel_offset_roll.GetFloat());
+		}
+
+		Vector forward, right, up;
+		AngleVectors(eyeAngles, &forward, &right, &up);
+
+		positionOffset = positionOffset.x * forward + positionOffset.y * right + positionOffset.z * up;
+		positionOffset *= Gain(1.f - s_inspectInterp, 0.5f);
+		vecNewOrigin += positionOffset;
+
+		vecNewAngles += anglesOffset * Gain(1.f - s_inspectInterp, 0.5f);
+	}
+
+	BaseClass::CalcViewModelView(owner, vecNewOrigin, vecNewAngles);
+
+#endif // CLIENT_DLL
+}
+#else
+void CTFViewModel::CalcViewModelView(CBasePlayer* owner, const Vector& eyePosition, const QAngle& eyeAngles)
+{
+#if defined( CLIENT_DLL )
+
+	Vector vecNewOrigin = eyePosition;
+	QAngle vecNewAngles = eyeAngles;
+
+	// Check for lowering the weapon
+	C_TFPlayer* pPlayer = ToTFPlayer(owner);
+
+	Assert(pPlayer);
+
+	bool bLowered = pPlayer->IsWeaponLowered();
+
+	QAngle vecLoweredAngles(0, 0, 0);
+
+	m_vLoweredWeaponOffset.x = Approach(bLowered ? cl_gunlowerangle.GetFloat() : 0, m_vLoweredWeaponOffset.x, cl_gunlowerspeed.GetFloat());
+	vecLoweredAngles.x += m_vLoweredWeaponOffset.x;
+
+	vecNewAngles += vecLoweredAngles;
+
+	CTFWeaponBase* pWeapon = assert_cast<CTFWeaponBase*>(GetWeapon());
+	if (pWeapon)
+	{
+		bool bInspecting = pWeapon && pWeapon->GetInspectStage() != CTFWeaponBase::INSPECT_INVALID;
+
+		static float s_inspectInterp = 0.f;
+		if (bInspecting)
+		{
+			if (pWeapon->GetInspectStage() == CTFWeaponBase::INSPECT_END)
+			{
+				// use the last second of the anim
+				const float flOutroDuration = 0.3f;
+				s_inspectInterp = Clamp((pWeapon->GetInspectAnimEndTime() - gpGlobals->curtime) - flOutroDuration, 0.f, 1.f);
+			}
+			else
+			{
+				s_inspectInterp = Clamp(s_inspectInterp + gpGlobals->frametime, 0.f, 1.f);
+			}
+		}
+		else
+		{
+			s_inspectInterp = Clamp(s_inspectInterp - gpGlobals->frametime, 0.f, 1.f);
+		}
+
+		// inspect custom offset
+		if (bInspecting)
+		{
+			CAttribute_String attrInspectOffsetVMOverride;
+			CALL_ATTRIB_HOOK_STRING_ON_OTHER(pWeapon, attrInspectOffsetVMOverride, inspect_viewmodel_offset);
+			const char* pszValue = attrInspectOffsetVMOverride.value().c_str();
+			if (pszValue && *pszValue)
+			{
+				Vector vmOffset;
+				UTIL_StringToVector(vmOffset.Base(), pszValue);
+
+				Vector forward, right, up;
+				AngleVectors(eyeAngles, &forward, &right, &up);
+
+				Vector vOffset = vmOffset.x * forward + vmOffset.y * right + vmOffset.z * up;
+				vOffset *= Gain(s_inspectInterp, 0.5f);
 				vecNewOrigin += vOffset;
 			}
 		}
@@ -201,35 +319,36 @@ void CTFViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePosit
 		bool bMinMode = tf_use_min_viewmodels.GetBool();
 
 		// are we overriding vm offset?
-		const char *pszVMOffsetOverride = tf_viewmodels_offset_override.GetString();
-		bool bForceOverride = ( pszVMOffsetOverride && *pszVMOffsetOverride );
+		const char* pszVMOffsetOverride = tf_viewmodels_offset_override.GetString();
+		bool bForceOverride = (pszVMOffsetOverride && *pszVMOffsetOverride);
 		bMinMode |= bForceOverride;
 
 		// min mode custom offset
-		if ( bMinMode )
+		if (bMinMode)
 		{
 			Vector forward, right, up;
-			AngleVectors( eyeAngles, &forward, &right, &up );
+			AngleVectors(eyeAngles, &forward, &right, &up);
 
 			Vector viewmodelOffset;
-			if ( bForceOverride )
+			if (bForceOverride)
 			{
-				UTIL_StringToVector( viewmodelOffset.Base(), pszVMOffsetOverride );
+				UTIL_StringToVector(viewmodelOffset.Base(), pszVMOffsetOverride);
 			}
 			else
 			{
 				viewmodelOffset = pWeapon->GetViewmodelOffset();
 			}
 			Vector vOffset = viewmodelOffset.x * forward + viewmodelOffset.y * right + viewmodelOffset.z * up;
-			vOffset *= Gain( 1.f - s_inspectInterp, 0.5f );
+			vOffset *= Gain(1.f - s_inspectInterp, 0.5f);
 			vecNewOrigin += vOffset;
 		}
 	}
 
-	BaseClass::CalcViewModelView( owner, vecNewOrigin, vecNewAngles );
+	BaseClass::CalcViewModelView(owner, vecNewOrigin, vecNewAngles);
 
 #endif // CLIENT_DLL
 }
+#endif
 
 #ifdef CLIENT_DLL
 //-----------------------------------------------------------------------------

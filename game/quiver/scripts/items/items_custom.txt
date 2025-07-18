@@ -440,11 +440,6 @@
 					"attribute_class"	"set_weapon_mode"
 					"value"	"2"
 				}
-				"sniper charge per sec penalty"
-				{
-					"attribute_class"	"mult_sniper_charge_per_sec"
-					"value"	"0.80"
-				}
 				"sniper classic allow jump"
 				{
 					"attribute_class"	"sniper_classic_allow_jump"
