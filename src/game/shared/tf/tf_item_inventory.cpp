@@ -745,6 +745,11 @@ bool CTFInventoryManager::SlotContainsBaseItems( EEquipType_t eType, int iSlot )
 
 		if ( TFGameRules() && TFGameRules()->IsUsingGrapplingHook() )
 			return true;
+
+#ifdef BDSBASE
+		if (TFGameRules() && TFGameRules()->ShouldProvidePowerupBottle())
+			return true;
+#endif
 	}
 	// Normal game
 	return iSlot < LOADOUT_POSITION_HEAD;
@@ -786,7 +791,11 @@ CEconItemView *CTFInventoryManager::GetBaseItemForClass( int iClass, int iSlot )
 		}
 
 		static CSchemaItemDefHandle pItemDef_MvMCanteen( "Default Power Up Canteen (MvM)" );
+#ifdef BDSBASE
+		if (TFGameRules() && TFGameRules()->ShouldProvidePowerupBottle() && pItemDef_MvMCanteen)
+#else
 		if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && pItemDef_MvMCanteen )
+#endif
 		{
 			stockActionItemDefIndices.AddToTail( pItemDef_MvMCanteen->GetDefinitionIndex() );
 		}

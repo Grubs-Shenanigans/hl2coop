@@ -743,6 +743,9 @@ bool IsCreepWaveMode( void ) const;
 
 	bool IsUsingSpells( void ) const;
 	bool IsUsingGrapplingHook( void ) const;
+#ifdef BDSBASE
+	bool ShouldProvidePowerupBottle(void);
+#endif
 
 	bool IsTruceActive( void ) const; 
 

@@ -2199,7 +2199,11 @@ bool CTFGameRules::GameModeUsesUpgrades( void )
 	if ( m_nForceUpgrades == 1 )
 		return false;
 
+#ifdef BDSBASE
+	if (m_nForceUpgrades == 2 || m_nForceUpgrades == 3)
+#else
 	if ( m_nForceUpgrades == 2 )
+#endif
 		return true;
 
 	if ( IsMannVsMachineMode() || IsBountyMode() )
@@ -3809,6 +3813,14 @@ bool CTFGameRules::CanInitiateDuels( void )
 
 	return true;
 }
+
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+bool CTFGameRules::ShouldProvidePowerupBottle(void)
+{
+	return GameModeUsesUpgrades() && m_nForceUpgrades != 3;
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
