@@ -152,8 +152,8 @@ private:
 	void UpdateStudioRenderConfig( void );
 
 #ifdef BDSBASE
-	void SetupBones(MDLData_t& mdlData, int nMaxBoneCount, matrix3x4_t* pBoneToWorld,
-		const float* pflPoseParameters = NULL, MDLSquenceLayer_t* pSequenceLayers = NULL, int nNumSequenceLayers = 0 );
+	void SetupBones(MDLData_t& mdlData, matrix3x4_t* pBoneToWorld,
+		const float* pflPoseParameters = NULL, MDLSquenceLayer_t* pSequenceLayers = NULL, int nNumSequenceLayers = 0);
 #endif
 
 	CTextureReference m_DefaultEnvCubemap;

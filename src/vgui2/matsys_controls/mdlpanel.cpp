@@ -356,7 +356,7 @@ void CMDLPanel::DrawCollisionModel()
 
 	matrix3x4_t pBoneToWorld[MAXSTUDIOBONES];
 #ifdef BDSBASE
-	SetupBones(m_RootMDL, MAXSTUDIOBONES, pBoneToWorld);
+	SetupBones(m_RootMDL, pBoneToWorld);
 #else
 	m_RootMDL.m_MDL.SetUpBones(m_RootMDL.m_MDLToWorld, MAXSTUDIOBONES, pBoneToWorld);
 #endif
@@ -482,7 +482,7 @@ void CMDLPanel::OnPaint3D()
 
 	matrix3x4_t *pBoneToWorld = g_pStudioRender->LockBoneMatrices( studioHdr.numbones() );
 #ifdef BDSBASE
-	SetupBones(m_RootMDL, studioHdr.numbones(), pBoneToWorld, m_PoseParameters, m_SequenceLayers, m_nNumSequenceLayers);
+	SetupBones(m_RootMDL, pBoneToWorld, m_PoseParameters, m_SequenceLayers, m_nNumSequenceLayers);
 #else
 	m_RootMDL.m_MDL.SetUpBones(m_RootMDL.m_MDLToWorld, studioHdr.numbones(), pBoneToWorld, m_PoseParameters, m_SequenceLayers, m_nNumSequenceLayers);
 #endif
@@ -1007,7 +1007,7 @@ void CMDLPanel::ValidateMDLs()
 }
 
 #ifdef BDSBASE
-void CMDLPanel::SetupBones(MDLData_t& mdlData, int nMaxBoneCount, matrix3x4_t* pBoneToWorld,
+void CMDLPanel::SetupBones(MDLData_t& mdlData, matrix3x4_t* pBoneToWorld,
 	const float* pflPoseParameters /*= NULL*/, MDLSquenceLayer_t* pSequenceLayers /*= NULL*/, int nNumSequenceLayers /*= 0*/)
 {
 	CMDL& mdl = mdlData.m_MDL;
@@ -1023,21 +1023,19 @@ void CMDLPanel::SetupBones(MDLData_t& mdlData, int nMaxBoneCount, matrix3x4_t* p
 
 	QAngle renderAngles;
 	Vector renderOrigin;
-	MatrixAngles(mdlData.m_MDLToWorld, renderAngles);
-	MatrixPosition(mdlData.m_MDLToWorld, renderOrigin);
+	MatrixAngles(mdlData.m_MDLToWorld, renderAngles, renderOrigin);
 
-	IBoneSetup boneSetup(pStudioHdr, BONE_USED_BY_ANYTHING, pflPoseParameters);
+	IBoneSetup boneSetup(pStudioHdr, BONE_USED_BY_ANYTHING_AT_LOD(mdl.m_nLOD), pflPoseParameters);
 
 	Vector pos[MAXSTUDIOBONES];
 	Quaternion q[MAXSTUDIOBONES];
 	boneSetup.InitPose(pos, q);
 
 	int nFrameCount = Studio_MaxFrame(pStudioHdr, mdl.m_nSequence, pflPoseParameters);
-	float flPlaybackRate = Studio_FPS(pStudioHdr, mdl.m_nSequence, pflPoseParameters);
-	float flCycle = (mdl.m_flTime * flPlaybackRate) / nFrameCount;
+	float flCycle = (mdl.m_flTime * mdl.m_flPlaybackRate) / nFrameCount;
 	flCycle -= (int)flCycle;
 
-	pIKContext->Init(pStudioHdr, renderAngles, renderOrigin, mdl.m_flTime, 0, BONE_USED_BY_ANYTHING);
+	pIKContext->Init(pStudioHdr, renderAngles, renderOrigin, mdl.m_flTime, 0, BONE_USED_BY_ANYTHING_AT_LOD(mdl.m_nLOD));
 
 	boneSetup.AccumulatePose(pos, q, mdl.m_nSequence, flCycle, 1.0f, mdl.m_flTime, pIKContext);
 
@@ -1048,15 +1046,15 @@ void CMDLPanel::SetupBones(MDLData_t& mdlData, int nMaxBoneCount, matrix3x4_t* p
 			nFrameCount = Studio_MaxFrame(pStudioHdr, pSequenceLayers[i].m_nSequenceIndex, pflPoseParameters);
 			if (pSequenceLayers[i].m_bNoLoop)
 			{
-				if (pSequenceLayers[i].m_flCycleBeganAt == 0)
+				if (pSequenceLayers[i].m_flCycleBeganAt == .0f)
 					pSequenceLayers[i].m_flCycleBeganAt = mdl.m_flTime;
 
 				float flElapsedTime = mdl.m_flTime - pSequenceLayers[i].m_flCycleBeganAt;
-				flCycle = (flElapsedTime * flPlaybackRate) / nFrameCount;
+				flCycle = (flElapsedTime * mdl.m_flPlaybackRate) / nFrameCount;
 			}
 			else
 			{
-				flCycle = (mdl.m_flTime * flPlaybackRate) / nFrameCount;
+				flCycle = (mdl.m_flTime * mdl.m_flPlaybackRate) / nFrameCount;
 			}
 			flCycle -= (int)flCycle;
 
@@ -1072,6 +1070,6 @@ void CMDLPanel::SetupBones(MDLData_t& mdlData, int nMaxBoneCount, matrix3x4_t* p
 	pIKContext->SolveDependencies(pos, q, pBoneToWorld, boneComputed);
 
 	Studio_RunBoneFlexDrivers(mdl.m_pFlexControls, pStudioHdr, pos, pBoneToWorld, mdlData.m_MDLToWorld);
-	Studio_BuildMatrices(pStudioHdr, renderAngles, renderOrigin, pos, q, -1, 1.0f, pBoneToWorld, BONE_USED_BY_ANYTHING);
+	Studio_BuildMatrices(pStudioHdr, renderAngles, renderOrigin, pos, q, -1, 1.0f, pBoneToWorld, BONE_USED_BY_ANYTHING_AT_LOD(mdl.m_nLOD));
 }
 #endif
