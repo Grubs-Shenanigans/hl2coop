@@ -16,6 +16,9 @@
 #include "tf_hud_flagstatus.h"
 #include "tf_hud_escort.h"
 #include "tf_hud_training.h"
+#if defined(QUIVER_CLIENT_DLL)
+#include "quiver/qf_hud_tdmstatus.h"
+#endif
 #include "hud_controlpointicons.h"
 #include "GameEventListener.h"
 
@@ -66,6 +69,10 @@ private:
 	CTFHudMultipleEscort	*m_pMultipleEscortPanel;
 	class CTFHUDRobotDestruction	*m_pRobotDestructionPanel;
 	CTFHudPasstime			*m_pHudPasstime;
+
+#if defined(QUIVER_CLIENT_DLL)
+	CQFHudTDM *m_pTDMPanel;
+#endif
 	
 	//=============================================================================
 	// HPE_BEGIN:

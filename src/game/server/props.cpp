@@ -1842,6 +1842,9 @@ BEGIN_DATADESC( CDynamicProp )
 	DEFINE_KEYFIELD( m_bDisableBoneFollowers, FIELD_BOOLEAN, "DisableBoneFollowers" ),
 	DEFINE_FIELD(	 m_bUseHitboxesForRenderBox, FIELD_BOOLEAN ),
 	DEFINE_FIELD(	m_nPendingSequence, FIELD_SHORT ),
+#ifdef BDSBASE
+	DEFINE_KEYFIELD(m_bHoldAnimation, FIELD_BOOLEAN, "HoldAnimation"),
+#endif
 		
 	// Inputs
 	DEFINE_INPUTFUNC( FIELD_STRING,	"SetAnimation",	InputSetAnimation ),
@@ -2208,10 +2211,23 @@ void CDynamicProp::AnimThink( void )
 			}
 			else 
 			{
+#ifdef BDSBASE
+				if (m_iszDefaultAnim != NULL_STRING && m_bHoldAnimation == false)
+				{
+					PropSetAnim(STRING(m_iszDefaultAnim));
+				}
+
+				// We need to wait for an animation change to come in
+				if (m_bHoldAnimation)
+				{
+					SetNextThink(gpGlobals->curtime + 0.1f);
+				}
+#else
 				if (m_iszDefaultAnim != NULL_STRING)
 				{
 					PropSetAnim( STRING( m_iszDefaultAnim ) );
 				}	
+#endif
 			}
 		}
 	}

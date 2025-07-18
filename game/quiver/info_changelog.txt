@@ -1,9 +1,10 @@
 Quiver Test 5:
-- Demoman and Soldier speed has been decreased to 310 from 340.
-- Sniper, Pyro, Engineer and Spy speed has been reduced to 325 from 340.
+- Demoman and Soldier speed has been decreased to 315 from 340.
+- Sniper and Spy speed has been reduced to 325 from 340.
+- Pyro and Engineer speed has been reduced to 335 from 340.
 - Changed the Heavy's armor damage vulnerability to make it slightly easier to break, while not reducing its strength.
 - Changed the Scout's speed from 420 to 400.
-- Lowered the Heavy's speed from 280 to 275.
+- Lowered the Heavy's speed from 280 to 270.
 - Reduced the charge recharge rate bonus from 70% to 45% for the Charge Shield.
 - Reduced the Caber's recharge rate from 45 seconds to 30 seconds.
 - When your shield breaks, the game will slightly heal you 10 health per second over 3 seconds (up to 30 health), giving players a small health bonus for hiding in cover during the aftermath of their shield breaking, and rewarding enemies who choose to attack quickly with a faster time to kill. The healing effect doesn't transfer over to your heal patient.
@@ -15,12 +16,14 @@ Quiver Test 5:
 - Melee kills with the Charge Shield will now refill only 50% of your charge, and not 85%.
 - Fixed a bug where bodyshots counted as armor penetration for weapons that headshot.
 - Removed penetrated sniper shots from the list of things that can penetrate armor, due to problems found when implementing the above bug fix.
-- The Railgun no longer has a move speed penalty when charging, however headshots are disabled at longer ranges (over 2400 hammer units) and the weapon has a 25% slower move speed penalty regardless if you charge or not.
+- The Railgun no longer has a move speed penalty when charging, however headshots are disabled at longer ranges (over 2400 hammer units) and the weapon has a 15% slower move speed penalty regardless if you charge or not.
 - Removed the Railgun's 25% charge rate in favor of a 10% charge rate penalty.
 - Removed the Railgun's armor penalty.
 - Added an option to enable/disable wall strafing.
-- Added the Hitman's Executioner, a revolver for the Spy that allows you to fire close-range headshots if you're behind the enemy. In return, more mini-crit damage is taken when active.
+- Added the Hitman's Executioner, a revolver for the Spy that allows you to fire close-range headshots if you're behind the enemy, alongside minicrits. In return, more mini-crit damage is taken when active.
 - Added loading screen tips.
+- Added Team Deathmatch. Maps without a specified gamemode (no gamemode logic or entities), or with dm_ or tdm_ prefixes will be considered Team Deathmatch maps. Disable qf_allow_tdm if you wish to disable Team Deathmatch on your server and restore the original "no gamemode" logic.
+- Added dm_ravine, dm_lumberyard, and dm_2fort, the first Team Deathmatch maps, built off the Arena/CTF maps of the same name.
 
 Quiver Test 4:
 - Re-enabled shield break responses.

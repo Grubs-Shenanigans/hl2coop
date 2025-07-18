@@ -479,6 +479,9 @@ static const char *s_aGameTypeNames[] =
 	"#Gametype_RobotDestruction",
 	"#GameType_Passtime",
 	"#GameType_PlayerDestruction",
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	"#GameType_TDM",
+#endif
 };
 COMPILE_TIME_ASSERT( TF_GAMETYPE_COUNT == ARRAYSIZE( s_aGameTypeNames ) );
 
@@ -497,7 +500,12 @@ static const char *s_aEnumGameTypeName[] =
 	"TF_GAMETYPE_MVM",
 	"TF_GAMETYPE_RD",
 	"TF_GAMETYPE_PASSTIME",
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	"TF_GAMETYPE_PD",
+	"QF_GAMETYPE_TDM"
+#else
 	"TF_GAMETYPE_PD"
+#endif
 };
 COMPILE_TIME_ASSERT( TF_GAMETYPE_COUNT == ARRAYSIZE( s_aEnumGameTypeName ) );
 

@@ -208,6 +208,12 @@ $Project "Client (Quiver)"
 				$File	"tf\vgui\store\v2\tf_store_mapstamps_info_dialog.h"
 			}
 		}
+		
+		$Folder	"Quiver"
+		{
+			$File	"quiver\qf_hud_tdmstatus.cpp"
+			$File	"quiver\qf_hud_tdmstatus.h"
+		}
 
 		$Folder	"TF"
 		{

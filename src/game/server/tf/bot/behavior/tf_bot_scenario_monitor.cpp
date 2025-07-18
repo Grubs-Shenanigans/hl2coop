@@ -238,7 +238,12 @@ Action< CTFBot > *CTFBotScenarioMonitor::DesiredScenarioAndClassAction( CTFBot *
 			return new CTFBotMedicHeal;
 		}
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+		// in TDM, engineers will go full combat mode for now. 
+		if (me->IsPlayerClass(TF_CLASS_ENGINEER) && !TFGameRules()->IsInTDMMode())
+#else
 		if ( me->IsPlayerClass( TF_CLASS_ENGINEER ) )
+#endif
 		{
 			return new CTFBotEngineerBuild;
 		}

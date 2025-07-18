@@ -548,3 +548,7 @@ game/bin/x64/glview.exe
 game/bin/x64/motionmapper.exe
 game/bin/x64/height2normal.exe
 game/bin/x64/qc_eyes.exe
+
+bds_content/**/mapsrc/*.bsp
+bds_content/**/mapsrc/*.prt
+bds_content/**/mapsrc/*.vmx

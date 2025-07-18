@@ -9,7 +9,7 @@ PlayerClass
 	"model_hwm"		"models/player/hwm/pyro.mdl"
 	"model_hands"	"models/weapons/c_models/c_pyro_arms.mdl"
 	"localize_name"	"TF_Class_Name_Pyro"
-	"speed_max"		"325"
+	"speed_max"		"335"
 //	"health_max"		"100"
 //	"armor_max"		"150"
 	"health_max"		"175"

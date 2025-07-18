@@ -599,6 +599,10 @@ public:
 	virtual bool IsInKothMode( void ) const OVERRIDE { return m_bPlayingKoth; }
 	bool IsInMedievalMode( void ) const { return m_bPlayingMedieval; }
 	bool IsHolidayMap( int nHoliday ) const { return m_nMapHolidayType == nHoliday; }
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	bool IsInTDMMode(void) const;
+#endif
 	
 #ifdef TF_RAID_MODE
 	bool IsRaidMode( void ) const;
@@ -838,6 +842,9 @@ bool IsCreepWaveMode( void ) const;
 	bool SetCtfWinningTeam();
 	bool SetPasstimeWinningTeam();
 	bool CheckCapsPerRound();
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	bool CheckFragLimit();
+#endif
 	virtual void CheckRespawnWaves();
 	virtual void PlayWinSong( int team ) OVERRIDE;
 
@@ -882,7 +889,11 @@ bool IsCreepWaveMode( void ) const;
 
 	bool CanHaveAmmo( CBaseCombatCharacter *pPlayer, int iAmmoIndex );
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	virtual const char* GetGameDescription(void) { return "Quiver Fortress"; }
+#else
 	virtual const char *GetGameDescription( void ){ return "Team Fortress"; }
+#endif
 
 	virtual void Status( void (*print) (PRINTF_FORMAT_STRING const char *fmt, ...) );
 

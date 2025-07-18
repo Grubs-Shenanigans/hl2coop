@@ -454,27 +454,30 @@ void CAvatarImage::Paint( void )
 
 #ifdef BDSBASE
 	int iTextureID = m_iStaticTextureID;
-	if (m_pAnimatedAvatar && cl_animated_avatars.GetBool())
+	if (m_pAnimatedAvatar && !m_pAnimatedAvatar->m_textureIDs.IsEmpty() && cl_animated_avatars.GetBool())
 	{
 		// update the frame if needed
 		if (m_pAnimatedAvatar->m_animationHelper.ShouldIterateFrame())
 			m_pAnimatedAvatar->m_animationHelper.NextFrame();
 
 		int& iFrameTexID = m_pAnimatedAvatar->m_textureIDs[m_pAnimatedAvatar->m_animationHelper.GetSelectedFrame()];
-		if (iFrameTexID == -1)
+		if (m_pAnimatedAvatar->m_textureIDs.IsValidIndex(iFrameTexID))
 		{
-			// init the texture for the current frame
-			iFrameTexID = vgui::surface()->CreateNewTextureID(true);
+			if (iFrameTexID == -1)
+			{
+				// init the texture for the current frame
+				iFrameTexID = vgui::surface()->CreateNewTextureID(true);
 
-			int iWide, iTall;
-			m_pAnimatedAvatar->m_animationHelper.GetScreenSize(iWide, iTall);
-			uint8* pDest = (uint8*)stackalloc(iWide * iTall * 4);
-			m_pAnimatedAvatar->m_animationHelper.GetRGBA(&pDest);
+				int iWide, iTall;
+				m_pAnimatedAvatar->m_animationHelper.GetScreenSize(iWide, iTall);
+				uint8* pDest = (uint8*)stackalloc(iWide * iTall * 4);
+				m_pAnimatedAvatar->m_animationHelper.GetRGBA(&pDest);
 
-			// bind RGBA data to the texture
-			g_pMatSystemSurface->DrawSetTextureRGBAEx2(iFrameTexID, pDest, iWide, iTall, IMAGE_FORMAT_RGBA8888, true);
+				// bind RGBA data to the texture
+				g_pMatSystemSurface->DrawSetTextureRGBAEx2(iFrameTexID, pDest, iWide, iTall, IMAGE_FORMAT_RGBA8888, true);
+			}
+			iTextureID = iFrameTexID;
 		}
-		iTextureID = iFrameTexID;
 	}
 #endif
 

@@ -425,16 +425,19 @@ void CTFHudFlagObjectives::ApplySchemeSettings( IScheme *pScheme )
 		// They're both pointing at the same flag! There's really only 1
 		nNumFlags = 1;
 	}
-
 	if ( nNumFlags == 0 )
 	{
 		pConditions = new KeyValues( "conditions" );
-		if ( pConditions )
+		if (pConditions)
 		{
-			AddSubKeyNamed( pConditions, "if_no_flags" );
+			AddSubKeyNamed(pConditions, "if_no_flags");
 		}
 
+#ifdef BDSBASE
+		if ( pConditions && bSpecialDeliveryMode )
+#else
 		if ( bSpecialDeliveryMode )
+#endif
 		{
 			AddSubKeyNamed( pConditions, "if_specialdelivery" );
 		}

@@ -256,6 +256,9 @@ static StatueInfo_t s_StatueMaps[] = {
 	{ "cp_process_final",		Vector( 650, -980, 535 ),		QAngle( 0, 90, 0 ) },
 	{ "cp_gullywash_final1",	Vector( 200, 83, 47 ),			QAngle( 0, -102, 0 ) },
 	{ "cp_sunshine",			Vector( -4725, 5860, 65 ),		QAngle( 0, 180, 0 ) },
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	{ "dm_2fort",				Vector(483, 613, 0),			QAngle(0, 180, 0) },
+#endif
 };
 
 struct MapInfo_t
@@ -723,6 +726,12 @@ ConVar tf_allow_pyroland("tf_allow_pyroland", "0", FCVAR_REPLICATED | FCVAR_NOTI
 ConVar tf_killeater_demoshield_countotherkills("tf_killeater_demoshield_countotherkills", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Allows Strange Demoman shields to count kills from other weapons.");
 #endif
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+ConVar qf_allow_tdm("qf_allow_tdm", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, all maps with an undefined game mode become Team Deathmatch maps.");
+ConVar qf_tdm_fraglimit("qf_tdm_fraglimit", "25", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "seperate value to set if mp_fraglimit isn't set");
+ConVar qf_tdm_scorewar("qf_tdm_scorewar", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, points will be removed on kill. i.e. if a RED player kills a BLU player, the BLU team score will go down by 1.");
+#endif
+
 #ifdef GAME_DLL
 void cc_tf_forced_holiday_changed( IConVar *pConVar, const char *pOldString, float flOldValue )
 {
@@ -853,6 +862,9 @@ ConVar tf_arena_change_limit( "tf_arena_change_limit", "1", FCVAR_REPLICATED | F
 ConVar tf_arena_override_cap_enable_time( "tf_arena_override_cap_enable_time", "-1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Overrides the time (in seconds) it takes for the capture point to become enable, -1 uses the level designer specified time." );
 ConVar tf_arena_override_team_size( "tf_arena_override_team_size", "0", FCVAR_REPLICATED, "Overrides the maximum team size in arena mode. Set to zero to keep the default behavior of 1/3 maxplayers.");
 ConVar tf_arena_first_blood( "tf_arena_first_blood", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Rewards the first player to get a kill each round." );
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+ConVar qf_tdm_first_blood("qf_tdm_first_blood", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Rewards the first player to get a kill each round.");
+#endif
 extern ConVar tf_arena_preround_time;
 extern ConVar tf_arena_max_streak;
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
@@ -1091,6 +1103,9 @@ ConVar tf_gamemode_payload ( "tf_gamemode_payload", "0", FCVAR_REPLICATED | FCVA
 ConVar tf_gamemode_mvm ( "tf_gamemode_mvm", "0", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DEVELOPMENTONLY );
 ConVar tf_gamemode_passtime ( "tf_gamemode_passtime", "0", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DEVELOPMENTONLY );
 ConVar tf_gamemode_misc ( "tf_gamemode_misc", "0", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DEVELOPMENTONLY );
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+ConVar qf_gamemode_tdm("qf_gamemode_tdm", "0", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DEVELOPMENTONLY);
+#endif
 
 ConVar tf_bot_count( "tf_bot_count", "0", FCVAR_NOTIFY | FCVAR_DEVELOPMENTONLY );
 
@@ -4291,6 +4306,9 @@ void CTFGameRules::Activate()
 	tf_beta_content.SetValue( 0 );
 	tf_gamemode_passtime.SetValue( 0 );
 	tf_gamemode_misc.SetValue( 0 );
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	qf_gamemode_tdm.SetValue(0);
+#endif
 
 	tf_bot_count.SetValue( 0 );
 
@@ -4428,6 +4446,29 @@ void CTFGameRules::Activate()
 		tf_gamemode_passtime.SetValue( 1 );
 	}
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	if (qf_allow_tdm.GetBool() && 
+		(m_nGameType == TF_GAMETYPE_UNDEFINED || 
+		StringHasPrefix(STRING(gpGlobals->mapname), "tdm_") || 
+		StringHasPrefix(STRING(gpGlobals->mapname), "dm_")))
+	{
+		// no fraglimit will disable it too.
+		if (qf_tdm_fraglimit.GetInt() > 0)
+		{
+			if (fraglimit.GetInt() == 0)
+			{
+				fraglimit.SetValue(qf_tdm_fraglimit.GetInt());
+			}
+
+			m_nGameType.Set(QF_GAMETYPE_TDM);
+			qf_gamemode_tdm.SetValue(1);
+
+			Msg("Executing team deathmatch config file\n");
+			engine->ServerCommand("exec config_tdm.cfg\n");
+		}
+	}
+#endif
+
 	// the game is in training mode if this entity is found
 	m_hTrainingModeLogic = dynamic_cast< CTrainingModeLogic * > ( gEntList.FindEntityByClassname( NULL, "tf_logic_training_mode" ) );
 	if ( NULL != m_hTrainingModeLogic )
@@ -4516,7 +4557,6 @@ void CTFGameRules::Activate()
 	m_bVoteCalled = false;
 	m_bServerVoteOnReset = false;
 	m_flVoteCheckThrottle = 0;
-
 
 	if ( tf_powerup_mode.GetBool()  )
 	{
@@ -8432,6 +8472,11 @@ void CTFGameRules::Think()
 		{
 			if ( State_Get() != GR_STATE_BONUS && State_Get() != GR_STATE_TEAM_WIN && State_Get() != GR_STATE_GAME_OVER && IsInWaitingForPlayers() == false )
 			{
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+				if ( CheckFragLimit() )
+					return;
+#endif
+
 				if ( CheckCapsPerRound() )
 					return;
 			}
@@ -9571,6 +9616,50 @@ bool CTFGameRules::CheckCapsPerRound()
 		? SetPasstimeWinningTeam()
 		: SetCtfWinningTeam();
 }
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+bool CTFGameRules::CheckFragLimit()
+{
+	if (!IsInTDMMode())
+		return false;
+
+	if (fraglimit.GetInt() > 0)
+	{
+		int iMaxCaps = -1;
+		CTFTeam* pMaxTeam = NULL;
+
+		// check to see if any team has won a "round"
+		int nTeamCount = TFTeamMgr()->GetTeamCount();
+		for (int iTeam = FIRST_GAME_TEAM; iTeam < nTeamCount; ++iTeam)
+		{
+			CTFTeam* pTeam = GetGlobalTFTeam(iTeam);
+			if (!pTeam)
+				continue;
+
+			int iFrags = pTeam->GetScore();
+
+			// we might have more than one team over the caps limit (if the server op lowered the limit)
+			// so loop through to see who has the most among teams over the limit
+			if (iFrags >= fraglimit.GetInt())
+			{
+				if (iFrags > iMaxCaps)
+				{
+					iMaxCaps = iFrags;
+					pMaxTeam = pTeam;
+				}
+			}
+		}
+
+		if (iMaxCaps != -1 && pMaxTeam != NULL)
+		{
+			SetWinningTeam(pMaxTeam->GetTeamNumber(), WINREASON_WINLIMIT);
+			return true;
+		}
+	}
+
+	return false;
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -13313,6 +13402,12 @@ void CTFGameRules::DeathNotice( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 // 							CTF_GameStats.Event_PlayerAwardBonusPoints( vecPlayers[i], pVictim, 5 );
 // 						}
 					}
+#if defined(QUIVER_DLL)
+					else if (IsInTDMMode() )
+					{
+						pScorer->m_Shared.AddCond( TF_COND_SPEED_BOOST, TF_ARENA_MODE_FIRST_BLOOD_CRIT_TIME);
+					}
+#endif
 					else
 					{
 						pScorer->m_Shared.AddCond( TF_COND_CRITBOOSTED_FIRST_BLOOD, TF_ARENA_MODE_FIRST_BLOOD_CRIT_TIME );
@@ -14297,6 +14392,11 @@ bool CTFGameRules::IsFirstBloodAllowed( void )
 	if ( IsInArenaMode() && tf_arena_first_blood.GetBool() )
 		return true;
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	if ( IsInTDMMode() && qf_tdm_first_blood.GetBool() && !IsInWaitingForPlayers())
+		return true;
+#endif
+
 	if ( IsCompetitiveMode() && ( State_Get() == GR_STATE_RND_RUNNING ) )
 	{
 		if ( IsMatchTypeCompetitive() )
@@ -14365,6 +14465,17 @@ void CTFGameRules::ShowRoundInfoPanel( CTFPlayer *pPlayer /* = NULL */ )
 //-----------------------------------------------------------------------------
 bool CTFGameRules::TimerMayExpire( void )
 {
+#ifdef BDSBASE
+	if (IsInWaitingForPlayers())
+		return true;
+#endif
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	// allow overtime in TDM
+	if (IsInTDMMode())
+		return false;
+#endif
+
 	// Prevent timers expiring while control points are contested
 	int iNumControlPoints = ObjectiveResource()->GetNumControlPoints();
 	for ( int iPoint = 0; iPoint < iNumControlPoints; iPoint ++ )
@@ -16998,6 +17109,13 @@ bool CTFGameRules::ShouldScorePerRound( void )
 		bRetVal = false;
 	}
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	if (fraglimit.GetInt() > 0)
+	{
+		bRetVal = false;
+	}
+#endif
+
 	return bRetVal;
 }
 
@@ -19483,6 +19601,16 @@ const char *GetMapDisplayName( const char *mapName, bool bTitleCase /* = false *
 	{
 		pszSrc +=  6;
 	}
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	else if (!Q_strncmp(pszSrc, "tdm_", 4))
+	{
+		pszSrc += 4;
+	}
+	else if (!Q_strncmp(pszSrc, "dm_", 3))
+	{
+		pszSrc += 3;
+	}
+#endif
 
 	Q_strncpy( szDisplayName, pszSrc, sizeof( szDisplayName ) );
 
@@ -19597,6 +19725,13 @@ const char *GetMapType( const char *mapName )
 		{
 			return "#Gametype_PlayerDestruction";
 		}
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+		else if (!Q_strncmp(mapName, "tdm_", 4) || 
+				!Q_strncmp(mapName, "dm_", 3))
+		{
+			return "#GameType_TDM";
+		}
+#endif
 		else
 		{
 			if ( TFGameRules() )
@@ -19615,6 +19750,13 @@ bool CTFGameRules::IsInArenaMode( void ) const
 {
 	return m_nGameType == TF_GAMETYPE_ARENA;
 }
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+bool CTFGameRules::IsInTDMMode(void) const
+{
+	return m_nGameType == QF_GAMETYPE_TDM;
+}
+#endif
 
 #ifdef GAME_DLL
 
@@ -21242,6 +21384,15 @@ void CTFGameRules::PreRound_Start( void )
 	{
 		m_hCompetitiveLogicEntity->OnSpawnRoomDoorsShouldLock();
 	}
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	// if we have reached the frag limit in a previous round, reset the scores.
+	if (fraglimit.GetInt() > 0)
+	{
+		ShouldResetScores(true, false);
+		ResetScores();
+	}
+#endif
 
 	BaseClass::PreRound_Start();
 }

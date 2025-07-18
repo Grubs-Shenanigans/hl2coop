@@ -307,6 +307,9 @@ public:
 	int					m_iTransitionDirection;
 
 	// Random animations
+#ifdef BDSBASE
+	bool				m_bHoldAnimation;
+#endif
 	bool				m_bRandomAnimator;
 	float				m_flNextRandAnim;
 	float				m_flMinRandAnimTime;

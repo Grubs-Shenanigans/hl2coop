@@ -713,7 +713,7 @@
 				"move speed penalty"
 				{
 					"attribute_class"	"mult_player_movespeed"
-					"value"	"0.75"
+					"value"	"0.85"
 				}
 			}
 			"visuals"
@@ -780,6 +780,11 @@
 				"closerange backattack headshot"
 				{
 					"attribute_class"	"closerange_backattack_headshot"
+					"value"				"1"
+				}
+				"closerange backattack minicrits"
+				{
+					"attribute_class"	"closerange_backattack_minicrits"
 					"value"				"1"
 				}
 				"minicrit dmg taken increased active"

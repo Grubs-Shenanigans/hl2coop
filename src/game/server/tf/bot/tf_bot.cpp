@@ -4719,6 +4719,41 @@ void CTFBot::SelectRandomizedLoadout(void)
 	}
 }
 
+// modified version that calls AddItem
+void TFBotGenerateAndWearItem(CTFBot* pBot, CEconItemView* pItem)
+{
+	int iClass = pBot->GetPlayerClass()->GetClassIndex();
+	int iItemSlot = pItem->GetStaticData()->GetLoadoutSlot(iClass);
+	CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(pBot->GetEntityForLoadoutSlot(iItemSlot));
+
+	// we need to force translating the name here.
+	// GiveNamedItem will not translate if we force creating the item
+	const char* pTranslatedWeaponName = TranslateWeaponEntForClass(pItem->GetStaticData()->GetItemClass(), iClass);
+	CTFWeaponBase* pNewItem = dynamic_cast<CTFWeaponBase*>(pBot->GiveNamedItem(pTranslatedWeaponName, 0, pItem, true));
+	if (pNewItem)
+	{
+		CTFWeaponBuilder* pBuilder = dynamic_cast<CTFWeaponBuilder*>((CBaseEntity*)pNewItem);
+		if (pBuilder)
+		{
+			pBuilder->SetSubType(pBot->GetPlayerClass()->GetData()->m_aBuildable[0]);
+		}
+
+		// make sure we removed our current weapon				
+		if (pWeapon)
+		{
+			pBot->Weapon_Detach(pWeapon);
+			UTIL_Remove(pWeapon);
+		}
+
+		pNewItem->MarkAttachedEntityAsValidated();
+		pNewItem->GiveTo(pBot);
+	}
+	else
+	{
+		pBot->AddItem(pItem->GetItemDefinition()->GetDefinitionName());
+	}
+}
+
 void CTFBot::GiveSavedLoadout(void)
 {
 	for (int i = 0; i < vecSavedRandomLoadout.Count(); ++i)
@@ -4733,7 +4768,7 @@ void CTFBot::GiveSavedLoadout(void)
 			{
 				const char* itemName = pItemData->GetItemDefinition()->GetItemDefinitionName();
 				DevMsg("GIVING %s TO BOT %s [%i]\n", itemName, GetPlayerName(), ownerSteamID.GetAccountID());
-				BotGenerateAndWearItem(this, pItemData);
+				TFBotGenerateAndWearItem(this, pItemData);
 			}
 		}
 	}

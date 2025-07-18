@@ -45,13 +45,13 @@ DESCRIPTION SERVER_OPTIONS
 	{
 		"#Valve_Hostname"
 		{ STRING }
-		{ "Team Fortress 2" }
+		{ "Quiver Fortress" }
 	}
 
 	"maxplayers"
 	{
 		"#Valve_Max_Players"
-		{ NUMBER 1 24 }
+		{ NUMBER 1 100 }
 		{ "24" }
 	}
 
@@ -68,6 +68,13 @@ DESCRIPTION SERVER_OPTIONS
 		{ NUMBER 0 -1 }
 		{ "30" }
 	}
+	
+	"mp_fraglimit"
+	{
+		"#Valve_Frag_Limit"
+		{ NUMBER 0 -1 }
+		{ "0" }
+	}
 
 	"mp_winlimit"
 	{
@@ -75,10 +82,11 @@ DESCRIPTION SERVER_OPTIONS
 		{ NUMBER 0 -1 }
 		{ "0" }
 	}
+	
 	"mp_maxrounds"
 	{
 		"#TF_MaxRounds"
 		{ NUMBER 0 -1 }
-		{ "0" }
+		{ "3" }
 	}
 }

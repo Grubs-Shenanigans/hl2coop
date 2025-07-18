@@ -36,6 +36,9 @@
 #include "tf_hud_robot_destruction_status.h"
 #include "tf_hud_passtime.h"
 #include "c_tf_passtime_logic.h"
+#if defined(QUIVER_CLIENT_DLL)
+#include "quiver/qf_hud_tdmstatus.h"
+#endif
 
 void AddSubKeyNamed( KeyValues *pKeys, const char *pszName );
 
@@ -60,6 +63,9 @@ CTFHudObjectiveStatus::CTFHudObjectiveStatus( const char *pElementName )
 	, m_pMultipleEscortPanel( NULL )
 	, m_pTrainingPanel( NULL )
 	, m_pRobotDestructionPanel( NULL )
+#if defined(QUIVER_CLIENT_DLL)
+	, m_pTDMPanel(NULL)
+#endif
 {
 	Panel *pParent = g_pClientMode->GetViewport();
 	SetParent( pParent );
@@ -72,6 +78,9 @@ CTFHudObjectiveStatus::CTFHudObjectiveStatus( const char *pElementName )
 	m_pTrainingPanel = new CTFHudTraining(this, "ObjectiveStatusTraining" );
 	m_pRobotDestructionPanel = NULL;
 	m_pHudPasstime = new CTFHudPasstime( this );
+#if defined(QUIVER_CLIENT_DLL)
+	m_pTDMPanel = new CQFHudTDM(this, "ObjectiveStatusTDMPanel");
+#endif
 
 	SetHiddenBits( 0 );
 
@@ -246,6 +255,13 @@ void CTFHudObjectiveStatus::SetVisiblePanels( void )
 			m_pHudPasstime->SetEnabled( false );
 		}
 
+#if defined(QUIVER_CLIENT_DLL)
+		if (m_pTDMPanel)
+		{
+			m_pTDMPanel->SetVisible(false);
+		}
+#endif
+
 		return;
 	}
 
@@ -307,6 +323,15 @@ void CTFHudObjectiveStatus::SetVisiblePanels( void )
 		m_pHudPasstime->SetVisible( bIsPasstime );
 		m_pHudPasstime->SetEnabled( bIsPasstime );
 	}
+
+#if defined(QUIVER_CLIENT_DLL)
+	bool bTDMVisible = TFGameRules()->IsInTDMMode();
+
+	if (m_pTDMPanel && m_pFlagPanel->IsVisible() != bTDMVisible)
+	{
+		m_pTDMPanel->SetVisible(bTDMVisible);
+	}
+#endif
 
 	//=============================================================================
 	// HPE_END
