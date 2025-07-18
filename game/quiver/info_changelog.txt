@@ -29,6 +29,8 @@ Quiver Test 5:
 	- #1424: Auto-equip powerup canteen when ForceUpgrades is enabled (Freaky Fair)
 	- #1432: Fix joining a new lobby while being revived locking up the camera
 	- #1433: Add client ConVars for changing viewmodel position and angle offsets
+	- #1434: Improve the random class selection algorithm to reduce the chance of failure
+	- #1435: Fix jump start animation not working when the player has increased jump height
 - Updated the following Source SDK Pull Requests:
 	- #1417: Add inverse kinematics solving in model panels
 
