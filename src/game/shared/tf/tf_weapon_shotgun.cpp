@@ -355,12 +355,13 @@ void CTFScatterGun::FireBullet( CTFPlayer *pPlayer )
 		{
 			pPlayer->m_Shared.m_iScattergunJump += 1;
 
+#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
 #ifndef CLIENT_DLL
 			pOwner->m_Shared.StunPlayer(0.3f, 1.f, TF_STUN_MOVEMENT | TF_STUN_MOVEMENT_FORWARD_ONLY);
 #endif
+#endif
 
 			float flForce = AirBurstDamageForce(pOwner->WorldAlignSize(), 60, 6.f);
-
 			Vector vecForward;
 			AngleVectors(pOwner->EyeAngles(), &vecForward);
 			Vector vecForce = vecForward * -flForce;
@@ -474,7 +475,9 @@ void CTFScatterGun::ApplyPostHitEffects( const CTakeDamageInfo &inputInfo, CTFPl
 
 	pTarget->ApplyGenericPushbackImpulse( vecForce, pAttacker );
 
+#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
 	pTarget->m_Shared.StunPlayer( 0.3f, 1.f, TF_STUN_MOVEMENT | TF_STUN_MOVEMENT_FORWARD_ONLY, pAttacker );
+#endif
 	pTarget->m_Shared.SetWeaponKnockbackID( pAttacker->GetUserID() );
 
 #endif

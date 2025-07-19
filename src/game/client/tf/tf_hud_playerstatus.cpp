@@ -1295,10 +1295,8 @@ CTFHudPlayerArmor::CTFHudPlayerArmor(Panel* parent, const char* name) : Editable
 	m_iAnimState = HUD_HEALTH_NO_ANIM;
 	m_bAnimate = true;
 
-#ifdef BDSBASE
 	m_pPlayerArmorLabel = NULL;
 	m_pPlayerMaxArmorLabel = NULL;
-#endif
 }
 
 CTFHudPlayerArmor::~CTFHudPlayerArmor()
@@ -1346,10 +1344,8 @@ void CTFHudPlayerArmor::ApplySchemeSettings(IScheme* pScheme)
 
 	BaseClass::ApplySchemeSettings(pScheme);
 
-#ifdef BDSBASE
 	m_pPlayerArmorLabel = dynamic_cast<CExLabel*>(FindChildByName("PlayerStatusArmorValue"));
 	m_pPlayerMaxArmorLabel = dynamic_cast<CExLabel*>(FindChildByName("PlayerStatusMaxArmorValue"));
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1357,7 +1353,6 @@ void CTFHudPlayerArmor::ApplySchemeSettings(IScheme* pScheme)
 //-----------------------------------------------------------------------------
 void CTFHudPlayerArmor::SetArmor(int iNewHealth, int iMaxHealth)
 {
-#ifdef BDSBASE
 	if (m_nArmor != iNewHealth || m_nMaxArmor != iMaxHealth)
 	{
 		// set our health
@@ -1450,97 +1445,6 @@ void CTFHudPlayerArmor::SetArmor(int iNewHealth, int iMaxHealth)
 		SetDialogVariable("Armor", m_nArmor);
 		SetDialogVariable("MaxArmor", m_nMaxArmor);
 	}
-#else
-	// set our health
-	m_nArmor = iNewHealth;
-	m_nMaxArmor = iMaxHealth;
-	m_pArmorImage->SetArmor((float)(m_nArmor) / (float)(m_nMaxArmor));
-
-	if (m_pArmorImage)
-	{
-		m_pArmorImage->SetFgColor(Color(255, 255, 255, 255));
-	}
-
-	if (m_nArmor <= 0)
-	{
-		if (m_pArmorImageBG->IsVisible())
-		{
-			m_pArmorImageBG->SetVisible(false);
-		}
-
-		HideArmorBonusImage();
-	}
-	else
-	{
-		if (!m_pArmorImageBG->IsVisible())
-		{
-			m_pArmorImageBG->SetVisible(true);
-		}
-
-		// are we close to dying?
-		if (m_nArmor < m_nMaxArmor * m_flArmorDeathWarning)
-		{
-			if (m_pArmorBonusImage && m_nBonusArmorOrigW != -1)
-			{
-				if (!m_pArmorBonusImage->IsVisible())
-				{
-					m_pArmorBonusImage->SetVisible(true);
-				}
-
-				if (m_bAnimate && m_iAnimState != HUD_HEALTH_DYING_ANIM)
-				{
-					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudArmorDyingPulse");
-
-					m_iAnimState = HUD_HEALTH_DYING_ANIM;
-				}
-
-				m_pArmorBonusImage->SetDrawColor(m_clrArmorDeathWarningColor);
-
-				// scale the flashing image based on how much health bonus we currently have
-				float flBoostMaxAmount = m_nMaxArmor * m_flArmorDeathWarning;
-				float flPercent = (flBoostMaxAmount - m_nArmor) / flBoostMaxAmount;
-
-				int nPosAdj = RoundFloatToInt(flPercent * m_nArmorBonusPosAdj);
-				int nSizeAdj = 2 * nPosAdj;
-
-				m_pArmorBonusImage->SetBounds(m_nBonusArmorOrigX - nPosAdj,
-					m_nBonusArmorOrigY - nPosAdj,
-					m_nBonusArmorOrigW + nSizeAdj,
-					m_nBonusArmorOrigH + nSizeAdj);
-			}
-
-			if (m_pArmorImage)
-			{
-				m_pArmorImage->SetFgColor(m_clrArmorDeathWarningColor);
-			}
-		}
-		// turn it off
-		else
-		{
-			HideArmorBonusImage();
-		}
-	}
-
-	// set our health display value
-	if (m_nArmor > 0)
-	{
-		SetDialogVariable("Armor", m_nArmor);
-
-		if (m_nMaxArmor - m_nArmor >= 5)
-		{
-			SetDialogVariable("MaxArmor", m_nMaxArmor);
-		}
-		else
-		{
-			SetDialogVariable("MaxArmor", "");
-		}
-	}
-	else
-	{
-		SetDialogVariable("Armor", "");
-		SetDialogVariable("MaxArmor", "");
-	}
-#endif	
 }
 
 //-----------------------------------------------------------------------------

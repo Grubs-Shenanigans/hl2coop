@@ -276,10 +276,8 @@ private:
 	CTFArmorPanel* m_pArmorImage;
 	vgui::ImagePanel* m_pArmorBonusImage;
 	vgui::ImagePanel* m_pArmorImageBG;
-#ifdef BDSBASE
 	CExLabel* m_pPlayerArmorLabel;
 	CExLabel* m_pPlayerMaxArmorLabel;
-#endif
 
 	int					m_nArmor;
 	int					m_nMaxArmor;

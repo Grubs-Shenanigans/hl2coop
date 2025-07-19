@@ -56,6 +56,7 @@ Unlockable weapon balance changes:
 - The per-backstab health bonus you get with the Conniver's Kunai was decreased from 140 health to 85, reducing the maximum health per backstab kill from 210 to 155.
 - The Flare Gun now deploys 15% faster.
 - When using the Cloak and Dagger, the jumping/bunnyhopping cloak drain increases to 4x.
+- Removed the Force-a-Nature's stun.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

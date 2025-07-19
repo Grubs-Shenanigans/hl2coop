@@ -1,3 +1,7 @@
+Quiver Private Alpha 1.1.0:
+- Whitelisted the Back Scatter and Force-a-Nature.
+- Removed the Force-a-Nature's stun.
+
 Quiver Private Alpha 1.0.0:
 - Demoman and Soldier speed has been decreased to 315 from 340.
 - Sniper and Spy speed has been reduced to 325 from 340.
