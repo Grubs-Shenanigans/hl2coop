@@ -778,10 +778,14 @@ ConVarRef suitcharger( "sk_suitcharger" );
 		CBasePlayer *pScorer = GetDeathScorer( pKiller, pInflictor, pVictim );
 		
 #ifdef BDSBASE
+#ifdef HL2MP
 		if (pVictim != pScorer || !FBitSet(pVictim->m_iSuicideCustomKillFlags, EPlayerSuicideFlag_LockScore))
 		{
 			pVictim->IncrementDeathCount(1);
-	}
+		}
+#else
+		pVictim->IncrementDeathCount(1);
+#endif
 #else
 		pVictim->IncrementDeathCount(1);
 #endif
@@ -795,7 +799,11 @@ ConVarRef suitcharger( "sk_suitcharger" );
 		if ( pVictim == pScorer )  
 		{	
 #ifdef BDSBASE
+#ifdef HL2MP
 			if (!FBitSet(pVictim->m_iSuicideCustomKillFlags, EPlayerSuicideFlag_LockScore) && UseSuicidePenalty())
+#else
+			if (UseSuicidePenalty())
+#endif
 #else
 			if (UseSuicidePenalty())
 #endif

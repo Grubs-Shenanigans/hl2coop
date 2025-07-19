@@ -511,12 +511,11 @@ void CHudBaseDeathNotice::FireGameEvent( IGameEvent *event )
 		Q_strncpy( m_DeathNotices[iMsg].Killer.szName, killer_name, ARRAYSIZE( m_DeathNotices[iMsg].Killer.szName ) );
 		Q_strncpy( m_DeathNotices[iMsg].Victim.szName, victim_name, ARRAYSIZE( m_DeathNotices[iMsg].Victim.szName ) );
 
-#ifndef BDSBASE
 		if (killedwith && *killedwith)
 		{
 			Q_snprintf(m_DeathNotices[iMsg].szIcon, sizeof(m_DeathNotices[iMsg].szIcon), "d_%s", killedwith);
 		}
-#endif		
+		
 		if ( !killer || killer == victim )
 		{
 			m_DeathNotices[iMsg].bSelfInflicted = true;
@@ -550,15 +549,6 @@ void CHudBaseDeathNotice::FireGameEvent( IGameEvent *event )
 				}
 			}
 		}
-#ifdef BDSBASE
-		else
-		{
-			if (killedwith && *killedwith)
-			{
-				Q_snprintf(m_DeathNotices[iMsg].szIcon, sizeof(m_DeathNotices[iMsg].szIcon), "d_%s", killedwith);
-			}	
-		}
-#endif
 
 		m_DeathNotices[iMsg].iWeaponID = event->GetInt( "weaponid" );
 		m_DeathNotices[iMsg].iKillerID = event->GetInt( "attacker" );

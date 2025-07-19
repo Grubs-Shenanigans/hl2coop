@@ -3854,8 +3854,16 @@ void CTFPlayer::Spawn()
 		m_bRespawning = false;
 		m_Shared.RemoveAllCond(); // Remove conc'd, burning, rotting, hallucinating, etc.
 
+#if defined(QUIVER_DLL)
+		if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
+		{
+			// add team glows for a period of time after we respawn
+			m_Shared.AddCond(TF_COND_TEAM_GLOWS, tf_spawn_glows_duration.GetInt());
+		}
+#else
 		// add team glows for a period of time after we respawn
 		m_Shared.AddCond( TF_COND_TEAM_GLOWS, tf_spawn_glows_duration.GetInt() );
+#endif
 
 		UpdateSkin( GetTeamNumber() );
 
@@ -11012,11 +11020,7 @@ void CTFPlayer::CommitSuicide( bool bExplode /* = false */, bool bForce /*= fals
 		return;
 
 	m_bSuicideExplode = bExplode;
-#ifdef BDSBASE
-	m_iSuicideCustomKillFlags = (EPlayerSuicideFlag_LockScore | TF_DMG_CUSTOM_SUICIDE);
-#else
 	m_iSuicideCustomKillFlags = TF_DMG_CUSTOM_SUICIDE;
-#endif
 
 	BaseClass::CommitSuicide( bExplode, bForce );
 }

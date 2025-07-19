@@ -1730,6 +1730,9 @@ bool CTFFlameThrower::DeflectPlayer( CTFPlayer *pTarget, CTFPlayer *pOwner, Vect
 		//
 
 		int nOldAirblast = 0;
+#ifdef BDSBASE
+		CALL_ATTRIB_HOOK_INT(nOldAirblast, airblast_old);
+#endif
 		if ( !nOldAirblast && tf_airblast_cray.GetBool() )
 		{
 			// TODO This is not honoring some of the attributes of old airblast
@@ -1768,6 +1771,7 @@ bool CTFFlameThrower::DeflectPlayer( CTFPlayer *pTarget, CTFPlayer *pOwner, Vect
 						{ pTarget->m_Shared.StunPlayer( flStunDuration, flStunAmount, TF_STUN_MOVEMENT, pOwner ); }
 				}
 			}
+
 			float flLoseFooting = tf_airblast_cray_lose_footing_duration.GetFloat();
 			if ( flLoseFooting )
 				{ pTarget->m_Shared.AddCond( TF_COND_LOST_FOOTING, flLoseFooting ); }

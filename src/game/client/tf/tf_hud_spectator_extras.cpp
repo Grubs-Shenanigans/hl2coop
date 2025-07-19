@@ -22,7 +22,7 @@
 
 using namespace vgui;
 
-ConVar tf_spec_xray_disable( "tf_spec_xray_disable", "0", FCVAR_ARCHIVE, "Disable the spectator xray mode." );
+ConVar tf_spec_xray_disable( "tf_spec_xray_disable", "0", FCVAR_ARCHIVE, "Disable the spectator xray mode." ); 
 ConVar tf_enable_glows_after_respawn( "tf_enable_glows_after_respawn", "1", FCVAR_ARCHIVE, "Enable teammate glow effects after respawn." );
 
 DECLARE_HUDELEMENT( CTFHudSpectatorExtras );
@@ -99,6 +99,14 @@ void CTFHudSpectatorExtras::OnTick()
 
 	if ( !g_PR )
 		return;
+
+#if defined(QUIVER_CLIENT_DLL)
+	if (TFGameRules() && !TFGameRules()->IsMannVsMachineMode())
+	{
+		Reset();
+		return;
+	}
+#endif
 
 	if ( TFGameRules() && TFGameRules()->ShowMatchSummary() )
 	{

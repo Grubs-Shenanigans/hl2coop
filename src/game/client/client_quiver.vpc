@@ -213,6 +213,7 @@ $Project "Client (Quiver)"
 		{
 			$File	"quiver\qf_hud_tdmstatus.cpp"
 			$File	"quiver\qf_hud_tdmstatus.h"
+			$File	"$SRCDIR\game\shared\quiver\achievements_quiver.cpp"
 		}
 
 		$Folder	"TF"

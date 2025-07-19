@@ -11,7 +11,9 @@ Highlights:
 - Bots now equip items, will actively look out for armor (on higher difficulties) and have random difficulties, giving a more dynamic single-player experience.
 - Added Team Deathmatch. Maps without a specified gamemode (no gamemode logic or entities), or with dm_ or tdm_ prefixes will be considered Team Deathmatch maps. Disable qf_allow_tdm if you wish to disable Team Deathmatch on your server and restore the original "no gamemode" logic.
 	- Maps include: 2Fort, Lumberyard, Ravine.
-- Disabled the Match Status HUD, and restored the original TF2 round timer. 
+- Disabled the Match Status HUD, and restored the original TF2 round timer.
+- Disabled stun in most instances, except in MvM where it's crucial against robots.
+- Disabled player glows on spawn and spectator (except in MvM).
 
 Class changes:
 - Run speeds have been increased across all 9 classes. However, one aspect remains: Heavies are the slowest, Scouts are the fastest.
@@ -57,7 +59,6 @@ Unlockable weapon balance changes:
 - The per-backstab health bonus you get with the Conniver's Kunai was decreased from 140 health to 85, reducing the maximum health per backstab kill from 210 to 155.
 - The Flare Gun now deploys 15% faster.
 - When using the Cloak and Dagger, the jumping/bunnyhopping cloak drain increases to 4x.
-- Removed the Force-a-Nature's stun.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).
