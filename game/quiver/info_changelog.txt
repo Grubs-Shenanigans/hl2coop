@@ -1,4 +1,4 @@
-Quiver Test 5:
+Quiver Private Alpha 1.0.0:
 - Demoman and Soldier speed has been decreased to 315 from 340.
 - Sniper and Spy speed has been reduced to 325 from 340.
 - Pyro and Engineer speed has been reduced to 335 from 340.
@@ -24,6 +24,8 @@ Quiver Test 5:
 - Added loading screen tips.
 - Added Team Deathmatch. Maps without a specified gamemode (no gamemode logic or entities), or with dm_ or tdm_ prefixes will be considered Team Deathmatch maps. Disable qf_allow_tdm if you wish to disable Team Deathmatch on your server and restore the original "no gamemode" logic.
 - Added dm_ravine, dm_lumberyard, and dm_2fort, the first Team Deathmatch maps, built off the Arena/CTF maps of the same name.
+- Added mod_version command so you can view the mod's version.
+- Added a disclaimer on the HUD about the mod's development state.
 - Added the following Source SDK Pull Requests:
 	- #1428: Fix steam input not working for the upgrade station menu 
 	- #1424: Auto-equip powerup canteen when ForceUpgrades is enabled (Freaky Fair)
@@ -34,7 +36,7 @@ Quiver Test 5:
 - Updated the following Source SDK Pull Requests:
 	- #1417: Add inverse kinematics solving in model panels
 
-Quiver Test 4:
+Quiver Private Test 4:
 - Re-enabled shield break responses.
 - Removed airborne crits from the Vitality Glitch.
 - Re-added the speed and damage penalty to the Vitality Glitch.
@@ -97,7 +99,7 @@ Quiver Test 4:
 	- #1420: Allow the Shortstop to shove while reloading
 	- #1417: Add inverse kinematics solving in model panels
 
-Quiver Test 3:
+Quiver Private Test 3:
 - Improved ForceRegenerateAndRespawn()
 - Fixed "MasterRequestRestart" errors.
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).
@@ -112,11 +114,11 @@ Quiver Test 3:
 - Fixed the Vitality Glitch's bonuses and taunt not working.
 - Most Taunt kills now pierce armor.
 
-Quiver Test 2.5:
+Quiver Private Test 2.5:
 - Fixed a bug where broken items don't fix themselves when going to a resupply closet (for real this time)
 - Fixed a bug where ForceRegenerateAndRespawn() doesn't actually regenerate the player.
 
-Quiver Test 2:
+Quiver Private Test 2:
 - Removed speed and damage penalty from the Vitality Glitch.
 - Added The Hitman's Heatmaker and The Bazaar Bargain to the whitelist.
 - Fixed a bug where some animated avatars wouldn't play properly if the user switches their avatars.
@@ -128,5 +130,5 @@ Quiver Test 2:
 - The Charge Shield now will restore 85% of your charge on a kill.
 - Increased the turning rate of The Charge Shield.
 
-Quiver Test 1:
+Quiver Private Test 1:
 - Initial playtesting release build.

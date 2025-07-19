@@ -19,6 +19,9 @@
 #include "particle_parse.h"
 #include "KeyValues.h"
 #include "time.h"
+#ifdef BDSBASE
+#include "filesystem.h"
+#endif
 
 #ifdef USES_ECON_ITEMS
 	#include "econ_item_constants.h"
@@ -1684,3 +1687,51 @@ const char *GetCleanMapName( const char *pszUnCleanMapName, char (&pszTmp)[256])
 
 	return pszUnCleanMapName;
 }
+
+#ifdef BDSBASE
+const char* UTIL_GetModVersion(bool cmd)
+{
+	char verString[1024];
+	const char* result = "";
+	if (g_pFullFileSystem->FileExists("version.txt"))
+	{
+		FileHandle_t fh = filesystem->Open("version.txt", "r", "MOD");
+		int file_len = filesystem->Size(fh);
+		char* GameInfo = new char[file_len + 1];
+
+		filesystem->Read((void*)GameInfo, file_len, fh);
+		GameInfo[file_len] = 0; // null terminator
+
+		filesystem->Close(fh);
+
+		if (cmd)
+		{
+			const char* modName = "";
+			KeyValuesAD pKVGameInfo("GameInfo");
+			if (pKVGameInfo->LoadFromFile(g_pFullFileSystem, "gameinfo.txt", "MOD"))
+			{
+				modName = pKVGameInfo->GetString("game", "Half-Life 2");
+			}
+
+			Q_snprintf(verString, sizeof(verString), "%s Version: %s (%s, %s)\n", modName, GameInfo + 8, __DATE__, __TIME__);
+		}
+		else
+		{
+			Q_snprintf(verString, sizeof(verString), "%s\n", GameInfo + 8);
+		}
+
+		result = verString;
+
+		delete[] GameInfo;
+	}
+
+	return result;
+}
+
+#ifdef CLIENT_DLL
+CON_COMMAND(mod_version, "")
+{
+	Msg(UTIL_GetModVersion(true));
+}
+#endif
+#endif

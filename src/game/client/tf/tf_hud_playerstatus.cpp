@@ -34,6 +34,10 @@
 
 #include "confirm_dialog.h"
 
+#ifdef BDSBASE
+#include "filesystem.h"
+#endif
+
 using namespace vgui;
 
 ConVar cl_hud_playerclass_use_playermodel( "cl_hud_playerclass_use_playermodel", "1", FCVAR_ARCHIVE, "Use player model in player class HUD." );
@@ -1581,6 +1585,26 @@ void CTFHudPlayerArmor::OnThink()
 }
 #endif
 
+#ifdef BDSBASE
+CTFHudDisclamer::CTFHudDisclamer( Panel* parent, const char* name ) : EditablePanel(parent, name) { }
+
+void CTFHudDisclamer::ApplySchemeSettings(IScheme* pScheme)
+{
+	LoadControlSettings("resource/ui/HudDisclamer.res");
+
+	const char* modName = "";
+	KeyValuesAD pKVGameInfo("GameInfo");
+	if (pKVGameInfo->LoadFromFile(g_pFullFileSystem, "gameinfo.txt", "MOD"))
+	{
+		modName = pKVGameInfo->GetString("game", "Half-Life 2");
+	}
+
+	SetDialogVariable("game", modName);
+	SetDialogVariable("version", UTIL_GetModVersion());
+	BaseClass::ApplySchemeSettings(pScheme);
+}
+#endif
+
 DECLARE_HUDELEMENT( CTFHudPlayerStatus );
 
 //-----------------------------------------------------------------------------
@@ -1595,6 +1619,10 @@ CTFHudPlayerStatus::CTFHudPlayerStatus( const char *pElementName ) : CHudElement
 	m_pHudPlayerHealth = new CTFHudPlayerHealth( this, "HudPlayerHealth" );
 #ifdef QUIVER_CLIENT_DLL
 	m_pHudPlayerArmor = new CTFHudPlayerArmor(this, "HudPlayerArmor");
+#endif
+
+#ifdef BDSBASE
+	m_pHudDisclaimer = new CTFHudDisclamer(this, "HudDisclamer");
 #endif
 
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD );

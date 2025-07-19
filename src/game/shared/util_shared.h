@@ -700,4 +700,8 @@ const char		   *UTIL_GetActiveOperationString();
 
 const char *GetCleanMapName( const char *pszUnCleanMapName, char (&pszTmp)[256] );
 
+#ifdef BDSBASE
+const char* UTIL_GetModVersion(bool cmd = false);
+#endif
+
 #endif // UTIL_SHARED_H

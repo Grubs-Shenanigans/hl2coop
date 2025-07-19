@@ -298,6 +298,18 @@ private:
 };
 #endif
 
+#ifdef BDSBASE
+class CTFHudDisclamer : public vgui::EditablePanel
+{
+	DECLARE_CLASS_SIMPLE(CTFHudDisclamer, EditablePanel );
+
+public:
+
+	CTFHudDisclamer( Panel* parent, const char* name );
+	virtual void ApplySchemeSettings(vgui::IScheme* scheme );
+};
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose:  Parent panel for the player class/health displays
 //-----------------------------------------------------------------------------
@@ -316,7 +328,10 @@ private:
 	CTFHudPlayerClass	*m_pHudPlayerClass;
 	CTFHudPlayerHealth	*m_pHudPlayerHealth;
 #ifdef QUIVER_CLIENT_DLL
-	CTFHudPlayerArmor* m_pHudPlayerArmor;
+	CTFHudPlayerArmor *m_pHudPlayerArmor;
+#endif
+#ifdef BDSBASE
+	CTFHudDisclamer *m_pHudDisclaimer;
 #endif
 };
 
