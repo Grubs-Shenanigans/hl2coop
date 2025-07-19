@@ -381,8 +381,10 @@ void CTFScatterGun::FireBullet( CTFPlayer *pPlayer )
 			// Impulse an additional bit of Z push.
 			pOwner->ApplyAbsVelocityImpulse(Vector(0, 0, 50.f));
 
+#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
 			// Slow player movement for a brief period of time.
 			pOwner->RemoveFlag(FL_ONGROUND);
+#endif
 		}
 	}
 #else
