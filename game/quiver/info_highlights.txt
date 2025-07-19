@@ -11,6 +11,7 @@ Highlights:
 - Bots now equip items, will actively look out for armor (on higher difficulties) and have random difficulties, giving a more dynamic single-player experience.
 - Added Team Deathmatch. Maps without a specified gamemode (no gamemode logic or entities), or with dm_ or tdm_ prefixes will be considered Team Deathmatch maps. Disable qf_allow_tdm if you wish to disable Team Deathmatch on your server and restore the original "no gamemode" logic.
 	- Maps include: 2Fort, Lumberyard, Ravine.
+- Disabled the Match Status HUD, and restored the original TF2 round timer. 
 
 Class changes:
 - Run speeds have been increased across all 9 classes. However, one aspect remains: Heavies are the slowest, Scouts are the fastest.

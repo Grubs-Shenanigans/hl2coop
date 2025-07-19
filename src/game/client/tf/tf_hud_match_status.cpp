@@ -30,7 +30,11 @@
 extern ConVar mp_winlimit;
 extern ConVar mp_tournament_stopwatch;
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+ConVar tf_use_match_hud( "tf_use_match_hud", "0", FCVAR_DEVELOPMENTONLY );
+#else
 ConVar tf_use_match_hud( "tf_use_match_hud", "1", FCVAR_ARCHIVE );
+#endif
 
 using namespace vgui;
 
