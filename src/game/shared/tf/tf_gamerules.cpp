@@ -4459,24 +4459,26 @@ void CTFGameRules::Activate()
 	}
 
 #if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
-	if (qf_allow_tdm.GetBool() && 
-		(m_nGameType == TF_GAMETYPE_UNDEFINED || 
+	if (m_nGameType == TF_GAMETYPE_UNDEFINED || 
 		StringHasPrefix(STRING(gpGlobals->mapname), "tdm_") || 
-		StringHasPrefix(STRING(gpGlobals->mapname), "dm_")))
+		StringHasPrefix(STRING(gpGlobals->mapname), "dm_"))
 	{
-		// no fraglimit will disable it too.
-		if (qf_tdm_fraglimit.GetInt() > 0)
+		if (qf_allow_tdm.GetBool())
 		{
-			if (fraglimit.GetInt() == 0)
+			// no fraglimit will disable it too.
+			if (qf_tdm_fraglimit.GetInt() > 0)
 			{
-				fraglimit.SetValue(qf_tdm_fraglimit.GetInt());
+				if (fraglimit.GetInt() == 0)
+				{
+					fraglimit.SetValue(qf_tdm_fraglimit.GetInt());
+				}
+
+				m_nGameType.Set(QF_GAMETYPE_TDM);
+				qf_gamemode_tdm.SetValue(1);
+
+				Msg("Executing team deathmatch config file\n");
+				engine->ServerCommand("exec config_tdm.cfg\n");
 			}
-
-			m_nGameType.Set(QF_GAMETYPE_TDM);
-			qf_gamemode_tdm.SetValue(1);
-
-			Msg("Executing team deathmatch config file\n");
-			engine->ServerCommand("exec config_tdm.cfg\n");
 		}
 	}
 #endif

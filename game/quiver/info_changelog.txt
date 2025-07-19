@@ -1,6 +1,7 @@
-Quiver Private Alpha 1.1.0:
+Quiver Private Alpha 1.0.1:
 - Whitelisted the Back Scatter and Force-a-Nature.
 - Removed the Force-a-Nature's stun.
+- Fixed a bug where the TDM HUD is overlayed over other gamemode's HUD elements.
 
 Quiver Private Alpha 1.0.0:
 - Demoman and Soldier speed has been decreased to 315 from 340.
