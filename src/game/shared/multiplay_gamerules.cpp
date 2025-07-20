@@ -1696,6 +1696,9 @@ ConVarRef suitcharger( "sk_suitcharger" );
 
 	static const std::unordered_set<int> g_ValidAchiementIdxs = {{
 		#include "achievements_tf_list.inc"
+#if defined(QUIVER_DLL)
+		#include "quiver/achievements_quiver_list.inc"
+#endif
 	}};
 
 	#undef ACHIEVEMENT_LIST

@@ -2,6 +2,10 @@ Quiver Private Alpha 1.1.0:
 - Disabled stun in most instances, except in MvM where it's crucial against robots.
 - Disabled player glows on spawn and spectator (except in MvM).
 - Fixed a bug where some kill feeds erroneously show the Pyro kill taunt kill icon.
+- Fixed up achievement notifications.
+- Added 2 new achievements:
+	- Onslaught: Kill 3 players in a single life with no armor.
+	- Overdrive: Kill 6 players in a single life with no armor.
 
 Quiver Private Alpha 1.0.1:
 - Whitelisted the Back Scatter and Force-a-Nature.

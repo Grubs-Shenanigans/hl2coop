@@ -99,4 +99,7 @@ extern CAchievementMgr g_AchievementMgrTF;	// global achievement mgr for TF
 #define ACHIEVEMENT_LIST(className, achievementID, achievementName, iPointValue) \
 	static int className##_YouForgotTheAchievementList;
 #include "achievements_tf_list.inc"
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#include "quiver/achievements_quiver_list.inc"
+#endif
 #undef ACHIEVEMENT_LIST

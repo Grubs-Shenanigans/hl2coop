@@ -21,6 +21,9 @@
 #include "steam/steam_api.h"
 #include "iachievementmgr.h"
 #include "fmtstr.h"
+#ifdef BDSBASE
+#include "baseachievement.h"
+#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -64,6 +67,12 @@ CAchievementNotificationPanel::CAchievementNotificationPanel( const char *pEleme
 void CAchievementNotificationPanel::Init()
 {
 	ListenForGameEvent( "achievement_event" );
+
+#ifdef BDSBASE
+#ifdef BDSBASE_ACHIEVEMENT_NOTIFICATIONS
+	ListenForGameEvent("achievement_earned");
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -234,6 +243,32 @@ void CAchievementNotificationPanel::FireGameEvent( IGameEvent * event )
 		}
 #endif
 	}
+#ifdef BDSBASE
+#ifdef BDSBASE_ACHIEVEMENT_NOTIFICATIONS
+	else if (0 == Q_strcmp(name, "achievement_earned"))
+	{
+		int iID = event->GetInt("achievement");
+
+		IAchievementMgr* pAchievementMgr = engine->GetAchievementMgr();
+		if (!pAchievementMgr)
+			return;
+
+		CBaseAchievement* pAchievement = pAchievementMgr->GetAchievementByID(iID);
+		if (!pAchievement)
+			return;
+
+		wchar_t szLocalizedName[256] = L"";
+
+		const wchar_t* pchLocalizedName = ACHIEVEMENT_LOCALIZED_NAME(pAchievement);
+		Assert(pchLocalizedName);
+		if (!pchLocalizedName || !pchLocalizedName[0])
+			return;
+		Q_wcsncpy(szLocalizedName, pchLocalizedName, sizeof(szLocalizedName));
+
+		AddNotification(pAchievement->GetName(), g_pVGuiLocalize->Find("#GameUI_Achievement_Unlocked"), szLocalizedName);
+	}
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------

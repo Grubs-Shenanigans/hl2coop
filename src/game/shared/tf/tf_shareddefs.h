@@ -2573,6 +2573,13 @@ enum MedicCallerType
 #define ACHIEVEMENT_TF_MAPS_POWERHOUSE_KILL_ENEMY_IN_WATER		2805
 #define ACHIEVEMENT_TF_MAPS_POWERHOUSE_END_RANGE				2805
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#define ACHIEVEMENT_QUIVER_START_RANGE				3001
+#define ACHIEVEMENT_QUIVER_KILL3WITHARMORAT0		3001
+#define ACHIEVEMENT_QUIVER_KILL6WITHARMORAT0		3002
+#define ACHIEVEMENT_QUIVER_END_RANGE				3002
+#endif
+
 const unsigned char *GetTFEncryptionKey( void );
 
 //-----------------------------------------------------------------------------
