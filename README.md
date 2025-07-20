@@ -1,4 +1,6 @@
 # Source SDK 2013 BDS Base
+[![Logo](https://github.com/BitlDevelopmentStudios/source-sdk-2013-bds-base/blob/master/bdsbase.png)](https://github.com/BitlDevelopmentStudios/source-sdk-2013-bds-base/blob/master/bdsbase.png)
+
 Build status:
 [![Windows Test Build](https://github.com/BitlDevelopmentStudios/source-sdk-2013-bds-base/actions/workflows/build-windows.yml/badge.svg)](https://github.com/BitlDevelopmentStudios/source-sdk-2013-bds-base/actions/workflows/build-windows.yml)
 
