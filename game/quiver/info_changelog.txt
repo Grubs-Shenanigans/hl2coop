@@ -8,6 +8,7 @@ Quiver Private Alpha 1.1.0:
 	- Overdrive: Kill 6 players in a single life with no armor.
 - Bot names now load from a bot_name.txt file.
 - Fixed animated avatars not playing.
+- Updated the logo art.
 
 Quiver Private Alpha 1.0.1:
 - Whitelisted the Back Scatter and Force-a-Nature.
