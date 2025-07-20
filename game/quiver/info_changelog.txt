@@ -10,6 +10,8 @@ Quiver Private Alpha 1.1.0:
 - Fixed animated avatars not playing.
 - Updated the logo art.
 - The Quick Fix now can heal surrounding teammates with its Ubercharge.
+- Added the following Source SDK Pull Requests:
+	-  #1437: MvM: Fix Explosive Headshot working on invulnerable target
 
 Quiver Private Alpha 1.0.1:
 - Whitelisted the Back Scatter and Force-a-Nature.
