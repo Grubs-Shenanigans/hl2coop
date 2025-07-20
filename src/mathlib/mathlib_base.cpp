@@ -359,6 +359,16 @@ void MatrixInitialize( matrix3x4_t &mat, const Vector &vecOrigin, const Vector &
 void MatrixCopy( const matrix3x4_t& in, matrix3x4_t& out )
 {
 	Assert( s_bMathlibInitialized );
+
+#ifdef BDSBASE
+	// ??
+	if (in.Base() == NULL)
+		return;
+
+	if (out.Base() == NULL)
+		return;
+#endif
+
 	memcpy( out.Base(), in.Base(), sizeof( float ) * 3 * 4 );
 }
 
