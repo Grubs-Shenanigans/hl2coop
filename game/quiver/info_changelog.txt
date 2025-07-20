@@ -9,6 +9,7 @@ Quiver Private Alpha 1.1.0:
 - Bot names now load from a bot_name.txt file.
 - Fixed animated avatars not playing.
 - Updated the logo art.
+- The Quick Fix now can heal surrounding teammates with its Ubercharge.
 
 Quiver Private Alpha 1.0.1:
 - Whitelisted the Back Scatter and Force-a-Nature.

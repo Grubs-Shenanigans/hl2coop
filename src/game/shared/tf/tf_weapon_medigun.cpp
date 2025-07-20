@@ -1598,6 +1598,10 @@ void CWeaponMedigun::SubtractChargeAndUpdateDeployState( float flSubtractAmount,
 		pOwner->ClearPunchVictims();
 		RecalcEffectOnTarget( pOwner );
 		StopHealingOwner(); // QuickFix uber heals the target and medic
+#if defined(QUIVER_DLL)
+		// Quiver's Quick Fix also creates a radius heal effect
+		pOwner->m_Shared.Heal_Radius(false);
+#endif
 #endif
 	}
 }
@@ -2068,6 +2072,10 @@ void CWeaponMedigun::SecondaryAttack( void )
 		if ( IsReleasingCharge() && !m_bHealingSelf )
 		{
 			StartHealingTarget( pOwner );
+#if defined(QUIVER_DLL)
+			// Quiver's Quick Fix also creates a radius heal effect
+			pOwner->m_Shared.Heal_Radius(true);
+#endif
 			m_bHealingSelf = true;
 		}
 	}
