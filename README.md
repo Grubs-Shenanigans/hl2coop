@@ -16,7 +16,7 @@ This base is specific to multiplayer mod projects.
 
 ## Features:
 - Restored game project generator scripts. No more having to generate every project!
-- Implements various pull requests from the master repo, allowing for a stable and reliable mod base.
+- Implements various pull requests (200+) from the master repo, allowing for a stable and reliable mod base.
 - Build scripts for Half-Life 2, Lost Coast, and HL2 episodes, with NextBot support.
     - NOTE: You may need to do some tinkering to make these singleplayer projects work well with the new SDK base. There are some bugs and crashes that won't be addressed by this base.
 - NPC NextBot sensing support from FIREFIGHT RELOADED with the BDSBASE_NPC preprocessor definition.
@@ -85,7 +85,8 @@ The Gunslinger is the reason for some of these cuts since it is a seperate bodyg
 
 BDSBASE_ACHIEVEMENT_NOTIFICATIONS
 - Games: All
-- This mode enables the Xbox 360-styled achievement notifications.
+- This mode enables the Xbox 360-styled achievement notifications, and enables the achievement_earned event for in-game effects. (i.e. TF2's achievement announcements)
+- Users can easily change the look of the panels with the cl_achievements_theme command.
 - This allows users to easily see unlocked achievements and achievement progress.
 
 ## Setup:
