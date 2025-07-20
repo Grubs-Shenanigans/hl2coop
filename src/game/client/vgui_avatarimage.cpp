@@ -461,7 +461,7 @@ void CAvatarImage::Paint( void )
 			m_pAnimatedAvatar->m_animationHelper.NextFrame();
 
 		int& iFrameTexID = m_pAnimatedAvatar->m_textureIDs[m_pAnimatedAvatar->m_animationHelper.GetSelectedFrame()];
-		if (m_pAnimatedAvatar->m_textureIDs.IsValidIndex(iFrameTexID))
+		if (!m_pAnimatedAvatar->m_textureIDs.IsValidIndex(iFrameTexID))
 		{
 			if (iFrameTexID == -1)
 			{

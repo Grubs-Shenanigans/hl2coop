@@ -6,6 +6,8 @@ Quiver Private Alpha 1.1.0:
 - Added 2 new achievements:
 	- Onslaught: Kill 3 players in a single life with no armor.
 	- Overdrive: Kill 6 players in a single life with no armor.
+- Bot names now load from a bot_name.txt file.
+- Fixed animated avatars not playing.
 
 Quiver Private Alpha 1.0.1:
 - Whitelisted the Back Scatter and Force-a-Nature.

@@ -104,6 +104,52 @@ const char *DifficultyLevelToString( CHL2MPBot::DifficultyType skill )
 }
 
 
+#ifdef BDSBASE
+CUtlVector<string_t> m_botScriptNames;
+
+void LoadBotNames(void)
+{
+	m_botScriptNames.RemoveAll();
+
+	KeyValues* pKV = new KeyValues("BotNames");
+	if (pKV->LoadFromFile(filesystem, "scripts/bot_names.txt", "GAME"))
+	{
+		FOR_EACH_VALUE(pKV, pSubData)
+		{
+			if (FStrEq(pSubData->GetString(), ""))
+				continue;
+
+			string_t iName = AllocPooledString(pSubData->GetString());
+			if (m_botScriptNames.Find(iName) == m_botScriptNames.InvalidIndex())
+				m_botScriptNames[m_botScriptNames.AddToTail()] = iName;
+		}
+	}
+
+	pKV->deleteThis();
+}
+
+const char* GetRandomBotName(void)
+{
+	if (m_botScriptNames.Count() == 0)
+		return "MISSINGNO";
+
+	int iStartIndex = rand() % m_botScriptNames.Count();
+
+	for (int i = 0; i < m_botScriptNames.Count(); ++i)
+	{
+		int index = i + iStartIndex;
+
+		if (index >= m_botScriptNames.Count())
+			index -= m_botScriptNames.Count();
+
+		string_t iszName = m_botScriptNames[index];
+
+		return STRING(iszName);
+	}
+
+	return "Bot Name";
+}
+#else
 //-----------------------------------------------------------------------------------------------------
 const char *GetRandomBotName( void )
 {
@@ -130,11 +176,15 @@ const char *GetRandomBotName( void )
 
 	return name;
 }
-
+#endif
 
 //-----------------------------------------------------------------------------------------------------
 void CreateBotName( int iTeam, CHL2MPBot::DifficultyType skill, char* pBuffer, int iBufferSize )
 {
+#ifdef BDSBASE
+	LoadBotNames();
+#endif
+
 	const char *pBotName = GetRandomBotName();
 	const char* pFriendlyOrEnemyTitle = "";
 	

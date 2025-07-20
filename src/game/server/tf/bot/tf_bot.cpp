@@ -145,7 +145,52 @@ const char *DifficultyLevelToString( CTFBot::DifficultyType skill )
 	return "Undefined ";
 }
 
+#ifdef BDSBASE
+CUtlVector<string_t> m_botScriptNames;
 
+void LoadBotNames(void)
+{
+	m_botScriptNames.RemoveAll();
+
+	KeyValues* pKV = new KeyValues("BotNames");
+	if (pKV->LoadFromFile(filesystem, "scripts/bot_names.txt", "GAME"))
+	{
+		FOR_EACH_VALUE(pKV, pSubData)
+		{
+			if (FStrEq(pSubData->GetString(), ""))
+				continue;
+
+			string_t iName = AllocPooledString(pSubData->GetString());
+			if (m_botScriptNames.Find(iName) == m_botScriptNames.InvalidIndex())
+				m_botScriptNames[m_botScriptNames.AddToTail()] = iName;
+		}
+	}
+
+	pKV->deleteThis();
+}
+
+const char *GetRandomBotName(void)
+{
+	if (m_botScriptNames.Count() == 0)
+		return "MISSINGNO";
+
+	int iStartIndex = rand() % m_botScriptNames.Count();
+
+	for (int i = 0; i < m_botScriptNames.Count(); ++i)
+	{
+		int index = i + iStartIndex;
+
+		if (index >= m_botScriptNames.Count())
+			index -= m_botScriptNames.Count();
+
+		string_t iszName = m_botScriptNames[index];
+
+		return STRING(iszName);
+	}
+
+	return "MISSINGNO";
+}
+#else
 //-----------------------------------------------------------------------------------------------------
 const char *GetRandomBotName( void )
 {
@@ -242,60 +287,6 @@ const char *GetRandomBotName( void )
 		"Kill Me",
 		"Glorified Toaster with Legs",
 
-#ifdef BDSBASE
-		//cut valve names
-		"John Spartan",
-		"Leeloo Dallas Multipass",
-		"Sho'nuff",
-		"Bruce Leroy",
-		"CAN YOUUUUUUUUU DIG IT?!?!?!?!",
-		"Big Gulp, Huh?",
-		"Stupid Hot Dog",
-		"I'm your huckleberry",
-		"The Crocketeer",
-
-		// names from PR #699
-		"No Bones",
-		"I'm Not Real",
-		"Sexy Mann",
-		"This Sucks On Ice",
-		"SEDUCE ME!",
-		"Bloody Hell",
-		"explode",
-		"kill",
-		"sv_cheats 1",
-		"ch_createairboat",
-		"ch_createjeep",
-		"WHO TOUCHED SASHA!?",
-		"Bulletproof",
-		"Waterproof",
-		"Fireproof",
-
-		// names from PR #892 (except sv_cheats 1)
-		"The Japanese Mafia",
-		"Giant Cluster of Stickies",
-		"2Fort Cow",
-		"Queuing for Casual...",
-		"F1 Bot",
-		"Golden Frying Pan",
-		"This Server is VAC Secured",
-		"Respect The Sightline",
-		"Miss Pauling",
-		"Professional Bread Teleporter",
-		"Fruit Shop Owner",
-		"pablo.gonzales.2007",
-		"The Observer",
-		"King of Australia",
-		"Blockhead",
-		"Pootis",
-		"DOOR STUCK!",
-		"Wheatley",
-		"BOT Connor",
-		"Scout's Father",
-		"coconut.jpg",
-		"Arthritis Morgan",
-#endif
-
 		NULL
 	};
 	static int nameCount = 0;
@@ -316,7 +307,7 @@ const char *GetRandomBotName( void )
 
 	return name;
 }
-
+#endif
 
 //-----------------------------------------------------------------------------------------------------
 void CreateBotName( int iTeam, int iClassIndex, CTFBot::DifficultyType skill, char* pBuffer, int iBufferSize )
@@ -369,6 +360,9 @@ void CreateBotName( int iTeam, int iClassIndex, CTFBot::DifficultyType skill, ch
 	}
 	else
 	{
+#ifdef BDSBASE
+		LoadBotNames();
+#endif
 		pBotName = GetRandomBotName();
 	}
 	
