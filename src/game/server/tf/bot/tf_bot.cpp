@@ -188,7 +188,7 @@ const char *GetRandomBotName(void)
 		return STRING(iszName);
 	}
 
-	return "MISSINGNO";
+	return "Bot Name";
 }
 #else
 //-----------------------------------------------------------------------------------------------------
