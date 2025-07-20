@@ -34,7 +34,7 @@ Custom Weapons:
 - The Engineer has an alternative PDA called the Valkyrie 3S, which increases your sentry turn rate in return for your buildings' maximum health.
 - Heavy gets another minigun, called the Ludmila, which increases the Heavy's survivability in exchange for damage and minigun spinup time.
 - The Soldier gets a melee that's a blast from the past, The Vitality Glitch, which increases the damage and move speed of the user when on low health, in return for damage, move speed, and armor durability.
-- The Spy gets a revolver called the Hitman's Executioner that allows you to fire close-range headshots if you're behind the enemy, alongside minicrits. In return, more mini-crit damage is taken when active.
+- The Spy gets a revolver called the Hitman's Executioner that allows you to fire close-range headshots if you're behind the enemy. In return, more mini-crit damage is taken when active.
 
 Stock weapon balance changes:
 - Random critical hits have been disabled. 

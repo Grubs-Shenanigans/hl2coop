@@ -12810,7 +12810,11 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 				if ( pKillerWeapon && pKillerWeapon->GetWeaponID() == TF_WEAPON_SHOVEL )
 				{
 					CTFShovel *pShovel = static_cast< CTFShovel* >( pKillerWeapon );
+#if defined(QUIVER_DLL)
+					if (pShovel && (pShovel->GetShovelType() == SHOVEL_SPEED_DAMAGE_BOOST && pShovel->GetShovelType() == SHOVEL_DAMAGE_BOOST))
+#else
 					if ( pShovel && pShovel->GetShovelType() == SHOVEL_DAMAGE_BOOST )
+#endif
 					{
 						pPlayerAttacker->AwardAchievement( ACHIEVEMENT_TF_SOLDIER_RJ_EQUALIZER_KILL );
 					}
@@ -20244,6 +20248,9 @@ void CTFPlayer::DoTauntAttack( void )
 						if (!pBomb->GetDetonated())
 						{
 							pBomb->Detonate(true);
+#if defined(QUIVER_DLL)
+							AwardAchievement(ACHIEVEMENT_QUIVER_CABERTAUNTKILL);
+#endif
 						}
 						else
 						{
@@ -20253,7 +20260,7 @@ void CTFPlayer::DoTauntAttack( void )
 							pTarget->ApplyPunchImpulseX(RandomInt(2, 5));
 
 							AngleVectors(QAngle(-45, m_angEyeAngles[YAW], 0), &vecForward);
-							pTarget->TakeDamage(CTakeDamageInfo(this, this, GetActiveTFWeapon(), vecForward * 8500, WorldSpaceCenter(), TF_STICKBOMB_KILLTAUNT_DAMAGE, DMG_BULLET));
+							pTarget->TakeDamage(CTakeDamageInfo(this, this, GetActiveTFWeapon(), vecForward * 8500, WorldSpaceCenter(), TF_STICKBOMB_KILLTAUNT_DAMAGE, DMG_CLUB));
 						}
 					}
 				}

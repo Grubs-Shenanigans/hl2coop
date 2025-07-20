@@ -314,11 +314,6 @@
 					"attribute_class"	"no_damage_rampup"
 					"value"	"1"
 				}
-				"no_damage_spread"
-				{
-					"attribute_class"	"no_damage_spread"
-					"value"	"1"
-				}
 				"fire rate penalty"
 				{
 					"attribute_class"	"mult_postfiredelay"
@@ -771,6 +766,11 @@
 				{
 					"attribute_class"	"set_weapon_mode"
 					"value"	"1"
+				}
+				"damage bonus"
+				{
+					"attribute_class"	"mult_dmg"
+					"value"	"1.10"
 				}
 				"closerange backattack headshot"
 				{
