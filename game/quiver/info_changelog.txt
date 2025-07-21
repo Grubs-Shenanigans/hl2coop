@@ -16,6 +16,7 @@ Quiver Private Alpha 1.1.0:
 - Fixed a bug where you couldn't get Equalizer achievements with the Vitality Glitch.
 - Added a small damage bonus to the Hitman's Executioner to make headshots from behind more consistent.
 - The Artillery Cannon: Removed the bullets per shot penalty, re-enabled the revving penalties. nerfed the damage potential from 150% to 100%, and buffed the weapon's accuracy slightly from 80% to 85%.
+- Reverted the "infinite sandviches" fix as that fix reverted a feature of the Sandvich that's in Live TF2.
 - Added the following Source SDK Pull Requests:
 	-  #1437: MvM: Fix Explosive Headshot working on invulnerable target
 
