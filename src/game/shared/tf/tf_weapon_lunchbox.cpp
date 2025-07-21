@@ -432,8 +432,11 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 		iHeal = iHeal * flHealScale;
 
 		int iHealed = pPlayer->TakeHealth(iHeal, iHealType);
-		CTF_GameStats.Event_PlayerHealedOther(pPlayer, iHealed);
-		bDrainAmmo = true;
+		if (iHealed > 0)
+		{
+			CTF_GameStats.Event_PlayerHealedOther(pPlayer, iHealed);
+			bDrainAmmo = true;
+		}
 
 		// Restore ammo if applicable
 		if (nLunchBoxType == LUNCHBOX_ADDS_AMMO)
