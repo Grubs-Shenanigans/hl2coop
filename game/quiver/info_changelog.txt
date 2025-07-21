@@ -8,7 +8,8 @@ Quiver Private Alpha 1.1.0:
 	- Overdrive: Kill 6 players in a single life with no armor.
 	- The Ol' Show-And-Tell! - Smash an enemy player's head in with your Ullapool Caber. Literally.
 	- Assassinating the Assassin - Headshot a Sniper with your Hitman's Executioner.
-- Bot names now load from a bot_name.txt file.
+	- Winstick - Get 2 unscoped headshots with your Railgun in a single life.
+- Bot names now load from a bot_names.txt file.
 - Fixed animated avatars not playing.
 - Updated the logo art.
 - The Quick Fix now can heal surrounding teammates with its Ubercharge.

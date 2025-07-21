@@ -134,4 +134,72 @@ class CAchievementQuiver_Assassination : public CBaseTFAchievement
 };
 DECLARE_ACHIEVEMENT(CAchievementQuiver_Assassination, ACHIEVEMENT_QUIVER_KILLINGHITMAN, "QUIVER_KILLINGHITMAN", 5);
 
+class CAchievementQuiver_RailgunHeadshot : public CBaseTFAchievement
+{
+	void Init()
+	{
+		SetFlags(ACH_LISTEN_KILL_EVENTS | ACH_SAVE_GLOBAL);
+		SetGoal(1);
+		m_iConsecutiveKills = 0;
+	}
+
+	virtual void ListenForEvents()
+	{
+		ListenForGameEvent("teamplay_round_active");
+		ListenForGameEvent("localplayer_respawn");
+	}
+
+	void FireGameEvent_Internal(IGameEvent* event)
+	{
+		if (FStrEq(event->GetName(), "teamplay_round_active"))
+		{
+			m_iConsecutiveKills = 0;
+		}
+		else if (FStrEq(event->GetName(), "localplayer_respawn"))
+		{
+			m_iConsecutiveKills = 0;
+		}
+	}
+
+	virtual void Event_EntityKilled(CBaseEntity* pVictim, CBaseEntity* pAttacker, CBaseEntity* pInflictor, IGameEvent* event)
+	{
+		C_BasePlayer* pLocalPlayer = C_BasePlayer::GetLocalPlayer();
+		if (pLocalPlayer == pVictim)
+		{
+			m_iConsecutiveKills = 0;
+		}
+		else if (pLocalPlayer == pAttacker && event->GetInt("weaponid") == TF_WEAPON_SNIPERRIFLE_CLASSIC)
+		{
+			C_TFPlayer* pTFAttacker = ToTFPlayer(pAttacker);
+			if (pTFAttacker)
+			{
+				if (FStrEq(event->GetString("weapon_logclassname", ""), "railgun"))
+				{
+					if (IsHeadshot(event->GetInt("customkill")))
+					{
+						// don't increment if we're zoomed in.
+						if (!pTFAttacker->m_Shared.InCond(TF_COND_ZOOMED))
+						{
+							m_iConsecutiveKills++;
+							if (m_iConsecutiveKills >= GetNumKillsNeeded())
+							{
+								IncrementCount();
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	virtual int GetNumKillsNeeded(void)
+	{
+		return 2;
+	}
+
+private:
+	int m_iConsecutiveKills;
+};
+DECLARE_ACHIEVEMENT(CAchievementQuiver_RailgunHeadshot, ACHIEVEMENT_QUIVER_RAILGUNHEADSHOT, "QUIVER_RAILGUNHEADSHOT", 5);
+
 #endif // CLIENT_DLL
