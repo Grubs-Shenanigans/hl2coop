@@ -444,11 +444,26 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 		{
 			int maxPrimary = pPlayer->GetMaxAmmo(TF_AMMO_PRIMARY);
 			int iAmmoGiven = pPlayer->GiveAmmo(maxPrimary * 0.25, TF_AMMO_PRIMARY, true);
-			if (iAmmoGiven > 0)
+			if (iAmmoGiven > 0 && !pPlayer->IsBot())
 			{
 				bDrainAmmo = true;
 			}
 		}
+
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+		// Restore armor if applicable
+		if (nLunchBoxType == LUNCHBOX_ADDS_ARMOR)
+		{
+			int oldArmor = pPlayer->ArmorValue();
+			int maxArmor = pPlayer->GetMaxArmor();
+			pPlayer->IncrementArmorValue(maxArmor * 0.25, maxArmor);
+			int iArmorGiven = (pPlayer->ArmorValue() - oldArmor);
+			if (iArmorGiven > 0 && !pPlayer->IsBot())
+			{
+				bDrainAmmo = true;
+			}
+		}
+#endif
 	}
 
 	// Drain ammo on the first bite that applied an effect
