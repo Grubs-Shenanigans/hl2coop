@@ -299,11 +299,6 @@
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 			"attributes"
 			{
-				"no_time_based_penalties_cosmetic"
-				{
-					"attribute_class"	"reverse_damage_falloff"
-					"value"	"1"
-				}
 				"reverse damage falloff hidden"
 				{
 					"attribute_class"	"reverse_damage_falloff"
@@ -334,20 +329,10 @@
 					"attribute_class"	"item_style_override"
 					"value"	"0"
 				}
-				"minigun_no_time_based_damage_penalty hidden"
-				{
-					"attribute_class"	"no_time_based_damage_penalty"
-					"value"	"1"
-				}
-				"minigun_no_time_based_spread_penalty hidden"
-				{
-					"attribute_class"	"no_time_based_spread_penalty"
-					"value"	"1"
-				}
 				"reverse damage falloff damage bonus"
 				{
 					"attribute_class"	"reverse_damage_falloff_mult_dmg"
-					"value"	"1.50"
+					"value"	"2.00"
 				}
 			}
 		}
