@@ -432,7 +432,8 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 		iHeal = iHeal * flHealScale;
 
 		int iHealed = pPlayer->TakeHealth(iHeal, iHealType);
-		if (iHealed > 0)
+		// for bots, remove the sandvich to prevent it being eaten multiple times.
+		if (iHealed > 0 && !pPlayer->IsBot())
 		{
 			CTF_GameStats.Event_PlayerHealedOther(pPlayer, iHealed);
 			bDrainAmmo = true;
