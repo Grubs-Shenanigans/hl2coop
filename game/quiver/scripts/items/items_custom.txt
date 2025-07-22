@@ -65,7 +65,7 @@
 					"attribute_class"	"mult_armor"
 					"value"			"0.7"
 				}
-				"armor repair rate decreased"
+				"armor taken from dispensers decreased"
 				{
 					"attribute_class"	"mult_dispenser_armor_rate"
 					"value"			"0.5"
@@ -577,7 +577,7 @@
 					"attribute_class"	"mult_dmg"
 					"value"	"0.85"
 				}
-				"armor repair rate decreased"
+				"armor taken from dispensers decreased"
 				{
 					"attribute_class"	"mult_dispenser_armor_rate"
 					"value"			"0.85"
