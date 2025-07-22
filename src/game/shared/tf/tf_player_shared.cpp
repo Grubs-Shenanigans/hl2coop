@@ -11342,6 +11342,8 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 		}
 	}
 
+	// quiver already has a carry penalty when building or moving buildings. don't change it any more.
+#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
 	bool bCarryPenalty = true;
 
 	if ( TFGameRules()->IsMannVsMachineMode() )
@@ -11354,6 +11356,7 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 		// STAGING_ENGY
 		maxfbspeed *= 0.90f;
 	}
+#endif
 
 	if ( m_Shared.IsLoserStateStunned() && bAllowSlowing )
 	{

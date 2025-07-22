@@ -15,7 +15,7 @@
 - The Direct Hit
 - The Black Box
 - The Degreaser
-- The Backburner
+- The Backburner (w/ balance changes)
 - The Detonator
 - The Axtinguisher/Postal Pummeler
 - The Scottish Resistance

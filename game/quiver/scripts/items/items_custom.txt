@@ -670,7 +670,7 @@
 				"armor damage taken increased"
 				{
 					"attribute_class"	"mult_armor"
-					"value"	"0.50"
+					"value"	"1.50"
 				}
 				"self mark for death"
 				{
