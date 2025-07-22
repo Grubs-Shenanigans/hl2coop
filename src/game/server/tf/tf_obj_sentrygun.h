@@ -123,6 +123,14 @@ public:
 
 	virtual bool	IsTruceValidForEnt( void ) const OVERRIDE { return true; }
 
+#ifdef BDSBASE
+	bool	IsPlayerControlled(void) const { return m_bPlayerControlled; }
+#endif
+
+#if defined(QUIVER_DLL)
+	bool	DoesSentryCountAsFullKill(void);
+#endif
+
 private:
 	Vector GetEnemyAimPosition( CBaseEntity* pEnemy ) const;
 

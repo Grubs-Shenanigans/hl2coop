@@ -12,6 +12,10 @@
 #include "matsys_controls/manipulator.h"
 #include "bone_setup.h"
 
+#ifdef BDSBASE
+ConVar	cl_legacymodelpanellights("cl_legacymodelpanellights", "1", FCVAR_ARCHIVE);
+#endif
+
 using namespace vgui;
 extern float GetAutoPlayTime( void );
 DECLARE_BUILD_FACTORY( CBaseModelPanel );
@@ -100,6 +104,29 @@ void CBaseModelPanel::ParseModelResInfo( KeyValues *inResourceData )
 
 	m_angPlayer = m_BMPResData.m_angModelPoseRot;
 	m_vecPlayerPos = m_BMPResData.m_vecOriginOffset;
+
+#ifdef BDSBASE
+	// a hacky code-based reimplementation of the 2007 TF2 classmenu lighting.
+	// this allows us to enable/disable the lighting settings per panel without modifying the res files (unless required).
+	// settings put together by DistantPeak. 
+	// modified to be more accurate to what the source code suggests in CModelPanel::Paint() line 655
+	if (cl_legacymodelpanellights.GetBool() && m_BMPResData.m_bUseSpotlight)
+	{
+		KeyValues* pLightSettings = new KeyValues("lights");
+		KeyValues* pSpotLight = new KeyValues("spotlight");
+		pSpotLight->SetString("name", "spot");
+		pSpotLight->SetString("color", "1 1 1");
+		pSpotLight->SetFloat("attenuation", 1.0f);
+		pSpotLight->SetString("origin", "0 0 200");
+		pSpotLight->SetString("direction", "320 10 0");
+		pSpotLight->SetFloat("inner_cone_angle", 5.0f);
+		pSpotLight->SetFloat("outer_cone_angle", 200.0f);
+
+		pLightSettings->AddSubKey(pSpotLight);
+
+		ParseLightsFromKV(pLightSettings);
+	}
+#endif
 
 	for ( KeyValues *pData = inResourceData->GetFirstSubKey(); pData != NULL; pData = pData->GetNextKey() )
 	{

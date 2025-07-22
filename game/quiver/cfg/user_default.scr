@@ -723,6 +723,14 @@ DESCRIPTION INFO_OPTIONS
 		{ "1" }
 	}
 	
+	"cl_legacymodelpanellights"
+	{
+		"#TF_LegacyModelPanelLighting"
+		"#Tooltip_LegacyModelPanelLighting"
+		{ BOOL }
+		{ "1" }
+	}
+	
 	"cl_achievements_theme"
 	{
 		"#Quiver_Achievement_Theme"

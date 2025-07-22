@@ -1359,18 +1359,32 @@ void CTFGameStats::Event_PlayerKilledOther( CBasePlayer *pAttacker, CBaseEntity 
 			// suicides shouldn't add or take away from score.
 			if (pPlayerAttacker != pPlayerVictim)
 			{
-				TFTeamMgr()->AddTeamScore(pPlayerAttacker->GetTeamNumber(), 1);
-				if (qf_tdm_scorewar.GetBool())
-				{
-					TFTeamMgr()->AddTeamScore(pPlayerVictim->GetTeamNumber(), -1);
-				}
-			}
+				bool bCountScore = true;
 
-			if (qf_tdm_scorewar.GetBool())
-			{
-				if (TFTeamMgr()->GetTeam(pPlayerVictim->GetTeamNumber())->GetScore() < 0)
+				// non-wrangled sentry kills are calculated differently
+				CObjectSentrygun* sentrygun = dynamic_cast<CObjectSentrygun*>(info.GetInflictor());
+				if (sentrygun && !sentrygun->IsPlayerControlled() && !sentrygun->DoesSentryCountAsFullKill())
 				{
-					TFTeamMgr()->GetTeam(pPlayerVictim->GetTeamNumber())->SetScore(0);
+					// every 2 kills counts as a kill.
+					int iKillCount = sentrygun->GetKills();
+					if ((iKillCount % 2) > 0)
+					{
+						bCountScore = false;
+					}
+				}
+
+				if (bCountScore)
+				{
+					TFTeamMgr()->AddTeamScore(pPlayerAttacker->GetTeamNumber(), 1);
+					if (qf_tdm_scorewar.GetBool())
+					{
+						TFTeamMgr()->AddTeamScore(pPlayerVictim->GetTeamNumber(), -1);
+
+						if (TFTeamMgr()->GetTeam(pPlayerVictim->GetTeamNumber())->GetScore() < 0)
+						{
+							TFTeamMgr()->GetTeam(pPlayerVictim->GetTeamNumber())->SetScore(0);
+						}
+					}
 				}
 			}
 		}

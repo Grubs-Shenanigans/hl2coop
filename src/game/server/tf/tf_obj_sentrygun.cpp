@@ -2412,6 +2412,20 @@ void CObjectSentrygun::MakeScaledBuilding( CTFPlayer *pPlayer )
 	}
 }
 
+#if defined(QUIVER_DLL)
+bool CObjectSentrygun::DoesSentryCountAsFullKill(void)
+{ 
+	int iMode = 0; 
+
+	if (GetOwner())
+	{
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(GetOwner(), iMode, sentry_full_kill);
+	}
+
+	return (iMode != 0); 
+};
+#endif
+
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 LINK_ENTITY_TO_CLASS( tf_projectile_sentryrocket, CTFProjectile_SentryRocket );
