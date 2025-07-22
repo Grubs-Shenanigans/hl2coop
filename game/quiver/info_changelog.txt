@@ -22,6 +22,7 @@ Quiver Private Alpha 1.1.0:
 - Team Deathmatch: Each un-wrangled Sentry kill will now count as half of a kill. Every 2 sentry kills will count as 1 player kill. Wrangled and mini-sentry kills are the only exception.
 - Improved model panel lighting.
 - Increased the Heavy's speed from 270 to 285.
+- Improved the Ludmila's viewmodel.
 - Added the following Source SDK Pull Requests:
 	-  #1437: MvM: Fix Explosive Headshot working on invulnerable target
 

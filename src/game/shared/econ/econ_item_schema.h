@@ -1369,6 +1369,7 @@ public:
 
 #ifdef BDSBASE
 	bool		IsUsingViewmodels() const { return m_bUseViewmodels; }
+	const char* GetViewmodelOverride() { return m_pszViewModelOverride; }
 #endif
 
 	void SetIsPackItem( bool bIsPackItem ) { m_bIsPackItem = bIsPackItem; }
@@ -1568,6 +1569,7 @@ private:
 
 #ifdef BDSBASE
 	bool			m_bUseViewmodels;
+	const char		*m_pszViewModelOverride;
 #endif
 
 	// Is this Item a tool

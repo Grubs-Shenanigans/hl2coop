@@ -542,6 +542,8 @@
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"model_player"	"models/weapons/c_models/c_minigun/c_minigun_natascha.mdl"
+			"use_viewmodels"	"1"
+			"model_view_override"	"models/weapons/v_models/v_ludmila_heavy.mdl"
 			"inspect_panel_dist" "88"
 			"attach_to_hands"	"1"
 			"item_quality"	"unique"

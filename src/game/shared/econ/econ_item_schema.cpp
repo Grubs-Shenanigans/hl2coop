@@ -2311,6 +2311,7 @@ m_bUseViewmodels(false),
 m_bSoloItem(false),
 m_bIsReskin(false),
 m_bWhitelisted(false),
+m_pszViewModelOverride(NULL),
 #endif
 m_pszItemLogClassname( NULL ),
 m_pszItemIconClassname( NULL ),
@@ -3186,6 +3187,11 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	m_bActAsWeapon = m_pKVItem->GetInt( "act_as_weapon", 0 ) != 0;
 #ifdef BDSBASE
 	m_bUseViewmodels = m_pKVItem->GetBool("use_viewmodels", 0) != 0;
+
+	if (m_bUseViewmodels)
+	{
+		m_pszViewModelOverride = m_pKVItem->GetString("model_view_override", NULL);
+	}
 #endif
 	m_bIsTool = m_pKVItem->GetBool( "is_tool", 0 ) || ( GetItemClass() && !V_stricmp( GetItemClass(), "tool" ) );
 	m_iDropType = StringFieldToInt( m_pKVItem->GetString("drop_type"), g_szDropTypeStrings, ARRAYSIZE(g_szDropTypeStrings) );

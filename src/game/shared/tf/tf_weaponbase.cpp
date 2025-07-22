@@ -509,6 +509,21 @@ void CTFWeaponBase::Precache()
 		{
 			pszTracerEffect = pszItemTracerEffect;
 		}
+
+#ifdef BDSBASE
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+		// precache the override
+		if (UsesForcedViewModel())
+		{
+			//return the viewmodel.
+			const char* pModelOverride = pItem->GetStaticData()->GetViewmodelOverride();
+			if (pModelOverride)
+			{
+				PrecacheModel(pModelOverride);
+			}
+		}
+#endif
+#endif
 	}
 	if ( pszTracerEffect && pszTracerEffect[0] )
 	{
@@ -677,8 +692,16 @@ const char *CTFWeaponBase::GetViewModel( int iViewModel ) const
 	{
 		if (UsesForcedViewModel())
 		{
-			//return the viewmodel UNLESS we're using the gunslinger.
-			return GetTFWpnData().szViewModel;
+			//return the viewmodel.
+			const char* pModelOverride = pItem->GetStaticData()->GetViewmodelOverride();
+			if (pModelOverride)
+			{
+				return pModelOverride;
+			}
+			else
+			{
+				return GetTFWpnData().szViewModel;
+			}
 		}
 
 		if (pItem->GetStaticData()->ShouldAttachToHands())
