@@ -173,7 +173,7 @@ void CTFWrench::OnFriendlyPlayerHit(CTFPlayer* pOtherPlayer, CTFPlayer* pPlayer,
 		int iArmorToGive = (GetRepairAmount() * 0.25f);
 		float flArmorRepairMultPenalty = pOtherPlayer->GetPlayerClass()->GetArmorMetalPenaltyMult();
 
-		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pOtherPlayer, flArmorRepairMultPenalty, mult_armor_repair_cost);
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pOtherPlayer, flArmorRepairMultPenalty, mult_armor_repair_cost_reciever);
 		CALL_ATTRIB_HOOK_FLOAT(flArmorRepairMultPenalty, mult_armor_repair_cost);
 
 		int iRepairCost = (iArmorToGive * flArmorRepairMultPenalty);
