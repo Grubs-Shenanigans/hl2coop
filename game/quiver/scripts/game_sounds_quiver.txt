@@ -73,3 +73,13 @@
  	"soundlevel"   "SNDLVL_80dB"
 	"wave"	"misc\armor_break_all.wav"
 }
+
+"Player.HitSoundQuake"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"1"
+	"soundlevel"  	"SNDLVL_NONE"	
+	"pitch"			"PITCH_NORM"
+
+	"wave"	")ui/hitsound_q3.wav"
+}

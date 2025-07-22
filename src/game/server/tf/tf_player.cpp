@@ -9337,6 +9337,10 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 	{
 		float flNew = (damage * flRatio);
 		float flArmor = (flNew * flAdditionalCost);
+		if (pTFAttacker)
+		{
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFAttacker, flArmor, mult_armor_onhit);
+		}
 		CALL_ATTRIB_HOOK_FLOAT(flArmor, mult_armor);
 
 		IncrementArmorValue(-flArmor, 0);

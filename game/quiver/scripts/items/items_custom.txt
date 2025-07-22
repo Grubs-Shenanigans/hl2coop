@@ -562,10 +562,10 @@
 					"attribute_class"	"add_maxarmor"
 					"value" "15"
 				}
-				"dmg pierces armor"
+				"armor damage increased on target"
 				{
-					"attribute_class"	"mod_pierce_armor"
-					"value"	"1"
+					"attribute_class"	"mult_armor_onhit"
+					"value"	"1.35"
 				}
 				"aiming knockback resistance heavy ver"
 				{
