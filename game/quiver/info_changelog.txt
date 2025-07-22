@@ -1,4 +1,4 @@
-Quiver Private Alpha 1.1.0 (WIP):
+Quiver Private Alpha 1.1.0:
 - Disabled stun in most instances, except in MvM where it's crucial against robots.
 - Disabled player glows on spawn and spectator (except in MvM).
 - Fixed a bug where some kill feeds erroneously show the Pyro kill taunt kill icon.
@@ -25,11 +25,12 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Improved the Ludmila's viewmodel.
 - Removed the Ludmila's spinup time penalty.
 - Lowered the Ludmila's damage penalty from 25% to 15%.
-- Added a 15% lower armor repair rate from dispensers to the Ludmila.
-- Increased the Gunslinger's dispenser armor repair penalty from 5% to 10%.
+- Added a 15% lower armor repair rate  to the Ludmila.
+- Increased the Gunslinger's armor repair penalty from 5% to 10%.
 - Fixed the Vitality Gliitch's 50% lower armor durability penalty.
 - The Backburner now has a small move speed penalty when active. This was done as the Pyro's speed buff allowed the user to get up to player's backs extremely quickly, making the weapon incredibly effective.
 - Added a 10% move penalty when carrying buildings, regardless if they are being built or moved.
+- Armor repair rate bonuses and penalties also now effect armor repairs using the Wrench.
 - Added the following Source SDK Pull Requests:
 	-  #1437: MvM: Fix Explosive Headshot working on invulnerable target
 
