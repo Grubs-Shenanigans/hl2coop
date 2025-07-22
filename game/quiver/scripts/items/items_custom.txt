@@ -575,12 +575,12 @@
 				"damage penalty"
 				{
 					"attribute_class"	"mult_dmg"
-					"value"	"0.75"
+					"value"	"0.85"
 				}
-				"minigun spinup time increased"
+				"armor taken from dispensers decreased"
 				{
-					"attribute_class"	"mult_minigun_spinup_time"
-					"value" "1.20"
+					"attribute_class"	"mult_dispenser_armor_rate"
+					"value"			"0.85"
 				}
 			}
 			"visuals"
