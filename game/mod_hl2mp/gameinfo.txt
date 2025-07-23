@@ -42,7 +42,7 @@
 			// folder.
 			//
 			// Note that this folder is scanned only when the game is booted.
-			game+mod			mod_hl2mp/custom/*
+			game+mod			|gameinfo_path|custom/*
 
 			// Now search loose files.  We'll set the directory containing the gameinfo.txt file
 			// as the first "mod" search path (after any user customizations).  This is also the one
@@ -89,7 +89,7 @@
 			// packed up in the .bsp file so that it will be mounted as a map search pack.
 			// The map search pack is mounted at the top of the search path list,
 			// but only while you are connected that server and on that map.
-			game+download	mod_hl2mp/download
+			game+download	|gameinfo_path|download
 		}
 	}
 }

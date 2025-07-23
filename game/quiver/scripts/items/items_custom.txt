@@ -171,10 +171,10 @@
 			}
 			"attributes"
 			{
-				"dmg pierces armor"
+				"armor damage increased on target"
 				{
-					"attribute_class"	"mod_pierce_armor"
-					"value"	"1"
+					"attribute_class"	"mult_armor_onhit"
+					"value"				"1.30"
 				}
 				"is_a_sword"
 				{
