@@ -986,7 +986,12 @@ void CHudMainMenuOverride::OnUpdateMenu( void )
 	// So try and do the least amount of work if nothing has changed.
 
 	bool bSomethingChanged = false;
+#ifdef BDSBASE
+	bool bInGame = engine->IsInGame() && !engine->IsLevelMainMenuBackground();
+#else
 	bool bInGame = engine->IsInGame();
+#endif
+
 #if defined( REPLAY_ENABLED )
 	bool bInReplay = g_pEngineClientReplay->IsPlayingReplayDemo();
 #else
