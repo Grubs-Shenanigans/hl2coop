@@ -44,6 +44,8 @@ Stock weapon balance changes:
 - All Sniper Rifles now fire tracer rounds.
 - Cloak drain now increases 3.5x if you're jumping/bunnyhopping.
 - Added a 10% move penalty when carrying buildings, regardless if they are being built or moved.
+- Minigun/Sniper rifle aiming now considers movespeed when calculating the aiming move speed.
+- Slightly increased aiming move speed to be more consistent with the main move speed.
 
 Unlockable weapon balance changes:
 - The Wrangler's shield has been disabled. Its sole function is now purely to control your sentry gun.
@@ -62,6 +64,7 @@ Unlockable weapon balance changes:
 - When using the Cloak and Dagger, the jumping/bunnyhopping cloak drain increases to 4x.
 - The Quick Fix now can heal surrounding teammates with its Ubercharge.
 - The Backburner now has a small move speed penalty when active.
+- Decreased Mini-Sentry range from 1100 hammer units to 825 hammer units.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

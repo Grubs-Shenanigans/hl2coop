@@ -60,6 +60,7 @@ struct TFPlayerClassData_t
 
 	float		m_flBhopBoost;
 	float		m_flAirSpeedCapMultiplier;
+	float		m_flAimedSpeedAdjust;
 #endif
 	int			m_aWeapons[TF_PLAYER_WEAPON_COUNT];
 	int			m_aGrenades[TF_PLAYER_GRENADE_COUNT];

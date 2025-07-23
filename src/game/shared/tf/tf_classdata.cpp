@@ -167,6 +167,8 @@ void TFPlayerClassData_t::ParseData( KeyValues *pKeyValuesData )
 	m_flBhopBoost = pKeyValuesData->GetFloat("bhop_speed_boost");
 
 	m_flAirSpeedCapMultiplier = pKeyValuesData->GetFloat("airspeed_cap_mult");
+
+	m_flAimedSpeedAdjust = pKeyValuesData->GetFloat("aimed_speed_mult");
 #endif
 
 	// Weapons.

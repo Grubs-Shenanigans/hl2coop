@@ -565,7 +565,7 @@
 				"armor damage increased on target"
 				{
 					"attribute_class"	"mult_armor_onhit"
-					"value"	"1.35"
+					"value"	"1.20"
 				}
 				"aiming knockback resistance heavy ver"
 				{

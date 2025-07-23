@@ -327,7 +327,7 @@ void CTFHudObjectiveStatus::SetVisiblePanels( void )
 #if defined(QUIVER_CLIENT_DLL)
 	bool bTDMVisible = TFGameRules()->IsInTDMMode();
 
-	if (m_pTDMPanel && m_pFlagPanel->IsVisible() != bTDMVisible)
+	if (m_pTDMPanel && m_pTDMPanel->IsVisible() != bTDMVisible)
 	{
 		m_pTDMPanel->SetVisible(bTDMVisible);
 	}

@@ -16,6 +16,7 @@ PlayerClass
 	"armor_max"		"100"
 	"bhop_speed_boost" "0.095"
 	"airspeed_cap_mult" "1.75"
+	"aimed_speed_mult" "0.34"
 	
 	//armor stats
 	//light armor

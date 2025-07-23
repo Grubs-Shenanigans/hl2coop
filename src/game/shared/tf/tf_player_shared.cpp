@@ -11260,6 +11260,33 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 		{
 			float flAimMax = 0;
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+			// Heavies are allowed to move slightly faster than a sniper when spun-up
+			float flAimMult = GetPlayerClass()->GetAimedSpeedMultiplier();
+
+			if (flAimMult > 0)
+			{
+				flAimMax = default_speed * flAimMult;
+			}
+			else
+			{
+				if (playerclass == TF_CLASS_HEAVYWEAPONS)
+				{
+					flAimMax = 110;
+				}
+				else
+				{
+					if (GetActiveTFWeapon() && (GetActiveTFWeapon()->GetWeaponID() == TF_WEAPON_COMPOUND_BOW))
+					{
+						flAimMax = 160;
+					}
+					else
+					{
+						flAimMax = 80;
+					}
+				}
+			}
+#else
 			// Heavies are allowed to move slightly faster than a sniper when spun-up
 			if ( playerclass == TF_CLASS_HEAVYWEAPONS )
 			{
@@ -11278,6 +11305,7 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 					flAimMax = 80;
 				}
 			}
+#endif
 			
 			CALL_ATTRIB_HOOK_FLOAT( flAimMax, mult_player_aiming_movespeed );
 			maxfbspeed = MIN( maxfbspeed, flAimMax );

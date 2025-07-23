@@ -18,7 +18,6 @@ Quiver Private Alpha 1.1.0 (WIP):
 - The Artillery Cannon: Removed the bullets per shot penalty, re-enabled the revving penalties. nerfed the damage potential from 150% to 100%, and buffed the weapon's accuracy slightly from 80% to 85%.
 - Reverted the "infinite sandviches" fix as that fix reverted a feature of the Sandvich that's in Live TF2.
 - Decreased Mini-Sentry range from 1100 hammer units to 825 hammer units.
-- Decreased Mini-Sentry build rate from 150% to 130%.
 - Team Deathmatch: Each un-wrangled Sentry kill will now count as half of a kill. Every 2 sentry kills will count as 1 player kill. Wrangled and mini-sentry kills are the only exception.
 - Improved model panel lighting.
 - Increased the Heavy's speed from 270 to 280.
@@ -30,8 +29,11 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Fixed the Vitality Gliitch's 50% lower armor durability penalty.
 - The Backburner now has a small move speed penalty when active. This was done as the Pyro's speed buff allowed the user to get up to player's backs extremely quickly, making the weapon incredibly effective.
 - Added a 10% move penalty when carrying buildings, regardless if they are being built or moved.
-- The Ludmila no longer pierces through armor, in favor of it having a 35% damage bonus against armor.
+- The Ludmila no longer pierces through armor, in favor of it having a 20% damage bonus against armor.
 - Added an option for Quake 3 hit sounds.
+- Minigun/Sniper rifle aiming now considers movespeed when calculating the aiming move speed.
+- Added 8 seconds of spawn protection in TDM mode. 
+- Fixed another bug where the TDM HUD is overlayed over other gamemode's HUD elements.
 - Added the following Source SDK Pull Requests:
 	-  #1437: MvM: Fix Explosive Headshot working on invulnerable target
 

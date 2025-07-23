@@ -292,6 +292,11 @@ extern ConVar sv_vote_allow_spectators;
 ConVar sv_vote_late_join_time( "sv_vote_late_join_time", "90", FCVAR_NONE, "Grace period after the match starts before players who join the match receive a vote-creation cooldown" );
 ConVar sv_vote_late_join_cooldown( "sv_vote_late_join_cooldown", "300", FCVAR_NONE, "Length of the vote-creation cooldown when joining the server after the grace period has expired" );
 
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+ConVar qf_tdm_spawnprotection("qf_tdm_spawnprotection", "1", FCVAR_NOTIFY, "");
+ConVar qf_tdm_spawnprotection_length("qf_tdm_spawnprotection_length", "8", FCVAR_NOTIFY, "");
+#endif
+
 #ifdef BDSBASE
 extern ConVar tf_voice_command_suspension_mode;
 #endif
@@ -4058,37 +4063,83 @@ void CTFPlayer::Spawn()
 
 	SetRespawnOverride( -1.f, NULL_STRING );
 
-	// Remove all powerups and add temporary invuln on spawn
-	if ( TFGameRules()  && TFGameRules()->IsPowerupMode() )
+#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+	if (TFGameRules() && ((TFGameRules()->IsInTDMMode() && qf_tdm_spawnprotection.GetBool()) || TFGameRules()->IsPowerupMode()))
 	{
-		m_Shared.AddCond( TF_COND_INVULNERABLE_USER_BUFF, 8.f );
+		m_Shared.AddCond(TF_COND_INVULNERABLE_USER_BUFF, (TFGameRules()->IsInTDMMode() ? qf_tdm_spawnprotection_length.GetFloat() : 8.f));
 
-		if ( !m_bIsInMannpowerDominantCondition )
+		if (TFGameRules()->IsPowerupMode())
 		{
-			if ( ( GetTeamNumber() == TF_TEAM_BLUE ) || ( GetTeamNumber() == TF_TEAM_RED ) )
+			if (!m_bIsInMannpowerDominantCondition)
+			{
+				if ((GetTeamNumber() == TF_TEAM_BLUE) || (GetTeamNumber() == TF_TEAM_RED))
+				{
+					CSteamID steamIDForPlayer;
+					if (GetSteamID(&steamIDForPlayer))
+					{
+						float flRemoveDominantConditionTime = TFGameRules()->CheckPowerupModeDominantDisconnect(steamIDForPlayer);
+						if (flRemoveDominantConditionTime > 0)
+						{
+							ClientPrint(this, HUD_PRINTCENTER, "#TF_Powerup_Dominant_Continue");
+							ClientPrint(this, HUD_PRINTTALK, "#TF_Powerup_Dominant_Continue");
+
+							m_Shared.AddCond(TF_COND_POWERUPMODE_DOMINANT, PERMANENT_CONDITION);
+
+							m_flRemoveDominantConditionTime = flRemoveDominantConditionTime;
+							m_bIsInMannpowerDominantCondition = true;
+
+							int nEnemyTeam = (GetTeamNumber() == TF_TEAM_RED) ? TF_TEAM_BLUE : TF_TEAM_RED;
+							for (int i = 0; i < MAX_PLAYERS; ++i)
+							{
+								CTFPlayer* pTFPlayer = ToTFPlayer(UTIL_PlayerByIndex(i));
+								if (pTFPlayer && (pTFPlayer->GetTeamNumber() == nEnemyTeam))
+								{
+									ClientPrint(pTFPlayer, HUD_PRINTCENTER, "#TF_Powerup_Dominant_Other_Team");
+									ClientPrint(pTFPlayer, HUD_PRINTTALK, "#TF_Powerup_Dominant_Other_Team");
+								}
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				m_Shared.AddCond(TF_COND_POWERUPMODE_DOMINANT);
+				ClientPrint(this, HUD_PRINTCENTER, "#TF_Powerup_Dominant_StillIn");
+			}
+		}
+	}
+#else
+	if (TFGameRules() && TFGameRules()->IsPowerupMode())
+	{
+		m_Shared.AddCond(TF_COND_INVULNERABLE_USER_BUFF, 8.f);
+
+		if (!m_bIsInMannpowerDominantCondition)
+		{
+			if ((GetTeamNumber() == TF_TEAM_BLUE) || (GetTeamNumber() == TF_TEAM_RED))
 			{
 				CSteamID steamIDForPlayer;
-				if ( GetSteamID( &steamIDForPlayer ) )
+				if (GetSteamID(&steamIDForPlayer))
 				{
-					float flRemoveDominantConditionTime = TFGameRules()->CheckPowerupModeDominantDisconnect( steamIDForPlayer );
-					if ( flRemoveDominantConditionTime > 0 )
+					float flRemoveDominantConditionTime = TFGameRules()->CheckPowerupModeDominantDisconnect(steamIDForPlayer);
+					if (flRemoveDominantConditionTime > 0)
 					{
-						ClientPrint( this, HUD_PRINTCENTER, "#TF_Powerup_Dominant_Continue" );
-						ClientPrint( this, HUD_PRINTTALK, "#TF_Powerup_Dominant_Continue" );
+						ClientPrint(this, HUD_PRINTCENTER, "#TF_Powerup_Dominant_Continue");
+						ClientPrint(this, HUD_PRINTTALK, "#TF_Powerup_Dominant_Continue");
 
-						m_Shared.AddCond( TF_COND_POWERUPMODE_DOMINANT, PERMANENT_CONDITION );
+						m_Shared.AddCond(TF_COND_POWERUPMODE_DOMINANT, PERMANENT_CONDITION);
 
 						m_flRemoveDominantConditionTime = flRemoveDominantConditionTime;
 						m_bIsInMannpowerDominantCondition = true;
 
-						int nEnemyTeam = ( GetTeamNumber() == TF_TEAM_RED ) ? TF_TEAM_BLUE : TF_TEAM_RED;
-						for ( int i = 0; i < MAX_PLAYERS; ++i )
+						int nEnemyTeam = (GetTeamNumber() == TF_TEAM_RED) ? TF_TEAM_BLUE : TF_TEAM_RED;
+						for (int i = 0; i < MAX_PLAYERS; ++i)
 						{
-							CTFPlayer *pTFPlayer = ToTFPlayer( UTIL_PlayerByIndex( i ) );
-							if ( pTFPlayer && ( pTFPlayer->GetTeamNumber() == nEnemyTeam ) )
+							CTFPlayer* pTFPlayer = ToTFPlayer(UTIL_PlayerByIndex(i));
+							if (pTFPlayer && (pTFPlayer->GetTeamNumber() == nEnemyTeam))
 							{
-								ClientPrint( pTFPlayer, HUD_PRINTCENTER, "#TF_Powerup_Dominant_Other_Team" );
-								ClientPrint( pTFPlayer, HUD_PRINTTALK, "#TF_Powerup_Dominant_Other_Team" );
+								ClientPrint(pTFPlayer, HUD_PRINTCENTER, "#TF_Powerup_Dominant_Other_Team");
+								ClientPrint(pTFPlayer, HUD_PRINTTALK, "#TF_Powerup_Dominant_Other_Team");
 							}
 						}
 					}
@@ -4097,10 +4148,11 @@ void CTFPlayer::Spawn()
 		}
 		else
 		{
-			m_Shared.AddCond( TF_COND_POWERUPMODE_DOMINANT );
-			ClientPrint( this, HUD_PRINTCENTER, "#TF_Powerup_Dominant_StillIn" );
+			m_Shared.AddCond(TF_COND_POWERUPMODE_DOMINANT);
+			ClientPrint(this, HUD_PRINTCENTER, "#TF_Powerup_Dominant_StillIn");
 		}
 	}
+#endif
 
 	if ( TFGameRules() )
 	{
