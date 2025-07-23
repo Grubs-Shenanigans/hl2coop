@@ -432,7 +432,7 @@ static const char *g_aConditionNames[] =
 
 #ifdef BDSBASE
 	"TF_COND_MINICRITBOOSTED",					// = 131
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	"QF_COND_ARMORBREAKHEAL",					// = 132
 #endif
 #endif
@@ -479,7 +479,7 @@ static const char *s_aGameTypeNames[] =
 	"#Gametype_RobotDestruction",
 	"#GameType_Passtime",
 	"#GameType_PlayerDestruction",
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	"#GameType_TDM",
 #endif
 };
@@ -500,7 +500,7 @@ static const char *s_aEnumGameTypeName[] =
 	"TF_GAMETYPE_MVM",
 	"TF_GAMETYPE_RD",
 	"TF_GAMETYPE_PASSTIME",
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	"TF_GAMETYPE_PD",
 	"QF_GAMETYPE_TDM"
 #else

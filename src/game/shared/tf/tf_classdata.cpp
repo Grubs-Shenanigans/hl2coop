@@ -159,7 +159,7 @@ void TFPlayerClassData_t::ParseData( KeyValues *pKeyValuesData )
 	m_nMaxHealth = pKeyValuesData->GetInt( "health_max" );
 	m_nMaxArmor = pKeyValuesData->GetInt( "armor_max" );
 
-#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if defined(QUIVER_DLL)
 	m_flArmorRatio = pKeyValuesData->GetFloat("armor_ratio");
 	m_flArmorAdditionalCostMult = pKeyValuesData->GetFloat("armor_additionalcost_mult");
 	m_flArmorMetalPenaltyMult = pKeyValuesData->GetFloat("armor_metalpenalty_mult");

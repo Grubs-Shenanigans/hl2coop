@@ -245,7 +245,7 @@ CEconItemView* CTFInventoryManager::AddSoloItem(int id)
 #if CLIENT_DLL
 	pItemView->SetNonSOEconItem(pItem);
 #endif
-#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if defined(QUIVER_DLL)
 	pItemView->SetItemQuality(AE_CUSTOMIZED);
 #endif
 	m_pSoloLoadoutItems.AddToTail(pItemView);

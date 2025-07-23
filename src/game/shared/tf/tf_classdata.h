@@ -53,7 +53,7 @@ struct TFPlayerClassData_t
 	float		m_flMaxSpeed;
 	int			m_nMaxHealth;
 	int			m_nMaxArmor;
-#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if defined(QUIVER_DLL)
 	float		m_flArmorRatio;
 	float		m_flArmorAdditionalCostMult;
 	float		m_flArmorMetalPenaltyMult;

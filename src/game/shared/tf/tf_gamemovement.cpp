@@ -23,7 +23,7 @@
 #include "halloween/tf_weapon_spellbook.h"
 #include "tf_logic_player_destruction.h"
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 #include "basetypes.h"
 #endif
 
@@ -98,11 +98,11 @@ extern ConVar mp_tournament_readymode_countdown;
 #ifdef BDSBASE
 extern ConVar sv_bhop;
 extern ConVar sv_bhop_mode;
-#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if !defined(QUIVER_DLL)
 extern ConVar sv_bhop_boost;
 #endif
 ConVar sv_bhop_tf_cap("sv_bhop_tf_cap", "1", FCVAR_REPLICATED | FCVAR_NOTIFY);
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 ConVar sv_bhop_tf_cap_boost("sv_bhop_tf_cap_boost", "1.5", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #else
 ConVar sv_bhop_tf_cap_boost("sv_bhop_tf_cap_boost", "1.2", FCVAR_REPLICATED | FCVAR_NOTIFY);
@@ -557,7 +557,7 @@ bool CTFGameMovement::ChargeMove()
 
 	int oldbuttons = mv->m_nButtons;
 
-#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if defined(QUIVER_DLL)
 	float flChargeForJump = 0.0f;
 	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(m_pTFPlayer, flChargeForJump, charge_allow_jump_for_charge);
 
@@ -1432,7 +1432,7 @@ bool CTFGameMovement::CheckJumpButton()
 	}
 
 #ifdef BDSBASE
-#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if defined(QUIVER_DLL)
 	float flBhopBoost = m_pTFPlayer->GetPlayerClass()->GetBhopSpeedBoost();
 #else
 	float flBhopBoost = sv_bhop_boost.GetFloat();
@@ -2207,7 +2207,7 @@ float CTFGameMovement::GetAirSpeedCap( void )
 	{
 		float flCap = BaseClass::GetAirSpeedCap();
 
-#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if defined(QUIVER_DLL)
 		float flCapMult = m_pTFPlayer->GetPlayerClass()->GetSpeedCapMultiplier();
 		if (flCapMult > 0.0f)
 		{

@@ -116,7 +116,7 @@ public:
 	virtual void		Detonate(bool bTaunting = false);
 #endif
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	float				GetProgress(void) { return GetEffectBarProgress(); }
 	virtual const char* GetEffectLabelText(void) { return "#Quiver_Caber"; }
 	virtual float		InternalGetEffectBarRechargeTime(void) { return 30.f; }

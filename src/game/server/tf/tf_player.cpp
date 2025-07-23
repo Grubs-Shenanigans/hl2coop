@@ -292,7 +292,7 @@ extern ConVar sv_vote_allow_spectators;
 ConVar sv_vote_late_join_time( "sv_vote_late_join_time", "90", FCVAR_NONE, "Grace period after the match starts before players who join the match receive a vote-creation cooldown" );
 ConVar sv_vote_late_join_cooldown( "sv_vote_late_join_cooldown", "300", FCVAR_NONE, "Length of the vote-creation cooldown when joining the server after the grace period has expired" );
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 ConVar qf_tdm_spawnprotection("qf_tdm_spawnprotection", "1", FCVAR_NOTIFY, "");
 ConVar qf_tdm_spawnprotection_length("qf_tdm_spawnprotection_length", "8", FCVAR_NOTIFY, "");
 #endif
@@ -4063,7 +4063,7 @@ void CTFPlayer::Spawn()
 
 	SetRespawnOverride( -1.f, NULL_STRING );
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	if (TFGameRules() && ((TFGameRules()->IsInTDMMode() && qf_tdm_spawnprotection.GetBool()) || TFGameRules()->IsPowerupMode()))
 	{
 		m_Shared.AddCond(TF_COND_INVULNERABLE_USER_BUFF, (TFGameRules()->IsInTDMMode() ? qf_tdm_spawnprotection_length.GetFloat() : 8.f));

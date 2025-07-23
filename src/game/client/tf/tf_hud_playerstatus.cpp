@@ -1222,7 +1222,7 @@ void CTFHudPlayerHealth::UpdateHalloweenStatus( void )
 	}
 }
 
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -1521,7 +1521,7 @@ CTFHudPlayerStatus::CTFHudPlayerStatus( const char *pElementName ) : CHudElement
 
 	m_pHudPlayerClass = new CTFHudPlayerClass( this, "HudPlayerClass" );
 	m_pHudPlayerHealth = new CTFHudPlayerHealth( this, "HudPlayerHealth" );
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 	m_pHudPlayerArmor = new CTFHudPlayerArmor(this, "HudPlayerArmor");
 #endif
 
@@ -1592,7 +1592,7 @@ void CTFHudPlayerStatus::Reset()
 		m_pHudPlayerHealth->Reset();
 	}
 
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 	if (m_pHudPlayerArmor)
 	{
 		m_pHudPlayerArmor->Reset();

@@ -545,7 +545,7 @@ public:
 
 	bool	IsPlayerOnSteamFriendsList( C_BasePlayer *pPlayer );
 
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 	int		ArmorValue(void) { return m_ArmorValue; }
 	int		GetMaxArmor(void) { return m_iMaxArmor; }
 #endif
@@ -738,7 +738,7 @@ private:
 	float			m_flTauntStartTime;
 	float			m_flTauntDuration;
 
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 	int				m_ArmorValue;
 	int				m_iMaxArmor;
 #endif

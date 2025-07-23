@@ -225,7 +225,7 @@ private:
 	void UpdateHalloweenStatus( void );
 };
 
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 //-----------------------------------------------------------------------------
 // Purpose:  Clips the health image to the appropriate percentage
 //-----------------------------------------------------------------------------
@@ -325,7 +325,7 @@ private:
 
 	CTFHudPlayerClass	*m_pHudPlayerClass;
 	CTFHudPlayerHealth	*m_pHudPlayerHealth;
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 	CTFHudPlayerArmor *m_pHudPlayerArmor;
 #endif
 #ifdef BDSBASE

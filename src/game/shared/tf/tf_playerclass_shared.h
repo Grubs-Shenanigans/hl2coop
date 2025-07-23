@@ -66,7 +66,7 @@ public:
 	float		GetMaxSpeed( void )								{ return GetPlayerClassData( m_iClass )->m_flMaxSpeed; }
 	int			GetMaxHealth( void ) const						{ return GetPlayerClassData( m_iClass )->m_nMaxHealth; }
 	int			GetMaxArmor( void )	const						{ return GetPlayerClassData( m_iClass )->m_nMaxArmor; }
-#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if defined(QUIVER_DLL)
 	float		GetArmorRatio(void)	const						{ return GetPlayerClassData(m_iClass)->m_flArmorRatio; }
 	float		GetArmorAdditionalCostMult(void) const			{ return GetPlayerClassData(m_iClass)->m_flArmorAdditionalCostMult; }
 	float		GetArmorMetalPenaltyMult(void) const			{ return GetPlayerClassData(m_iClass)->m_flArmorMetalPenaltyMult; }

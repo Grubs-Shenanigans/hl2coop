@@ -114,7 +114,7 @@ ConVar tf_halloween_kart_boost_duration( "tf_halloween_kart_boost_duration", "1.
 ConVar tf_scout_air_dash_count( "tf_scout_air_dash_count", "1", FCVAR_REPLICATED | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
 
 ConVar tf_spy_invis_time( "tf_spy_invis_time", "1.0", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Transition time in and out of spy invisibility", true, 0.1, true, 5.0 );
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 ConVar tf_spy_invis_unstealth_time("tf_spy_invis_unstealth_time", "1.5", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Transition time in and out of spy invisibility", true, 0.1, true, 5.0);
 #else
 ConVar tf_spy_invis_unstealth_time( "tf_spy_invis_unstealth_time", "2.0", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Transition time in and out of spy invisibility", true, 0.1, true, 5.0 );
@@ -9946,7 +9946,7 @@ bool CTFPlayerShared::AddToSpyCloakMeter( float val, bool bForce )
 //-----------------------------------------------------------------------------
 void CTFPlayerShared::StunPlayer(float flTime, float flReductionAmount, int iStunFlags, CTFPlayer* pAttacker)
 {
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	// in quiver, disable most instances of stun unless we're in MvM.
 	if (TFGameRules() && !TFGameRules()->IsMannVsMachineMode())
 		return;
@@ -10443,14 +10443,14 @@ void CTFPlayer::MaybeDrawRailgunBeam( IRecipientFilter *pFilter, CTFWeaponBase *
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( pWeapon, iShouldFireTracer, sniper_fires_tracer_HIDDEN );
 	}
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	bool bHeatmakerCharged = m_Shared.InCond(TF_COND_SNIPERCHARGE_RAGE_BUFF) && pWeapon && WeaponID_IsSniperRifle(pWeapon->GetWeaponID());
 #endif
 
 	// Check for heatmaker
 	if ( !iShouldFireTracer )
 	{
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 		iShouldFireTracer = bHeatmakerCharged;
 #else
 		iShouldFireTracer = m_Shared.InCond( TF_COND_SNIPERCHARGE_RAGE_BUFF ) && pWeapon && WeaponID_IsSniperRifle( pWeapon->GetWeaponID() );
@@ -10462,7 +10462,7 @@ void CTFPlayer::MaybeDrawRailgunBeam( IRecipientFilter *pFilter, CTFWeaponBase *
 		const char *pParticleSystemName = pWeapon->GetTeamNumber() == TF_TEAM_BLUE ? "dxhr_sniper_rail_blue" : "dxhr_sniper_rail_red";
 		CTFSniperRifle *pRifle = dynamic_cast< CTFSniperRifle* >( pWeapon );
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 		int iShouldUseClassicTracer = 0;
 		CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iShouldUseClassicTracer, sniper_classic_tracer);
 
@@ -11246,7 +11246,7 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 		maxfbspeed = MIN( flMaxDisguiseSpeed, maxfbspeed );
 	}
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	int iNoMoveSpeedPenalty = 0;
 	CALL_ATTRIB_HOOK_INT(iNoMoveSpeedPenalty, player_no_aiming_movespeed_penalty);
 
@@ -11260,7 +11260,7 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 		{
 			float flAimMax = 0;
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 			// Heavies are allowed to move slightly faster than a sniper when spun-up
 			float flAimMult = GetPlayerClass()->GetAimedSpeedMultiplier();
 
@@ -11371,7 +11371,7 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 	}
 
 	// quiver already has a carry penalty when building or moving buildings. don't change it any more.
-#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if !defined(QUIVER_DLL)
 	bool bCarryPenalty = true;
 
 	if ( TFGameRules()->IsMannVsMachineMode() )
@@ -14616,7 +14616,7 @@ void CTFPlayerShared::UpdateCloakMeter( void )
 					fFactor = 1.f;
 				}
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 				float flDrainRate = m_fCloakConsumeRate * fFactor * 1.5f;
 
 				if (!m_pOuter->GetGroundEntity() && m_pOuter->m_afButtonReleased & IN_JUMP)
@@ -14637,7 +14637,7 @@ void CTFPlayerShared::UpdateCloakMeter( void )
 		else
 		{
 			// Classic cloak: drain at a fixed rate.
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 			float flDrainRate = m_fCloakConsumeRate;
 
 			if (!m_pOuter->GetGroundEntity() && m_pOuter->m_afButtonReleased & IN_JUMP)

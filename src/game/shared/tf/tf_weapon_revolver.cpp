@@ -103,7 +103,7 @@ bool CTFRevolver::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget /*
 	if ( pPlayer && pPlayer->m_Shared.IsCritBoosted() )
 		return true;
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	// allow headshots when behind an enemy.
 	int iHeadshotBackAttack = 0;
 	CALL_ATTRIB_HOOK_INT(iHeadshotBackAttack, closerange_backattack_headshot);
@@ -126,7 +126,7 @@ bool CTFRevolver::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget /*
 		return !CanHeadshot();
 	}
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	// if we only headshot from the back, don't crit. we should only crit when we headshot from the back.
 	if (iHeadshotBackAttack == 1)
 	{

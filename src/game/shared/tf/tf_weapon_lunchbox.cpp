@@ -450,7 +450,7 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 			}
 		}
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 		// Restore armor if applicable
 		if (nLunchBoxType == LUNCHBOX_ADDS_ARMOR)
 		{

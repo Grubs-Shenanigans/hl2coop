@@ -450,7 +450,7 @@ class CAchievementTFSoldier_EqualizerStreak : public CBaseTFAchievement
 				if ( pLocalTFPlayer && pLocalTFPlayer->GetActiveTFWeapon() )
 				{
 					CTFShovel *pShovel = static_cast< CTFShovel* >( pLocalTFPlayer->GetActiveTFWeapon() );
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 					if (pShovel && (pShovel->GetShovelType() == SHOVEL_SPEED_DAMAGE_BOOST && pShovel->GetShovelType() == SHOVEL_DAMAGE_BOOST))
 #else
 					if ( pShovel && pShovel->GetShovelType() == SHOVEL_DAMAGE_BOOST )
@@ -717,7 +717,7 @@ class CAchievementTFSoldier_KillWithEqualizerWhileHurt : public CBaseTFAchieveme
 		if ( pTFAttacker && (pTFAttacker == C_BasePlayer::GetLocalPlayer()) && (event->GetInt( "weaponid" ) == TF_WEAPON_SHOVEL) )
 		{
 			CTFShovel *pShovel = static_cast<CTFShovel*>(pTFAttacker->GetActiveWeapon());
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 			if (pShovel && (pShovel->GetShovelType() == SHOVEL_SPEED_DAMAGE_BOOST && pShovel->GetShovelType() == SHOVEL_DAMAGE_BOOST))
 #else
 			if ( pShovel && (pShovel->GetShovelType() == SHOVEL_DAMAGE_BOOST) )

@@ -3981,7 +3981,7 @@ IMPLEMENT_CLIENTCLASS_DT( C_TFPlayer, DT_TFPlayer, CTFPlayer )
 	RecvPropInt(RECVINFO(m_nRestrictAchievements)),
 	RecvPropInt(RECVINFO(m_nRestrictQuests)),
 #endif
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 	RecvPropInt(RECVINFO(m_ArmorValue)),
 	RecvPropInt(RECVINFO(m_iMaxArmor)),
 #endif
@@ -4005,7 +4005,7 @@ BEGIN_PREDICTION_DATA( C_TFPlayer )
 	DEFINE_PRED_FIELD( m_flVehicleReverseTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_flInspectTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_flHelpmeButtonPressTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 	DEFINE_PRED_FIELD(m_ArmorValue, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_ONLY_ERROR_IF_ABOVE_ZERO_TO_ZERO_OR_BELOW_ETC),
 #endif
 END_PREDICTION_DATA()
@@ -4147,7 +4147,7 @@ C_TFPlayer::C_TFPlayer() :
 	m_flNeckScale = 1.f;
 #endif
 
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 	m_ArmorValue = 0.0f;
 #endif
 
@@ -8127,7 +8127,7 @@ void C_TFPlayer::AddDecal( const Vector& rayStart, const Vector& rayEnd,
 		g_pEffects->Ricochet( rayEnd - (vecDir * 8), -vecDir );
 		return;
 	}
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 	else if (ArmorValue() > 0)
 	{
 		// Armor also ricochets.

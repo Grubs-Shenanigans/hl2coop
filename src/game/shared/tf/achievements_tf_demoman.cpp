@@ -807,7 +807,7 @@ class CAchievementTFDemoman_DecapitateEqualizer : public CBaseTFAchievement
 		if ( pTFVictim && pTFVictim->IsPlayerClass( TF_CLASS_SOLDIER ) )
 		{
 			CTFShovel *pShovel = dynamic_cast<CTFShovel*>( pTFVictim->GetActiveTFWeapon() );
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 			if (pShovel && (pShovel->GetShovelType() == SHOVEL_SPEED_DAMAGE_BOOST && pShovel->GetShovelType() == SHOVEL_DAMAGE_BOOST))
 #else
 			if ( pShovel && (pShovel->GetShovelType() == SHOVEL_DAMAGE_BOOST) )

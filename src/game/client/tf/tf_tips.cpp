@@ -115,7 +115,7 @@ const wchar_t *CTFTips::GetRandomTip( int &iClassUsed )
 		return GetAbuseReportTip();
 	}
 
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	if (RandomInt(0, 1) == 1)
 	{
 		return GetRandomQFTip(iClassUsed);
@@ -160,7 +160,7 @@ const wchar_t *CTFTips::GetNextClassTip( int iClass )
 		return GetArenaTip();
 	}
 
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	if (RandomInt(0, 1) == 1)
 	{
 		return GetRandomQFTip(iTipClass);
@@ -275,7 +275,7 @@ const wchar_t *CTFTips::GetRandomMvMTip( int &iClassUsed )
 	return wzMvMTip;
 }
 
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 //-----------------------------------------------------------------------------
 // Purpose: Returns tip related to QF
 //-----------------------------------------------------------------------------

@@ -35,7 +35,7 @@ public:
 	const wchar_t *GetArenaTip( void );
 	const wchar_t *GetAbuseReportTip( void );
 	const wchar_t *GetRandomMvMTip( int &iClassUsed ); // iClassUsed will be filled in with the class that was selected
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	const wchar_t* GetRandomQFTip(int& iClassUsed); // iClassUsed will be filled in with the class that was selected
 #endif
 	void GetRandomCaptainCanteenImages( const char **ppchBody, const char **ppchMisc, const char **ppchHat );

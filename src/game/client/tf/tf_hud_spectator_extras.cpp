@@ -100,7 +100,7 @@ void CTFHudSpectatorExtras::OnTick()
 	if ( !g_PR )
 		return;
 
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	if (TFGameRules() && !TFGameRules()->IsMannVsMachineMode())
 	{
 		Reset();

@@ -16,7 +16,7 @@
 #include "tf_hud_flagstatus.h"
 #include "tf_hud_escort.h"
 #include "tf_hud_training.h"
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 #include "quiver/qf_hud_tdmstatus.h"
 #endif
 #include "hud_controlpointicons.h"
@@ -70,7 +70,7 @@ private:
 	class CTFHUDRobotDestruction	*m_pRobotDestructionPanel;
 	CTFHudPasstime			*m_pHudPasstime;
 
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	CQFHudTDM *m_pTDMPanel;
 #endif
 	

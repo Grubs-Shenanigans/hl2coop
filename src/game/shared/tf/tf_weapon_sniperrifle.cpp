@@ -1123,7 +1123,7 @@ bool CTFSniperRifle::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget
 		}
 	}
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	int iRangedHeadShotPenalty = 0;
 	CALL_ATTRIB_HOOK_INT(iRangedHeadShotPenalty, sniper_no_headshots_at_long_range);
 	if (iRangedHeadShotPenalty != 0)
@@ -2060,7 +2060,7 @@ void CTFSniperRifleClassic::ItemPostFrame( void )
 	}
 	else if ( m_bCharging )
 	{
-#if (defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if defined(QUIVER_DLL)
 		int iCanJump = 0;
 		CALL_ATTRIB_HOOK_INT(iCanJump, sniper_classic_allow_jump);
 

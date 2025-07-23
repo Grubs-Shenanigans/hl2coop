@@ -27,7 +27,7 @@ enum lunchbox_weapontypes_t
 	LUNCHBOX_ADDS_AMMO,
 	LUNCHBOX_BANANA,
 	LUNCHBOX_FISHCAKE,
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	LUNCHBOX_ADDS_ARMOR,
 #endif
 };

@@ -379,7 +379,7 @@ void CTFScatterGun::FireBullet( CTFPlayer *pPlayer )
 			// Impulse an additional bit of Z push.
 			pOwner->ApplyAbsVelocityImpulse(Vector(0, 0, 50.f));
 
-#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if !defined(QUIVER_DLL)
 			// Slow player movement for a brief period of time.
 			pOwner->RemoveFlag(FL_ONGROUND);
 #endif
@@ -475,7 +475,7 @@ void CTFScatterGun::ApplyPostHitEffects( const CTakeDamageInfo &inputInfo, CTFPl
 
 	pTarget->ApplyGenericPushbackImpulse( vecForce, pAttacker );
 
-#if !(defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL))
+#if !defined(QUIVER_DLL)
 	pTarget->m_Shared.StunPlayer( 0.3f, 1.f, TF_STUN_MOVEMENT | TF_STUN_MOVEMENT_FORWARD_ONLY, pAttacker );
 #endif
 	pTarget->m_Shared.SetWeaponKnockbackID( pAttacker->GetUserID() );

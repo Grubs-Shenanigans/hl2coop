@@ -160,7 +160,7 @@ static const hitsound_params_t g_HitSounds[] =
 	hitsound_params_t( "Player.HitSoundBeepo",				1,			255 ),
 	hitsound_params_t( "Player.HitSoundVortex",				1,			255 ),
 	hitsound_params_t( "Player.HitSoundSquasher",			1,			255 ),
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	hitsound_params_t("Player.HitSoundQuake",				1,			255),
 #endif
 };
@@ -176,7 +176,7 @@ static const hitsound_params_t g_LastHitSounds[] =
 	hitsound_params_t( "Player.KillSoundBeepo", 1, 255 ),
 	hitsound_params_t( "Player.KillSoundVortex", 1, 255 ),
 	hitsound_params_t( "Player.KillSoundSquasher", 1, 255 ),
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	//quake has no defined kill sound.
 	hitsound_params_t( "Player.HitSoundQuake",				1,			255),
 #endif

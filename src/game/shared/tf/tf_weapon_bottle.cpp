@@ -248,7 +248,7 @@ void CTFStickBomb::Detonate(bool bTaunting)
 
 	bool connectedHit = (!bTaunting) ? ConnectedHit() : true;
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	int iBombCount = pTFPlayer->GetAmmoCount(TF_AMMO_GRENADES1);
 
 	if ((iBombCount > 0) && m_iDetonated == 0 && connectedHit)
@@ -295,7 +295,7 @@ void CTFStickBomb::Detonate(bool bTaunting)
 				dmgType |= DMG_RADIUS_MAX;
 
 			float flDamage = TF_STICKBOMB_DAMAGE;
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 			CALL_ATTRIB_HOOK_FLOAT(flDamage, mult_dmg_caber);
 #else
 			CALL_ATTRIB_HOOK_FLOAT(flDamage, mult_dmg);
@@ -315,13 +315,13 @@ void CTFStickBomb::Detonate(bool bTaunting)
 
 			TFGameRules()->RadiusDamage(radiusinfo);
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 			pTFPlayer->RemoveAmmo(1, TF_AMMO_GRENADES1);
 #endif
 		}
 #endif
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 		StartEffectBarRegen();
 #endif
 	}
@@ -429,7 +429,7 @@ const char *CTFStickBomb::GetWorldModel( void ) const
 	}
 }
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 void CTFStickBomb::OnEffectBarRegenFinished(void)
 {
 	CTFPlayer* pTFPlayer = ToTFPlayer(GetOwner());

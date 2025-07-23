@@ -600,7 +600,7 @@ public:
 	bool IsInMedievalMode( void ) const { return m_bPlayingMedieval; }
 	bool IsHolidayMap( int nHoliday ) const { return m_nMapHolidayType == nHoliday; }
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	bool IsInTDMMode(void) const;
 #endif
 	
@@ -845,7 +845,7 @@ bool IsCreepWaveMode( void ) const;
 	bool SetCtfWinningTeam();
 	bool SetPasstimeWinningTeam();
 	bool CheckCapsPerRound();
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	bool CheckFragLimit();
 #endif
 	virtual void CheckRespawnWaves();
@@ -892,7 +892,7 @@ bool IsCreepWaveMode( void ) const;
 
 	bool CanHaveAmmo( CBaseCombatCharacter *pPlayer, int iAmmoIndex );
 
-#if defined(QUIVER_DLL) || defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 	virtual const char* GetGameDescription(void) { return "Quiver Fortress"; }
 #else
 	virtual const char *GetGameDescription( void ){ return "Team Fortress"; }

@@ -556,7 +556,7 @@ void CTFMapInfoMenu::LoadMapPage()
 						case TF_GAMETYPE_PD:
 							pszDescription = "#default_pd_description";
 							break;
-#if defined(QUIVER_CLIENT_DLL)
+#if defined(QUIVER_DLL)
 						case QF_GAMETYPE_TDM:
 							pszDescription = "#default_tdm_description";
 							break;

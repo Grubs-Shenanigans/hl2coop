@@ -1141,7 +1141,7 @@ void CBackpackPanel::AssignItemToPanel( CItemModelPanel *pPanel, int iIndex )
 					pItemDef = mapItems[it];
 				}
 
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 				if (mapItems[it]->IsSoloItem())
 				{
 					tempItem.Init(pItemDef->GetDefinitionIndex(), AE_CUSTOMIZED, AE_USE_SCRIPT_VALUE, true);

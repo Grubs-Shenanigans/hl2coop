@@ -39,7 +39,7 @@ void TFBloodSprayCallback( Vector vecOrigin, Vector vecNormal, ClientEntityHandl
 		bUnderwater = true;
 	}
 
-#ifdef QUIVER_CLIENT_DLL
+#ifdef QUIVER_DLL
 	if (pPlayer && pPlayer->ArmorValue() > 0)
 	{
 		//we don't bleed if we have armor, however, armor penetration will be represented by blood on the walls
