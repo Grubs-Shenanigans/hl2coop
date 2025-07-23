@@ -294,7 +294,7 @@ ConVar sv_vote_late_join_cooldown( "sv_vote_late_join_cooldown", "300", FCVAR_NO
 
 #if defined(QUIVER_DLL)
 ConVar qf_tdm_spawnprotection("qf_tdm_spawnprotection", "1", FCVAR_NOTIFY, "");
-ConVar qf_tdm_spawnprotection_length("qf_tdm_spawnprotection_length", "8", FCVAR_NOTIFY, "");
+ConVar qf_tdm_spawnprotection_length("qf_tdm_spawnprotection_length", "4", FCVAR_NOTIFY, "");
 #endif
 
 #ifdef BDSBASE

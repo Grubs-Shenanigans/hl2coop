@@ -32,7 +32,7 @@ Quiver Private Alpha 1.1.0 (WIP):
 - The Ludmila no longer pierces through armor, in favor of it having a 20% damage bonus against armor.
 - Added an option for Quake 3 hit sounds.
 - Minigun/Sniper rifle aiming now considers movespeed when calculating the aiming move speed.
-- Added 8 seconds of spawn protection in TDM mode. 
+- Added 4 seconds of spawn protection in TDM mode. 
 - Fixed another bug where the TDM HUD is overlayed over other gamemode's HUD elements.
 - Added the following Source SDK Pull Requests:
 	-  #1437: MvM: Fix Explosive Headshot working on invulnerable target
