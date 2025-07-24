@@ -65,6 +65,7 @@ Unlockable weapon balance changes:
 - The Quick Fix now can heal surrounding teammates with its Ubercharge.
 - The Backburner now has a small move speed penalty when active.
 - Decreased Mini-Sentry range from 1100 hammer units to 825 hammer units.
+- All Australium weapons will now turn players gold.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

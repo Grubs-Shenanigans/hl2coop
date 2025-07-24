@@ -811,11 +811,6 @@
 			"xifier_class_remap"	"weapon_quiver_generic_sword_golden"
 			"attributes"
 			{
-				"turn to gold"
-				{
-					"attribute_class"	"set_turn_to_gold"
-					"value" "1"
-				}
 				"is australium item"
 				{
 					"attribute_class"	"is_australium_item"
@@ -834,7 +829,7 @@
 			"prefab"	"weapon_quiver_generic_sword"
 			"propername"	"0"
 			"craft_class"	""
-			"item_name"			"#Quiver_FestiveSword"
+			"item_name"		"#Quiver_FestiveSword"
 			"min_ilevel"	"1"
 			"max_ilevel"	"99"
 			"image_inventory"	"backpack/weapons/c_models/c_claymore/c_claymore_xmas"

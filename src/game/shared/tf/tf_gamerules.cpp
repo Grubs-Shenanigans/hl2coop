@@ -713,7 +713,11 @@ ConVar tf_test_special_ducks( "tf_test_special_ducks", "1", FCVAR_DEVELOPMENTONL
 ConVar tf_mm_abandoned_players_per_team_max( "tf_mm_abandoned_players_per_team_max", "1", FCVAR_DEVELOPMENTONLY );
 
 #endif // GAME_DLL
-ConVar tf_mm_next_map_vote_time( "tf_mm_next_map_vote_time", "30", FCVAR_REPLICATED );
+#ifdef BDSBASE
+ConVar tf_mm_next_map_vote_time("tf_mm_next_map_vote_time", "15", FCVAR_REPLICATED);
+#else
+ConVar tf_mm_next_map_vote_time("tf_mm_next_map_vote_time", "30", FCVAR_REPLICATED);
+#endif
 
 
 static float g_fEternaweenAutodisableTime = 0.0f;
