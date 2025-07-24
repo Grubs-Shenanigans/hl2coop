@@ -42,7 +42,8 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game
-	- 
+	- #1439: Network player's handedness preference to spectators
+	- #1444: Hide intel upgrade hud when no intel is enabled
 
 Quiver Private Alpha 1.0.1:
 - Whitelisted the Back Scatter and Force-a-Nature.

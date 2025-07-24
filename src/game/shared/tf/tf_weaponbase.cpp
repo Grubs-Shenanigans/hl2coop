@@ -47,6 +47,9 @@
 #include "tf_gamestats.h"
 // Client specific.
 #else
+#ifdef BDSBASE
+#include "c_baseviewmodel.h"
+#endif
 #include "c_tf_player.h"
 #include "tf_viewmodel.h"
 #include "hud_crosshair.h"
@@ -91,7 +94,9 @@ extern ConVar tf_weapon_criticals_bucket_bottom;
 
 #ifdef CLIENT_DLL
 extern ConVar cl_crosshair_file;
+#ifndef BDSBASE
 extern ConVar cl_flipviewmodels;
+#endif
 #endif
 
 //=============================================================================
@@ -5860,7 +5865,11 @@ bool CTFWeaponBase::IsViewModelFlipped( void )
 		return true;
 	}
 #else
+#ifdef BDSBASE
+	if (m_bFlipViewModel != TeamFortress_ShouldFlipClientViewModel())
+#else
 	if ( m_bFlipViewModel != cl_flipviewmodels.GetBool() )
+#endif
 	{
 		return true;
 	}
@@ -7045,7 +7054,11 @@ void CTFWeaponBase::AddStatTrakModel( CEconItemView *pItem, int nStatTrakType, A
 				pStatTrakEnt->m_nSkin = nSkin;
 				m_viewmodelStatTrakAddon = pStatTrakEnt;
 				
+#ifdef BDSBASE
+				if (TeamFortress_ShouldFlipClientViewModel())
+#else
 				if ( cl_flipviewmodels.GetBool() )
+#endif
 				{
 					pStatTrakEnt->SetBodygroup( 1, 1 ); // use a special mirror-image stattrak module that appears correct for lefties
 					flScale *= -1.0f;					// flip scale

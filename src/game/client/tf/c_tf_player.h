@@ -702,6 +702,10 @@ public:
 	int				m_iSpawnCounter;
 	bool			m_bArenaSpectator;
 
+#ifdef BDSBASE
+	bool			m_bFlipViewModels;
+#endif
+
 	bool			m_bIsMiniBoss;
 	bool			m_bIsABot;
 	int				m_nBotSkill;

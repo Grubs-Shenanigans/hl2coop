@@ -19,6 +19,9 @@
 #include "cdll_util.h"
 
 #if defined(TF_CLIENT_DLL)
+#ifdef BDSBASE
+#include "c_baseviewmodel.h"
+#endif
 #include "c_tf_player.h"
 #include "tf_gamerules.h"
 #include "c_playerresource.h"
@@ -91,8 +94,10 @@ BEGIN_ENT_SCRIPTDESC( CEconEntity, CBaseAnimating, "Econ Entity" )
 END_SCRIPTDESC();
 #endif
 
+#ifndef BDSBASE
 #ifdef TF_CLIENT_DLL
 extern ConVar cl_flipviewmodels;
+#endif
 #endif
 
 
@@ -857,7 +862,11 @@ int C_ViewmodelAttachmentModel::InternalDrawModel( int flags )
 {
 #ifdef TF_CLIENT_DLL
 	CMatRenderContextPtr pRenderContext( materials );
+#ifdef BDSBASE
+	if (TeamFortress_ShouldFlipClientViewModel() != m_bAlwaysFlip)
+#else
 	if ( cl_flipviewmodels.GetBool() != m_bAlwaysFlip )
+#endif
 	{
 		pRenderContext->CullMode( MATERIAL_CULLMODE_CW );
 	}

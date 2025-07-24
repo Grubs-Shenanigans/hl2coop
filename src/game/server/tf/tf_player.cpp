@@ -881,6 +881,9 @@ IMPLEMENT_SERVERCLASS_ST( CTFPlayer, DT_TFPlayer )
 
 	SendPropFloat( SENDINFO( m_flMvMLastDamageTime ), 16, SPROP_ROUNDUP ),
 	SendPropInt( SENDINFO( m_iSpawnCounter ) ),
+#ifdef BDSBASE
+	SendPropBool(SENDINFO(m_bFlipViewModels)),
+#endif
 	SendPropBool( SENDINFO( m_bArenaSpectator ) ),
 	SendPropFloat( SENDINFO( m_flHeadScale ) ),
 	SendPropFloat( SENDINFO( m_flTorsoScale ) ),

@@ -1055,7 +1055,11 @@ public:
 #endif
 	int					m_iOldStunFlags;
 
+#ifdef BDSBASE
+	CNetworkVar(bool, m_bFlipViewModels);
+#else
 	bool				m_bFlipViewModels;
+#endif
 	int					m_iBlastJumpState;
 	float				m_flBlastJumpLandTime;
 	bool				m_bTakenBlastDamageSinceLastMovement;

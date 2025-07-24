@@ -19,6 +19,9 @@
 #include <KeyValues.h>
 #include "hltvcamera.h"
 #ifdef TF_CLIENT_DLL
+#ifdef BDSBASE
+	#include "c_tf_player.h"
+#endif
 	#include "tf_weaponbase.h"
 #endif
 
@@ -91,6 +94,24 @@ void FormatViewModelAttachment( Vector &vOrigin, bool bInverse )
 	vOrigin = pViewSetup->origin + vOut;
 }
 
+#ifdef BDSBASE
+#ifdef TF_CLIENT_DLL
+bool TeamFortress_ShouldFlipClientViewModel(void)
+{
+	if (IsLocalPlayerSpectator())
+	{
+		// Use spectated client's handedness preference
+		C_TFPlayer* pSpecTarget = ToTFPlayer(UTIL_PlayerByIndex(GetSpectatorTarget()));
+		if (pSpecTarget)
+		{
+			return pSpecTarget->m_bFlipViewModels;
+		}
+	}
+
+	return cl_flipviewmodels.GetBool();
+}
+#endif //TF_CLIENT_DLL
+#endif
 
 void C_BaseViewModel::FormatViewModelAttachment( int nAttachment, matrix3x4_t &attachmentToWorld )
 {
@@ -211,7 +232,11 @@ bool C_BaseViewModel::ShouldFlipViewModel()
 	CBaseCombatWeapon *pWeapon = m_hWeapon.Get();
 	if ( pWeapon )
 	{
+#ifdef BDSBASE
+		return pWeapon->m_bFlipViewModel != TeamFortress_ShouldFlipClientViewModel();
+#else
 		return pWeapon->m_bFlipViewModel != cl_flipviewmodels.GetBool();
+#endif
 	}
 #ifdef BDSBASE
 	return cl_flipviewmodels.GetBool(); // hack for scout ball projeciles to have properly flipped viewmodels
