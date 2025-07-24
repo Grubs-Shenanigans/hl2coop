@@ -1627,21 +1627,28 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 	bool bIsReskin = false;
 
 	CEconItemView* pItemInSlot = GetDefaultItemInLoadout(iClass, iSlot);
-	CTFItemDefinition* pItemData = pItemInSlot->GetStaticData();
-	bIsReskin = pItemData->IsAllowed();
+	if (pItemInSlot)
+	{
+		CTFItemDefinition* pItemData = pItemInSlot->GetStaticData();
+
+		if (pItemData)
+		{
+			bIsReskin = pItemData->IsAllowed();
 
 #ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
-	bool bIsWeapon = ((iSlot == LOADOUT_POSITION_PRIMARY) ||
-					(iSlot == LOADOUT_POSITION_SECONDARY) ||
-					(iSlot == LOADOUT_POSITION_MELEE) ||
-					(iSlot == LOADOUT_POSITION_PDA) ||
-					(iSlot == LOADOUT_POSITION_PDA2) ||
-					(iSlot == LOADOUT_POSITION_BUILDING));
+			bool bIsWeapon = ((iSlot == LOADOUT_POSITION_PRIMARY) ||
+				(iSlot == LOADOUT_POSITION_SECONDARY) ||
+				(iSlot == LOADOUT_POSITION_MELEE) ||
+				(iSlot == LOADOUT_POSITION_PDA) ||
+				(iSlot == LOADOUT_POSITION_PDA2) ||
+				(iSlot == LOADOUT_POSITION_BUILDING));
 
-	skipAcc = (!bIsReskin && bIsWeapon);
+			skipAcc = (!bIsReskin && bIsWeapon);
 #else
-	skipAcc = !bIsReskin;
+			skipAcc = !bIsReskin;
 #endif
+		}
+	}
 #endif
 
 	if (skipAcc)

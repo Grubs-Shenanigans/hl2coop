@@ -638,6 +638,30 @@ DESCRIPTION INFO_OPTIONS
 		{ CATEGORY }
 	}
 	
+	"cl_backgroundmap_music"
+	{
+		"#TF_backgroundmap_music"
+		"#Tooltip_backgroundmap_music"
+		{ BOOL }
+		{ "1" }
+	}
+
+	"cl_backgroundmap_music_volume"
+	{
+		"#TF_backgroundmap_music_vol"
+		"#Tooltip_backgroundmap_music_vol"
+		{ SLIDER 0 1 }
+		{ "1.0" }
+	}
+	
+	"cl_backgroundmap_music_duck"
+	{
+		"#TF_backgroundmap_music_mix"
+		"#Tooltip_backgroundmap_music_mix"
+		{ SLIDER 0 1 }
+		{ "0.65" }
+	}
+	
 	"hud_takesshots"
 	{
 		"#game_takesshots"

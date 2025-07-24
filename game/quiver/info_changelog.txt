@@ -36,6 +36,9 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Fixed another bug where the TDM HUD is overlayed over other gamemode's HUD elements.
 - The Sword no longer pierces through armor, in favor of it having a 30% damage bonus against armor.
 - Fixed the custom folder not mounting.
+- Re-enabled the unused background map.
+- Added support for main menu music in map backgrounds.
+- Changed qf_allow_tdm to qf_tdm_enable to be more in line with the other TDM commands.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game

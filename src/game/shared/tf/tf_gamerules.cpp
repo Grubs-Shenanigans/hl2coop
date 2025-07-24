@@ -727,7 +727,7 @@ ConVar tf_killeater_demoshield_countotherkills("tf_killeater_demoshield_countoth
 #endif
 
 #if defined(QUIVER_DLL)
-ConVar qf_allow_tdm("qf_allow_tdm", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, all maps with an undefined game mode become Team Deathmatch maps.");
+ConVar qf_tdm_enable("qf_tdm_enable", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, all maps with an undefined game mode become Team Deathmatch maps.");
 ConVar qf_tdm_fraglimit("qf_tdm_fraglimit", "25", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "seperate value to set if mp_fraglimit isn't set");
 ConVar qf_tdm_scorewar("qf_tdm_scorewar", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, points will be removed on kill. i.e. if a RED player kills a BLU player, the BLU team score will go down by 1.");
 #endif
@@ -4463,7 +4463,7 @@ void CTFGameRules::Activate()
 		StringHasPrefix(STRING(gpGlobals->mapname), "tdm_") || 
 		StringHasPrefix(STRING(gpGlobals->mapname), "dm_"))
 	{
-		if (qf_allow_tdm.GetBool())
+		if (qf_tdm_enable.GetBool() && gpGlobals->eLoadType != MapLoad_Background)
 		{
 			// no fraglimit will disable it too.
 			if (qf_tdm_fraglimit.GetInt() > 0)

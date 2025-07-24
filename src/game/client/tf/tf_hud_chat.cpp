@@ -377,6 +377,11 @@ Color CHudChat::GetClientColor( int clientIndex )
 //-----------------------------------------------------------------------------
 bool CHudChat::IsVisible( void )
 {
+#ifdef BDSBASE
+	if (engine->IsLevelMainMenuBackground())
+		return false;
+#endif
+
 	if ( IsTakingAFreezecamScreenshot() )
 		return false;
 

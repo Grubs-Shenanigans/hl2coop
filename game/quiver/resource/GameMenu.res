@@ -10,7 +10,7 @@
 	"2"
 	{
 		"label" "#GameUI_GameMenu_Disconnect"
-		"command" "Disconnect"
+		"command" "engine disconnect;map_background background01"
 		"OnlyInGame" "1"
 		"OnlyInLegacyMode"	"1"
 	}
