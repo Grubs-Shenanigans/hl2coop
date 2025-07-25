@@ -433,7 +433,7 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 
 		int iHealed = pPlayer->TakeHealth(iHeal, iHealType);
 		// for bots, remove the sandvich to prevent it being eaten multiple times.
-		if (iHealed > 0 && !pPlayer->IsBot())
+		if (iHealed > 0)
 		{
 			CTF_GameStats.Event_PlayerHealedOther(pPlayer, iHealed);
 			bDrainAmmo = true;
@@ -444,7 +444,7 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 		{
 			int maxPrimary = pPlayer->GetMaxAmmo(TF_AMMO_PRIMARY);
 			int iAmmoGiven = pPlayer->GiveAmmo(maxPrimary * 0.25, TF_AMMO_PRIMARY, true);
-			if (iAmmoGiven > 0 && !pPlayer->IsBot())
+			if (iAmmoGiven > 0)
 			{
 				bDrainAmmo = true;
 			}
@@ -458,12 +458,17 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 			int maxArmor = pPlayer->GetMaxArmor();
 			pPlayer->IncrementArmorValue(maxArmor * 0.25, maxArmor);
 			int iArmorGiven = (pPlayer->ArmorValue() - oldArmor);
-			if (iArmorGiven > 0 && !pPlayer->IsBot())
+			if (iArmorGiven > 0)
 			{
 				bDrainAmmo = true;
 			}
 		}
 #endif
+	}
+
+	if (pPlayer->IsBot() || pPlayer->IsFakeClient())
+	{
+		bDrainAmmo = false;
 	}
 
 	// Drain ammo on the first bite that applied an effect
