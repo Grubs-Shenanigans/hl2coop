@@ -12826,6 +12826,12 @@ const char *CTFGameRules::GetKillingWeaponName( const CTakeDamageInfo &info, CTF
 	{
 		killer_weapon_name = "krampus_ranged";
 	}
+#ifdef BDSBASE
+	else if (info.GetDamageCustom() == TF_DMG_CUSTOM_TAUNTATK_TRICKSHOT)
+	{
+		killer_weapon_name = "tf_weapon_taunt_trickshot";
+	}
+#endif
 	else if ( info.GetDamageCustom() == TF_DMG_CUSTOM_THROWABLE ||
 			  info.GetDamageCustom() == TF_DMG_CUSTOM_THROWABLE_KILL )			// Throwables
 	{

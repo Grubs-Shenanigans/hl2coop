@@ -19711,7 +19711,11 @@ void CTFPlayer::DoTauntAttack( void )
 			}
 		}
 	}
+#ifdef BDSBASE
+	else if (iTauntAttack == TAUNTATK_HEAVY_HIGH_NOON || iTauntAttack == TAUNTATK_ENGINEER_TRICKSHOT)
+#else
 	else if ( iTauntAttack == TAUNTATK_HEAVY_HIGH_NOON )
+#endif
 	{
 		// Heavy "High Noon" attack
 		Vector vecForward;
@@ -19730,7 +19734,18 @@ void CTFPlayer::DoTauntAttack( void )
 			{
 				// Launch them up a little
 				AngleVectors( QAngle(-45, m_angEyeAngles[YAW], 0), &vecForward );
+#ifdef BDSBASE
+				int iCustomDamage = TF_DMG_CUSTOM_TAUNTATK_HIGH_NOON;
+
+				if (iTauntAttack == TAUNTATK_ENGINEER_TRICKSHOT)
+				{
+					iCustomDamage = TF_DMG_CUSTOM_TAUNTATK_TRICKSHOT;
+				}
+
+				pEnt->TakeDamage(CTakeDamageInfo(this, this, GetActiveTFWeapon(), vecForward * 25000, WorldSpaceCenter(), 500.0f, DMG_BULLET, iCustomDamage));
+#else
 				pEnt->TakeDamage( CTakeDamageInfo( this, this, GetActiveTFWeapon(), vecForward * 25000, WorldSpaceCenter(), 500.0f, DMG_BULLET, TF_DMG_CUSTOM_TAUNTATK_HIGH_NOON ) );
+#endif
 			}
 		}
 	}
