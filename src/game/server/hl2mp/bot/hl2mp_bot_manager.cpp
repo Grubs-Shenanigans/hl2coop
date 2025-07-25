@@ -206,6 +206,11 @@ void CHL2MPBotManager::MaintainBotQuota()
 	// new players can't spawn immediately after the round has been going for some time
 	if ( !GameRules() )
 		return;
+	
+#ifdef BDSBASE
+	if ( gpGlobals->eLoadType == MapLoad_Background )
+		return;
+#endif
 
 	// if it is not time to do anything...
 	if ( gpGlobals->curtime < m_flNextPeriodicThink )

@@ -9,12 +9,19 @@
 	}
 	"2"
 	{
-		"label" "#GameUI_GameMenu_Disconnect"
+		"label" "#GameUI_GameMenu_ReturnToMainMenu"
 		"command" "engine disconnect;map_background background01"
 		"OnlyInGame" "1"
 		"OnlyInLegacyMode"	"1"
 	}
 	"3"
+	{
+		"label" "#GameUI_GameMenu_Disconnect"
+		"command" "Disconnect"
+		"OnlyInGame" "1"
+		"OnlyInLegacyMode"	"1"
+	}
+	"4"
 	{
 		"label" "#GameUI_GameMenu_PlayerList"
 		"command" "OpenPlayerListDialog"
@@ -22,69 +29,69 @@
 		"OnlyInLegacyMode"	"1"
 	} 
 	
-	"4"
+	"5"
 	{
 		"label" "------------------------"
 		"OnlyInGame" "1"
 		"OnlyInLegacyMode"	"1"
 	}
 	
-	"5"
+	"6"
 	{
 		"label" "#GameUI_GameMenu_CharacterSetup"
 		"command" "engine open_charinfo"
 		"OnlyInLegacyMode"	"1"
 	}
-	"6"
+	"7"
 	{
 		"label" "#GameUI_GameMenu_Achievements"
 		"command" "OpenAchievementsDialog"
 		"OnlyInLegacyMode"	"1"
 	}
-	"7"
+	"8"
 	{
 		"label" "#GameUI_GameMenu_Options"
 		"command" "OpenOptionsDialog"
 		"OnlyInLegacyMode"	"1"
 	}
-	"8"
+	"9"
 	{
 		"label" "#GameUI_GameMenu_AdvancedOptions"
 		"command" "engine opentf2options"
 		"OnlyInLegacyMode"	"1"
 	}
 	
-	"9"
+	"10"
 	{
 		"label" "------------------------"
 		"OnlyInLegacyMode"	"1"
 	}
 	
-	"10"
+	"11"
 	{
 		"label" "#GameUI_GameMenu_FindServers" 
 		"command" "OpenServerBrowser"
 		"OnlyInLegacyMode"	"1"
 	} 
-	"11"
+	"12"
 	{
 		"label" "#GameUI_GameMenu_CreateServer"
 		"command" "OpenCreateMultiplayerGameDialog"
 		"OnlyInLegacyMode"	"1"
 	}
-	"12"
+	"13"
 	{
 		"label"	"#GameUI_GameMenu_OfflinePractice"
 		"command" "engine training_showdlg"
 		"OnlyInLegacyMode"	"1"
 	}
-	"12"
+	"14"
 	{
 		"label"	"#GameUI_LoadCommentary"
 		"command" "OpenLoadSingleplayerCommentaryDialog"
 		"OnlyInLegacyMode"	"1"
 	}
-	"13"
+	"15"
 	{
 		"label" "#GameUI_Controller"
 		"command" "OpenControllerDialog"
@@ -92,20 +99,20 @@
 		"OnlyInLegacyMode"	"1"
 	}
 	
-	"14"
+	"16"
 	{
 		"label" "------------------------"
 		"OnlyInLegacyMode"	"1"
 	}
 	
-	"15"
+	"17"
 	{
 		"label" "#GameUI_GameMenu_CallVote"
 		"command" "engine open_vote"
 		"OnlyInGame" "1"
 		"OnlyInLegacyMode"	"1"
 	} 
-	"16"
+	"18"
 	{
 		"label" "#GameUI_GameMenu_Quit"
 		"command" "Quit"
