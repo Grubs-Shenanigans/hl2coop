@@ -659,7 +659,7 @@ DESCRIPTION INFO_OPTIONS
 		"#TF_backgroundmap_music_mix"
 		"#Tooltip_backgroundmap_music_mix"
 		{ SLIDER 0 1 }
-		{ "0.65" }
+		{ "1.0" }
 	}
 	
 	"hud_takesshots"
@@ -701,6 +701,18 @@ DESCRIPTION INFO_OPTIONS
 		{ BOOL }
 		{ "0" }
 	}	
+	
+	"viewmodel_goldsource_stylebob"
+	{
+		"#GameUI_ViewModelBob_Goldsrc"
+		"#Tooltip_ViewModelBob_Goldsrc"
+		{ LIST
+			"#gameui_disabled" "0"
+			"#GameUI_ViewModelBob_Goldsrc_Steam" "1"
+			"#GameUI_ViewModelBob_Goldsrc_WON" "2"
+		}
+		{ "0" }
+	}
 	
 	"cl_spraydisable"
 	{

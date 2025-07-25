@@ -346,7 +346,7 @@ static ConVar s_cl_class("cl_class", "default", FCVAR_USERINFO|FCVAR_ARCHIVE, "D
 #ifdef BDSBASE
 ConVar cl_backgroundmap_music("cl_backgroundmap_music", "1", FCVAR_ARCHIVE);
 ConVar cl_backgroundmap_music_volume("cl_backgroundmap_music_volume", "1.0", FCVAR_ARCHIVE);
-ConVar cl_backgroundmap_music_duck("cl_backgroundmap_music_duck", "0.65", FCVAR_ARCHIVE);
+ConVar cl_backgroundmap_music_duck("cl_backgroundmap_music_duck", "1.0", FCVAR_ARCHIVE);
 
 #ifdef BDSBASE_DISCORD
 #ifdef WIN32

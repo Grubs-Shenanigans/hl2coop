@@ -42,6 +42,7 @@ Quiver Private Alpha 1.1.0 (WIP):
 - All Australium weapons will now turn players gold.
 - Set tf_mm_next_map_vote_time from 30s to 15s (From the Summer 2025 update).
 - Updated the item schema to support Summer 2025 items.
+- Added Goldsource-styled viewmodel bobbing.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game

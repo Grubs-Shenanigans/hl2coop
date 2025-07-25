@@ -657,7 +657,7 @@ DESCRIPTION INFO_OPTIONS
 		"#TF_backgroundmap_music_mix"
 		"#Tooltip_backgroundmap_music_mix"
 		{ SLIDER 0 1 }
-		{ "0.65" }
+		{ "1.0" }
 	}
 	
 	"hud_takesshots"

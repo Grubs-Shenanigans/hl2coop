@@ -84,6 +84,10 @@ ConVar tf_scout_hype_pep_min_damage( "tf_scout_hype_pep_min_damage", "5.0", FCVA
 
 ConVar tf_weapon_criticals_nopred( "tf_weapon_criticals_nopred", "1.0", FCVAR_REPLICATED | FCVAR_CHEAT );
 
+#if defined(QUIVER_DLL)
+ConVar viewmodel_goldsource_stylebob("viewmodel_goldsource_stylebob", "0", FCVAR_ARCHIVE | FCVAR_REPLICATED);
+#endif
+
 #ifdef _DEBUG
 ConVar tf_weapon_criticals_anticheat( "tf_weapon_criticals_anticheat", "1.0", FCVAR_REPLICATED );
 ConVar tf_weapon_criticals_debug( "tf_weapon_criticals_debug", "0.0", FCVAR_REPLICATED );
@@ -4953,18 +4957,48 @@ void AddViewModelBobHelper( Vector &origin, QAngle &angles, BobState_t *pBobStat
 	Vector	forward, right;
 	AngleVectors( angles, &forward, &right, NULL );
 
+#if defined(QUIVER_DLL)
+	if (viewmodel_goldsource_stylebob.GetInt() == 0)
+	{
+		// Apply bob, but scaled down to 40%
+		VectorMA(origin, pBobState->m_flVerticalBob * 0.4f, forward, origin);
+
+		// Z bob a bit more
+		origin[2] += pBobState->m_flVerticalBob * 0.1f;
+
+		// bob the angles
+		angles[ROLL] += pBobState->m_flVerticalBob * 0.5f;
+		angles[PITCH] -= pBobState->m_flVerticalBob * 0.4f;
+		angles[YAW] -= pBobState->m_flLateralBob * 0.3f;
+
+		VectorMA(origin, pBobState->m_flLateralBob * 0.2f, right, origin);
+	}
+	else
+	{
+		if (viewmodel_goldsource_stylebob.GetInt() > 1)
+		{
+			// throw in a little tilt.
+			angles[ROLL] -= pBobState->m_flVerticalBob * 1;
+			angles[PITCH] -= pBobState->m_flVerticalBob * 0.3;
+			angles[YAW] -= pBobState->m_flVerticalBob * 0.5;
+		}
+
+		VectorMA(origin, pBobState->m_flVerticalBob * 0.8f, forward, origin);
+	}
+#else
 	// Apply bob, but scaled down to 40%
-	VectorMA( origin, pBobState->m_flVerticalBob * 0.4f, forward, origin );
+	VectorMA(origin, pBobState->m_flVerticalBob * 0.4f, forward, origin);
 
 	// Z bob a bit more
 	origin[2] += pBobState->m_flVerticalBob * 0.1f;
 
 	// bob the angles
-	angles[ ROLL ]	+= pBobState->m_flVerticalBob * 0.5f;
-	angles[ PITCH ]	-= pBobState->m_flVerticalBob * 0.4f;
-	angles[ YAW ]	-= pBobState->m_flLateralBob  * 0.3f;
+	angles[ROLL] += pBobState->m_flVerticalBob * 0.5f;
+	angles[PITCH] -= pBobState->m_flVerticalBob * 0.4f;
+	angles[YAW] -= pBobState->m_flLateralBob * 0.3f;
 
-	VectorMA( origin, pBobState->m_flLateralBob * 0.2f, right, origin );
+	VectorMA(origin, pBobState->m_flLateralBob * 0.2f, right, origin);
+#endif
 }
 
 //-----------------------------------------------------------------------------
