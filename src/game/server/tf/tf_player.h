@@ -662,7 +662,29 @@ public:
 	bool IsZombieCostumeEquipped( void ) const;
 	bool HasWearablesEquipped( const CSchemaItemDefHandle *ppItemDefs, int nWearables ) const;
 
+#ifdef BDSBASE
+#ifdef BDSBASE_CUSTOM_SCHEMA
+	CEconItemView* GetEquippedItemForLoadoutSlot(int iLoadoutSlot) {
+		auto itemID = m_EquippedLoadoutItemIndices[iLoadoutSlot];
+		CEconItemView* pItem;
+		if (itemID < 100000)
+		{
+			int count = TFInventoryManager()->GetSoloItemCount();
+			for (int i = 0; i < count; i++)
+			{
+				pItem = TFInventoryManager()->GetSoloItem(i);
+				if (pItem && pItem->GetItemDefIndex() == itemID)
+				{
+					return pItem;
+				}
+			}
+		}
+		return m_Inventory.GetInventoryItemByItemID(m_EquippedLoadoutItemIndices[iLoadoutSlot]);
+	}
+#else
 	CEconItemView *GetEquippedItemForLoadoutSlot( int iLoadoutSlot ){ return m_Inventory.GetInventoryItemByItemID( m_EquippedLoadoutItemIndices[iLoadoutSlot] ); }
+#endif
+#endif
 	CBaseEntity *GetEntityForLoadoutSlot( int iLoadoutSlot, bool bForceCheckWearable = false );			//Gets whatever entity is associated with the loadout slot (wearable or weapon)
 	CTFWearable *GetEquippedWearableForLoadoutSlot( int iLoadoutSlot );
 

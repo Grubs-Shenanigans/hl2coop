@@ -5089,7 +5089,13 @@ void C_TFPlayer::UpdateTauntItem()
 	{
 		int iClass = GetPlayerClass()->GetClassIndex();
 
+#ifdef BDSBASE
+#ifdef BDSBASE_CUSTOM_SCHEMA
+		CEconItemView* pMiscItemView = Inventory() ? Inventory()->GetItemInLoadout(iClass, m_nActiveTauntSlot) : NULL;
+#else
 		CEconItemView *pMiscItemView = Inventory() ? Inventory()->GetCacheServerItemInLoadout( iClass, m_nActiveTauntSlot ) : NULL;
+#endif
+#endif
 		if ( pMiscItemView )
 		{
 			m_TauntEconItemView = *pMiscItemView;
