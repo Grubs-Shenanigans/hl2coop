@@ -4949,6 +4949,10 @@ static void RemoveResistParticle( CTFPlayer* pPlayer, medigun_resist_types_t nRe
 	if ( bKeep )
 		return;
 	
+#ifdef BDSBASE
+	pPlayer->RemoveOverheadEffect(s_pszRedResistOverheadEffectName[nResistType], true);
+	pPlayer->RemoveOverheadEffect(s_pszBlueResistOverheadEffectName[nResistType], true);
+#else
 	if ( pPlayer->m_Shared.GetDisplayedTeam() == TF_TEAM_RED )
 	{
 		pPlayer->RemoveOverheadEffect( s_pszRedResistOverheadEffectName[ nResistType ], true );
@@ -4957,6 +4961,7 @@ static void RemoveResistParticle( CTFPlayer* pPlayer, medigun_resist_types_t nRe
 	{
 		pPlayer->RemoveOverheadEffect( s_pszBlueResistOverheadEffectName[ nResistType ], true );
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
