@@ -81,7 +81,7 @@ void ImpactCallback( const CEffectData &data )
 			if (pPlayer->IsServerUsingTheFunnyMVMCvar())
 			{
 				bPlaySound = true;
-				bIsRobotImpact = true
+				bIsRobotImpact = true;
 			}
 		}
 #endif
