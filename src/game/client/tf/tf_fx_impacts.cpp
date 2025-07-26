@@ -75,6 +75,17 @@ void ImpactCallback( const CEffectData &data )
 			bPlaySound = (MainViewOrigin() - vecOrigin).LengthSqr() < (1024*1024);
 		}
 
+#ifdef BDSBASE
+		if (pPlayer)
+		{
+			if (pPlayer->IsServerUsingTheFunnyMVMCvar())
+			{
+				bPlaySound = true;
+				bIsRobotImpact = true
+			}
+		}
+#endif
+
 		// If we hit, perform our custom effects and play the sound
 		if ( Impact( vecOrigin, vecStart, iMaterial, iDamageType, iHitbox, pEntity, tr ) )
 		{

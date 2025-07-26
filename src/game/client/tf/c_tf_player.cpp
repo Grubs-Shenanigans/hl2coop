@@ -1415,6 +1415,13 @@ void C_TFRagdoll::OnDataChanged( DataUpdateType_t type )
 						bBlood = false;
 					}
 
+#ifdef BDSBASE
+					if (pPlayer && pPlayer->IsServerUsingTheFunnyMVMCvar())
+					{
+						bBlood = false;
+					}
+#endif
+
 					if ( bBlood )
 					{
 						ParticleProp()->Create( "blood_decap", PATTACH_POINT_FOLLOW, "head" );
@@ -6008,7 +6015,6 @@ void C_TFPlayer::StopTauntSoundLoop()
 	}
 }
 
-
 //-----------------------------------------------------------------------------
 // Purpose: Indicates whether the spy's cigarette should be burning or not.
 //-----------------------------------------------------------------------------
@@ -6032,8 +6038,13 @@ bool C_TFPlayer::CanLightCigarette( void )
 	}
 
 	// don't light for MvM Spy robots
-	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS )
+	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS)
 		return false;
+
+#ifdef BDSBASE
+	if (IsServerUsingTheFunnyMVMCvar())
+		return false;
+#endif
 
 	// Don't light if we are invis.
 	if ( GetPercentInvisible() > 0 )
@@ -11071,9 +11082,14 @@ void C_TFPlayer::UpdateKillStreakEffects( int iCount, bool bKillScored /* = fals
 void C_TFPlayer::UpdateMVMEyeGlowEffect( bool bVisible )
 {
 	if ( !TFGameRules() || !TFGameRules()->IsMannVsMachineMode() || GetTeamNumber() != TF_TEAM_PVE_INVADERS )
+#ifdef BDSBASE
 	{
-		return;
+		if (!IsServerUsingTheFunnyMVMCvar())
+			return;
 	}
+#else
+	return;
+#endif
 	
 	// Remove the eye glows
 	ParticleProp()->StopParticlesNamed( "bot_eye_glow", true );
@@ -11083,7 +11099,11 @@ void C_TFPlayer::UpdateMVMEyeGlowEffect( bool bVisible )
 	if ( bVisible )
 	{
 		// Set color based on skill
+#ifdef BDSBASE
+		Vector vColor = m_nBotSkill >= 2 ? Vector( 255, 180, 36 ) : (GetTeamNumber() == TF_TEAM_PVE_DEFENDERS ? Vector(255, 0, 0) : Vector(0, 240, 255));
+#else
 		Vector vColor = m_nBotSkill >= 2 ? Vector( 255, 180, 36 ) : Vector( 0, 240, 255 );
+#endif
 
 		// Create the effects
 		int nAttachement = LookupAttachment( IsMiniBoss() ? "eye_boss_1" : "eye_1" );

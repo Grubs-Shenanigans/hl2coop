@@ -728,6 +728,7 @@ ConVar tf_spawn_glows_duration( "tf_spawn_glows_duration", "10", FCVAR_NOTIFY | 
 #ifdef BDSBASE
 ConVar tf_allow_pyroland("tf_allow_pyroland", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable Pyroland filters on the current map.");
 ConVar tf_killeater_demoshield_countotherkills("tf_killeater_demoshield_countotherkills", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Allows Strange Demoman shields to count kills from other weapons.");
+ConVar tf_bot_force_robot_models("tf_bot_force_robot_models", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "");
 #endif
 
 #if defined(QUIVER_DLL)
@@ -3622,10 +3623,14 @@ void CTFGameRules::Precache( void )
 		CMerasmus::PrecacheMerasmus();
 	}
 
+#ifdef BDSBASE
+	CTFPlayer::PrecacheMvM();
+#else
 	if ( StringHasPrefix( STRING( gpGlobals->mapname ), "mvm_" ) )
 	{
 		CTFPlayer::PrecacheMvM();
 	}
+#endif
 
 	CTFPlayer::m_bTFPlayerNeedsPrecache = true;
 }

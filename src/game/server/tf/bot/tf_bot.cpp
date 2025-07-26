@@ -1463,7 +1463,10 @@ CTFBot::~CTFBot()
 	m_suspectedSpyVector.PurgeAndDeleteElements();
 
 #ifdef BDSBASE
-	vecSavedRandomLoadout.RemoveAll();
+	if (!vecSavedRandomLoadout.IsEmpty())
+	{
+		vecSavedRandomLoadout.RemoveAll();
+	}
 #endif
 }
 
@@ -1510,16 +1513,40 @@ void CTFBot::Spawn()
 	GetVisionInterface()->ForgetAllKnownEntities();
 
 #ifdef BDSBASE
-	if ((tf_bot_difficulty.GetInt() == CTFBot::UNDEFINED || tf_bot_difficulty.GetInt() > CTFBot::EXPERT) && m_difficulty == CTFBot::UNDEFINED)
+	if (TFGameRules() && !TFGameRules()->IsMannVsMachineMode())
 	{
-		int m_nRandomSeed = RandomInt(0, 9999);
-		CUniformRandomStream randomize;
-		randomize.SetSeed(m_nRandomSeed);
+		if ((tf_bot_difficulty.GetInt() == CTFBot::UNDEFINED || tf_bot_difficulty.GetInt() > CTFBot::EXPERT) && m_difficulty == CTFBot::UNDEFINED)
+		{
+			int m_nRandomSeed = RandomInt(0, 9999);
+			CUniformRandomStream randomize;
+			randomize.SetSeed(m_nRandomSeed);
 
-		SetDifficulty((CTFBot::DifficultyType)randomize.RandomInt(CTFBot::EASY, CTFBot::EXPERT));
+			SetDifficulty((CTFBot::DifficultyType)randomize.RandomInt(CTFBot::EASY, CTFBot::EXPERT));
+		}
+
+		DevMsg("%s chooses skill %s\n", GetPlayerName(), DifficultyLevelToString(m_difficulty));
+
+		if (IsServerUsingTheFunnyMVMCvar())
+		{
+			// use the nifty new robot model
+			int nClassIndex = (GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED);
+			if (nClassIndex >= TF_CLASS_SCOUT && nClassIndex <= TF_CLASS_ENGINEER)
+			{
+				if (g_pFullFileSystem->FileExists(g_szBotModels[nClassIndex]))
+				{
+					GetPlayerClass()->SetCustomModel(g_szBotModels[nClassIndex], USE_CLASS_ANIMATIONS);
+					UpdateModel();
+					SetBloodColor(DONT_BLEED);
+				}
+			}
+		}
+		else
+		{
+			GetPlayerClass()->SetCustomModel(NULL);
+			UpdateModel();
+			SetBloodColor(BLOOD_COLOR_RED);
+		}
 	}
-
-	DevMsg("%s chooses skill %s\n", GetPlayerName(), DifficultyLevelToString(m_difficulty));
 #endif
 }
 
@@ -1538,6 +1565,30 @@ void CTFBot::HandleCommand_JoinClass(const char* pClassName, bool bAllowSpawn)
 	BaseClass::HandleCommand_JoinClass(pClassName, bAllowSpawn);
 
 	m_InitialLoadoutLoadTimer.Start(RandomFloat(TFBOT_MIN_LOADOUT_WAIT, TFBOT_MAX_LOADOUT_WAIT) + TFBOT_CLASSSWITCH_LOADOUT_DELAY);
+
+	if (TFGameRules() && !TFGameRules()->IsMannVsMachineMode())
+	{
+		if (IsServerUsingTheFunnyMVMCvar())
+		{
+			// use the nifty new robot model
+			int nClassIndex = (GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED);
+			if (nClassIndex >= TF_CLASS_SCOUT && nClassIndex <= TF_CLASS_ENGINEER)
+			{
+				if (g_pFullFileSystem->FileExists(g_szBotModels[nClassIndex]))
+				{
+					GetPlayerClass()->SetCustomModel(g_szBotModels[nClassIndex], USE_CLASS_ANIMATIONS);
+					UpdateModel();
+					SetBloodColor(DONT_BLEED);
+				}
+			}
+		}
+		else
+		{
+			GetPlayerClass()->SetCustomModel(NULL);
+			UpdateModel();
+			SetBloodColor(BLOOD_COLOR_RED);
+		}
+	}
 }
 #endif
 
@@ -4663,6 +4714,9 @@ const CEconItemDefinition* CTFBot::GiveRandomItemEx(loadout_positions_t loadoutP
 
 void CTFBot::SelectRandomizedLoadout(void)
 {
+	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
+		return;
+
 	// roll weapons first
 	for (int iSlot = LOADOUT_POSITION_PRIMARY; iSlot <= LOADOUT_POSITION_PDA2; ++iSlot)
 	{
@@ -4750,6 +4804,9 @@ void TFBotGenerateAndWearItem(CTFBot* pBot, CEconItemView* pItem)
 
 void CTFBot::GiveSavedLoadout(void)
 {
+	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
+		return;
+
 	for (int i = 0; i < vecSavedRandomLoadout.Count(); ++i)
 	{
 		if (vecSavedRandomLoadout[i])
@@ -4770,6 +4827,9 @@ void CTFBot::GiveSavedLoadout(void)
 
 void CTFBot::HandleLoadout(void)
 {
+	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
+		return;
+
 	bool bLoggedIntoSteam = steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn();
 	if (bLoggedIntoSteam && tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
 	{
@@ -4792,6 +4852,9 @@ void CTFBot::HandleLoadout(void)
 
 void CTFBot::ResetLoadout(void)
 {
+	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
+		return;
+
 	bool bLoggedIntoSteam = steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn();
 	if (bLoggedIntoSteam && tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
 	{

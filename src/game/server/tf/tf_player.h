@@ -196,6 +196,7 @@ public:
 	virtual void		CommitSuicide( bool bExplode = false, bool bForce = false );
 #ifdef BDSBASE
 	virtual void		CommitSuicideWithCustomRagdoll(int m_iCustomRagdoll = 0);
+	virtual bool		IsServerUsingTheFunnyMVMCvar(void);
 #endif
 
 	// Combats

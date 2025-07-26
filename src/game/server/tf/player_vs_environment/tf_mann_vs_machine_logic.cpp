@@ -81,6 +81,10 @@ void CMannVsMachineLogic::Update( void )
 		m_populationManager->Update();
 	}
 
+#ifdef BDSBASE
+	tf_bot_force_robot_models.SetValue(0);
+#endif
+
 	// we don't need to run this check as often as we're calling our update() function
 	if ( m_flNextAlarmCheck < gpGlobals->curtime )
 	{

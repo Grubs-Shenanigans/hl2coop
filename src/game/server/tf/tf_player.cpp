@@ -9874,7 +9874,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 					pRandomInternalOrgan->KeyValue("origin", buf);
 					Q_snprintf(buf, sizeof(buf), "%.10f %.10f %.10f", GetAbsAngles().x, GetAbsAngles().y, GetAbsAngles().z);
 					pRandomInternalOrgan->KeyValue("angles", buf);
-					if (TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && BloodColor() == DONT_BLEED)
+					if (IsServerUsingTheFunnyMVMCvar() || (TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && BloodColor() == DONT_BLEED))
 					{
 						//robots don't have spleens....
 						pRandomInternalOrgan->KeyValue("model", "models/player/gibs/gibs_bolt.mdl");
@@ -11763,7 +11763,11 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			vDamagePos = WorldSpaceCenter();
 		}
 
+#ifdef BDSBASE
+		if (IsServerUsingTheFunnyMVMCvar() || (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS))
+#else
 		if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS )
+#endif
 		{
 			if ( ( IsMiniBoss() && static_cast< float >( GetHealth() ) / GetMaxHealth() > 0.3f ) || realDamage < 50 )
 			{
@@ -13362,6 +13366,7 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 	SetGibbedOnLastDeath( bGib );
 
 	bool bIsMvMRobot = TFGameRules()->IsMannVsMachineMode() && IsBot();
+
 	if ( bGib && !bIsMvMRobot && IsPlayerClass( TF_CLASS_SCOUT ) && RandomInt( 1, 100 ) <= SCOUT_ADD_BIRD_ON_GIB_CHANCE )
 	{
 		Vector vecPos = WorldSpaceCenter();
@@ -16131,7 +16136,7 @@ void CTFPlayer::PainSound( const CTakeDamageInfo &info )
 		if ( !( pGround && pGround->IsPlayer() && m_Shared.CanFallStomp() ) )
 		{
 			TFPlayerClassData_t *pData = GetPlayerClass()->GetData();
-			if ( pData )
+			if (pData)
 			{
 #ifdef BDSBASE
 				CPASFilter filter(GetAbsOrigin());
@@ -16142,7 +16147,7 @@ void CTFPlayer::PainSound( const CTakeDamageInfo &info )
 				}
 
 				int nDeathSound = DEATH_SOUND_GENERIC;
-				if (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS)
+				if ((TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS))
 				{
 					nDeathSound = DEATH_SOUND_GENERIC_MVM;
 					if (IsMiniBoss())
@@ -16150,6 +16155,12 @@ void CTFPlayer::PainSound( const CTakeDamageInfo &info )
 						nDeathSound = DEATH_SOUND_GENERIC_GIANT_MVM;
 					}
 				}
+
+				if (IsServerUsingTheFunnyMVMCvar())
+				{
+					nDeathSound = DEATH_SOUND_GENERIC_MVM;
+				}
+
 				EmitSound(filter, entindex(), pData->GetDeathSound(nDeathSound));
 #else
 				EmitSound(pData->GetDeathSound(DEATH_SOUND_GENERIC));
@@ -16281,6 +16292,13 @@ void CTFPlayer::DeathSound( const CTakeDamageInfo &info )
 	{
 		nDeathSoundOffset = IsMiniBoss() ? DEATH_SOUND_GIANT_MVM_FIRST : DEATH_SOUND_MVM_FIRST;
 	}
+
+#ifdef BDSBASE
+	if (IsServerUsingTheFunnyMVMCvar())
+	{
+		nDeathSoundOffset = DEATH_SOUND_MVM_FIRST;
+	}
+#endif
 	
 	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && 
 		 GetTeamNumber() != TF_TEAM_PVE_INVADERS && !m_bGoingFeignDeath )
@@ -16336,7 +16354,11 @@ void CTFPlayer::DeathSound( const CTakeDamageInfo &info )
 //-----------------------------------------------------------------------------
 const char* CTFPlayer::GetSceneSoundToken( void )
 {
+#ifdef BDSBASE
+	if (IsServerUsingTheFunnyMVMCvar() || TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS )
+#else
 	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS )
+#endif
 	{
 		if ( IsMiniBoss() )
 		{
@@ -19720,7 +19742,20 @@ void CTFPlayer::DoTauntAttack( void )
 		// Heavy "High Noon" attack
 		Vector vecForward;
  		AngleVectors( EyeAngles(), &vecForward );
+
+#ifdef BDSBASE
+		int range = 500;
+
+		if (iTauntAttack == TAUNTATK_ENGINEER_TRICKSHOT)
+		{
+			//credit to ficool2
+			range = 175;
+		}
+
+		Vector vecEnd = EyePosition() + vecForward * range;
+#else
 		Vector vecEnd = EyePosition() + vecForward * 500;
+#endif
 
 		trace_t tr;
 		UTIL_TraceLine( EyePosition(), vecEnd, ( MASK_SOLID | CONTENTS_HITBOX ), this, COLLISION_GROUP_PLAYER, &tr );

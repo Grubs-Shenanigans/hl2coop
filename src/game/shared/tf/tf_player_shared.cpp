@@ -12439,7 +12439,11 @@ void CTFPlayer::SetStepSoundTime( stepsoundtimes_t iStepSoundTime, bool bWalking
 const char *CTFPlayer::GetOverrideStepSound( const char *pszBaseStepSoundName )
 {
 
+#ifdef BDSBASE
+	if (IsServerUsingTheFunnyMVMCvar() || (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && !IsMiniBoss() && !m_Shared.InCond(TF_COND_DISGUISED)))
+#else
 	if( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && !IsMiniBoss() && !m_Shared.InCond( TF_COND_DISGUISED ) )
+#endif
 	{
 		return "MVM.BotStep";
 	}
@@ -13241,6 +13245,11 @@ void CTFPlayer::PlayStepSound(Vector& vecOrigin, surfacedata_t* psurface, float 
 #endif
 
 	BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
+}
+
+bool CTFPlayer::IsServerUsingTheFunnyMVMCvar(void)
+{ 
+	return (TFGameRules() && !TFGameRules()->IsMannVsMachineMode() && m_bIsABot && tf_bot_force_robot_models.GetBool()); 
 }
 #endif
 

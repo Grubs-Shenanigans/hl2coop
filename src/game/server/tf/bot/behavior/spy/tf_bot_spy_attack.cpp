@@ -39,7 +39,6 @@ ActionResult< CTFBot >	CTFBotSpyAttack::OnStart( CTFBot *me, Action< CTFBot > *p
 	return Continue();
 }
 
-
 //---------------------------------------------------------------------------------------------
 ActionResult< CTFBot >	CTFBotSpyAttack::Update( CTFBot *me, float interval )
 {
@@ -218,7 +217,11 @@ ActionResult< CTFBot >	CTFBotSpyAttack::Update( CTFBot *me, float interval )
 						isMovingTowardVictim = false;
 					}
 				}
+#ifdef BDSBASE
+				else if (me->IsServerUsingTheFunnyMVMCvar() || TFGameRules()->IsMannVsMachineMode())
+#else
 				else if ( TFGameRules()->IsMannVsMachineMode() )
+#endif
 				{
 					if ( m_chuckleTimer.IsElapsed() )
 					{

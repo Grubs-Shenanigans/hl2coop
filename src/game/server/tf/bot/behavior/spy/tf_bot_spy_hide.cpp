@@ -40,7 +40,6 @@ ActionResult< CTFBot >	CTFBotSpyHide::OnStart( CTFBot *me, Action< CTFBot > *pri
 	return Continue();
 }
 
-
 //---------------------------------------------------------------------------------------------
 ActionResult< CTFBot >	CTFBotSpyHide::Update( CTFBot *me, float interval )
 {
@@ -71,10 +70,10 @@ ActionResult< CTFBot >	CTFBotSpyHide::Update( CTFBot *me, float interval )
 	{
 		m_talkTimer.Start( RandomFloat( 5.0f, 10.0f ) );
 #ifdef BDSBASE
-		if (TFGameRules()->IsMannVsMachineMode() && me->GetTeamNumber() == TF_TEAM_PVE_INVADERS)
+		if (me->IsServerUsingTheFunnyMVMCvar() || (TFGameRules()->IsMannVsMachineMode() && me->GetTeamNumber() == TF_TEAM_PVE_INVADERS))
 		{
 			me->EmitSound("Spy.MVM_TeaseVictim");
-	}
+		}
 		else
 		{
 			me->EmitSound("Spy.TeaseVictim");
