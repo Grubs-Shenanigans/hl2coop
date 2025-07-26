@@ -237,7 +237,9 @@ ConVar tf_highfive_height_tolerance( "tf_highfive_height_tolerance", "12", FCVAR
 ConVar tf_highfive_debug( "tf_highfive_debug", "0", FCVAR_NONE, "Turns on some console spew for debugging high five issues." );
 
 #ifdef BDSBASE
-ConVar tf_allow_econ_tauntkill("tf_allow_econ_tauntkill", "0", FCVAR_NOTIFY, "Allow equippable taunts to tauntkill.");
+ConVar tf_allow_econ_tauntkill("tf_allow_econ_tauntkill", "1", FCVAR_NOTIFY, "Allow equippable taunts to tauntkill.");
+//new range is 175 (credit to ficool2), old range is 500.
+ConVar tf_tauntkill_trickshot_range("tf_tauntkill_trickshot_range", "175", FCVAR_NOTIFY, "Alows you to use the old or new range values (or any values in between) of the range for the Texan Trickshot", true, 175, true, 500);
 #endif
 
 ConVar tf_test_teleport_home_fx( "tf_test_teleport_home_fx", "0", FCVAR_CHEAT );
@@ -19734,7 +19736,7 @@ void CTFPlayer::DoTauntAttack( void )
 		}
 	}
 #ifdef BDSBASE
-	else if (iTauntAttack == TAUNTATK_HEAVY_HIGH_NOON || iTauntAttack == TAUNTATK_ENGINEER_TRICKSHOT)
+	else if (iTauntAttack == TAUNTATK_HEAVY_HIGH_NOON || (tf_allow_econ_tauntkill.GetBool() && iTauntAttack == TAUNTATK_ENGINEER_TRICKSHOT))
 #else
 	else if ( iTauntAttack == TAUNTATK_HEAVY_HIGH_NOON )
 #endif
@@ -19748,8 +19750,7 @@ void CTFPlayer::DoTauntAttack( void )
 
 		if (iTauntAttack == TAUNTATK_ENGINEER_TRICKSHOT)
 		{
-			//credit to ficool2
-			range = 175;
+			range = tf_tauntkill_trickshot_range.GetInt();
 		}
 
 		Vector vecEnd = EyePosition() + vecForward * range;

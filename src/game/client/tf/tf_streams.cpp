@@ -19,6 +19,10 @@
 #include "bitmap/bitmap.h"
 #include "imageutils.h"
 
+#ifdef BDSBASE
+#include "confirm_dialog.h"
+#endif
+
 #include "tier2/fileutils.h"
 
 #include "checksum_sha1.h"
@@ -776,7 +780,19 @@ void CTFStreamListPanel::OnCommand( const char *command )
 	}
 	else if ( FStrEq( command, "view_more" ) )
 	{
-		vgui::system()->ShellExecute( "open", "https://www.twitch.tv/directory/game/Team%20Fortress%202" );
+#ifdef BDSBASE
+		//vgui::system()->ShellExecute( "open", "https://www.twitch.tv/directory/game/Team%20Fortress%202" );
+
+		ShowConfirmDialog("#TF_Watch_Streams_Title", "#TF_Watch_Streams_Text",
+			"#MessageBox_OK",
+			"#cancel", [](bool bConfirmed, void* pContext)
+			{
+				if (bConfirmed)
+					vgui::system()->ShellExecute("open", "https://www.twitch.tv/directory/game/Team%20Fortress%202");
+			});
+#else
+		vgui::system()->ShellExecute("open", "https://www.twitch.tv/directory/game/Team%20Fortress%202");
+#endif
 	}
 	else
 	{

@@ -1987,7 +1987,19 @@ void CHudMainMenuOverride::OnCommand( const char *command )
 	else if ( FStrEq( "watch_stream", command ) )
 	{
 		//SetWatchStreamVisible( !m_pWatchStreamsPanel->IsVisible() );
+#ifdef BDSBASE
+		//vgui::system()->ShellExecute( "open", "https://www.twitch.tv/directory/game/Team%20Fortress%202" );
+
+		ShowConfirmDialog("#TF_Watch_Streams_Title", "#TF_Watch_Streams_Text",
+			"#MessageBox_OK",
+			"#cancel", [](bool bConfirmed, void* pContext)
+			{
+				if (bConfirmed)
+					vgui::system()->ShellExecute("open", "https://www.twitch.tv/directory/game/Team%20Fortress%202");
+			});
+#else
 		vgui::system()->ShellExecute( "open", "https://www.twitch.tv/directory/game/Team%20Fortress%202" );
+#endif
 	}
 	else if ( FStrEq( "close_quest_map", command ) )
 	{
