@@ -52,8 +52,27 @@ CPointCamera::CPointCamera()
 	m_bFogEnable = false;
 	m_bFogRadial = false;
 
+#ifdef BDSBASE
+	// By default, transmit to everyone
+	m_bitsTransmitPlayers.SetAll();
+#endif
+
 	g_PointCameraList.Insert( this );
 }
+
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: Transmit only to players who are in PVS of the camera and its link
+//			See PointCameraSetupVisibility
+//-----------------------------------------------------------------------------
+int CPointCamera::ShouldTransmit(const CCheckTransmitInfo* pInfo)
+{
+	if (m_bitsTransmitPlayers.IsBitSet(pInfo->m_pClientEnt->m_EdictIndex))
+		return FL_EDICT_ALWAYS;
+
+	return FL_EDICT_DONTSEND;
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -80,6 +99,9 @@ void CPointCamera::Spawn( void )
 //-----------------------------------------------------------------------------
 int CPointCamera::UpdateTransmitState()
 {
+#ifdef BDSBASE
+	return SetTransmitState(FL_EDICT_FULLCHECK);
+#else
 	if ( m_bActive )
 	{
 		return SetTransmitState( FL_EDICT_ALWAYS );
@@ -88,19 +110,34 @@ int CPointCamera::UpdateTransmitState()
 	{
 		return SetTransmitState( FL_EDICT_DONTSEND );
 	}
+#endif
 }
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: Toggle networking of the camera to the specified player
+//-----------------------------------------------------------------------------
+void CPointCamera::TransmitToPlayer(int nPlayerIndex, bool bTransmit)
+{
+	if (bTransmit)
+		m_bitsTransmitPlayers.Set(nPlayerIndex);
+	else
+		m_bitsTransmitPlayers.Clear(nPlayerIndex);
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void CPointCamera::SetActive( bool bActive )
 {
+#ifndef BDSBASE
 	// If the mapmaker's told the camera it's off, it enforces inactive state
 	if ( !m_bIsOn )
 	{
 		bActive = false;
 	}
+#endif
 
 	if ( m_bActive != bActive )
 	{
