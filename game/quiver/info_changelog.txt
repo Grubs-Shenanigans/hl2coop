@@ -43,11 +43,18 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Set tf_mm_next_map_vote_time from 30s to 15s (From the Summer 2025 update).
 - Updated the item schema to support Summer 2025 items.
 - Added Goldsource-styled viewmodel bobbing.
+- Added the ConVar tf_bot_force_robot_models that makes TFBots look like MVM bots.
+- Fixed ragdolls sometimes spawning in map origin.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game
 	- #1439: Network player's handedness preference to spectators
 	- #1444: Hide intel upgrade hud when no intel is enabled
+	- #1446: Add Confirm dialog before opening Twitch in browser
+	- #1450: Freezecam mat_viewportscale fix
+	- #1451: Fix mult_reload_time_while_healed in tf_weaponbase.cpp
+	- #1452: Fix Vaccinator resist icons persisting when a player changes (displayed) team (Vaccinator is not whitelisted but this was added to keep the base up to date)
+	- #1448: Fix point_camera transmit state in multiplayer
 
 Quiver Private Alpha 1.0.1:
 - Whitelisted the Back Scatter and Force-a-Nature.
