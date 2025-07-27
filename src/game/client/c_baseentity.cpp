@@ -3864,8 +3864,17 @@ void C_BaseEntity::RemoveAllDecals( void )
 
 bool C_BaseEntity::SnatchModelInstance( C_BaseEntity *pToEntity )
 {
+#ifdef BDSBASE
+	ModelInstanceHandle_t handle = GetModelInstance();
+	if (!modelrender->ChangeInstance(handle, pToEntity))
+		return false;  // engine could move modle handle
+
+	// engine bugfix: remove stale shadow data
+	shadowmgr->RemoveAllShadowsFromModel(handle);
+#else
 	if ( !modelrender->ChangeInstance(  GetModelInstance(), pToEntity ) )
 		return false;  // engine could move modle handle
+#endif
 
 	// remove old handle from toentity if any
 	if ( pToEntity->GetModelInstance() != MODEL_INSTANCE_INVALID )
