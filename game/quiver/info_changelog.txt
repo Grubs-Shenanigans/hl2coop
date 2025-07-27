@@ -61,6 +61,7 @@ Quiver Private Alpha 1.1.0 (WIP):
 - The Warrior's Spirit's 50 health on kill attribute was changed to an attribute awarding up to 10 health on hit.
 - The Warrior's Spirit now lowers the Heavy's max health by 20.
 - Lowered the Warrior's Spirit's damage bonus from 30 to 25.
+- The Charge Shield's jumping has been removed.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game

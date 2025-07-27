@@ -25,7 +25,7 @@ Class changes:
 
 Custom Weapons:
 - All Demoknight swords and shields have been truncated into the Charge Shield and the Sword.
-	- The Charge Shield provides fast turning control, the ability to refill 35% of your charge through melee kills, the ability to jump (at the expense of 15% of your charge per jump) and increased armor durability at the expense of getting a slower armor repair rate from dispensers.
+	- The Charge Shield provides fast turning control, the ability to refill 35% of your charge through melee kills and increased armor durability at the expense of getting a slower armor repair rate from dispensers.
 	- The Sword is similar to the Eyelander, but it offers a 20% damage bonus in return for 35% of both primary and secondary ammo, 15 less armor, and 40 less maximum health.
 	- When both weapons are used, Demoknights have tougher armor and use a more powerful melee than stock in exchange for your secondary, a portion of your health and armor, and your grenade launcher's ammo supply. Due to the Sword's speed and health bonus, a Demoknight can gain up to 200 health, and run nearly as fast as a Scout.
 	-  Alternative versions of the Sword are available, replicating the look of various versions of the Eyelander.
