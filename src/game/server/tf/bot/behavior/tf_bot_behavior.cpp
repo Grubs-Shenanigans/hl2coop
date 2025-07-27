@@ -497,6 +497,11 @@ EventDesiredResult< CTFBot > CTFBotMainAction::OnStuck( CTFBot *me )
 	}
 */
 
+#ifdef BDSBASE
+	if (me->m_Shared.InCond(TF_COND_HALLOWEEN_KART) || me->m_Shared.InCond(TF_COND_TAUNTING) || me->IsInAVehicle())
+		return TryContinue();
+#endif
+
 	if ( TFGameRules()->IsMannVsMachineMode() )
 	{
 		if ( me->m_Shared.InCond( TF_COND_MVM_BOT_STUN_RADIOWAVE ) )
@@ -1592,6 +1597,11 @@ void CTFBotMainAction::Dodge( CTFBot *me )
 	// don't dodge if we are taunting
 	if ( me->m_Shared.InCond( TF_COND_TAUNTING ) )
 		return;
+
+#ifdef BDSBASE
+	if ( me->m_Shared.InCond(TF_COND_HALLOWEEN_KART) || me->IsInAVehicle())
+		return;
+#endif
 
 	// don't dodge if that ability is "turned off"
 	if ( me->HasAttribute( CTFBot::DISABLE_DODGE ) )

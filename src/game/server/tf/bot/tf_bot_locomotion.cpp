@@ -68,6 +68,69 @@ void CTFBotLocomotion::Approach( const Vector &pos, float goalWeight )
 		}
 	}
 
+#ifdef BDSBASE
+	CTFBot* me = ToTFBot(GetBot()->GetEntity());
+	if (!me)
+	{
+		return;
+	}
+
+	if (me->m_Shared.InCond(TF_COND_HALLOWEEN_KART) && me->IsInAVehicle())
+	{
+		me->ReleaseForwardButton();
+		me->ReleaseBackwardButton();
+		me->ReleaseLeftButton();
+		me->ReleaseRightButton();
+
+		Vector dir = (pos - me->GetAbsOrigin());
+		dir.z = 0.0f;
+		dir.NormalizeInPlace();
+
+		Vector eye; me->EyeVectors(&eye);
+		eye.z = 0.0f;
+		eye.NormalizeInPlace();
+
+		Vector eye_90 = Vector(eye.y, -eye.x, 0.0f);
+
+		float fwd = dir.Dot(eye);
+		float side = dir.Dot(eye_90);
+
+		if (fwd > 0.50f) 
+		{
+			me->PressForwardButton();
+		}
+		/* else if (fwd < -0.50f) 
+		{
+			me->PressBackwardButton();
+		}*/
+
+		const float cos_3deg = cos(DEG2RAD(3.0f));
+
+		if (fwd > 0.0f && fwd < cos_3deg) 
+		{
+			if (side > 0.0f) 
+			{
+				me->PressRightButton();
+			}
+			else 
+			{
+				me->PressLeftButton();
+			}
+		}
+		else if (fwd > -cos_3deg) 
+		{
+			if (side > 0.0f) 
+			{
+				me->PressLeftButton();
+			}
+			else 
+			{
+				me->PressRightButton();
+			}
+		}
+	}
+#endif
+
 	BaseClass::Approach( pos, goalWeight );
 }
 
