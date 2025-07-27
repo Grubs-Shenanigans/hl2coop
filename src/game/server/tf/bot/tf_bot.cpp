@@ -5064,14 +5064,15 @@ Action< CTFBot > *CTFBot::OpportunisticallyUseWeaponAbilities( void )
 		{
 			// if we have an eatable (drink, sandvich, etc) - eat it!
 			CTFLunchBox *lunchbox = (CTFLunchBox *)weapon;
-#ifdef BDSBASE
-			if ( lunchbox->HasAmmo() && GetHealth() < GetMaxHealth() )
-#else
 			if ( lunchbox->HasAmmo() )
-#endif
 			{
 				// scout lunchboxes are also gated by their energy drink meter
+#ifdef BDSBASE
+				CTFLunchBox_Drink* lunchboxDrink = (CTFLunchBox_Drink*)lunchbox;
+				if ( ( !IsPlayerClass( TF_CLASS_SCOUT ) && GetHealth() < GetMaxHealth() ) || ( lunchboxDrink && m_Shared.GetScoutEnergyDrinkMeter() >= 100 ) )
+#else
 				if ( !IsPlayerClass( TF_CLASS_SCOUT ) || m_Shared.GetScoutEnergyDrinkMeter() >= 100 )
+#endif
 				{
 					return new CTFBotUseItem( lunchbox );
 				}
