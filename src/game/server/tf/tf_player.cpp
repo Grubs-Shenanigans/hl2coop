@@ -20526,7 +20526,7 @@ void CTFPlayer::DoTauntAttack( void )
 							pTarget->ApplyPunchImpulseX(RandomInt(2, 5));
 
 							AngleVectors(QAngle(-45, m_angEyeAngles[YAW], 0), &vecForward);
-							pTarget->TakeDamage(CTakeDamageInfo(this, this, GetActiveTFWeapon(), vecForward * 8500, WorldSpaceCenter(), TF_STICKBOMB_KILLTAUNT_DAMAGE, DMG_CLUB));
+							pTarget->TakeDamage(CTakeDamageInfo(this, this, GetActiveTFWeapon(), vecForward * 8500, WorldSpaceCenter(), TF_STICKBOMB_KILLTAUNT_DAMAGE, DMG_CLUB | DMG_MELEE));
 						}
 					}
 				}

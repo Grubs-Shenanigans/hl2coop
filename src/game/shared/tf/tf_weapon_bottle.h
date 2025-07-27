@@ -113,7 +113,7 @@ public:
 	int					GetDetonated( void ) { return m_iDetonated; }
 
 #ifdef BDSBASE
-	virtual void		Detonate(bool bTaunting = false);
+	void				Detonate(bool bTaunting = false);
 #endif
 
 #if defined(QUIVER_DLL)
