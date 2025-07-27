@@ -22,6 +22,7 @@
 #include "bot/behavior/tf_bot_dead.h"
 #ifdef BDSBASE
 #include "bot/behavior/tf_bot_freeze_input.h"
+#include "tf_weapon_pistol.h"
 #endif
 #include "NextBot/NavMeshEntities/func_nav_prerequisite.h"
 #include "bot/behavior/nav_entities/tf_bot_nav_ent_destroy_entity.h"
@@ -1397,6 +1398,20 @@ void CTFBotMainAction::FireWeaponAtEnemy( CTFBot *me )
 
 		return;
 	}
+#ifdef BDSBASE
+	else if (myWeapon->IsWeapon(TF_WEAPON_HANDGUN_SCOUT_PRIMARY))
+	{
+		CTFPistol_ScoutPrimary* pPistolPrimary = assert_cast<CTFPistol_ScoutPrimary*>(myWeapon);
+		// watch for enemy projectiles heading our way
+		if (pPistolPrimary->CanUsePush() && me->ShouldFireCompressionBlast())
+		{
+			// bounce missiles with compression blast
+			me->PressAltFireButton();
+		}
+
+		return;
+	}
+#endif
 
 	float threatRange = ( threat->GetEntity()->GetAbsOrigin() - me->GetAbsOrigin() ).Length();
 

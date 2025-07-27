@@ -80,6 +80,7 @@ public:
 	virtual void	SecondaryAttack( void );
 #ifdef BDSBASE
 	virtual void	ItemBusyFrame();
+	bool			CanUsePush();
 #endif
 	virtual void	ItemPostFrame();
 	virtual bool	Holster( CBaseCombatWeapon *pSwitchingTo );

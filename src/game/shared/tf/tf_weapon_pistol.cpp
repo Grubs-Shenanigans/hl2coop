@@ -227,6 +227,11 @@ void CTFPistol_ScoutPrimary::ItemBusyFrame()
 		SecondaryAttack();
 	}
 }
+
+bool CTFPistol_ScoutPrimary::CanUsePush()
+{
+	return (m_flPushTime > -1.f && gpGlobals->curtime > m_flPushTime);
+}
 #endif
 
 //-----------------------------------------------------------------------------
@@ -236,7 +241,11 @@ void CTFPistol_ScoutPrimary::ItemBusyFrame()
 void CTFPistol_ScoutPrimary::ItemPostFrame()
 {
 	// Check for smack.
+#ifdef BDSBASE
+	if (CanUsePush())
+#else
 	if ( m_flPushTime > -1.f && gpGlobals->curtime > m_flPushTime )
+#endif
 	{
 		Push();
 		m_flPushTime = -1.f;
