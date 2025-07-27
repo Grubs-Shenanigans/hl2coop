@@ -75,7 +75,7 @@ void CTFBotLocomotion::Approach( const Vector &pos, float goalWeight )
 		return;
 	}
 
-	if (me->m_Shared.InCond(TF_COND_HALLOWEEN_KART) && me->IsInAVehicle())
+	if (me->m_Shared.InCond(TF_COND_HALLOWEEN_KART) || me->IsInAVehicle())
 	{
 		me->ReleaseForwardButton();
 		me->ReleaseBackwardButton();

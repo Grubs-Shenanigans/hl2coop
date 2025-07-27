@@ -17,6 +17,9 @@
 #include "econ_item_view.h"
 #include "econ_item_system.h"
 #include "tf_gamestats.h"
+#ifdef BDSBASE
+#include "bot/tf_bot.h"
+#endif
 #endif
 
 //=============================================================================
@@ -466,7 +469,8 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 #endif
 	}
 
-	if (pPlayer->IsBot() || pPlayer->IsFakeClient())
+	CTFBot* pBot = ToTFBot(pPlayer);
+	if (pBot)
 	{
 		bDrainAmmo = false;
 	}
