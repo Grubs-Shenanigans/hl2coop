@@ -204,9 +204,7 @@ void CAvatarImage::OnHTTPRequestCompleted(HTTPRequestCompleted_t* pInfo, bool bI
 
 			s_animatedAvatarCache.RemoveAt(i);
 			// temp change until the PR is fixed.
-#ifndef BDSBASE_LEGACY_MAINMENU
 			delete pAvatar;
-#endif
 			i--; // avoid skipping the next element
 		}
 	}

@@ -330,6 +330,7 @@ public:
 			if ( pTFPlayer->m_Shared.IsInvulnerable() )
 				return;
 
+#if !defined(QUIVER_DLL)
 			// Trace forward and see if we would touch a hitbox if we kept going
 			CTraceFilterCollisionArrows filterHitBox( this, GetOwnerEntity() );
 			trace_t trForward;
@@ -337,6 +338,7 @@ public:
 			bool bHitBBox = trForward.DidHit() && trForward.m_pEnt && trForward.m_pEnt == pTFPlayer;
 			//NDebugOverlay::Line( GetAbsOrigin(), GetAbsOrigin() + GetAbsVelocity() * gpGlobals->frametime, 255.f, 0.f, 0.f, false, 2.5f );
 			//NDebugOverlay::Cross3D( trForward.endpos, 32.f, 0.f, 255.f, 0.f, false, 2.5f );
+#endif
 
 #if defined(QUIVER_DLL)
 			bBonusDamage = (pTFPlayer->m_Shared.InCond(TF_COND_BURNING));
