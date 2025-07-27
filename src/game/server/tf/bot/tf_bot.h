@@ -366,6 +366,7 @@ public:
 	void ScriptHandleLoadout(void) { HandleLoadout(); }
 	void Regenerate(bool bRefillHealthAndAmmo) OVERRIDE;
 	void HandleCommand_JoinClass(const char* pClassName, bool bAllowSpawn = true) OVERRIDE;
+	void ManageModelOverride(void);
 #endif
 	void ScriptGenerateAndWearItem( const char *pszItemName ) { if ( pszItemName ) BotGenerateAndWearItem( this, pszItemName ); }
 

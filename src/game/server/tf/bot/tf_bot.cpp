@@ -1513,44 +1513,57 @@ void CTFBot::Spawn()
 	GetVisionInterface()->ForgetAllKnownEntities();
 
 #ifdef BDSBASE
-	if (TFGameRules() && !TFGameRules()->IsMannVsMachineMode())
+	ManageModelOverride();
+#endif
+}
+
+#ifdef BDSBASE
+void CTFBot::ManageModelOverride(void)
+{
+	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
+		return;
+
+	int nClassIndex = (GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED);
+
+	if (IsServerUsingTheFunnyMVMCvar())
 	{
-		if ((tf_bot_difficulty.GetInt() == CTFBot::UNDEFINED || tf_bot_difficulty.GetInt() > CTFBot::EXPERT) && m_difficulty == CTFBot::UNDEFINED)
+		// use the nifty new robot model
+		if (nClassIndex >= TF_CLASS_SCOUT && nClassIndex <= TF_CLASS_ENGINEER)
 		{
-			int m_nRandomSeed = RandomInt(0, 9999);
-			CUniformRandomStream randomize;
-			randomize.SetSeed(m_nRandomSeed);
-
-			SetDifficulty((CTFBot::DifficultyType)randomize.RandomInt(CTFBot::EASY, CTFBot::EXPERT));
-		}
-
-		DevMsg("%s chooses skill %s\n", GetPlayerName(), DifficultyLevelToString(m_difficulty));
-
-		if (IsServerUsingTheFunnyMVMCvar())
-		{
-			// use the nifty new robot model
-			int nClassIndex = (GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED);
-			if (nClassIndex >= TF_CLASS_SCOUT && nClassIndex <= TF_CLASS_ENGINEER)
+			if (g_pFullFileSystem->FileExists(g_szBotModels[nClassIndex]))
 			{
-				if (g_pFullFileSystem->FileExists(g_szBotModels[nClassIndex]))
-				{
-					GetPlayerClass()->SetCustomModel(g_szBotModels[nClassIndex], USE_CLASS_ANIMATIONS);
-					UpdateModel();
-					SetBloodColor(DONT_BLEED);
-				}
+				GetPlayerClass()->SetCustomModel(g_szBotModels[nClassIndex], USE_CLASS_ANIMATIONS);
+				UpdateModel();
+				SetBloodColor(DONT_BLEED);
 			}
 		}
-		else
+	}
+	else if (DoesServerWantBrainz())
+	{
+		//set to old model if needed
+		if (GetPlayerClass()->HasCustomModel())
+		{
+			GetPlayerClass()->SetCustomModel(NULL);
+			UpdateModel();
+			SetBloodColor(BLOOD_COLOR_RED);
+		}
+
+		// zombies use the original player models
+		m_nSkin = 4;
+		const char* name = g_aRawPlayerClassNamesShort[nClassIndex];
+		AddItem(CFmtStr("Zombie %s", name));
+	}
+	else
+	{
+		if (GetPlayerClass()->HasCustomModel())
 		{
 			GetPlayerClass()->SetCustomModel(NULL);
 			UpdateModel();
 			SetBloodColor(BLOOD_COLOR_RED);
 		}
 	}
-#endif
 }
 
-#ifdef BDSBASE
 void CTFBot::Regenerate(bool bRefillHealthAndAmmo)
 {
 	BaseClass::Regenerate(bRefillHealthAndAmmo);
@@ -1566,48 +1579,7 @@ void CTFBot::HandleCommand_JoinClass(const char* pClassName, bool bAllowSpawn)
 
 	m_InitialLoadoutLoadTimer.Start(RandomFloat(TFBOT_MIN_LOADOUT_WAIT, TFBOT_MAX_LOADOUT_WAIT) + TFBOT_CLASSSWITCH_LOADOUT_DELAY);
 
-	if (TFGameRules() && !TFGameRules()->IsMannVsMachineMode())
-	{
-		int nClassIndex = (GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED);
-
-		if (IsServerUsingTheFunnyMVMCvar())
-		{
-			// use the nifty new robot model
-			if (nClassIndex >= TF_CLASS_SCOUT && nClassIndex <= TF_CLASS_ENGINEER)
-			{
-				if (g_pFullFileSystem->FileExists(g_szBotModels[nClassIndex]))
-				{
-					GetPlayerClass()->SetCustomModel(g_szBotModels[nClassIndex], USE_CLASS_ANIMATIONS);
-					UpdateModel();
-					SetBloodColor(DONT_BLEED);
-				}
-			}
-		}
-		else if (DoesServerWantBrainz())
-		{
-			//set to old model if needed
-			if (GetPlayerClass()->HasCustomModel())
-			{
-				GetPlayerClass()->SetCustomModel(NULL);
-				UpdateModel();
-				SetBloodColor(BLOOD_COLOR_RED);
-			}
-
-			// zombies use the original player models
-			m_nSkin = 4;
-			const char* name = g_aRawPlayerClassNamesShort[nClassIndex];
-			AddItem(CFmtStr("Zombie %s", name));
-		}
-		else
-		{
-			if (GetPlayerClass()->HasCustomModel())
-			{
-				GetPlayerClass()->SetCustomModel(NULL);
-				UpdateModel();
-				SetBloodColor(BLOOD_COLOR_RED);
-			}
-		}
-	}
+	ManageModelOverride();
 }
 #endif
 

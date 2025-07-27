@@ -43,7 +43,7 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Set tf_mm_next_map_vote_time from 30s to 15s (From the Summer 2025 update).
 - Updated the item schema to support Summer 2025 items.
 - Added Goldsource-styled viewmodel bobbing.
-- Added the ConVar tf_bot_force_robot_models that makes TFBots look like MVM bots.
+- Added the ConVar tf_bot_models_override that makes TFBots look like MVM bots (when set to 1) or zombies (when set to 2).
 - Fixed ragdolls sometimes spawning in random places.
 - Changed the default Grenade Launcher ammo count from 4 to 6.
 - The Axtinguisher now fully crits against burning targets, at the expense of 33% less damage against non-burning players.
