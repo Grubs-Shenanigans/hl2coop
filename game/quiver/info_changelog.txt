@@ -80,6 +80,8 @@ Quiver Private Alpha 1.1.0 (WIP):
 	- #1452: Fix Vaccinator resist icons persisting when a player changes (displayed) team (Vaccinator is not whitelisted but this was added to keep the base up to date)
 	- #1448: Fix point_camera transmit state in multiplayer
 	- #1455: Reimplement "panic_attack" attribute
+- Updated the following Source SDK Pull Requests:
+	- #1192: Make it so Vita-Saw attacks on MvM robots spawn a bolt instead of a spleen (outside of Wave 666)
 
 Quiver Private Alpha 1.0.1:
 - Whitelisted the Back Scatter and Force-a-Nature.
