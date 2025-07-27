@@ -1511,13 +1511,11 @@ void CTFBot::Spawn()
 	SetBrokenFormation( false );
 
 	GetVisionInterface()->ForgetAllKnownEntities();
-
-#ifdef BDSBASE
-	ManageModelOverride();
-#endif
 }
 
 #ifdef BDSBASE
+extern ConVar tf_forced_holiday;
+
 void CTFBot::ManageModelOverride(void)
 {
 	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
@@ -1548,8 +1546,17 @@ void CTFBot::ManageModelOverride(void)
 			SetBloodColor(BLOOD_COLOR_RED);
 		}
 
+		bool bHalloween = (TFGameRules() ? TFGameRules()->IsHolidayActive(kHoliday_HalloweenOrFullMoon) : TF_IsHolidayActive(kHoliday_HalloweenOrFullMoon));
+
+		if (!bHalloween)
+		{
+			Warning("Bot %s is trying to spawn with the Zombie item, but it isn't Halloween/Full Moon. Turning the holiday on.", GetPlayerName());
+
+			tf_forced_holiday.SetValue(kHoliday_Halloween);
+			UTIL_CalculateHolidays();
+		}
+
 		// zombies use the original player models
-		m_nSkin = 4;
 		const char* name = g_aRawPlayerClassNamesShort[nClassIndex];
 		AddItem(CFmtStr("Zombie %s", name));
 	}
@@ -1578,8 +1585,6 @@ void CTFBot::HandleCommand_JoinClass(const char* pClassName, bool bAllowSpawn)
 	BaseClass::HandleCommand_JoinClass(pClassName, bAllowSpawn);
 
 	m_InitialLoadoutLoadTimer.Start(RandomFloat(TFBOT_MIN_LOADOUT_WAIT, TFBOT_MAX_LOADOUT_WAIT) + TFBOT_CLASSSWITCH_LOADOUT_DELAY);
-
-	ManageModelOverride();
 }
 #endif
 
@@ -4823,12 +4828,13 @@ void CTFBot::HandleLoadout(void)
 	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
 		return;
 
-	bool bLoggedIntoSteam = steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn();
-	if (bLoggedIntoSteam && tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
-	{
-		if (!m_InitialLoadoutLoadTimer.IsElapsed())
-			return;
+	if (!m_InitialLoadoutLoadTimer.IsElapsed())
+		return;
 
+	bool bLoggedIntoSteam = steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn();
+
+	if (bLoggedIntoSteam && tf_bot_give_items.GetBool())
+	{
 		if (vecSavedRandomLoadout.Count() > 0)
 		{
 			GiveSavedLoadout();
@@ -4838,9 +4844,11 @@ void CTFBot::HandleLoadout(void)
 			SelectRandomizedLoadout();
 			GiveSavedLoadout();
 		}
-
-		m_InitialLoadoutLoadTimer.Invalidate();
 	}
+
+	ManageModelOverride();
+
+	m_InitialLoadoutLoadTimer.Invalidate();
 }
 
 void CTFBot::ResetLoadout(void)
