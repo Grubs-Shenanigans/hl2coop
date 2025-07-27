@@ -71,6 +71,7 @@ Quiver Private Alpha 1.1.0 (WIP):
 	- #1451: Fix mult_reload_time_while_healed in tf_weaponbase.cpp
 	- #1452: Fix Vaccinator resist icons persisting when a player changes (displayed) team (Vaccinator is not whitelisted but this was added to keep the base up to date)
 	- #1448: Fix point_camera transmit state in multiplayer
+	- #1455: Reimplement "panic_attack" attribute
 
 Quiver Private Alpha 1.0.1:
 - Whitelisted the Back Scatter and Force-a-Nature.

@@ -2360,6 +2360,22 @@ void CTFWeaponBase::SetReloadTimer( float flReloadTime )
 	CALL_ATTRIB_HOOK_FLOAT( flReloadTime, fast_reload );
 	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pPlayer, flReloadTime, hwn_mult_reload_time );
 
+#ifdef BDSBASE
+	int iPanicAttack = 0;
+	CALL_ATTRIB_HOOK_INT(iPanicAttack, panic_attack);
+	if (iPanicAttack)
+	{
+		if (pPlayer->GetHealth() == 1)
+		{
+			flReloadTime *= 0.3f; // If you're at 1 health, you reload 70% faster
+		}
+		else if (pPlayer->GetHealth() < pPlayer->GetMaxHealth())
+		{
+			float healthpercent = (float)pPlayer->GetHealth() / (float)pPlayer->GetMaxHealth();
+			flReloadTime *= RemapValClamped(healthpercent, 0.0f, 1.0f, 0.3f, 1.0f);
+		}
+	}
+#else
 	//int iPanicAttack = 0;
 	//CALL_ATTRIB_HOOK_INT( iPanicAttack, panic_attack );
 	//if ( iPanicAttack ) 
@@ -2373,6 +2389,7 @@ void CTFWeaponBase::SetReloadTimer( float flReloadTime )
 	//		flReloadTime *= 0.6f;
 	//	}
 	//}
+#endif
 
 	// Haste Powerup Rune adds multiplier to reload time.
 	if ( pPlayer->m_Shared.GetCarryingRuneType() == RUNE_HASTE )
