@@ -64,6 +64,7 @@ Quiver Private Alpha 1.1.0 (WIP):
 - The Charge Shield's jumping has been removed.
 - Increased the bunnyhop speed cap from 1.5x move speed to 2x move speed.
 - Fixed some rare crashes related to projected textures.
+- Fixed caber explosions not counting as melee kills.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game

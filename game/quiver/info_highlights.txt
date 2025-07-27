@@ -81,6 +81,8 @@ Unlockable weapon balance changes:
 - The Warrior's Spirit's 50 health on kill attribute was changed to an attribute awarding up to 10 health on hit.
 - The Warrior's Spirit now lowers the Heavy's max health by 20.
 - Lowered the Warrior's Spirit's damage bonus from 30 to 25.
+- Fixed Ullapool Caber explosions not counting as melee kills.
+- Fixed Ullapool Caber not using mini-crits when charging.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).
