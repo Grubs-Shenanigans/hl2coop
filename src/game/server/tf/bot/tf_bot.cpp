@@ -1568,10 +1568,11 @@ void CTFBot::HandleCommand_JoinClass(const char* pClassName, bool bAllowSpawn)
 
 	if (TFGameRules() && !TFGameRules()->IsMannVsMachineMode())
 	{
+		int nClassIndex = (GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED);
+
 		if (IsServerUsingTheFunnyMVMCvar())
 		{
 			// use the nifty new robot model
-			int nClassIndex = (GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED);
 			if (nClassIndex >= TF_CLASS_SCOUT && nClassIndex <= TF_CLASS_ENGINEER)
 			{
 				if (g_pFullFileSystem->FileExists(g_szBotModels[nClassIndex]))
@@ -1582,11 +1583,29 @@ void CTFBot::HandleCommand_JoinClass(const char* pClassName, bool bAllowSpawn)
 				}
 			}
 		}
+		else if (DoesServerWantBrainz())
+		{
+			//set to old model if needed
+			if (GetPlayerClass()->HasCustomModel())
+			{
+				GetPlayerClass()->SetCustomModel(NULL);
+				UpdateModel();
+				SetBloodColor(BLOOD_COLOR_RED);
+			}
+
+			// zombies use the original player models
+			m_nSkin = 4;
+			const char* name = g_aRawPlayerClassNamesShort[nClassIndex];
+			AddItem(CFmtStr("Zombie %s", name));
+		}
 		else
 		{
-			GetPlayerClass()->SetCustomModel(NULL);
-			UpdateModel();
-			SetBloodColor(BLOOD_COLOR_RED);
+			if (GetPlayerClass()->HasCustomModel())
+			{
+				GetPlayerClass()->SetCustomModel(NULL);
+				UpdateModel();
+				SetBloodColor(BLOOD_COLOR_RED);
+			}
 		}
 	}
 }

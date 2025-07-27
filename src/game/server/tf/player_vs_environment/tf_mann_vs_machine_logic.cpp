@@ -82,7 +82,7 @@ void CMannVsMachineLogic::Update( void )
 	}
 
 #ifdef BDSBASE
-	tf_bot_force_robot_models.SetValue(0);
+	tf_bot_models_override.SetValue(0);
 #endif
 
 	// we don't need to run this check as often as we're calling our update() function

@@ -13252,9 +13252,19 @@ void CTFPlayer::PlayStepSound(Vector& vecOrigin, surfacedata_t* psurface, float 
 	BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
 }
 
+bool CTFPlayer::BotModelChangeCheckInternal(void)
+{
+	return (TFGameRules() && !TFGameRules()->IsMannVsMachineMode() && m_bIsABot);
+}
+
 bool CTFPlayer::IsServerUsingTheFunnyMVMCvar(void)
 { 
-	return (TFGameRules() && !TFGameRules()->IsMannVsMachineMode() && m_bIsABot && tf_bot_force_robot_models.GetBool()); 
+	return (BotModelChangeCheckInternal() && tf_bot_models_override.GetInt() == MODEL_MVM);
+}
+
+bool CTFPlayer::DoesServerWantBrainz(void)
+{
+	return (BotModelChangeCheckInternal() && tf_bot_models_override.GetInt() == MODEL_ZOMBIE);
 }
 #endif
 

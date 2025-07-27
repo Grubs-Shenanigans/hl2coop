@@ -130,6 +130,11 @@ public:
 #ifdef BDSBASE
 	virtual void PlayStepSound(Vector& vecOrigin, surfacedata_t* psurface, float fvol, bool force);
 	virtual bool IsServerUsingTheFunnyMVMCvar(void);
+	virtual bool DoesServerWantBrainz(void);
+private:
+	bool		 BotModelChangeCheckInternal(void);
+
+public:
 #endif
 
 	CNewParticleEffect *SpawnHalloweenSpellFootsteps( ParticleAttachment_t eParticleAttachment, int iHalloweenFootstepType );

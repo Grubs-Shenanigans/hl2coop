@@ -196,7 +196,13 @@ public:
 	virtual void		CommitSuicide( bool bExplode = false, bool bForce = false );
 #ifdef BDSBASE
 	virtual void		CommitSuicideWithCustomRagdoll(int m_iCustomRagdoll = 0);
+
 	virtual bool		IsServerUsingTheFunnyMVMCvar(void);
+	virtual bool		DoesServerWantBrainz(void);
+private:
+	bool				BotModelChangeCheckInternal(void);
+
+public:
 #endif
 
 	// Combats
