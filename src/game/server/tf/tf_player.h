@@ -601,6 +601,8 @@ public:
 	float DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage);
 	void SetMaxArmor(int iVal = 0);
 	int GetMaxArmor(void) { return m_iMaxArmor; }
+	void SetArmorValue(int value) OVERRIDE;
+	void IncrementArmorValue(int nCount, int nMaxValue = -1) OVERRIDE;
 	void ScriptSetMaxArmor(int iVal) { SetMaxArmor(iVal); }
 	void ScriptSetArmor(int iVal, bool bAdd) { if (bAdd) { IncrementArmorValue(iVal); } else { SetArmorValue(iVal); } }
 	bool DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDamage);

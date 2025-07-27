@@ -725,8 +725,13 @@ public:
 	void	ResetDeathCount();
 	void	IncrementDeathCount( int nCount );
 
+#ifdef BDSBASE
+	virtual void	SetArmorValue(int value);
+	virtual void	IncrementArmorValue(int nCount, int nMaxValue = -1);
+#else
 	void	SetArmorValue( int value );
 	void	IncrementArmorValue( int nCount, int nMaxValue = -1 );
+#endif
 
 	void	SetConnected( PlayerConnectedState iConnected ) { m_iConnected = iConnected; }
 	virtual void EquipSuit( bool bPlayEffects = true );

@@ -46,6 +46,8 @@ Stock weapon balance changes:
 - Added a 10% move penalty when carrying buildings, regardless if they are being built or moved.
 - Minigun/Sniper rifle aiming now considers movespeed when calculating the aiming move speed.
 - Slightly increased aiming move speed to be more consistent with the main move speed.
+- Changed the default Grenade Launcher ammo count from 4 to 6.
+- All miniguns now have full accuracy and damage upon revving up.
 
 Unlockable weapon balance changes:
 - The Wrangler's shield has been disabled. Its sole function is now purely to control your sentry gun.
@@ -66,6 +68,19 @@ Unlockable weapon balance changes:
 - The Backburner now has a small move speed penalty when active.
 - Decreased Mini-Sentry range from 1100 hammer units to 825 hammer units.
 - All Australium weapons will now turn players gold.
+- The Axtinguisher now fully crits against burning targets, at the expense of 33% less damage against non-burning players.
+- Reduced the holster penalty on the Axtinguisher from 35% to 25%.
+- The Flying Guillotine now does 100% crits vs players that just had their armor break, at the expense of 33% damage on armored players.
+- Baby Face's Blaster users will no longer lose Boost when taking damage.
+- You will now only lose 35% of boost when air jumping with the Baby Face's Blaster.
+- Increased the Baby Face's Blaster's movement speed penalty from 10% to 20%
+- The Loch-N-Load's 20% damage bonus against buildings is now a normal 20% damage bonus.
+- Added a 25% clip size reduction on the Iron Bomber to keep it at 4 grenades (with the Grenade Launcher's ammo increase).
+- Decreased the Loch-N-Load's clip size penalty from 25% to 65% to put it at 2 grenades (with the Grenade Launcher's ammo increase).
+- The Warrior's Spirit no longer has its 30% damage vulnerability in exchange for a 30% armor durability decrease.
+- The Warrior's Spirit's 50 health on kill attribute was changed to an attribute awarding up to 10 health on hit.
+- The Warrior's Spirit now lowers the Heavy's max health by 20.
+- Lowered the Warrior's Spirit's damage bonus from 30 to 25.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

@@ -1358,6 +1358,19 @@ bool CTFGameMovement::CheckJumpButton()
 	PreventBunnyJumping();
 #endif
 
+#if defined(QUIVER_DLL)
+	// Lose hype on jump
+	int iHypeResetsOnJump = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(m_pTFPlayer, iHypeResetsOnJump, hype_resets_on_bhopjump);
+	if (iHypeResetsOnJump != 0)
+	{
+		// Loose x hype on jump
+		float flHype = m_pTFPlayer->m_Shared.GetScoutHypeMeter();
+		m_pTFPlayer->m_Shared.SetScoutHypeMeter(flHype - iHypeResetsOnJump);
+		m_pTFPlayer->TeamFortress_SetSpeed();
+	}
+#endif
+
 	// Start jump animation and player sound (specific TF animation and flags).
 	m_pTFPlayer->DoAnimationEvent( PLAYERANIMEVENT_JUMP );
 	player->PlayStepSound( (Vector &)mv->GetAbsOrigin(), player->m_pSurfaceData, 1.0, true );

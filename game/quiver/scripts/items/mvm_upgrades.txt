@@ -515,8 +515,8 @@
 		{
 			"attribute"	"max health additive bonus"
 			"icon"		"achievements/tf_pyro_burn_medicpair"
-			"increment"	"5"
-			"cap"		"25.0"
+			"increment"	"10"
+			"cap"		"50.0"
 			"cost"		"200"
 		}
 		"5"

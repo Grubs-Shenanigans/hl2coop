@@ -238,8 +238,9 @@ ConVar tf_highfive_debug( "tf_highfive_debug", "0", FCVAR_NONE, "Turns on some c
 
 #ifdef BDSBASE
 ConVar tf_allow_econ_tauntkill("tf_allow_econ_tauntkill", "1", FCVAR_NOTIFY, "Allow equippable taunts to tauntkill.");
-//new range is 175 (credit to ficool2), old range is 500.
-ConVar tf_tauntkill_trickshot_range("tf_tauntkill_trickshot_range", "175", FCVAR_NOTIFY, "Alows you to use the old or new range values (or any values in between) of the range for the Texan Trickshot", true, 175, true, 500);
+//new range is 175 (credit to ficool2), old range is 500. - 7/25/2025
+//changed back to 500 based on the TF 7/26/2025 update.
+ConVar tf_tauntkill_trickshot_range("tf_tauntkill_trickshot_range", "500", FCVAR_NOTIFY, "Alows you to adjust the range for the Texan Trickshot", true, 175, true, 500);
 #endif
 
 ConVar tf_test_teleport_home_fx( "tf_test_teleport_home_fx", "0", FCVAR_CHEAT );
@@ -2005,7 +2006,7 @@ void CTFPlayer::RegenThink( void )
 	}
 
 #ifdef QUIVER_DLL
-	if (m_Shared.InCond(QF_COND_ARMORBREAKHEAL))
+	if (m_Shared.InCond(QF_COND_ARMORJUSTBROKE))
 	{
 		float flRegenAmt = QF_SHIELDBREAKHEAL_AMOUNT;
 		m_flAccumulatedHealthRegen += flRegenAmt;
@@ -4070,6 +4071,9 @@ void CTFPlayer::Spawn()
 	SetRespawnOverride( -1.f, NULL_STRING );
 
 #if defined(QUIVER_DLL)
+	m_Shared.RemoveCond(QF_COND_ARMORBROKEN);
+	m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
+
 	if (TFGameRules() && ((TFGameRules()->IsInTDMMode() && qf_tdm_spawnprotection.GetBool()) || TFGameRules()->IsPowerupMode()))
 	{
 		m_Shared.AddCond(TF_COND_INVULNERABLE_USER_BUFF, (TFGameRules()->IsInTDMMode() ? qf_tdm_spawnprotection_length.GetFloat() : 8.f));
@@ -5847,6 +5851,103 @@ void CTFPlayer::ManageRegularWeaponsLegacy( TFPlayerClassData_t *pData )
 		Weapon_Switch( pMeleeWeapon );
 	}
 }
+
+#ifdef BDSBASE
+CON_COMMAND_F(tf_giveweapon, "Give a weapon to the player. Format: tf_giveweapon <item definition name> or <item def index>", FCVAR_CHEAT)
+{
+	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
+	if (!pPlayer)
+		return;
+
+	CEconItemDefinition* pItemDef = NULL;
+
+	int iItemCount = args.ArgC();
+	for (int i = 1; i < iItemCount; ++i)
+	{
+		// Check to see if args[1] is a number (itemdefid) and if so, translate it to actual itemname
+		if (V_isdigit(args[i][0]))
+		{
+			int iDef = V_atoi(args[i]);
+			pItemDef = GetItemSchema()->GetItemDefinition(iDef);
+			if (pItemDef)
+			{
+				break;
+			}
+		}
+		else
+		{
+			pItemDef = GetItemSchema()->GetItemDefinitionByName(args[i]);
+			if (pItemDef)
+			{
+				break;
+			}
+		}
+	}
+
+	if (pItemDef)
+	{
+		CEconItemView* pItemData = new CEconItemView();
+		CSteamID ownerSteamID;
+		pPlayer->GetSteamID(&ownerSteamID);
+		pItemData->Init(pItemDef->GetDefinitionIndex(), AE_UNIQUE, AE_USE_SCRIPT_VALUE, ownerSteamID.GetAccountID());
+		if (pItemData && pItemData->IsValid())
+		{
+			int iClass = pPlayer->GetPlayerClass()->GetClassIndex();
+
+			if (!pItemData->GetStaticData()->CanBeUsedByClass(iClass))
+			{
+				Warning("Item %s cannot be used by this class\n", pItemData->GetItemDefinition()->GetItemDefinitionName());
+				return;
+			}
+
+			int iSlot = pItemData->GetStaticData()->GetLoadoutSlot(iClass);
+			CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(pPlayer->GetEntityForLoadoutSlot(iSlot));
+
+			// we need to force translating the name here.
+			// GiveNamedItem will not translate if we force creating the item
+			const char* pTranslatedWeaponName = TranslateWeaponEntForClass(pItemData->GetStaticData()->GetItemClass(), iClass);
+			CTFWeaponBase* pNewItem = dynamic_cast<CTFWeaponBase*>(pPlayer->GiveNamedItem(pTranslatedWeaponName, 0, pItemData, true));
+			if (pNewItem)
+			{
+				CTFWeaponBuilder* pBuilder = dynamic_cast<CTFWeaponBuilder*>((CBaseEntity*)pNewItem);
+				if (pBuilder)
+				{
+					pBuilder->SetSubType(pPlayer->GetPlayerClass()->GetData()->m_aBuildable[0]);
+				}
+
+				// make sure we removed our current weapon				
+				if (pWeapon)
+				{
+					pPlayer->Weapon_Detach(pWeapon);
+					UTIL_Remove(pWeapon);
+				}
+
+				pNewItem->MarkAttachedEntityAsValidated();
+				pNewItem->GiveTo(pPlayer);
+
+				pPlayer->PostInventoryApplication();
+
+				// Refills weapon clips, too
+				for (int i = 0; i < MAX_WEAPONS; i++)
+				{
+					CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(pPlayer->GetWeapon(i));
+					if (!pWeapon)
+						continue;
+
+					pWeapon->GiveDefaultAmmo();
+					pWeapon->WeaponRegenerate();
+				}
+				
+				Msg("Gave %s to player %s [%i]\n", pItemData->GetItemDefinition()->GetItemDefinitionName(), pPlayer->GetPlayerName(), ownerSteamID.GetAccountID());
+			}
+			else
+			{
+				Warning("Item not found or is not a weapon\n");
+			}
+		}
+	}
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Create and give the named item to the player. Then return it.
@@ -9462,7 +9563,8 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 					//mark us for death too...
 					m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
 					//heal 24 health over 3 seconds. doesn't transfer over to heal patient. 
-					m_Shared.AddCond(QF_COND_ARMORBREAKHEAL, 3.0f);
+					m_Shared.AddCond(QF_COND_ARMORJUSTBROKE, 3.0f);
+					m_Shared.AddCond(QF_COND_ARMORBROKEN, -1);
 
 					//give our patient our mini-crit boost to help us.
 					if (IsPlayerClass(TF_CLASS_MEDIC))
@@ -9532,6 +9634,34 @@ void CTFPlayer::SetMaxArmor(int iVal)
 	m_iMaxArmor = iArmor;
 
 	SetArmorValue(m_iMaxArmor);
+}
+
+void CTFPlayer::IncrementArmorValue(int nCount, int nMaxValue)
+{
+	int oldArmor = ArmorValue();
+
+	BaseClass::IncrementArmorValue(nCount, nMaxValue);
+
+	if (ArmorValue() > oldArmor)
+	{
+		m_Shared.RemoveCond(QF_COND_ARMORBROKEN);
+		m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
+	}
+}
+
+void CTFPlayer::SetArmorValue(int value)
+{
+	BaseClass::SetArmorValue(value);
+
+	if (ArmorValue() > 0)
+	{
+		m_Shared.RemoveCond(QF_COND_ARMORBROKEN);
+		m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
+	}
+	else
+	{
+		m_Shared.AddCond(QF_COND_ARMORBROKEN, -1);
+	}
 }
 
 #endif
@@ -12504,6 +12634,17 @@ void CTFPlayer::OnKilledOther_Effects( CBaseEntity *pVictim, const CTakeDamageIn
 			gameeventmanager->FireEvent( event ); 
 		}
 	}
+
+#if defined(QUIVER_DLL)
+	int iArmorOnKill = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iArmorOnKill, armor_on_kill);
+	if (iArmorOnKill != 0)
+	{
+		int iArmorToAdd = MIN(iArmorOnKill, GetMaxArmor() - ArmorValue());
+		IncrementArmorValue(iArmorToAdd);
+		//m_iHealth += iHealthToAdd;
+	}
+#endif
 
 	int iSpeedBoostOnKill = 0;
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( pWeapon, iSpeedBoostOnKill, speed_boost_on_kill );

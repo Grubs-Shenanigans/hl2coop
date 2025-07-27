@@ -1088,6 +1088,11 @@ float CTFMinigun::GetProjectileDamage( void )
 
 #ifdef BDSBASE
 	int iNoTimeBasedDamagePenalty = 0;
+
+#if defined(QUIVER_DLL)
+	iNoTimeBasedDamagePenalty = 1;
+#endif
+
 	CALL_ATTRIB_HOOK_INT(iNoTimeBasedDamagePenalty, no_time_based_damage_penalty);
 
 	if (!iNoTimeBasedDamagePenalty)
@@ -1121,6 +1126,11 @@ float CTFMinigun::GetWeaponSpread( void )
 
 #ifdef BDSBASE
 	int iNoTimeBasedSpreadPenalty = 0;
+
+#if defined(QUIVER_DLL)
+	iNoTimeBasedSpreadPenalty = 1;
+#endif
+
 	CALL_ATTRIB_HOOK_INT(iNoTimeBasedSpreadPenalty, no_time_based_spread_penalty);
 
 	if (!iNoTimeBasedSpreadPenalty)

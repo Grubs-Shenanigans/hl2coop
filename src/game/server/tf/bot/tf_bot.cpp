@@ -4795,6 +4795,8 @@ void TFBotGenerateAndWearItem(CTFBot* pBot, CEconItemView* pItem)
 
 		pNewItem->MarkAttachedEntityAsValidated();
 		pNewItem->GiveTo(pBot);
+
+		pBot->PostInventoryApplication();
 	}
 	else
 	{

@@ -4,7 +4,7 @@
 - The Wrangler* (w/ balance changes)
 - The Shortstop (w/ balance changes)
 - The Crusader's Crossbow
-- The Iron Bomber
+- The Iron Bomber (w/ balance changes)
 - The Dragon's Fury
 - The Quickiebomb Launcher
 - The Sandvich
@@ -19,7 +19,7 @@
 - The Detonator
 - The Axtinguisher/Postal Pummeler
 - The Scottish Resistance
-- The Loch-n-Load
+- The Loch-n-Load (w/ balance changes)
 - The Loose Cannon
 - The Ullapool Caber (w/ balance changes)
 - The Family Business
@@ -45,5 +45,7 @@
 - The Eternal Reward/Wanga Prick
 - The Back Scatter
 - The Force-a-Nature* (w/ balance changes)
+- The Baby Face's Blaster* (w/ balance changes)
+- The Warrior's Spirit* (w/ balance changes)
 
 * - Weapon was whitelisted as long as it got a rebalance.

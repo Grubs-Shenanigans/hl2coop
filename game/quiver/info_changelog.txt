@@ -44,7 +44,23 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Updated the item schema to support Summer 2025 items.
 - Added Goldsource-styled viewmodel bobbing.
 - Added the ConVar tf_bot_force_robot_models that makes TFBots look like MVM bots.
-- Fixed ragdolls sometimes spawning in map origin.
+- Fixed ragdolls sometimes spawning in random places.
+- Changed the default Grenade Launcher ammo count from 4 to 6.
+- The Axtinguisher now fully crits against burning targets, at the expense of 33% less damage against non-burning players.
+- Reduced the holster penalty on the Axtinguisher from 35% to 25%.
+- The Flying Guillotine now does 100% crits vs players that just had their armor break, at the expense of 33% damage on armored players.
+- Whitelisted the Baby Face's Blaster and the Warrior's Spirit.
+- Baby Face's Blaster users will no longer lose Boost when taking damage.
+- You will now only lose 35% of boost when air jumping with the Baby Face's Blaster.
+- Increased the Baby Face's Blaster's movement speed penalty from 10% to 20%
+- The Loch-N-Load's 20% damage bonus against buildings is now a normal 20% damage bonus.
+- Added a 25% clip size reduction on the Iron Bomber to keep it at 4 grenades (with the Grenade Launcher's ammo increase).
+- Decreased the Loch-N-Load's clip size penalty from 25% to 65% to put it at 2 grenades (with the Grenade Launcher's ammo increase).
+- All miniguns now have full accuracy and damage upon revving up.
+- The Warrior's Spirit no longer has its 30% damage vulnerability in exchange for a 30% armor durability decrease.
+- The Warrior's Spirit's 50 health on kill attribute was changed to an attribute awarding up to 10 health on hit.
+- The Warrior's Spirit now lowers the Heavy's max health by 20.
+- Lowered the Warrior's Spirit's damage bonus from 30 to 25.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game
