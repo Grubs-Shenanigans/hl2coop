@@ -469,12 +469,6 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 #endif
 	}
 
-	CTFBot* pBot = ToTFBot(pPlayer);
-	if (pBot)
-	{
-		bDrainAmmo = false;
-	}
-
 	// Drain ammo on the first bite that applied an effect
 	if (bDrainAmmo && !pPlayer->m_Shared.m_bBiteEffectWasApplied)
 	{
