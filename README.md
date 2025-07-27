@@ -90,6 +90,10 @@ BDSBASE_ACHIEVEMENT_NOTIFICATIONS
 - Users can easily change the look of the panels with the cl_achievements_theme command.
 - This allows users to easily see unlocked achievements and achievement progress.
 
+## Credits:
+- TheBetaM for the custom schema code. (https://github.com/TheBetaM/tf-solo)
+- rafradek for some bot AI changes (sigsegv-mvm) (https://github.com/rafradek/sigsegv-mvm)
+
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.
 You may also read a more detailed guide here:

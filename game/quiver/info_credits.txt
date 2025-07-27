@@ -1,5 +1,5 @@
 Credits:
-- TheBetaM for the custom item code.
+- TheBetaM for the custom schema code.
 - Sae35 for help with compiling a few maps.
 - castaway.tf for documenting older weapon changes that inspired some Quiver Fortress weapon balances.
 - rafradek for some bot AI changes (sigsegv-mvm)
