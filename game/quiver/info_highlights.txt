@@ -83,6 +83,7 @@ Unlockable weapon balance changes:
 - Lowered the Warrior's Spirit's damage bonus from 30 to 25.
 - Fixed Ullapool Caber explosions not counting as melee kills.
 - Fixed Ullapool Caber not using mini-crits when charging.
+- Restored the Dragon's Fury to its original Jungle Inferno version.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

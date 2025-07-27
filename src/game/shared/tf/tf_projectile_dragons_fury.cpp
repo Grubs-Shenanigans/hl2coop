@@ -34,7 +34,11 @@ ConVar tf_fireball_distance( "tf_fireball_distance", "500", FCVAR_REPLICATED | F
 ConVar tf_fireball_speed( "tf_fireball_speed", "3000", FCVAR_REPLICATED | FCVAR_CHEAT );
 ConVar tf_fireball_damage( "tf_fireball_damage", "25", FCVAR_REPLICATED | FCVAR_CHEAT );
 ConVar tf_fireball_burn_duration( "tf_fireball_burn_duration", "2", FCVAR_REPLICATED | FCVAR_CHEAT );
+#if defined(QUIVER_DLL)
+ConVar tf_fireball_radius("tf_fireball_radius", "30", FCVAR_REPLICATED | FCVAR_CHEAT);
+#else
 ConVar tf_fireball_radius( "tf_fireball_radius", "22.5", FCVAR_REPLICATED | FCVAR_CHEAT );
+#endif
 ConVar tf_fireball_draw_debug_radius( "tf_fireball_draw_debug_radius", "0", FCVAR_REPLICATED | FCVAR_CHEAT );
 ConVar tf_fireball_burning_bonus( "tf_fireball_burning_bonus", "3", FCVAR_REPLICATED | FCVAR_CHEAT );
 ConVar tf_fireball_max_lifetime( "tf_fireball_max_lifetime", "0.5", FCVAR_REPLICATED | FCVAR_CHEAT );
@@ -334,7 +338,11 @@ public:
 			//NDebugOverlay::Line( GetAbsOrigin(), GetAbsOrigin() + GetAbsVelocity() * gpGlobals->frametime, 255.f, 0.f, 0.f, false, 2.5f );
 			//NDebugOverlay::Cross3D( trForward.endpos, 32.f, 0.f, 255.f, 0.f, false, 2.5f );
 
+#if defined(QUIVER_DLL)
+			bBonusDamage = (pTFPlayer->m_Shared.InCond(TF_COND_BURNING));
+#else
 			bBonusDamage = ( pTFPlayer->m_Shared.InCond( TF_COND_BURNING ) && bHitBBox );
+#endif 
 			float flDamageBonusScale = ( bBonusDamage ) ? tf_fireball_burning_bonus.GetFloat() : 1.f;
 			info.SetDamage( GetDamage() * flDamageBonusScale );
 			info.SetDamageCustom( bBonusDamage ? TF_DMG_CUSTOM_DRAGONS_FURY_BONUS_BURNING : TF_DMG_CUSTOM_DRAGONS_FURY_IGNITE );
