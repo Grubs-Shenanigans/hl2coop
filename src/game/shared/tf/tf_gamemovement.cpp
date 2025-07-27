@@ -103,7 +103,7 @@ extern ConVar sv_bhop_boost;
 #endif
 ConVar sv_bhop_tf_cap("sv_bhop_tf_cap", "1", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #if defined(QUIVER_DLL)
-ConVar sv_bhop_tf_cap_boost("sv_bhop_tf_cap_boost", "1.5", FCVAR_REPLICATED | FCVAR_NOTIFY);
+ConVar sv_bhop_tf_cap_boost("sv_bhop_tf_cap_boost", "2", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #else
 ConVar sv_bhop_tf_cap_boost("sv_bhop_tf_cap_boost", "1.2", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #endif
