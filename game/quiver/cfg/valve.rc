@@ -15,6 +15,6 @@ stuffcmds
 
 // display the startup level
 startupmenu
-//map_background background01
+map_background background01
 
 sv_unlockedchapters 99

@@ -84,7 +84,8 @@ Unlockable weapon balance changes:
 - Fixed Ullapool Caber explosions not counting as melee kills.
 - Fixed Ullapool Caber not using mini-crits when charging.
 - Restored the Dragon's Fury to its original Jungle Inferno version.
-- The Dragon's Fury now deals 25% more damage against armor.
+- The Dragon's Fury now 100% crits vs players that just had their armor break, in return for 20 less max armor on the user.
+- The Dragon's Fury's unused pressure meter now shows up by default, allowing you to view its pressure when switching weapons.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

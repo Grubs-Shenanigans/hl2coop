@@ -59,7 +59,11 @@ ConVar tf_fireball_hit_recharge_boost( "tf_fireball_hit_recharge_boost", "1.5", 
 
 #ifdef BDSBASE
 #ifdef CLIENT_DLL
+#ifdef QUIVER_DLL
+ConVar tf_fireball_show_pressure("tf_fireball_show_pressure", "1", FCVAR_ARCHIVE);
+#else
 ConVar tf_fireball_show_pressure("tf_fireball_show_pressure", "0", FCVAR_ARCHIVE);
+#endif
 #endif
 #endif
 

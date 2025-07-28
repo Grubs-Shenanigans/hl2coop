@@ -59,7 +59,11 @@ public:
 	virtual float	GetMeterMultiplier() const OVERRIDE;
 
 #ifdef BDSBASE
+#ifdef QUIVER_DLL
+	const char* GetEffectLabelText(void) { return "#Quiver_Pressure"; }
+#else
 	const char* GetEffectLabelText(void) { return "#TF_PRESSURE"; }
+#endif
 	virtual bool	CanInspect() const OVERRIDE;
 #endif
 

@@ -68,9 +68,10 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Removed the headshot range restriction for the Railgun.
 - Bots can now use go-karts.
 - Bots can now use the Shortstop's shove.
-- Fixed a bug where bots continuously eat sandviches in spawn.
 - Restored the Dragon's Fury to its original Jungle Inferno version.
-- The Dragon's Fury now deals 25% more damage against armor.
+- The Dragon's Fury now 100% crits vs players that just had their armor break, in return for 20 less max armor on the user.
+- The Dragon's Fury's unused pressure meter now shows up by default, allowing you to view its pressure when switching weapons.
+- Added additional repair cost rate attributes to weapons that add armor or improve armor durability.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game

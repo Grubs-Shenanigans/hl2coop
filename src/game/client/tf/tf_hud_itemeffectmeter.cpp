@@ -351,7 +351,11 @@ void CHudItemEffectMeter::CreateHudElementsForClass( C_TFPlayer* pPlayer, CUtlVe
 		DECLARE_ITEM_EFFECT_METER( CTFFlameThrower, TF_WEAPON_FLAMETHROWER, true, "resource/UI/HudItemEffectMeter_Pyro.res" );
 #ifdef BDSBASE
 		DECLARE_ITEM_EFFECT_METER(CTFFlareGun_Revenge, TF_WEAPON_FLAREGUN_REVENGE, false, "resource/UI/HUDItemEffectMeter_Flaregun.res"); // respect shared meter language
+#if defined(QUIVER_DLL)
+		DECLARE_ITEM_EFFECT_METER(CTFWeaponFlameBall, TF_WEAPON_FLAME_BALL, false, "resource/UI/HudItemEffectMeter_FlameBall.res");
+#else
 		DECLARE_ITEM_EFFECT_METER(CTFWeaponFlameBall, TF_WEAPON_FLAME_BALL, false, "resource/UI/HudItemEffectMeter_Pyro.res");
+#endif
 #else
 		DECLARE_ITEM_EFFECT_METER(CTFFlareGun_Revenge, TF_WEAPON_FLAREGUN_REVENGE, false, "resource/UI/HUDItemEffectMeter_Engineer.res");
 #endif

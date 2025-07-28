@@ -422,6 +422,14 @@ DESCRIPTION INFO_OPTIONS
 		{ BOOL }
 		{ "0" }
 	}	
+	
+	"tf_fireball_show_pressure"
+	{
+		"#TF_DragonsFuryPressure"
+		"#Tooltip_DragonsFuryPressure"
+		{ BOOL }
+		{ "0" }
+	}	
 
 	"tf_spectate_pyrovision"
 	{
