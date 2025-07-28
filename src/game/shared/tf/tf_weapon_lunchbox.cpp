@@ -470,7 +470,7 @@ void CTFLunchBox::ApplyBiteEffects( CTFPlayer *pPlayer )
 	}
 
 	// Drain ammo on the first bite that applied an effect
-	if (bDrainAmmo && !pPlayer->m_Shared.m_bBiteEffectWasApplied)
+	if (!pPlayer->m_Shared.m_bBiteEffectWasApplied)
 	{
 		DrainAmmo();
 		pPlayer->m_Shared.SetBiteEffectWasApplied();
