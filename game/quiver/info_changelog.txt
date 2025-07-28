@@ -72,6 +72,8 @@ Quiver Private Alpha 1.1.0 (WIP):
 - The Dragon's Fury now 100% crits vs players that just had their armor break, in return for 20 less max armor on the user.
 - The Dragon's Fury's unused pressure meter now shows up by default, allowing you to view its pressure when switching weapons.
 - Added additional repair cost rate attributes to weapons that add armor or improve armor durability.
+- Fine-tuned bhop jump speed.
+- Fixed bhop capping not applying properly.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game

@@ -98,12 +98,11 @@ extern ConVar mp_tournament_readymode_countdown;
 #ifdef BDSBASE
 extern ConVar sv_bhop;
 extern ConVar sv_bhop_mode;
-#if !defined(QUIVER_DLL)
 extern ConVar sv_bhop_boost;
-#endif
 ConVar sv_bhop_tf_cap("sv_bhop_tf_cap", "1", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #if defined(QUIVER_DLL)
 ConVar sv_bhop_tf_cap_boost("sv_bhop_tf_cap_boost", "2", FCVAR_REPLICATED | FCVAR_NOTIFY);
+ConVar sv_bhop_qf_classboost_disable("sv_bhop_qf_classboost_disable", "0", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #else
 ConVar sv_bhop_tf_cap_boost("sv_bhop_tf_cap_boost", "1.2", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #endif
@@ -180,6 +179,9 @@ private:
 	bool		CheckWaterJumpButton( void );
 	void		AirDash( void );
 	void		PreventBunnyJumping();
+#ifdef BDSBASE
+	Vector		CapBunnyJumping(Vector &src);
+#endif
 	void		ToggleParachute( void );
 	void		CheckKartWallBumping();
 
@@ -1163,15 +1165,14 @@ void CTFGameMovement::AirDash( void )
 //-----------------------------------------------------------------------------
 void CTFGameMovement::PreventBunnyJumping()
 {
+#ifdef BDSBASE
+	CapBunnyJumping(mv->m_vecVelocity);
+#else
 	if ( m_pTFPlayer->m_Shared.InCond( TF_COND_HALLOWEEN_KART ) )
 		return;
 
 	// Speed at which bunny jumping is limited
-#ifdef BDSBASE
-	float maxscaledspeed = sv_bhop_tf_cap_boost.GetFloat() * player->m_flMaxspeed;
-#else
 	float maxscaledspeed = BUNNYJUMP_MAX_SPEED_FACTOR * player->m_flMaxspeed;
-#endif
 	if ( maxscaledspeed <= 0.0f )
 		return;
 
@@ -1185,7 +1186,35 @@ void CTFGameMovement::PreventBunnyJumping()
 
 
 	mv->m_vecVelocity *= fraction;
+#endif
 }
+
+#ifdef BDSBASE
+Vector CTFGameMovement::CapBunnyJumping(Vector& src)
+{
+	if (m_pTFPlayer->m_Shared.InCond(TF_COND_HALLOWEEN_KART))
+		return src;
+
+	// Speed at which bunny jumping is limited
+	float maxscaledspeed = sv_bhop_tf_cap_boost.GetFloat() * player->m_flMaxspeed;
+	if (maxscaledspeed <= 0.0f)
+		return src;
+
+	// Current player speed
+	float spd = src.Length();
+	if (spd <= maxscaledspeed)
+		return src;
+
+	Vector result = src;
+
+	// Apply this cropping fraction to velocity
+	float fraction = (maxscaledspeed / spd);
+
+	result *= fraction;
+
+	return result;
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1350,7 +1379,83 @@ bool CTFGameMovement::CheckJumpButton()
 	}
 
 #ifdef BDSBASE
-	if (sv_bhop_tf_cap.GetBool())
+#if defined(QUIVER_DLL)
+	float flBhopBoost = (sv_bhop_qf_classboost_disable.GetBool() ? sv_bhop_boost.GetFloat() : m_pTFPlayer->GetPlayerClass()->GetBhopSpeedBoost());
+#else
+	float flBhopBoost = sv_bhop_boost.GetFloat();
+#endif
+	bool canBHop = ((sv_bhop.GetBool()) ? true : (gpGlobals->maxClients == 1));
+
+	if (canBHop)
+	{
+		Vector vecAdjusted = vec3_origin;
+
+		if (sv_bhop_mode.GetInt() == 1)
+		{
+			Vector vecForward;
+			AngleVectors(mv->m_vecViewAngles, &vecForward);
+			vecForward.z = 0;
+			VectorNormalize(vecForward);
+			for (int iAxis = 0; iAxis < 2; ++iAxis)
+			{
+				vecForward[iAxis] *= (mv->m_flForwardMove * flBhopBoost);
+			}
+
+			vecAdjusted = vecForward;
+		}
+		else
+		{
+			Vector vecForward;
+			AngleVectors(mv->m_vecViewAngles, &vecForward);
+			vecForward.z = 0;
+			VectorNormalize(vecForward);
+
+			// We give a certain percentage of the current forward movement as a bonus to the jump speed.  That bonus is clipped
+			// to not accumulate over time.
+			float flSpeedBoostPerc = flBhopBoost;
+			float flSpeedAddition = fabs(mv->m_flForwardMove * flSpeedBoostPerc);
+			float flMaxSpeed = mv->m_flMaxSpeed + (mv->m_flMaxSpeed * flSpeedBoostPerc);
+			float flNewSpeed = (flSpeedAddition + mv->m_vecVelocity.Length2D());
+
+			// If we're over the maximum, we want to only boost as much as will get us to the goal speed
+			if (flNewSpeed > flMaxSpeed)
+			{
+				flSpeedAddition -= flNewSpeed - flMaxSpeed;
+			}
+
+			if (mv->m_flForwardMove < 0.0f)
+				flSpeedAddition *= -1.0f;
+
+			// if we CAN bhop, slow down the speed velocity.
+			Vector result = (vecForward * flSpeedAddition);
+
+			vecAdjusted = result;
+		}
+
+		if (sv_bhop_tf_cap.GetBool())
+		{
+			//then create a fake vector and cap it.
+			Vector fakeVector = mv->m_vecVelocity;
+			VectorAdd(vecAdjusted, fakeVector, fakeVector);
+
+			if (fakeVector != CapBunnyJumping(fakeVector))
+			{
+				vecAdjusted = CapBunnyJumping(fakeVector);
+				mv->m_vecVelocity = vecAdjusted;
+			}
+			else
+			{
+				// Add it on
+				VectorAdd(vecAdjusted, mv->m_vecVelocity, mv->m_vecVelocity);
+			}
+		}
+		else
+		{
+			// Add it on
+			VectorAdd(vecAdjusted, mv->m_vecVelocity, mv->m_vecVelocity);
+		}
+	}
+	else if (sv_bhop_tf_cap.GetBool())
 	{
 		PreventBunnyJumping();
 	}
@@ -1443,57 +1548,6 @@ bool CTFGameMovement::CheckJumpButton()
 	{
 		mv->m_vecVelocity[2] += flMul;  // 2 * gravity * jump_height * ground_factor
 	}
-
-#ifdef BDSBASE
-#if defined(QUIVER_DLL)
-	float flBhopBoost = m_pTFPlayer->GetPlayerClass()->GetBhopSpeedBoost();
-#else
-	float flBhopBoost = sv_bhop_boost.GetFloat();
-#endif
-	bool canBHop = ((sv_bhop.GetBool()) ? true : (gpGlobals->maxClients == 1));
-
-	if (canBHop)
-	{
-		if (sv_bhop_mode.GetInt() == 1)
-		{
-			Vector vecForward;
-			AngleVectors(mv->m_vecViewAngles, &vecForward);
-			vecForward.z = 0;
-			VectorNormalize(vecForward);
-			for (int iAxis = 0; iAxis < 2; ++iAxis)
-			{
-				vecForward[iAxis] *= (mv->m_flForwardMove * flBhopBoost);
-			}
-			VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
-		}
-		else
-		{
-			Vector vecForward;
-			AngleVectors(mv->m_vecViewAngles, &vecForward);
-			vecForward.z = 0;
-			VectorNormalize(vecForward);
-
-			// We give a certain percentage of the current forward movement as a bonus to the jump speed.  That bonus is clipped
-			// to not accumulate over time.
-			float flSpeedBoostPerc = flBhopBoost;
-			float flSpeedAddition = fabs(mv->m_flForwardMove * flSpeedBoostPerc);
-			float flMaxSpeed = mv->m_flMaxSpeed + (mv->m_flMaxSpeed * flSpeedBoostPerc);
-			float flNewSpeed = (flSpeedAddition + mv->m_vecVelocity.Length2D());
-
-			// If we're over the maximum, we want to only boost as much as will get us to the goal speed
-			if (flNewSpeed > flMaxSpeed)
-			{
-				flSpeedAddition -= flNewSpeed - flMaxSpeed;
-			}
-
-			if (mv->m_flForwardMove < 0.0f)
-				flSpeedAddition *= -1.0f;
-
-			// Add it on
-			VectorAdd((vecForward * flSpeedAddition), mv->m_vecVelocity, mv->m_vecVelocity);
-		}
-	}
-#endif
 
 	// Apply gravity.
 	FinishGravity();

@@ -71,12 +71,11 @@ ConVar option_duck_method("option_duck_method", "1", FCVAR_REPLICATED|FCVAR_ARCH
 #if defined(QUIVER_DLL)
 ConVar sv_bhop("sv_bhop", "1", FCVAR_REPLICATED | FCVAR_NOTIFY);
 ConVar sv_bhop_mode("sv_bhop_mode", "1", FCVAR_DEVELOPMENTONLY, "1 = 2006 bhopping, 2 = orangebox accelerated backhopping");
-// quiver doesn't use sv_bhop_boost as that's defined per class.
 #else
 ConVar sv_bhop("sv_bhop", "0", FCVAR_REPLICATED | FCVAR_NOTIFY);
 ConVar sv_bhop_mode("sv_bhop_mode", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "1 = 2006 bhopping, 2 = orangebox accelerated backhopping");
-ConVar sv_bhop_boost("sv_bhop_boost", "0.1", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #endif
+ConVar sv_bhop_boost("sv_bhop_boost", "0.1", FCVAR_REPLICATED | FCVAR_NOTIFY);
 ConVar sv_wallstrafe("sv_wallstrafe", "1", FCVAR_REPLICATED | FCVAR_NOTIFY);
 #endif
 
