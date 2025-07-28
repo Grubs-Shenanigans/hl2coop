@@ -1266,12 +1266,33 @@ bool CHLClient::ReplayPostInit()
 #endif
 }
 
+#ifdef BDSBASE
+bool IsNewSDK()
+{
+	return engine->GetProtocolVersion() != 24;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Called after client & server DLL are loaded and all systems initialized
 //-----------------------------------------------------------------------------
 void CHLClient::PostInit()
 {
 	IGameSystem::PostInitAllSystems();
+
+#ifdef BDSBASE
+	if (!CommandLine()->FindParm("-forcelaunch") && !IsNewSDK())
+	{
+		const char* modName = "";
+		KeyValuesAD pKVGameInfo("GameInfo");
+		if (pKVGameInfo->LoadFromFile(g_pFullFileSystem, "gameinfo.txt", "MOD"))
+		{
+			modName = pKVGameInfo->GetString("game", "Half-Life 2");
+		}
+
+		Error("The default branch or the upcoming beta must be selected for Source SDK Base 2013 Multiplayer to play %s.", modName);
+	}
+#endif
 
 #ifdef SIXENSE
 	// allow sixnese input to perform post-init operations
