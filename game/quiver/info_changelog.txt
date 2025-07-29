@@ -75,7 +75,7 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Fine-tuned bhop jump speed.
 - Fixed bhop capping not applying properly.
 - Added "random" bot difficulty to the Offline Practice menu.
-- Increased the Offline Practice menu's player cap from 31 to 99.
+- Increased the Offline Practice menu's player cap from 31 to 100.
 - Added Team Deathmatch to the Offline Practice menu.
 - Fixed Gunslinger being able to pause melee hit combos when holstering the weapon.
 - Added the following Source SDK Pull Requests:
