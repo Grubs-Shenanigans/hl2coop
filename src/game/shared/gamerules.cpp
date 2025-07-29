@@ -874,7 +874,11 @@ void CGameRules::ClientSettingsChanged( CBasePlayer *pPlayer )
 	if ( pszFov )
 	{
 		int iFov = atoi(pszFov);
+#ifdef BDSBASE
+		iFov = clamp( iFov, 75, MAX_FOV );
+#else
 		iFov = clamp( iFov, 75, 90 );
+#endif
 		pPlayer->SetDefaultFOV( iFov );
 	}
 

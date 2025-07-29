@@ -1511,6 +1511,19 @@ void CTFBot::Spawn()
 	SetBrokenFormation( false );
 
 	GetVisionInterface()->ForgetAllKnownEntities();
+
+#ifdef BDSBASE
+	if ((tf_bot_difficulty.GetInt() == CTFBot::UNDEFINED || tf_bot_difficulty.GetInt() > CTFBot::EXPERT) && m_difficulty == CTFBot::UNDEFINED)
+	{
+		int m_nRandomSeed = RandomInt(0, 9999);
+		CUniformRandomStream randomize;
+		randomize.SetSeed(m_nRandomSeed);
+
+		SetDifficulty((CTFBot::DifficultyType)randomize.RandomInt(CTFBot::EASY, CTFBot::EXPERT));
+	}
+
+	DevMsg("%s chooses skill %s\n", GetPlayerName(), DifficultyLevelToString(m_difficulty));
+#endif
 }
 
 #ifdef BDSBASE

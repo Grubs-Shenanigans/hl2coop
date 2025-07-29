@@ -557,3 +557,4 @@ bds_content/**/mapsrc/*.bsp
 bds_content/**/mapsrc/*.prt
 bds_content/**/mapsrc/*.vmx
 
+game/*/OfflinePracticeconfig.vdf

@@ -1426,7 +1426,6 @@ bool CTFGameMovement::CheckJumpButton()
 			if (mv->m_flForwardMove < 0.0f)
 				flSpeedAddition *= -1.0f;
 
-			// if we CAN bhop, slow down the speed velocity.
 			Vector result = (vecForward * flSpeedAddition);
 
 			vecAdjusted = result;
@@ -1440,6 +1439,7 @@ bool CTFGameMovement::CheckJumpButton()
 
 			if (fakeVector != CapBunnyJumping(fakeVector))
 			{
+				// if we CAN bhop, slow down the speed velocity.
 				vecAdjusted = CapBunnyJumping(fakeVector);
 				mv->m_vecVelocity = vecAdjusted;
 			}

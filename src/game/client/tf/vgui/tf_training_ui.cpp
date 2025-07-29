@@ -40,6 +40,9 @@ enum GameMode_t	// Supported game modes for offline practice
 	MODE_CP,
 	MODE_KOTH,
 	MODE_PL,
+#if defined(QUIVER_DLL)
+	MODE_TDM,
+#endif
 
 	NUM_GAME_MODES
 };
@@ -48,6 +51,9 @@ static const char *gs_pGameModeTokens[ NUM_GAME_MODES ] = {
 	"#Gametype_CP",
 	"#Gametype_Koth",
 	"#Gametype_Escort",
+#if defined(QUIVER_DLL)
+	"#GameType_TDM",
+#endif
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -1273,7 +1279,11 @@ public:
 private:
 	enum Consts_t
 	{
+#ifdef QUIVER_DLL
+		NUM_PRACTICE_MODES = 4,
+#else
 		NUM_PRACTICE_MODES = 3,
+#endif
 	};
 
 	struct PracticeModeInfo_t
@@ -1291,7 +1301,11 @@ private:
 DECLARE_BUILD_FACTORY( COfflinePractice_ModeSelectionPanel );
 
 
+#ifdef BDSBASE
+const char* g_pDifficultyModes[ 5 ] = { "Random", "Easy", "Normal", "Hard", "Expert" };
+#else
 const char *g_pDifficultyModes[ 4 ] = { "Easy", "Normal", "Hard", "Expert" };
+#endif
 
 //------------------------------------------------------------------------------------------------------
 
@@ -1476,9 +1490,13 @@ public:
 		if ( !pSelectedMapInfo )
 			return;
 
+#ifdef BDSBASE
+		*pOutNumPlayers = clamp( GetControlInt( "NumPlayersTextEntry", 0 ), 1, (MAX_PLAYERS - 1) );
+		*pOutDiff = clamp( GetBotDifficulty(), -1, 3 );
+#else
 		*pOutNumPlayers = clamp( GetControlInt( "NumPlayersTextEntry", 0 ), 1, 31 );
-
 		*pOutDiff = clamp( GetBotDifficulty(), 0, 3 );
+#endif
 
 		if ( pOutMap )
 		{
@@ -1564,7 +1582,12 @@ private:
 	{
 		if ( m_pDifficultyComboBox )
 		{
+#ifdef BDSBASE
+			// should go negative
+			return m_pDifficultyComboBox->GetActiveItem() - 1;
+#else
 			return m_pDifficultyComboBox->GetActiveItem();
+#endif
 		}
 
 		AssertMsg( 0, "Shouldn't get here." );
@@ -1579,7 +1602,12 @@ private:
 		if ( !pNumPlayersTextEntry )
 			return;
 
+#ifdef BDSBASE
+		int iDifficulty = -2;
+		bool bDifficultySetThroughCvar = false;
+#else
 		int iDifficulty = -1;
+#endif
 		int nQuota = 0;
 		const char *defaultMap = "";		
 
@@ -1597,9 +1625,19 @@ private:
 			// this is game-specific data, so it should live in GAME, not CONFIG
 			if ( m_pSavedData->LoadFromFile( g_pFullFileSystem, "OfflinePracticeConfig.vdf", "MOD" ) )
 			{
+#ifdef BDSBASE
+				iDifficulty = m_pSavedData->GetInt("tf_bot_difficulty", -2);
+#else
 				iDifficulty = m_pSavedData->GetInt( "tf_bot_difficulty", -1 );
+#endif
 				nQuota = m_pSavedData->GetInt( "tf_bot_quota", 0 );
 				defaultMap = m_pSavedData->GetString( "map", "" );
+#ifdef BDSBASE
+				if (iDifficulty > -2)
+				{
+					bDifficultySetThroughCvar = true;
+				}
+#endif
 			}
 		}
 
@@ -1617,12 +1655,20 @@ private:
 				nQuota = m_pDefaultsData->GetInt( "suggested_players", nMaxPlayers );
 			}
 
+#ifdef BDSBASE
+			if ( iDifficulty == -2 )
+#else
 			if ( iDifficulty == -1 )
+#endif
 			{
 				const char *pDifficultyString = m_pDefaultsData->GetString( "difficulty" );
 				if ( pDifficultyString )
 				{
+#ifdef BDSBASE
+					static const char* difficulties[] = { "random", "easy", "normal", "hard", "expert" };
+#else
 					static const char* difficulties [] = { "easy", "normal", "hard", "expert" };
+#endif
 					for ( int i = 0, n = ARRAYSIZE(difficulties); i < n; ++i )
 					{
 						if ( Q_strcmp( difficulties[i], pDifficultyString ) == 0)
@@ -1636,6 +1682,14 @@ private:
 		}
 
 		// Set values in controls
+
+#ifdef BDSBASE
+		if (bDifficultySetThroughCvar)
+		{
+			iDifficulty = iDifficulty + 1;
+		}
+#endif
+
 		m_pDifficultyComboBox->SilentActivateItemByRow( iDifficulty );
 
 		CFmtStr fmtNumPlayers( "%i", nQuota );
@@ -1697,6 +1751,12 @@ private:
 		{
 			return MODE_PL;
 		}
+#if defined(QUIVER_DLL)
+		else if ( !V_strnicmp(pMapName, "tdm", 3) || !V_strnicmp(pMapName, "dm", 2))
+		{
+			return MODE_TDM;
+		}
+#endif
 
 		AssertMsg( 0, "Should never get here!" );
 
