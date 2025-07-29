@@ -78,6 +78,11 @@ public:
 
 	virtual void		Precache();
 
+#ifdef BDSBASE
+	virtual bool		Holster(CBaseCombatWeapon* pSwitchingTo);
+	virtual bool		Deploy(void);
+#endif
+
 #ifdef GAME_DLL
 	virtual void		Equip( CBaseCombatCharacter *pOwner );
 	virtual void		Drop( const Vector &vecVelocity );

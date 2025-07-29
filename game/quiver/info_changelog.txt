@@ -74,6 +74,10 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Added additional repair cost rate attributes to weapons that add armor or improve armor durability.
 - Fine-tuned bhop jump speed.
 - Fixed bhop capping not applying properly.
+- Added "random" bot difficulty to the Offline Practice menu.
+- Increased the Offline Practice menu's player cap from 31 to 99.
+- Added Team Deathmatch to the Offline Practice menu.
+- Fixed Gunslinger being able to pause melee hit combos when holstering the weapon.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game
