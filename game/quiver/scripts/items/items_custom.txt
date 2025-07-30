@@ -682,6 +682,11 @@
 					"attribute_class"	"mult_player_movespeed"
 					"value"	"0.85"
 				}
+				"crit mod disabled"
+				{
+					"attribute_class"	"mult_crit_chance"
+					"value"	"0"
+				}
 			}
 			"visuals"
 			{
@@ -768,6 +773,11 @@
 				{
 					"attribute_class"	"mult_postfiredelay"
 					"value"	"1.2"
+				}
+				"crit mod disabled"
+				{
+					"attribute_class"	"mult_crit_chance"
+					"value"	"0"
 				}
 			}
 			"visuals"
