@@ -9652,10 +9652,14 @@ void CTFPlayer::IncrementArmorValue(int nCount, int nMaxValue)
 
 	BaseClass::IncrementArmorValue(nCount, nMaxValue);
 
-	if (ArmorValue() > oldArmor)
+	if (ArmorValue() > 0 && ArmorValue() > oldArmor)
 	{
 		m_Shared.AddCond(QF_COND_ARMOR, -1);
 		m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
+	}
+	else if (ArmorValue() <= 0)
+	{
+		m_Shared.RemoveCond(QF_COND_ARMOR);
 	}
 }
 
@@ -9667,6 +9671,10 @@ void CTFPlayer::SetArmorValue(int value)
 	{
 		m_Shared.AddCond(QF_COND_ARMOR, -1);
 		m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
+	}
+	else if (ArmorValue() <= 0)
+	{
+		m_Shared.RemoveCond(QF_COND_ARMOR);
 	}
 }
 #endif
