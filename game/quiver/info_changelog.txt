@@ -87,7 +87,6 @@ Details:
 - Set the Sniper's ammo count back from 16 to 25.
 - The Family Business is now a multi-class shotgun.
 - Added a Vaccinator shield to visualize armor. (temporary)
-- Re-enabled random critical hits.
 - Disabled random crits on custom weapons that can situationally crit.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target

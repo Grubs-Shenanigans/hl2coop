@@ -94,7 +94,7 @@ DESCRIPTION SERVER_OPTIONS
 	{
 		"#TF_Quickplay_RandomCrits"
 		{ BOOL }
-		{ "1" }
+		{ "0" }
 	}
 	
 	"qf_tdm_enable"
