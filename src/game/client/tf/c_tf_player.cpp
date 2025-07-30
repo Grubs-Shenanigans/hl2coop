@@ -2250,7 +2250,14 @@ public:
 				pPlayer->m_Shared.m_bChargeGlowing = false;
 			}
 #ifdef BDSBASE
+#ifdef QUIVER_DLL
+			else if (pPlayer->m_Shared.InCond(TF_COND_OFFENSEBUFF) || 
+					pPlayer->m_Shared.InCond(TF_COND_ENERGY_BUFF) || 
+					pPlayer->m_Shared.InCond(QF_COND_ARMORJUSTBROKE) ||
+					pPlayer->m_Shared.InCond(TF_COND_MINICRITBOOSTED))
+#else
 			else if (pPlayer->m_Shared.InCond(TF_COND_OFFENSEBUFF) || pPlayer->m_Shared.InCond(TF_COND_ENERGY_BUFF) || pPlayer->m_Shared.InCond(TF_COND_MINICRITBOOSTED))
+#endif
 #else
 			else if (pPlayer->m_Shared.InCond(TF_COND_OFFENSEBUFF) || pPlayer->m_Shared.InCond(TF_COND_ENERGY_BUFF))
 #endif
