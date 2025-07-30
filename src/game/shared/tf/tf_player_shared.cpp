@@ -4981,7 +4981,9 @@ static int GetResistShieldSkinForResistType( ETFCond eCond )
 			return 4;
 
 		default:
+#ifndef BDSBASE
 			AssertMsg( 0, "Invalid condition passed into AddResistShield" );
+#endif
 			return 0;
 	}
 }
@@ -5009,7 +5011,18 @@ static void AddResistShield( C_LocalTempEntity** pShield, CTFPlayer* pPlayer, ET
 		(*pShield)->ChangeTeam( pPlayer->m_Shared.GetDisplayedTeam() );
 		if( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && pPlayer->GetTeamNumber() == TF_TEAM_BLUE )
 		{
+#ifdef BDSBASE
+			int skin = GetResistShieldSkinForResistType(eCond);
+
+			if (skin == 0)
+			{
+				(*pShield)->m_nSkin = (pPlayer->m_Shared.GetDisplayedTeam() == TF_TEAM_RED) ? 0 : 1;
+			}
+
+			(*pShield)->m_nSkin = skin;
+#else
 			(*pShield)->m_nSkin = GetResistShieldSkinForResistType( eCond );
+#endif
 		}
 		else
 		{
@@ -5226,6 +5239,23 @@ void CTFPlayerShared::OnRemoveRuneResist( void )
 	RemoveResistShield( &m_pOuter->m_pTempShield, m_pOuter );
 #endif
 }
+
+#if defined(QUIVER_DLL)
+void CTFPlayerShared::OnAddArmor(void)
+{
+#ifdef CLIENT_DLL
+	// Do use the condition bit here, it's passed along and is expected to be a cond.
+	AddResistShield(&m_pOuter->m_pTempShield, m_pOuter, TF_COND_INVALID);
+#endif
+}
+
+void CTFPlayerShared::OnRemoveArmor(void)
+{
+#ifdef CLIENT_DLL
+	RemoveResistShield(&m_pOuter->m_pTempShield, m_pOuter);
+#endif
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -13068,8 +13098,19 @@ bool CTFPlayer::TryToPickupBuilding()
 		CTFWeaponBuilder *pBuilder = dynamic_cast<CTFWeaponBuilder*>(Weapon_OwnsThisID( TF_WEAPON_BUILDER ));
 		if ( pBuilder )
 		{
+#ifdef BDSBASE
+			if (pWeapon)
+			{
+				// Prevent weapon from attacking this frame after it's been holstered
+				pWeapon->m_flNextPrimaryAttack = gpGlobals->curtime + 0.1f;
+
+				if (pWeapon == pBuilder)
+					SetActiveWeapon(NULL);
+			}
+#else
 			if ( GetActiveTFWeapon() == pBuilder )
 				SetActiveWeapon( NULL );
+#endif
 
 			Weapon_Switch( pBuilder );
 			pBuilder->m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
