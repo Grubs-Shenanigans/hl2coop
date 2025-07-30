@@ -336,11 +336,6 @@ public:
 
 	bool	ShouldSuppressPrediction( void );
 
-#if defined(QUIVER_DLL)
-	void	OnAddArmor(void);
-	void	OnRemoveArmor(void);
-#endif
-
 	void SetCarryingRuneType( RuneTypes_t rt );
 	RuneTypes_t GetCarryingRuneType( void ) const;
 	bool IsCarryingRune( void ) const { return GetCarryingRuneType() != RUNE_NONE; }
@@ -922,6 +917,11 @@ private:
 
 	void OnAddHalloweenHellHeal( void );
 	void OnRemoveHalloweenHellHeal( void );
+
+#if defined(QUIVER_DLL)
+	void OnAddArmor(void);
+	void OnRemoveArmor(void);
+#endif
 
 	float GetCritMult( void );
 

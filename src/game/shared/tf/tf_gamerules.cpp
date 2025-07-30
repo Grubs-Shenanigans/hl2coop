@@ -6305,13 +6305,20 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 			if ( pVictim && ( pVictim->m_Shared.InCond( TF_COND_URINE ) ||
 			                  pVictim->m_Shared.InCond( TF_COND_MARKEDFORDEATH ) ||
 			                  pVictim->m_Shared.InCond( TF_COND_MARKEDFORDEATH_SILENT ) ||
+#if defined(QUIVER_DLL)
+							  pVictim->m_Shared.InCond(QF_COND_ARMORJUSTBROKE) ||
+#endif
 			                  pVictim->m_Shared.InCond( TF_COND_PASSTIME_PENALTY_DEBUFF ) ) )
 			{
 				bAllSeeCrit = true;
 				info.SetCritType( CTakeDamageInfo::CRIT_MINI );
 				eBonusEffect = kBonusEffect_MiniCrit;
 
+#if defined(QUIVER_DLL)
+				if ( !pVictim->m_Shared.InCond( QF_COND_ARMORJUSTBROKE ) && !pVictim->m_Shared.InCond( TF_COND_MARKEDFORDEATH_SILENT ) )
+#else
 				if ( !pVictim->m_Shared.InCond( TF_COND_MARKEDFORDEATH_SILENT ) )
+#endif
 				{
 					eDamageBonusCond = pVictim->m_Shared.InCond( TF_COND_URINE ) ? TF_COND_URINE : TF_COND_MARKEDFORDEATH;
 				}
@@ -6323,6 +6330,14 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 				eBonusEffect = kBonusEffect_MiniCrit;
 				eDamageBonusCond = TF_COND_MINICRITBOOSTED;
 			}
+#if defined(QUIVER_DLL)
+			else if (pTFAttacker && (pTFAttacker->m_Shared.InCond(QF_COND_ARMORJUSTBROKE)))
+			{
+				info.SetCritType(CTakeDamageInfo::CRIT_MINI);
+				eBonusEffect = kBonusEffect_MiniCrit;
+				eDamageBonusCond = QF_COND_ARMORJUSTBROKE;
+			}
+#endif
 #endif
 			else if ( pTFAttacker && ( pTFAttacker->m_Shared.InCond( TF_COND_OFFENSEBUFF ) || pTFAttacker->m_Shared.InCond( TF_COND_NOHEALINGDAMAGEBUFF ) ) )
 			{

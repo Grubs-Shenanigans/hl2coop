@@ -5356,7 +5356,14 @@ void C_TFPlayer::UpdatedMarkedForDeathEffect( bool bForceStop )
 	if ( IsLocalPlayer() )
 		return;
 
+#if defined(QUIVER_DLL)
+	bool bShow = m_Shared.InCond(TF_COND_MARKEDFORDEATH) || 
+				m_Shared.InCond(TF_COND_MARKEDFORDEATH_SILENT) || 
+				m_Shared.InCond(QF_COND_ARMORJUSTBROKE) ||
+				m_Shared.InCond(TF_COND_PASSTIME_PENALTY_DEBUFF);
+#else
 	bool bShow = m_Shared.InCond( TF_COND_MARKEDFORDEATH ) || m_Shared.InCond( TF_COND_MARKEDFORDEATH_SILENT ) || m_Shared.InCond( TF_COND_PASSTIME_PENALTY_DEBUFF );
+#endif
 
 	// force stop
 	if ( bForceStop || m_Shared.IsStealthed() || m_Shared.InCond( TF_COND_DISGUISED ) )
@@ -10466,6 +10473,13 @@ void C_TFPlayer::UpdateSpyStateChange( void )
 	{
 		m_pTempShield->m_nSkin = ( m_Shared.GetDisplayedTeam() == TF_TEAM_RED ) ? 0 : 1;
 	}
+
+#if defined(QUIVER_DLL)
+	if (m_pTempShield && m_Shared.InCond(QF_COND_ARMOR))
+	{
+		m_pTempShield->m_nSkin = (m_Shared.GetDisplayedTeam() == TF_TEAM_RED) ? 0 : 1;
+	}
+#endif
 
 	UpdateRuneIcon( true );
 

@@ -82,13 +82,13 @@ Details:
 - Added "random" bot difficulty to the Offline Practice menu.
 - Increased the Offline Practice menu's player cap from 31 to 100.
 - Added Team Deathmatch to the Offline Practice menu.
-- Fixed Gunslinger being able to pause melee hit combos when holstering the weapon.
 - Reduced the reload penalty on the Shortstop from 50% to 25%.
 - Added a 25 max health increase to the Shortstop to mirror its original set.
 - Reverted the shield removal on the Wrangler, as it made the weapon less fun to use.
 - The Sandman's ball now breaks armor.
 - Set the Sniper's ammo count back from 16 to 25.
 - The Family Business is now a multi-class shotgun.
+- Added a visible team-colored shield as an indicator for armor.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game
@@ -100,6 +100,7 @@ Details:
 	- #1452: Fix Vaccinator resist icons persisting when a player changes (displayed) team (Vaccinator is not whitelisted but this was added to keep the base up to date)
 	- #1448: Fix point_camera transmit state in multiplayer
 	- #1455: Reimplement "panic_attack" attribute
+	- #1463: Fix Engineer melee swing storage/double swing exploit
 - Updated the following Source SDK Pull Requests:
 	- #1192: Make it so Vita-Saw attacks on MvM robots spawn a bolt instead of a spleen (outside of Wave 666)
 	- #1380: all games: Add support for animated avatars

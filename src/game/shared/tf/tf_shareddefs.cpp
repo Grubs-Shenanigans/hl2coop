@@ -270,7 +270,7 @@ ETFCond condition_to_attribute_translation[]  =
 	TF_COND_URINE,						// 524288
 	TF_COND_ENERGY_BUFF,				// 1048576
 #if defined(QUIVER_DLL)
-	QF_COND_ARMORBROKEN,				// 2097152
+	QF_COND_ARMOR,						// 2097152
 	QF_COND_ARMORJUSTBROKE,				// 4194304
 #endif
 
@@ -438,7 +438,7 @@ static const char *g_aConditionNames[] =
 	"TF_COND_MINICRITBOOSTED",					// = 131
 #if defined(QUIVER_DLL)
 	"QF_COND_ARMORJUSTBROKE",					// = 132
-	"QF_COND_ARMORBROKEN",						// = 133
+	"QF_COND_ARMOR",							// = 133
 #endif
 #endif
 

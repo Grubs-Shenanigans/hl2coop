@@ -833,7 +833,7 @@ enum ETFCond
 	TF_COND_MINICRITBOOSTED					= 131,
 #if defined(QUIVER_DLL)
 	QF_COND_ARMORJUSTBROKE					= 132,
-	QF_COND_ARMORBROKEN						= 133,
+	QF_COND_ARMOR							= 133,
 #endif
 #endif
 

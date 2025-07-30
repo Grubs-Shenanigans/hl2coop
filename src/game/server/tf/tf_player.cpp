@@ -4071,6 +4071,8 @@ void CTFPlayer::Spawn()
 	SetRespawnOverride( -1.f, NULL_STRING );
 
 #if defined(QUIVER_DLL)
+	SetMaxArmor();
+
 	if (TFGameRules() && ((TFGameRules()->IsInTDMMode() && qf_tdm_spawnprotection.GetBool()) || TFGameRules()->IsPowerupMode()))
 	{
 		m_Shared.AddCond(TF_COND_INVULNERABLE_USER_BUFF, (TFGameRules()->IsInTDMMode() ? qf_tdm_spawnprotection_length.GetFloat() : 8.f));
@@ -4329,6 +4331,9 @@ void CTFPlayer::Regenerate( bool bRefillHealthAndAmmo /*= true*/ )
 	m_bRegenerating.Set( true );
 	// This recomputes MaxHealth
 	InitClass();
+#ifdef QUIVER_DLL
+	SetMaxArmor();
+#endif
 	m_bRegenerating.Set( false );
 
 	if ( bBoosted )
@@ -4470,10 +4475,6 @@ void CTFPlayer::InitClass( void )
 	// Do it after items have been delivered, so items can modify it
 	SetMaxHealth( GetMaxHealth() );
 	SetHealth( GetMaxHealth() );
-
-#ifdef QUIVER_DLL
-	SetMaxArmor();
-#endif
 
 	TeamFortress_SetSpeed();
 
@@ -9482,15 +9483,11 @@ void CTFPlayer::BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, 
 
 	if (!(bitsDamage & (DMG_FALL)))
 	{
-		//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
-		m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
-		//mark us for death too...
-		m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
-		//heal 30 health over 3 seconds. doesn't transfer over to heal patient. 
-		m_Shared.AddCond(QF_COND_ARMORJUSTBROKE, 3.0f);
-		m_Shared.AddCond(QF_COND_ARMORBROKEN, -1);
-		//note: we should use the mvm skins instead maybe?
-		m_Shared.OnRemoveMedEffectUberBulletResist();
+		float duration = 3.0f;
+		//marks us for death, mini crit boost, and heal 30 health over 3 seconds. doesn't transfer over to heal patient. 
+		//heal patient gets the base conds.
+		m_Shared.AddCond(QF_COND_ARMORJUSTBROKE, duration);
+		m_Shared.RemoveCond(QF_COND_ARMOR);
 
 		//give our patient our mini-crit boost to help us.
 		if (IsPlayerClass(TF_CLASS_MEDIC))
@@ -9501,8 +9498,8 @@ void CTFPlayer::BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, 
 				CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
 				if (pPatient)
 				{
-					pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
-					pPatient->m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
+					pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, duration);
+					pPatient->m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, duration);
 				}
 			}
 		}
@@ -9657,10 +9654,8 @@ void CTFPlayer::IncrementArmorValue(int nCount, int nMaxValue)
 
 	if (ArmorValue() > oldArmor)
 	{
-		m_Shared.RemoveCond(QF_COND_ARMORBROKEN);
+		m_Shared.AddCond(QF_COND_ARMOR, -1);
 		m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
-		//note: we should use the mvm skins instead maybe?
-		m_Shared.OnAddMedEffectUberBulletResist();
 	}
 }
 
@@ -9670,13 +9665,10 @@ void CTFPlayer::SetArmorValue(int value)
 
 	if (ArmorValue() > 0)
 	{
-		m_Shared.RemoveCond(QF_COND_ARMORBROKEN);
+		m_Shared.AddCond(QF_COND_ARMOR, -1);
 		m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
-		//note: we should use the mvm skins instead maybe?
-		m_Shared.OnAddMedEffectUberBulletResist();
 	}
 }
-
 #endif
 
 //-----------------------------------------------------------------------------
@@ -11697,7 +11689,11 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	}
 
 	m_flLastDamageTime = gpGlobals->curtime; // not networked
+#if defined(QUIVER_DLL)
+	if ( ArmorValue() > 0 || TFGameRules()->IsMannVsMachineMode() )
+#else
 	if ( TFGameRules()->IsMannVsMachineMode() )
+#endif
 	{
 		// We only need damage time networked while in MvM
 		m_flMvMLastDamageTime = gpGlobals->curtime;

@@ -1927,6 +1927,19 @@ void CTFPlayerShared::OnConditionAdded( ETFCond eCond )
 		OnAddHalloweenHellHeal();
 		break;
 
+#if defined(QUIVER_DLL)
+	case QF_COND_ARMOR:
+		OnAddArmor();
+		break;
+
+	// this one is wierd because it does 3 things at once. 2 of the functions go here.
+	case QF_COND_ARMORJUSTBROKE:
+	{
+		OnAddCritBoost();
+		OnAddMarkedForDeathSilent();
+		break;
+	}
+#endif
 
 	default:
 		break;
@@ -2274,6 +2287,19 @@ void CTFPlayerShared::OnConditionRemoved( ETFCond eCond )
 		OnRemoveHalloweenHellHeal();
 		break;
 
+#if defined(QUIVER_DLL)
+	case QF_COND_ARMOR:
+		OnRemoveArmor();
+		break;
+
+	// this one is wierd because it does 3 things at once. 2 of the functions go here.
+	case QF_COND_ARMORJUSTBROKE:
+	{
+		OnRemoveCritBoost();
+		OnRemoveMarkedForDeathSilent();
+		break;
+	}
+#endif
 
 	default:
 		break;
@@ -4993,7 +5019,11 @@ static int GetResistShieldSkinForResistType( ETFCond eCond )
 //-----------------------------------------------------------------------------
 static void AddResistShield( C_LocalTempEntity** pShield, CTFPlayer* pPlayer, ETFCond eCond  )
 {
+#if defined(QUIVER_DLL)
+	if (eCond != QF_COND_ARMOR && CBasePlayer::GetLocalPlayer() == pPlayer)
+#else
 	if( CBasePlayer::GetLocalPlayer() == pPlayer )
+#endif
 		return;
 
 	// do not add if stealthed
@@ -5241,14 +5271,20 @@ void CTFPlayerShared::OnRemoveRuneResist( void )
 }
 
 #if defined(QUIVER_DLL)
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 void CTFPlayerShared::OnAddArmor(void)
 {
 #ifdef CLIENT_DLL
 	// Do use the condition bit here, it's passed along and is expected to be a cond.
-	AddResistShield(&m_pOuter->m_pTempShield, m_pOuter, TF_COND_INVALID);
+	AddResistShield(&m_pOuter->m_pTempShield, m_pOuter, QF_COND_ARMOR);
 #endif
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 void CTFPlayerShared::OnRemoveArmor(void)
 {
 #ifdef CLIENT_DLL
@@ -7193,6 +7229,13 @@ void CTFPlayerShared::OnAddStealthed( void )
 	{
 		RemoveResistShield( &m_pOuter->m_pTempShield, m_pOuter );
 	}
+
+#if defined(QUIVER_DLL)
+	if (m_pOuter->m_pTempShield && InCond(QF_COND_ARMOR))
+	{
+		OnRemoveArmor();
+	}
+#endif
 #endif
 
 	bool bSetInvisChangeTime = true;
@@ -7302,6 +7345,13 @@ void CTFPlayerShared::OnRemoveStealthed( void )
 	{
 		AddResistShield( &m_pOuter->m_pTempShield, m_pOuter, TF_COND_RUNE_RESIST );
 	}
+
+#if defined(QUIVER_DLL)
+	if (!m_pOuter->m_pTempShield && InCond(QF_COND_ARMOR))
+	{
+		OnAddArmor();
+	}
+#endif
 #else
 	if ( m_flCloakStartTime > 0 )
 	{
@@ -7724,6 +7774,9 @@ void CTFPlayerShared::UpdateCritBoostEffect( ECritBoostUpdateType eUpdateType )
 									  //|| IsHypeBuffed()
 #ifdef BDSBASE
 									  || InCond(TF_COND_SNIPERCHARGE_RAGE_BUFF)
+#if defined(QUIVER_DLL)
+									  || InCond(QF_COND_ARMORJUSTBROKE)
+#endif
 									  || InCond(TF_COND_MINICRITBOOSTED);
 #else
 									  || InCond(TF_COND_SNIPERCHARGE_RAGE_BUFF);
