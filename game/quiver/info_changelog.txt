@@ -1,4 +1,4 @@
-Quiver Private Alpha 1.1.0 (WIP):
+Quiver Private Alpha 1.1.0:
 Whitelists:
 	- The Baby Face's Blaster 
 	- The Warrior's Spirit
