@@ -75,10 +75,18 @@ DESCRIPTION SERVER_OPTIONS
 		{ NUMBER 0 -1 }
 		{ "0" }
 	}
+	
 	"mp_maxrounds"
 	{
 		"#TF_MaxRounds"
 		{ NUMBER 0 -1 }
 		{ "0" }
+	}
+	
+	"tf_weapon_criticals"
+	{
+		"#TF_Quickplay_RandomCrits"
+		{ BOOL }
+		{ "1" }
 	}
 }

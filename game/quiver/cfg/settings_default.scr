@@ -90,6 +90,13 @@ DESCRIPTION SERVER_OPTIONS
 		{ "0" }
 	}
 	
+	"tf_weapon_criticals"
+	{
+		"#TF_Quickplay_RandomCrits"
+		{ BOOL }
+		{ "1" }
+	}
+	
 	"qf_tdm_enable"
 	{
 		"#Quiver_AllowTDM"
