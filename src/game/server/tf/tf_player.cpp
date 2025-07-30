@@ -12791,6 +12791,22 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 		return;
 	}
 
+#if defined(QUIVER_DLL)
+	// if we died, and we have armor, break the armor so our shield goes away.
+	// if the damage penetrates or we somehow died while in uber, we set the armor value to 0 silently.
+	if (!m_Shared.IsInvulnerable() && !DoesDamagePenetrateArmor(info, info.GetDamageType()))
+	{
+		if (ArmorValue() > 0)
+		{
+			BreakArmor(info, pPlayerAttacker, info.GetDamageType(), false);
+		}
+	}
+	else
+	{
+		SetArmorValue(0);
+	}
+#endif
+
 	SpeakConceptIfAllowed( MP_CONCEPT_DIED );
 
 	StateTransition( TF_STATE_DYING );	// Transition into the dying state.
