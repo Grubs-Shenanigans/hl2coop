@@ -5019,11 +5019,7 @@ static int GetResistShieldSkinForResistType( ETFCond eCond )
 //-----------------------------------------------------------------------------
 static void AddResistShield( C_LocalTempEntity** pShield, CTFPlayer* pPlayer, ETFCond eCond  )
 {
-#if defined(QUIVER_DLL)
-	if (eCond != QF_COND_ARMOR && CBasePlayer::GetLocalPlayer() == pPlayer)
-#else
 	if( CBasePlayer::GetLocalPlayer() == pPlayer )
-#endif
 		return;
 
 	// do not add if stealthed
