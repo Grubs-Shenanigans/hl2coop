@@ -22,7 +22,6 @@ Details:
 - Fixed a bug where you couldn't get Equalizer achievements with the Vitality Glitch.
 - Added a small damage bonus to the Hitman's Executioner to make headshots from behind more consistent.
 - The Artillery Cannon: Removed the bullets per shot penalty, re-enabled the revving penalties. nerfed the damage potential from 150% to 100%, and buffed the weapon's accuracy slightly from 80% to 85%.
-- Reverted the "infinite sandviches" fix as that fix reverted a feature of the Sandvich that's in Live TF2.
 - Decreased Mini-Sentry range from 1100 hammer units to 825 hammer units.
 - Team Deathmatch: Each un-wrangled Sentry kill will now count as half of a kill. Every 2 sentry kills will count as 1 player kill. Wrangled and mini-sentry kills are the only exception.
 - Improved model panel lighting.
@@ -46,7 +45,6 @@ Details:
 - Added support for main menu music in map backgrounds.
 - Changed qf_allow_tdm to qf_tdm_enable to be more in line with the other TDM commands.
 - All Australium weapons will now turn players gold.
-- Set tf_mm_next_map_vote_time from 30s to 15s (From the Summer 2025 update).
 - Updated the item schema to support Summer 2025 items.
 - Added Goldsource-styled viewmodel bobbing.
 - Added the ConVar tf_bot_models_override that makes TFBots look like MVM bots (when set to 1) or zombies (when set to 2).
@@ -85,11 +83,12 @@ Details:
 - Reduced the reload penalty on the Shortstop from 50% to 25%.
 - Added a 25 max health increase to the Shortstop to mirror its original set.
 - Reverted the shield removal on the Wrangler, as it made the weapon less fun to use.
-- The Sandman's ball now breaks armor.
+- The Sandman's ball now breaks armor. It also does 100% guaranteed critical hits against unarmored players.
 - Set the Sniper's ammo count back from 16 to 25.
 - The Family Business is now a multi-class shotgun.
-- Added a Vaccinator shield to visualize armor, but it doesn't flash on hit. 
+- Added a Vaccinator shield to visualize armor. (temporary)
 - Re-enabled random critical hits.
+- Disabled random crits on custom weapons that can situationally crit.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game

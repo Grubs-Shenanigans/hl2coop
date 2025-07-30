@@ -760,7 +760,7 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 	info.SetDamageForce(GetDamageForce());
 	info.SetDamagePosition(GetAbsOrigin());
 	int iDamageType = GetDamageType();
-	if (IsCritical())
+	if (pPlayer->ArmorValue() <= 0 || IsCritical())
 		iDamageType |= DMG_CRITICAL;
 	info.SetDamageType(iDamageType);
 #endif
