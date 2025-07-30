@@ -68,11 +68,7 @@ extern ConVar tf_nav_in_combat_range;
 #define DISPOSABLE_SCALE			0.65f
 #define SMALL_SENTRY_SCALE			0.80f
 
-#ifdef QUIVER_DLL
-#define WRANGLER_DISABLE_TIME		1.5f
-#else
 #define WRANGLER_DISABLE_TIME		3.0f
-#endif
 
 enum
 {	
@@ -895,11 +891,7 @@ bool CObjectSentrygun::FindTarget()
 		if ( pPointer && pPointer->HasLaserDot() && !IsDisposableBuilding() )
 		{
 			m_bPlayerControlled = true;
-#ifdef QUIVER_DLL
-			m_nShieldLevel.Set( SHIELD_DISABLE );
-#else
 			m_nShieldLevel.Set( SHIELD_NORMAL );
-#endif
 			m_flShieldFadeTime = gpGlobals->curtime + WRANGLER_DISABLE_TIME;
 
 			// If not target dummy, use laserdot, otherwise targetdummy overrides

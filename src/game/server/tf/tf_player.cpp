@@ -4071,9 +4071,6 @@ void CTFPlayer::Spawn()
 	SetRespawnOverride( -1.f, NULL_STRING );
 
 #if defined(QUIVER_DLL)
-	m_Shared.RemoveCond(QF_COND_ARMORBROKEN);
-	m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
-
 	if (TFGameRules() && ((TFGameRules()->IsInTDMMode() && qf_tdm_spawnprotection.GetBool()) || TFGameRules()->IsPowerupMode()))
 	{
 		m_Shared.AddCond(TF_COND_INVULNERABLE_USER_BUFF, (TFGameRules()->IsInTDMMode() ? qf_tdm_spawnprotection_length.GetFloat() : 8.f));
@@ -9454,6 +9451,84 @@ BEGIN_DATADESC(CSparkTrail)
 DEFINE_THINKFUNC(SparkThink),
 END_DATADESC()
 
+void CTFPlayer::BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage, bool bNoArmor)
+{
+	if (m_Shared.IsInvulnerable() || DoesDamagePenetrateArmor(info, bitsDamage))
+		return;
+
+	if (!bNoArmor)
+	{
+		// armor should break at this point.
+		SetArmorValue(0);
+	}
+
+	if (!m_Shared.IsStealthed())
+	{
+		// in most instances, we SHOULD have an inflictor.
+		CBroadcastRecipientFilter filter;
+		te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
+
+		CBaseEntity* pTrail;
+		int sparkcount = RandomInt(2, 3);
+		for (int i = 0; i < sparkcount; i++)
+		{
+			pTrail = CreateEntityByName("sparktrail");
+			pTrail->SetOwnerEntity(this);
+			DispatchSpawn(pTrail);
+		}
+	}
+
+	EmitSound("Game.ArmorBreakAll");
+
+	if (!(bitsDamage & (DMG_FALL)))
+	{
+		//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
+		m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
+		//mark us for death too...
+		m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
+		//heal 30 health over 3 seconds. doesn't transfer over to heal patient. 
+		m_Shared.AddCond(QF_COND_ARMORJUSTBROKE, 3.0f);
+		m_Shared.AddCond(QF_COND_ARMORBROKEN, -1);
+		//note: we should use the mvm skins instead maybe?
+		m_Shared.OnRemoveMedEffectUberBulletResist();
+
+		//give our patient our mini-crit boost to help us.
+		if (IsPlayerClass(TF_CLASS_MEDIC))
+		{
+			CBaseEntity* pHealTarget = MedicGetHealTarget();
+			if (pHealTarget)
+			{
+				CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
+				if (pPatient)
+				{
+					pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
+					pPatient->m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
+				}
+			}
+		}
+	}
+
+	if (pTFAttacker)
+	{
+		if (pTFAttacker != this)
+		{
+			CSingleUserRecipientFilter filter2(pTFAttacker);
+			EmitSound_t params;
+			if (bitsDamage & DMG_CRITICAL)
+			{
+				params.m_pSoundName = "Game.ArmorBreakCrit";
+			}
+			else
+			{
+				params.m_pSoundName = "Game.ArmorBreakHit";
+			}
+
+			pTFAttacker->SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_CHEERS);
+			pTFAttacker->EmitSound(filter2, pTFAttacker->entindex(), params);
+		}
+	}
+}
+
 float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage)
 {
 	bool debug = qf_debug_armor_damage.GetBool();
@@ -9534,69 +9609,7 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 	if (ArmorValue() <= 0)
 	{
-		if (!m_Shared.IsStealthed())
-		{
-			// in most instances, we SHOULD have an inflictor.
-			CBroadcastRecipientFilter filter;
-			te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
-
-			CBaseEntity* pTrail;
-			int sparkcount = RandomInt(2, 3);
-			for (int i = 0; i < sparkcount; i++)
-			{
-				pTrail = CreateEntityByName("sparktrail");
-				pTrail->SetOwnerEntity(this);
-				DispatchSpawn(pTrail);
-			}
-		}
-
-		EmitSound("Game.ArmorBreakAll");
-
-		if (pTFAttacker)
-		{
-			if (pTFAttacker != this)
-			{
-				if (!(bitsDamage & (DMG_FALL)))
-				{
-					//someone damaged our armor? minicrit boost us for a few seconds so we have a chance to take down the asshole.
-					m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
-					//mark us for death too...
-					m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
-					//heal 24 health over 3 seconds. doesn't transfer over to heal patient. 
-					m_Shared.AddCond(QF_COND_ARMORJUSTBROKE, 3.0f);
-					m_Shared.AddCond(QF_COND_ARMORBROKEN, -1);
-
-					//give our patient our mini-crit boost to help us.
-					if (IsPlayerClass(TF_CLASS_MEDIC))
-					{
-						CBaseEntity* pHealTarget = MedicGetHealTarget();
-						if (pHealTarget)
-						{
-							CTFPlayer* pPatient = ToTFPlayer(pHealTarget);
-							if (pPatient)
-							{
-								pPatient->m_Shared.AddCond(TF_COND_MINICRITBOOSTED, 3.0f);
-								pPatient->m_Shared.AddCond(TF_COND_MARKEDFORDEATH_SILENT, 3.5f);
-							}
-						}
-					}
-				}
-
-				CSingleUserRecipientFilter filter2(pTFAttacker);
-				EmitSound_t params;
-				if (bitsDamage & DMG_CRITICAL)
-				{
-					params.m_pSoundName = "Game.ArmorBreakCrit";
-				}
-				else
-				{
-					params.m_pSoundName = "Game.ArmorBreakHit";
-				}
-
-				pTFAttacker->SpeakConceptIfAllowed(MP_CONCEPT_PLAYER_CHEERS);
-				pTFAttacker->EmitSound(filter2, pTFAttacker->entindex(), params);
-			}
-		}
+		BreakArmor(info, pTFAttacker, bitsDamage, true);
 	}
 	else
 	{
@@ -9646,6 +9659,8 @@ void CTFPlayer::IncrementArmorValue(int nCount, int nMaxValue)
 	{
 		m_Shared.RemoveCond(QF_COND_ARMORBROKEN);
 		m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
+		//note: we should use the mvm skins instead maybe?
+		m_Shared.OnAddMedEffectUberBulletResist();
 	}
 }
 
@@ -9657,10 +9672,8 @@ void CTFPlayer::SetArmorValue(int value)
 	{
 		m_Shared.RemoveCond(QF_COND_ARMORBROKEN);
 		m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
-	}
-	else
-	{
-		m_Shared.AddCond(QF_COND_ARMORBROKEN, -1);
+		//note: we should use the mvm skins instead maybe?
+		m_Shared.OnAddMedEffectUberBulletResist();
 	}
 }
 

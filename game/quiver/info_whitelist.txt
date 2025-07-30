@@ -47,5 +47,6 @@
 - The Force-a-Nature* (w/ balance changes)
 - The Baby Face's Blaster* (w/ balance changes)
 - The Warrior's Spirit* (w/ balance changes)
+- The Sandman* (w/ balance changes)
 
 * - Weapon was whitelisted as long as it got a rebalance.

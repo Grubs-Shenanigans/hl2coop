@@ -1,4 +1,10 @@
 Quiver Private Alpha 1.1.0 (WIP):
+Whitelists:
+	- The Baby Face's Blaster 
+	- The Warrior's Spirit
+	- The Sandman
+
+Details:
 - Disabled stun in most instances, except in MvM where it's crucial against robots.
 - Disabled player glows on spawn and spectator (except in MvM).
 - Fixed a bug where some kill feeds erroneously show the Pyro kill taunt kill icon.
@@ -49,7 +55,6 @@ Quiver Private Alpha 1.1.0 (WIP):
 - The Axtinguisher now fully crits against burning targets, at the expense of 33% less damage against non-burning players.
 - Reduced the holster penalty on the Axtinguisher from 35% to 25%.
 - The Flying Guillotine now does 100% crits vs players that just had their armor break, at the expense of 33% damage on armored players.
-- Whitelisted the Baby Face's Blaster and the Warrior's Spirit.
 - Baby Face's Blaster users will no longer lose Boost when taking damage.
 - You will now only lose 35% of boost when air jumping with the Baby Face's Blaster.
 - Increased the Baby Face's Blaster's movement speed penalty from 10% to 20%
@@ -78,6 +83,12 @@ Quiver Private Alpha 1.1.0 (WIP):
 - Increased the Offline Practice menu's player cap from 31 to 100.
 - Added Team Deathmatch to the Offline Practice menu.
 - Fixed Gunslinger being able to pause melee hit combos when holstering the weapon.
+- Reduced the reload penalty on the Shortstop from 50% to 25%.
+- Added a 25 max health increase to the Shortstop to mirror its original set.
+- Reverted the shield removal on the Wrangler, as it made the weapon less fun to use.
+- The Sandman's ball now breaks armor.
+- Set the Sniper's ammo count back from 16 to 25.
+- The Family Business is now a multi-class shotgun.
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game
@@ -94,12 +105,22 @@ Quiver Private Alpha 1.1.0 (WIP):
 	- #1380: all games: Add support for animated avatars
 
 Quiver Private Alpha 1.0.1:
-- Whitelisted the Back Scatter and Force-a-Nature.
+Whitelists:
+	- The Back Scatter
+	- The Force-a-Nature
+
+Details:
 - Removed the Force-a-Nature's stun.
 - Fixed a bug where the TDM HUD is overlayed over other gamemode's HUD elements.
 - Disabled the Match Status HUD, and restored the original TF2 round timer. 
 
 Quiver Private Alpha 1.0.0:
+Whitelists:
+	- The Conniver's Kunai
+	- The Spy-cicle
+	- Eternal Reward/Wanga Prick
+
+Details:
 - Demoman and Soldier speed has been decreased to 315 from 340.
 - Sniper and Spy speed has been reduced to 325 from 340.
 - Pyro and Engineer speed has been reduced to 335 from 340.
@@ -109,7 +130,6 @@ Quiver Private Alpha 1.0.0:
 - Reduced the charge recharge rate bonus from 70% to 45% for the Charge Shield.
 - Reduced the Caber's recharge rate from 45 seconds to 30 seconds.
 - When your shield breaks, the game will slightly heal you 10 health per second over 3 seconds (up to 30 health), giving players a small health bonus for hiding in cover during the aftermath of their shield breaking, and rewarding enemies who choose to attack quickly with a faster time to kill. The healing effect doesn't transfer over to your heal patient.
-- Whitelisted the Conniver's Kunai, the Spy-cicle, and the Eternal Reward/Wanga Prick.
 - The per-backstab health bonus you get with the Conniver's Kunai was decreased from 140 health to 85, reducing the maximum health per backstab kill from 210 to 155.
 - The Flare Gun now deploys 15% faster.
 - Fixed the commentary mode.
@@ -138,10 +158,16 @@ Quiver Private Alpha 1.0.0:
 	- #1417: Add inverse kinematics solving in model panels
 
 Quiver Private Test 4:
+Whitelists:
+	- The Market Gardener
+	- The Enforcer
+	- The Tomislav
+	- The L'Etranger
+
+Details:
 - Re-enabled shield break responses.
 - Removed airborne crits from the Vitality Glitch.
 - Re-added the speed and damage penalty to the Vitality Glitch.
-- Whitelisted the Market Gardener.
 - Replaced the reduced healing from medics attribute with a mark for death attribute on the Vitality Glitch.
 - Added a mark for death penalty for 3.5 seconds when your armor breaks.
 - Removed the Ambassador from the whitelist.
@@ -169,7 +195,6 @@ Quiver Private Test 4:
 - Reduced the damage potential of the Artillery Cannon's reverse damage falloff from 250% to 150%
 - Reduced the bullets-per-shot penalty on the Artillery Cannon.
 - Added Training Mode to the main menu (ugh).
-- Added The Enforcer, The Tomislav, and The L'Etranger to the Whitelist.
 - Changed the Enforcer's 20% damage bonus while disguised to a normal 20% damage bonus.
 - Nerfed the Heavy's move speed from 300 to 280.
 - Fixed a bug where the armor breaks if the damage kills the player.
@@ -201,6 +226,10 @@ Quiver Private Test 4:
 	- #1417: Add inverse kinematics solving in model panels
 
 Quiver Private Test 3:
+Whitelists:
+	- The Bushwacka
+
+Details:
 - Improved ForceRegenerateAndRespawn()
 - Fixed "MasterRequestRestart" errors.
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).
@@ -210,7 +239,6 @@ Quiver Private Test 3:
 - Armor can no longer be picked up by ammo crates if the player is on the losing team.
 - If your Armor breaks, you'll now be given mini-crits for 3 seconds to give you a chance to kill the responsible party. Medics with broken armor healing a teammate will share the mini crit bonus with their healing target. This bonus does NOT apply if your armor was broken through fall damage or self damage.
 - Spies who are cloaked will no longer show the armor break effect when cloaked, but the sound will still play.
-- Added The Bushwacka to the whitelist.
 - Rephrased the knockback stat on the Ludmila to reflect other Heavy weapons.
 - Fixed the Vitality Glitch's bonuses and taunt not working.
 - Most Taunt kills now pierce armor.

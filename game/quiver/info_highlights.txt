@@ -40,7 +40,6 @@ Stock weapon balance changes:
 - Random critical hits have been disabled. 
 - Increased the default construction rate of all of Engineer's buildings by 20%.
 - Default decloak time is now 1.5 seconds (originally 2.0 seconds).
-- Reduced the Sniper Rifle's ammo count from 25 to 16.
 - All Sniper Rifles now fire tracer rounds.
 - Cloak drain now increases 3.5x if you're jumping/bunnyhopping.
 - Added a 10% move penalty when carrying buildings, regardless if they are being built or moved.
@@ -50,7 +49,6 @@ Stock weapon balance changes:
 - All miniguns now have full accuracy and damage upon revving up.
 
 Unlockable weapon balance changes:
-- The Wrangler's shield has been disabled. Its sole function is now purely to control your sentry gun.
 - The Shortstop's shove has a doubled pushback force (from 400 to 800).
 - The Ullapool Caber's explosion radius was increased by 15%.
 - The Ullapool Caber's explosion damage was increased by 35%.
@@ -86,6 +84,9 @@ Unlockable weapon balance changes:
 - Restored the Dragon's Fury to its original Jungle Inferno version.
 - The Dragon's Fury now 100% crits vs players that just had their armor break, in return for 20 less max armor on the user.
 - The Dragon's Fury's unused pressure meter now shows up by default, allowing you to view its pressure when switching weapons.
+- Fixed Gunslinger being able to pause melee hit combos when holstering the weapon.
+- Reduced the reload penalty on the Shortstop from 50% to 25%.
+- Added a 25 max health increase to the Shortstop to mirror its original set.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

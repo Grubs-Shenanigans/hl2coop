@@ -612,6 +612,7 @@ public:
 	void ScriptSetMaxArmor(int iVal) { SetMaxArmor(iVal); }
 	void ScriptSetArmor(int iVal, bool bAdd) { if (bAdd) { IncrementArmorValue(iVal); } else { SetArmorValue(iVal); } }
 	bool DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDamage);
+	void BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage, bool bNoArmor);
 #endif
 
 	void PlayerUse( void );

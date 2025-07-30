@@ -106,7 +106,7 @@ PRECACHE_WEAPON_REGISTER( tf_projectile_stun_ball );
 #if defined( GAME_DLL )
 ConVar tf_scout_stunball_base_duration( "tf_scout_stunball_base_duration", "6.0", FCVAR_DEVELOPMENTONLY );
 ConVar tf_scout_stunball_base_speed( "tf_scout_stunball_base_speed", "3000", FCVAR_DEVELOPMENTONLY );
-ConVar sv_proj_stunball_damage( "sv_proj_stunball_damage", "15", FCVAR_DEVELOPMENTONLY );
+ConVar sv_proj_stunball_damage("sv_proj_stunball_damage", "15", FCVAR_DEVELOPMENTONLY);
 #ifdef BDSBASE
 ConVar tf_scout_stunball_allow_bonuspoints_ratelimit("tf_scout_stunball_allow_bonuspoints_ratelimit", "1", FCVAR_NOTIFY | FCVAR_REPLICATED);
 #endif
@@ -744,6 +744,27 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 	// We have a more intense stun based on our travel time.
 	float flLifeTime = Min( gpGlobals->curtime - m_flCreationTime, FLIGHT_TIME_TO_MAX_STUN );
 	float flLifeTimeRatio = flLifeTime / FLIGHT_TIME_TO_MAX_STUN;
+
+#if defined(QUIVER_DLL)
+	// Give 'em a love tap.
+	const trace_t* pTrace = &CBaseEntity::GetTouchTrace();
+	trace_t* pNewTrace = const_cast<trace_t*>(pTrace);
+
+	CBaseEntity* pInflictor = GetLauncher();
+	CTakeDamageInfo info;
+	info.SetAttacker(GetOwnerEntity());
+	info.SetInflictor(pInflictor);
+	info.SetWeapon(pInflictor);
+	info.SetDamage((flLifeTimeRatio >= 1.f) ? GetDamage() * 1.5f : GetDamage());
+	info.SetDamageCustom(TF_DMG_CUSTOM_BASEBALL);
+	info.SetDamageForce(GetDamageForce());
+	info.SetDamagePosition(GetAbsOrigin());
+	int iDamageType = GetDamageType();
+	if (IsCritical())
+		iDamageType |= DMG_CRITICAL;
+	info.SetDamageType(iDamageType);
+#endif
+
 	if ( flLifeTimeRatio > 0.1f )
 	{
 		bool bMax = flLifeTimeRatio >= 1.f;
@@ -788,7 +809,11 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 
 		if ( pPlayer->GetWaterLevel() != WL_Eyes )
 		{
+#if defined(QUIVER_DLL)
+			pPlayer->BreakArmor(info, pOwner, iDamageType, false);
+#else
 			pPlayer->m_Shared.StunPlayer( flStunDuration, flStunAmount, iStunFlags, pOwner );
+#endif
 
 #ifdef BDSBASE
 #ifdef GAME_DLL
@@ -808,6 +833,7 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 		}
 	}
 
+#if !defined(QUIVER_DLL)
 	// Give 'em a love tap.
 	const trace_t *pTrace = &CBaseEntity::GetTouchTrace();
 	trace_t *pNewTrace = const_cast<trace_t*>( pTrace );
@@ -825,6 +851,7 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 	if ( IsCritical() )
 		iDamageType |= DMG_CRITICAL;
 	info.SetDamageType( iDamageType );
+#endif
 
 	// Hurt 'em.
 	Vector dir;
