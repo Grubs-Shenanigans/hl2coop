@@ -88,7 +88,7 @@ Details:
 - The Sandman's ball now breaks armor.
 - Set the Sniper's ammo count back from 16 to 25.
 - The Family Business is now a multi-class shotgun.
-- Added a visible team-colored shield as an indicator for armor.
+- Added a Vaccinator shield to symbolize armor, but it doesn't flash on hit. 
 - Added the following Source SDK Pull Requests:
 	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
 	- #1440: Treat being in background map as not in-game
