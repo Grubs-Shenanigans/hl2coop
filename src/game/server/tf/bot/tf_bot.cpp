@@ -172,23 +172,10 @@ void LoadBotNames(void)
 const char *GetRandomBotName(void)
 {
 	if (m_botScriptNames.Count() == 0)
-		return "MISSINGNO";
+		return "Bot Name";
 
-	int iStartIndex = rand() % m_botScriptNames.Count();
-
-	for (int i = 0; i < m_botScriptNames.Count(); ++i)
-	{
-		int index = i + iStartIndex;
-
-		if (index >= m_botScriptNames.Count())
-			index -= m_botScriptNames.Count();
-
-		string_t iszName = m_botScriptNames[index];
-
-		return STRING(iszName);
-	}
-
-	return "Bot Name";
+	string_t iszName = m_botScriptNames.Random();
+	return STRING(iszName);
 }
 #else
 //-----------------------------------------------------------------------------------------------------
