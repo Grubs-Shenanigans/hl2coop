@@ -105,10 +105,10 @@ const char *DifficultyLevelToString( CHL2MPBot::DifficultyType skill )
 
 
 #ifdef BDSBASE
-CUtlVector<string_t> m_botScriptNames;
-
-void LoadBotNames(void)
+const char* GetRandomBotName(void)
 {
+	CUtlVector<string_t> m_botScriptNames;
+
 	m_botScriptNames.RemoveAll();
 
 	KeyValues* pKV = new KeyValues("BotNames");
@@ -126,10 +126,7 @@ void LoadBotNames(void)
 	}
 
 	pKV->deleteThis();
-}
 
-const char* GetRandomBotName(void)
-{
 	if (m_botScriptNames.Count() == 0)
 		return "Bot Name";
 

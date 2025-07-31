@@ -146,10 +146,10 @@ const char *DifficultyLevelToString( CTFBot::DifficultyType skill )
 }
 
 #ifdef BDSBASE
-CUtlVector<string_t> m_botScriptNames;
-
-void LoadBotNames(void)
+const char *GetRandomBotName(void)
 {
+	CUtlVector<string_t> m_botScriptNames;
+
 	m_botScriptNames.RemoveAll();
 
 	KeyValues* pKV = new KeyValues("BotNames");
@@ -167,10 +167,7 @@ void LoadBotNames(void)
 	}
 
 	pKV->deleteThis();
-}
 
-const char *GetRandomBotName(void)
-{
 	if (m_botScriptNames.Count() == 0)
 		return "Bot Name";
 
@@ -347,9 +344,6 @@ void CreateBotName( int iTeam, int iClassIndex, CTFBot::DifficultyType skill, ch
 	}
 	else
 	{
-#ifdef BDSBASE
-		LoadBotNames();
-#endif
 		pBotName = GetRandomBotName();
 	}
 	
