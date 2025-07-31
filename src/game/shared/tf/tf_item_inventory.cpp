@@ -1091,6 +1091,10 @@ void CTFPlayerInventory::LoadLocalLoadout()
 	pLoadoutKV->deleteThis();
 
 	GTFGCClientSystem()->LocalInventoryChanged();
+
+#ifdef BDSBASE
+	SendInventoryUpdateEvent();
+#endif
 }
 
 //-----------------------------------------------------------------------------

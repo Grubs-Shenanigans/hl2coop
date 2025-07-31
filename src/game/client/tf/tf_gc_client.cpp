@@ -308,12 +308,16 @@ void CTFGCClientSystem::InvalidatePingData()
 // Backoff api
 void CTFGCClientSystem::WebapiInventoryState_t::Backoff()
 {
+#ifdef BDSBASE
+	RequestSucceeded();
+#else
 	if ( m_nBackoffSec == 0 )
 		m_nBackoffSec = 20;
 	else
 		m_nBackoffSec = (m_nBackoffSec * 12 + 9) / 10; // exponential backoff @ 1.2x factor, round up
 
 	m_rtNextRequest = CRTime::RTime32TimeCur() + m_nBackoffSec;
+#endif
 }
 
 void CTFGCClientSystem::WebapiInventoryState_t::RequestSucceeded()
@@ -324,7 +328,11 @@ void CTFGCClientSystem::WebapiInventoryState_t::RequestSucceeded()
 
 bool CTFGCClientSystem::WebapiInventoryState_t::IsBackingOff()
 {
+#ifdef BDSBASE
+	return false;
+#else
 	return m_rtNextRequest != 0 && CRTime::RTime32TimeCur() <= m_rtNextRequest;
+#endif
 }
 
 void CTFGCClientSystem::WebapiInventoryThink()

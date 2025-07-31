@@ -8,6 +8,7 @@ Details:
 - Suppressed the "Node Graph out of Date. Rebuilding..." message.
 - Fixed zoomed-in viewmodels flipping upside down at higher FOVs.
 - Fixed env_sun sprite disappearing when you look at it.
+- Fixed issues with the inventory system.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

@@ -4029,12 +4029,16 @@ ConVar tf_mm_trusted( "tf_mm_trusted", "0", FCVAR_NOTIFY | FCVAR_HIDDEN,
 // Backoff api
 void CTFGCServerSystem::WebapiEquipmentState_t::Backoff()
 {
+#ifdef BDSBASE
+	RequestSucceeded();
+#else
 	if ( m_nBackoffSec == 0 )
 		m_nBackoffSec = 20;
 	else
 		m_nBackoffSec = ( m_nBackoffSec * 12 + 9 ) / 10; // exponential backoff @ 1.2x factor, round up
 
 	m_rtNextRequest = CRTime::RTime32TimeCur() + m_nBackoffSec;
+#endif
 }
 
 void CTFGCServerSystem::WebapiEquipmentState_t::RequestSucceeded()
@@ -4045,7 +4049,11 @@ void CTFGCServerSystem::WebapiEquipmentState_t::RequestSucceeded()
 
 bool CTFGCServerSystem::WebapiEquipmentState_t::IsBackingOff()
 {
+#ifdef BDSBASE
+	return false;
+#else
 	return m_rtNextRequest != 0 && CRTime::RTime32TimeCur() <= m_rtNextRequest;
+#endif
 }
 
 CTFGCServerSystem::WebapiEquipmentState_t& CTFGCServerSystem::FindOrCreateWebapiEquipmentState( CSteamID steamID )
