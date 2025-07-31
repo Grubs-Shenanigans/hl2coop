@@ -1,7 +1,13 @@
 Quiver Private Alpha 1.2.0:
+
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
 - Added an intro.
+- Fixed a bug with prop_detail texture aspect ratios
+- Added seamless cubemaps.
+- Suppressed the "Node Graph out of Date. Rebuilding..." message.
+- Fixed zoomed-in viewmodels flipping upside down at higher FOVs.
+- Fixed env_sun sprite disappearing when you look at it.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

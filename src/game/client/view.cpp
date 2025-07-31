@@ -744,8 +744,13 @@ void CViewRender::SetUpViews()
 	float fDefaultFov = default_fov.GetFloat();
 	float flFOVOffset = fDefaultFov - viewEye.fov;
 
+#ifdef BDSBASE
+	//Adjust the viewmodel's FOV to move with any FOV offsets on the viewer's end
+	viewEye.fovViewmodel = fabs(g_pClientMode->GetViewModelFOV() - MIN(flFOVOffset, g_pClientMode->GetViewModelFOV()));
+#else
 	//Adjust the viewmodel's FOV to move with any FOV offsets on the viewer's end
 	viewEye.fovViewmodel = g_pClientMode->GetViewModelFOV() - flFOVOffset;
+#endif
 
 	if ( UseVR() )
 	{

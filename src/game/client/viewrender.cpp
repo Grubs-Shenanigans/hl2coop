@@ -2106,6 +2106,11 @@ void CViewRender::RenderView( const CViewSetup &viewRender, int nClearFlags, int
 
 	m_CurrentView = viewRender;
 
+#ifdef BDSBASE
+	if (building_cubemaps.GetBool())
+		m_CurrentView.fov = RAD2DEG(2.0f * atanf(64.0f / (64 - 0.5f)));
+#endif
+
 	C_BaseAnimating::AutoAllowBoneAccess boneaccess( true, true );
 	VPROF( "CViewRender::RenderView" );
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
