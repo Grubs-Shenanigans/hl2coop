@@ -165,10 +165,6 @@ const char *GetRandomBotName( void )
 //-----------------------------------------------------------------------------------------------------
 void CreateBotName( int iTeam, CHL2MPBot::DifficultyType skill, char* pBuffer, int iBufferSize )
 {
-#ifdef BDSBASE
-	LoadBotNames();
-#endif
-
 	const char *pBotName = GetRandomBotName();
 	const char* pFriendlyOrEnemyTitle = "";
 	
