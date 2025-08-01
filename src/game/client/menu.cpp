@@ -23,7 +23,7 @@
 #include <vgui_controls/AnimationController.h>
 
 #ifdef BDSBASE
-#define MAX_MENU_STRING	1024
+#define MAX_MENU_STRING	4096
 #else
 #define MAX_MENU_STRING	512
 #endif
