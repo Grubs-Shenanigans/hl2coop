@@ -4041,7 +4041,7 @@ void CTFGCServerSystem::WebapiEquipmentState_t::Backoff()
 	m_rtNextRequest = CRTime::RTime32TimeCur() + m_nBackoffSec;
 
 #ifdef BDSBASE
-	DevMsg("[GC SERVER] Backing off for an additional %i seconds.\n", m_nBackoffSec);
+	DevWarning("[GC SERVER] Backing off for an additional %i seconds.\n", m_nBackoffSec);
 #endif
 }
 

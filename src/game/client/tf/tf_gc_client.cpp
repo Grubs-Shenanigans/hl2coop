@@ -320,7 +320,7 @@ void CTFGCClientSystem::WebapiInventoryState_t::Backoff()
 	m_rtNextRequest = CRTime::RTime32TimeCur() + m_nBackoffSec;
 
 #ifdef BDSBASE
-	DevMsg("[GC CLIENT] Backing off for an additional %i seconds.\n", m_nBackoffSec);
+	DevWarning("[GC CLIENT] Backing off for an additional %i seconds.\n", m_nBackoffSec);
 #endif
 }
 
