@@ -18,6 +18,13 @@ class IJobReliableMessage; // Defined below
 
 #define MMLog(...) do { ::Msg( __VA_ARGS__ ); } while(false)
 
+#ifdef BDSBASE
+// the backoff system is a good idea, but the inventory delay is way too high (20 seconds by default).
+// as a result, we have lowered it to 5 seconds.
+#define GC_BACKOFF_RATELIMIT_TIME 5
+//#define GC_BACKOFF_RATELIMIT_TIME 20
+#endif
+
 // Timeout upon successfully sending a reliable message before deciding we should try again.  This affects how quickly
 // we can detect the Stalled state for a queue in the case of non-responses, as well.
 #ifdef CLIENT_DLL
