@@ -9,6 +9,9 @@ Details:
 - Fixed zoomed-in viewmodels flipping upside down at higher FOVs.
 - Fixed env_sun sprite disappearing when you look at it.
 - Fixed issues with the inventory system.
+- Updated items_game to reflect the latest TF2 update.
+- Added the following Source SDK Pull Requests:
+	- #1466: MAX_MENU_STRING increase (increased to 4096 characters)
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

@@ -9454,7 +9454,10 @@ END_DATADESC()
 
 void CTFPlayer::BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage, bool bNoArmor)
 {
-	if (m_Shared.IsInvulnerable() || DoesDamagePenetrateArmor(info, bitsDamage))
+	if (m_Shared.IsInvulnerable())
+		return;
+
+	if (DoesDamagePenetrateArmor(info, bitsDamage))
 		return;
 
 	if (!bNoArmor)
@@ -12801,8 +12804,9 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 
 #if defined(QUIVER_DLL)
 	// if we died, and we have armor, break the armor so our shield goes away.
-	// if the damage penetrates or we somehow died while in uber, we set the armor value to 0 silently.
-	if (!m_Shared.IsInvulnerable() && !DoesDamagePenetrateArmor(info, info.GetDamageType()))
+	// if the damage penetrates, we set the armor value to 0 silently.
+	if (!DoesDamagePenetrateArmor(info, info.GetDamageType()))
+	
 	{
 		if (ArmorValue() > 0)
 		{
