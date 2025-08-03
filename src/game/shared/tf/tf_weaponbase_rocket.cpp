@@ -484,7 +484,11 @@ void CTFBaseRocket::Explode( trace_t *pTrace, CBaseEntity *pOther )
 	// Damage.
 	CBaseEntity *pAttacker = GetOwnerEntity();
 	IScorer *pScorerInterface = dynamic_cast<IScorer*>( pAttacker );
+#ifdef BDSBASE
+	if (pScorerInterface && pScorerInterface->GetScorer())
+#else
 	if ( pScorerInterface )
+#endif
 	{
 		pAttacker = pScorerInterface->GetScorer();
 	}

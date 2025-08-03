@@ -31,6 +31,7 @@ Blacklists:
 Added the following Source SDK Pull Requests:
 	- #1466: MAX_MENU_STRING increase (increased to 4096 characters)
 	- #1469: Fix Sappers becoming indestructible under certain circumstances
+	- #1470: Fix ownerless sentry rockets dealing no damage
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
