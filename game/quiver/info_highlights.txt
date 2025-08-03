@@ -88,7 +88,10 @@ Unlockable weapon balance changes:
 - Reduced the reload penalty on the Shortstop from 50% to 25%.
 - Added a 25 max health increase to the Shortstop to mirror its original set.
 - The Sandman's ball now breaks armor. It also does 100% guaranteed critical hits against unarmored players.
-- The Family Business is now a multi-class shotgun.
+- The Family Business is now a multi-class shotgun for everyone except Soldier.
+- The Sharpened Volcano Fragment is now a reskin of the Axtinguisher.
+- Removed the fire resistance on the Sun-on-the-Stick
+- Made the Sun-on-the-Stick ignite enemies
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

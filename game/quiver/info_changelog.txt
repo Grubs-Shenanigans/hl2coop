@@ -24,6 +24,9 @@ Whitelists:
 	- The Cozy Camper
 	- The Diamondback
 	- The Red-Tape Recorder
+	- Sharpened Volcano Fragment
+	- The Sun-on-a-Stick
+	- The B.A.S.E. Jumper
 
 Blacklists:
 	- The Spy-Cicle
@@ -46,6 +49,9 @@ Details:
 - Removed the Family Business from Soldier.
 - Fixed the Lolichop, Rainblower, Apoco-Fists, Enthusiast's Timepiece, Snack Attack, and Quäckenbirdt not showing up.
 - Added the ability for server owners to re-enable stun with qf_allow_stun.
+- The Sharpened Volcano Fragment is now a reskin of the Axtinguisher.
+- Removed the fire resistance on the Sun-on-the-Stick
+- Made the Sun-on-the-Stick ignite enemies
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

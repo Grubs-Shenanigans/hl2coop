@@ -71,5 +71,8 @@
 - The Cozy Camper
 - The Diamondback
 - The Red-Tape Recorder
+- Sharpened Volcano Fragment (w/ balance changes)
+- The Sun-on-a-Stick* (w/ balance changes)
+- The B.A.S.E. Jumper
 
 * - Weapon was whitelisted as long as it got a rebalance.
