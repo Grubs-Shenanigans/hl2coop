@@ -3227,7 +3227,11 @@ void CBaseObject::AttachObjectToObject( CBaseEntity *pEntity, int iPoint, Vector
 				iAttachment = pBPInterface->GetBuildPointAttachmentIndex( iPoint );
 
 				// re-link to the build points if the sapper is already built
+#ifdef BDSBASE
+				if (!IsPlacing())
+#else
 				if ( !( IsPlacing() || IsBuilding() ) )
+#endif
 				{
 					pBPInterface->SetObjectOnBuildPoint( m_iBuiltOnPoint, this );
 				}
