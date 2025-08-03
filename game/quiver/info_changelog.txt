@@ -1,4 +1,36 @@
 Quiver Private Alpha 1.2.0:
+Whitelists:
+	- The Liberty Launcher
+	- The Air Strike
+	- The Gunboats
+	- The Concheror
+	- The Panic Attack
+	- The Disciplinary Action
+	- The Scorch Shot
+	- The Homewrecker/Maul
+	- The Powerjack
+	- The Hot Hand
+	- The Brass Beast
+	- The Huo-Long Heater
+	- The Dalokoh's Bar/Fishcake
+	- The Second Banana
+	- The Gloves of Running Urgently/Bread Bite
+	- The Fists of Steel
+	- The Eviction Notice
+	- The Widowmaker
+	- The Eureka Effect
+	- The Blutsauger
+	- The Overdose
+	- The Cozy Camper
+	- The Diamondback
+	- The Red-Tape Recorder
+
+Blacklists:
+	- The Spy-Cicle
+
+Added the following Source SDK Pull Requests:
+	- #1466: MAX_MENU_STRING increase (increased to 4096 characters)
+	- #1469: Fix Sappers becoming indestructible under certain circumstances
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
@@ -10,14 +42,31 @@ Details:
 - Fixed env_sun sprite disappearing when you look at it.
 - Fixed issues with the inventory system.
 - Updated items_game to reflect the latest TF2 update.
-- Added the following Source SDK Pull Requests:
-	- #1466: MAX_MENU_STRING increase (increased to 4096 characters)
+- Removed the Family Business from Soldier.
+- Fixed the Lolichop, Rainblower, Apoco-Fists, Enthusiast's Timepiece, Snack Attack, and Quäckenbirdt not showing up.
+- Added the ability for server owners to re-enable stun with qf_allow_stun.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
 	- The Baby Face's Blaster 
 	- The Warrior's Spirit
 	- The Sandman
+
+Added the following Source SDK Pull Requests:
+	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
+	- #1440: Treat being in background map as not in-game
+	- #1439: Network player's handedness preference to spectators
+	- #1444: Hide intel upgrade hud when no intel is enabled
+	- #1446: Add Confirm dialog before opening Twitch in browser
+	- #1450: Freezecam mat_viewportscale fix
+	- #1451: Fix mult_reload_time_while_healed in tf_weaponbase.cpp
+	- #1452: Fix Vaccinator resist icons persisting when a player changes (displayed) team (Vaccinator is not whitelisted but this was added to keep the base up to date)
+	- #1448: Fix point_camera transmit state in multiplayer
+	- #1455: Reimplement "panic_attack" attribute
+	- #1463: Fix Engineer melee swing storage/double swing exploit
+Updated the following Source SDK Pull Requests:
+	- #1192: Make it so Vita-Saw attacks on MvM robots spawn a bolt instead of a spleen (outside of Wave 666)
+	- #1380: all games: Add support for animated avatars
 
 Details:
 - Disabled stun in most instances, except in MvM where it's crucial against robots.
@@ -103,21 +152,6 @@ Details:
 - The Family Business is now a multi-class shotgun.
 - Added a Vaccinator shield to visualize armor. (temporary)
 - Disabled random crits on custom weapons that can situationally crit.
-- Added the following Source SDK Pull Requests:
-	- #1437: MvM: Fix Explosive Headshot working on invulnerable target
-	- #1440: Treat being in background map as not in-game
-	- #1439: Network player's handedness preference to spectators
-	- #1444: Hide intel upgrade hud when no intel is enabled
-	- #1446: Add Confirm dialog before opening Twitch in browser
-	- #1450: Freezecam mat_viewportscale fix
-	- #1451: Fix mult_reload_time_while_healed in tf_weaponbase.cpp
-	- #1452: Fix Vaccinator resist icons persisting when a player changes (displayed) team (Vaccinator is not whitelisted but this was added to keep the base up to date)
-	- #1448: Fix point_camera transmit state in multiplayer
-	- #1455: Reimplement "panic_attack" attribute
-	- #1463: Fix Engineer melee swing storage/double swing exploit
-- Updated the following Source SDK Pull Requests:
-	- #1192: Make it so Vita-Saw attacks on MvM robots spawn a bolt instead of a spleen (outside of Wave 666)
-	- #1380: all games: Add support for animated avatars
 
 Quiver Private Alpha 1.0.1:
 Whitelists:
@@ -134,6 +168,16 @@ Whitelists:
 	- The Conniver's Kunai
 	- The Spy-cicle
 	- Eternal Reward/Wanga Prick
+
+Added the following Source SDK Pull Requests:
+	- #1428: Fix steam input not working for the upgrade station menu 
+	- #1424: Auto-equip powerup canteen when ForceUpgrades is enabled (Freaky Fair)
+	- #1432: Fix joining a new lobby while being revived locking up the camera
+	- #1433: Add client ConVars for changing viewmodel position and angle offsets
+	- #1434: Improve the random class selection algorithm to reduce the chance of failure
+	- #1435: Fix jump start animation not working when the player has increased jump height
+Updated the following Source SDK Pull Requests:
+	- #1417: Add inverse kinematics solving in model panels
 
 Details:
 - Demoman and Soldier speed has been decreased to 315 from 340.
@@ -162,15 +206,6 @@ Details:
 - Added dm_ravine, dm_lumberyard, and dm_2fort, the first Team Deathmatch maps, built off the Arena/CTF maps of the same name.
 - Added mod_version command so you can view the mod's version.
 - Added a disclaimer on the HUD about the mod's development state.
-- Added the following Source SDK Pull Requests:
-	- #1428: Fix steam input not working for the upgrade station menu 
-	- #1424: Auto-equip powerup canteen when ForceUpgrades is enabled (Freaky Fair)
-	- #1432: Fix joining a new lobby while being revived locking up the camera
-	- #1433: Add client ConVars for changing viewmodel position and angle offsets
-	- #1434: Improve the random class selection algorithm to reduce the chance of failure
-	- #1435: Fix jump start animation not working when the player has increased jump height
-- Updated the following Source SDK Pull Requests:
-	- #1417: Add inverse kinematics solving in model panels
 
 Quiver Private Test 4:
 Whitelists:
@@ -178,6 +213,21 @@ Whitelists:
 	- The Enforcer
 	- The Tomislav
 	- The L'Etranger
+
+Added the following Source SDK Pull Requests:
+	- #1402: Fix mouse mode not working in MvM scoreboard
+	- #1404: Add metal change number batching
+	- #1405: Remove ammo metal prediction if the weapon has add_onhit_ammo
+	- #1407: Make trigger_hurt double w/ forgiveness actually forgive
+	- #1408: Fix MoveableSubPanel showing while dead
+	- #1409: Fix sentry "buffering" wrangler inputs
+	- #1410: Fix Switching from the medigun while healing someone screwing with viewmodels
+	- #1411: Make the "Pass to me!" voice menu command only show in Passtime
+	- #1413: Adds vscript functions to point_populator_interface
+	- #1414: Fix Eyelander/Sword's overheal drain rate & make health gain consistent with other weapons
+	- #1415: Fix the tf_projectile_arrow entity changing direction upon entering water
+	- #1420: Allow the Shortstop to shove while reloading
+	- #1417: Add inverse kinematics solving in model panels
 
 Details:
 - Re-enabled shield break responses.
@@ -225,20 +275,6 @@ Details:
 - The Sword now pierces armor.
 - Fixed the Hitman's Heatmaker not piercing armor.
 - Added bosses, telefrags, hazards, and penetrated sniper shots into the list of things that can penetrate armor.
-- Added the following Source SDK Pull Requests:
-	- #1402: Fix mouse mode not working in MvM scoreboard
-	- #1404: Add metal change number batching
-	- #1405: Remove ammo metal prediction if the weapon has add_onhit_ammo
-	- #1407: Make trigger_hurt double w/ forgiveness actually forgive
-	- #1408: Fix MoveableSubPanel showing while dead
-	- #1409: Fix sentry "buffering" wrangler inputs
-	- #1410: Fix Switching from the medigun while healing someone screwing with viewmodels
-	- #1411: Make the "Pass to me!" voice menu command only show in Passtime
-	- #1413: Adds vscript functions to point_populator_interface
-	- #1414: Fix Eyelander/Sword's overheal drain rate & make health gain consistent with other weapons
-	- #1415: Fix the tf_projectile_arrow entity changing direction upon entering water
-	- #1420: Allow the Shortstop to shove while reloading
-	- #1417: Add inverse kinematics solving in model panels
 
 Quiver Private Test 3:
 Whitelists:

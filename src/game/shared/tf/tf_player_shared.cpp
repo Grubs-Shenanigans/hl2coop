@@ -192,6 +192,10 @@ ConVar tf_allow_taunt_switch( "tf_allow_taunt_switch", "0", FCVAR_REPLICATED, "0
 
 ConVar tf_allow_all_team_partner_taunt( "tf_allow_all_team_partner_taunt", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
 
+#if defined(QUIVER_DLL)
+ConVar qf_allow_stun("qf_allow_stun", "0", FCVAR_REPLICATED | FCVAR_NOTIFY);
+#endif
+
 // AFTERBURN
 const float tf_afterburn_max_duration = 10.f;
 const float tf_afterburn_duration_ratio_second_degree = 0.4f;
@@ -10032,7 +10036,7 @@ void CTFPlayerShared::StunPlayer(float flTime, float flReductionAmount, int iStu
 {
 #if defined(QUIVER_DLL)
 	// in quiver, disable most instances of stun unless we're in MvM.
-	if (TFGameRules() && !TFGameRules()->IsMannVsMachineMode())
+	if (!qf_allow_stun.GetBool() && (TFGameRules() && !TFGameRules()->IsMannVsMachineMode()))
 		return;
 #endif
 

@@ -25,7 +25,7 @@
 - The Family Business
 - The Kritzkrieg
 - The Quick-Fix (w/ balance changes)
-- The Ubersaw
+- The Übersaw
 - The Amputator
 - The Vita-Saw
 - The Huntsman/Fortified Compound (w/ balance changes)
@@ -41,12 +41,35 @@
 - The L'Etranger
 - The Tomislav
 - The Conniver's Kunai* (w/ balance changes)
-- The Spy-cicle
 - The Eternal Reward/Wanga Prick
 - The Back Scatter
 - The Force-a-Nature* (w/ balance changes)
 - The Baby Face's Blaster* (w/ balance changes)
 - The Warrior's Spirit* (w/ balance changes)
 - The Sandman* (w/ balance changes)
+- The Liberty Launcher
+- The Air Strike
+- The Gunboats
+- The Concheror
+- The Panic Attack
+- The Disciplinary Action
+- The Scorch Shot
+- The Homewrecker/Maul
+- The Powerjack
+- The Hot Hand
+- The Brass Beast
+- The Huo-Long Heater
+- The Dalokoh's Bar/Fishcake
+- The Second Banana
+- The Gloves of Running Urgently/Bread Bite
+- The Fists of Steel
+- The Eviction Notice
+- The Widowmaker
+- The Eureka Effect
+- The Blutsauger
+- The Overdose
+- The Cozy Camper
+- The Diamondback
+- The Red-Tape Recorder
 
 * - Weapon was whitelisted as long as it got a rebalance.
