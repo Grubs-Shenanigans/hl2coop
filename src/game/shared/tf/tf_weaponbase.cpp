@@ -5528,7 +5528,14 @@ void CTFWeaponBase::ApplyOnHitAttributes( CBaseEntity *pVictimBaseEntity, CTFPla
 
 	if ( iBoostOnDamage != 0 )
 	{
+#ifdef BDSBASE
+		int iBoostOnDamageAmount = 1;
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(pAttacker, iBoostOnDamageAmount, boost_on_damage_div);
+
+		float fHype = MIN(tf_scout_hype_pep_max.GetFloat(), pAttacker->m_Shared.GetScoutHypeMeter() + (MAX(tf_scout_hype_pep_min_damage.GetFloat(), info.GetDamage() / iBoostOnDamageAmount) / tf_scout_hype_pep_mod.GetFloat()));
+#else
 		float fHype = MIN( tf_scout_hype_pep_max.GetFloat(), pAttacker->m_Shared.GetScoutHypeMeter() + ( MAX( tf_scout_hype_pep_min_damage.GetFloat(), info.GetDamage() ) / tf_scout_hype_pep_mod.GetFloat() ) );
+#endif
 		pAttacker->m_Shared.SetScoutHypeMeter( fHype );
 		pAttacker->TeamFortress_SetSpeed();
 	}

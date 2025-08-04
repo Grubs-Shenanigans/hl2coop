@@ -53,7 +53,7 @@
 - The Concheror
 - The Panic Attack
 - The Disciplinary Action
-- The Scorch Shot
+- The Scorch Shot (w/ balance changes)
 - The Homewrecker/Maul
 - The Powerjack
 - The Hot Hand
@@ -74,5 +74,6 @@
 - Sharpened Volcano Fragment (w/ balance changes)
 - The Sun-on-a-Stick* (w/ balance changes)
 - The B.A.S.E. Jumper
+- The Atomizer* (w/ balance changes)
 
 * - Weapon was whitelisted as long as it got a rebalance.

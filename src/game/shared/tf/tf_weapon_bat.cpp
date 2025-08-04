@@ -760,7 +760,7 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 	info.SetDamageForce(GetDamageForce());
 	info.SetDamagePosition(GetAbsOrigin());
 	int iDamageType = GetDamageType();
-	if (pPlayer->ArmorValue() <= 0 || IsCritical())
+	if ((flLifeTimeRatio > 0.1f && pPlayer->ArmorValue() > 0) || IsCritical())
 		iDamageType |= DMG_CRITICAL;
 	info.SetDamageType(iDamageType);
 #endif
@@ -810,7 +810,16 @@ void CTFStunBall::ApplyBallImpactEffectOnVictim( CBaseEntity *pOther )
 		if ( pPlayer->GetWaterLevel() != WL_Eyes )
 		{
 #if defined(QUIVER_DLL)
-			pPlayer->BreakArmor(info, pOwner, iDamageType, false);
+			if (pPlayer->ArmorValue() > 0)
+			{
+				pPlayer->BreakArmor(info, pOwner, iDamageType, false);
+			}
+
+			//this maybe shouldn't conflict with the MVM upgrade...
+			pPlayer->m_Shared.AddCond(TF_COND_MARKEDFORDEATH, 3);
+
+			// play the stun sound 
+			pPlayer->StunSound(pOwner, iStunFlags);
 #else
 			pPlayer->m_Shared.StunPlayer( flStunDuration, flStunAmount, iStunFlags, pOwner );
 #endif

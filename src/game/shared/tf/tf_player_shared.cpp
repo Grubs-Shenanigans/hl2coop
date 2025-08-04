@@ -11570,7 +11570,20 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 		if ( Weapon_OwnsThisID( TF_WEAPON_PEP_BRAWLER_BLASTER ) )
 		{
 			// Make this change based on attrs, hardcode right now
+
+#ifdef BDSBASE
+			float maxHypeBonus = 1.0f;
+			CALL_ATTRIB_HOOK_FLOAT(maxHypeBonus, mult_max_boost_speed);
+
+			if (maxHypeBonus == 1.0f)
+			{
+				maxHypeBonus = 1.45f;
+			}
+
+			maxfbspeed *= RemapValClamped(m_Shared.GetScoutHypeMeter(), 0.0f, 100.0f, 1.0f, maxHypeBonus);
+#else
 			maxfbspeed *= RemapValClamped( m_Shared.GetScoutHypeMeter(), 0.0f, 100.0f, 1.0f, 1.45f );
+#endif
 		}
 		// Atomic Punch gives a move bonus while active
 // 		if ( m_Shared.InCond( TF_COND_PHASE ) )
@@ -13387,11 +13400,28 @@ bool CTFPlayer::CanAirDash( void ) const
 
 	CTFWeaponBase *pTFActiveWeapon = GetActiveTFWeapon();
 	int iDashCount = tf_scout_air_dash_count.GetInt();
+
+#ifdef BDSBASE
+	int iDashAdd = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(pTFActiveWeapon, iDashAdd, air_dash_count);
+
+	if (iDashAdd == 0)
+	{
+		CALL_ATTRIB_HOOK_INT(iDashAdd, air_dash_count_passive);
+	}
+
+	if (iDashAdd > 0)
+	{
+		iDashCount += iDashAdd;
+	}
+#else
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( pTFActiveWeapon, iDashCount, air_dash_count );
+#endif
 
 	if ( m_Shared.GetAirDash() >= iDashCount )
 		return false;
 
+#ifndef BDSBASE
 	if ( pTFActiveWeapon )
 	{
 		// TODO(driller): Hack fix to restrict this to The Atomzier (currently the only item that uses this attribute) on what would be the third jump
@@ -13399,6 +13429,7 @@ bool CTFPlayer::CanAirDash( void ) const
 		if ( iDashCount >= 2 && m_Shared.GetAirDash() == 1 && flTimeSinceDeploy < 0.7f )
 			return false;
 	}
+#endif
 
 	int iNoAirDash = 0;
 	CALL_ATTRIB_HOOK_INT( iNoAirDash, set_scout_doublejump_disabled );

@@ -71,7 +71,6 @@ Unlockable weapon balance changes:
 - The Flying Guillotine now does 100% crits vs players that just had their armor break, at the expense of 33% damage on armored players.
 - Baby Face's Blaster users will no longer lose Boost when taking damage.
 - You will now only lose 35% of boost when air jumping with the Baby Face's Blaster.
-- Increased the Baby Face's Blaster's movement speed penalty from 10% to 20%
 - The Loch-N-Load's 20% damage bonus against buildings is now a normal 20% damage bonus.
 - Added a 25% clip size reduction on the Iron Bomber to keep it at 4 grenades (with the Grenade Launcher's ammo increase).
 - Decreased the Loch-N-Load's clip size penalty from 25% to 65% to put it at 2 grenades (with the Grenade Launcher's ammo increase).
@@ -87,11 +86,16 @@ Unlockable weapon balance changes:
 - Fixed Gunslinger being able to pause melee hit combos when holstering the weapon.
 - Reduced the reload penalty on the Shortstop from 50% to 25%.
 - Added a 25 max health increase to the Shortstop to mirror its original set.
-- The Sandman's ball now breaks armor. It also does 100% guaranteed critical hits against unarmored players.
+- The Sandman's ball now breaks armor. It also does 100% guaranteed critical hits against armored players.
+- The Sandman's ball now marks players for death if they're unarmored.
 - The Family Business is now a multi-class shotgun for everyone except Soldier.
 - The Sharpened Volcano Fragment is now a reskin of the Axtinguisher.
 - Removed the fire resistance on the Sun-on-the-Stick
 - Made the Sun-on-the-Stick ignite enemies
+- Lowered the blast radius of the Scorch Shot by 20%
+- Reduced the jump height when using the Atomizer by 10%.
+- The Atomizer's triple jump is now passive. Mini-Crits will no longer occur when dealing hits while airborne.
+- The Baby Face's Blaster now takes 200 damage to fill boost instead of 100.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

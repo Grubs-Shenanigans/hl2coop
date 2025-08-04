@@ -962,6 +962,7 @@ public:
 	void ScriptStunPlayer( float flTime, float flReductionAmount, int iStunFlags = TF_STUN_MOVEMENT, HSCRIPT hAttacker = NULL );
 #ifdef BDSBASE
 	void ScriptIgnitePlayer(float flBurningTime, HSCRIPT hAttacker = NULL, HSCRIPT hWeapon = NULL);
+	bool ScriptGiveWeapon(const char* pszWeapon);
 #endif
 
 private:

@@ -700,6 +700,7 @@ BEGIN_ENT_SCRIPTDESC( CTFPlayer, CBaseMultiplayerPlayer , "Team Fortress 2 Playe
 
 #ifdef BDSBASE
 	DEFINE_SCRIPTFUNC_WRAPPED(IgnitePlayer, "")
+	DEFINE_SCRIPTFUNC_WRAPPED(GiveWeapon, "")
 #else
 	DEFINE_SCRIPTFUNC(IgnitePlayer, "")
 #endif
@@ -5851,98 +5852,101 @@ void CTFPlayer::ManageRegularWeaponsLegacy( TFPlayerClassData_t *pData )
 }
 
 #ifdef BDSBASE
-CON_COMMAND_F(tf_giveweapon, "Give a weapon to the player. Format: tf_giveweapon <item definition name> or <item def index>", FCVAR_CHEAT)
+bool CTFPlayer::ScriptGiveWeapon(const char* pszWeapon)
 {
-	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
-	if (!pPlayer)
-		return;
-
 	CEconItemDefinition* pItemDef = NULL;
 
-	int iItemCount = args.ArgC();
-	for (int i = 1; i < iItemCount; ++i)
+	const char* input = pszWeapon;
+
+	// Check to see if args[1] is a number (itemdefid) and if so, translate it to actual itemname
+	if (V_isdigit(input[0]))
 	{
-		// Check to see if args[1] is a number (itemdefid) and if so, translate it to actual itemname
-		if (V_isdigit(args[i][0]))
-		{
-			int iDef = V_atoi(args[i]);
-			pItemDef = GetItemSchema()->GetItemDefinition(iDef);
-			if (pItemDef)
-			{
-				break;
-			}
-		}
-		else
-		{
-			pItemDef = GetItemSchema()->GetItemDefinitionByName(args[i]);
-			if (pItemDef)
-			{
-				break;
-			}
-		}
+		int iDef = V_atoi(input);
+		pItemDef = GetItemSchema()->GetItemDefinition(iDef);
+	}
+	else
+	{
+		pItemDef = GetItemSchema()->GetItemDefinitionByName(input);
 	}
 
 	if (pItemDef)
 	{
 		CEconItemView* pItemData = new CEconItemView();
 		CSteamID ownerSteamID;
-		pPlayer->GetSteamID(&ownerSteamID);
+		GetSteamID(&ownerSteamID);
 		pItemData->Init(pItemDef->GetDefinitionIndex(), AE_UNIQUE, AE_USE_SCRIPT_VALUE, ownerSteamID.GetAccountID());
 		if (pItemData && pItemData->IsValid())
 		{
-			int iClass = pPlayer->GetPlayerClass()->GetClassIndex();
+			int iClass = GetPlayerClass()->GetClassIndex();
 
 			if (!pItemData->GetStaticData()->CanBeUsedByClass(iClass))
 			{
-				Warning("Item %s cannot be used by this class\n", pItemData->GetItemDefinition()->GetItemDefinitionName());
-				return;
+				return false;
 			}
 
 			int iSlot = pItemData->GetStaticData()->GetLoadoutSlot(iClass);
-			CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(pPlayer->GetEntityForLoadoutSlot(iSlot));
+			CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(GetEntityForLoadoutSlot(iSlot));
 
 			// we need to force translating the name here.
 			// GiveNamedItem will not translate if we force creating the item
 			const char* pTranslatedWeaponName = TranslateWeaponEntForClass(pItemData->GetStaticData()->GetItemClass(), iClass);
-			CTFWeaponBase* pNewItem = dynamic_cast<CTFWeaponBase*>(pPlayer->GiveNamedItem(pTranslatedWeaponName, 0, pItemData, true));
+			CTFWeaponBase* pNewItem = dynamic_cast<CTFWeaponBase*>(GiveNamedItem(pTranslatedWeaponName, 0, pItemData, true));
 			if (pNewItem)
 			{
 				CTFWeaponBuilder* pBuilder = dynamic_cast<CTFWeaponBuilder*>((CBaseEntity*)pNewItem);
 				if (pBuilder)
 				{
-					pBuilder->SetSubType(pPlayer->GetPlayerClass()->GetData()->m_aBuildable[0]);
+					pBuilder->SetSubType(GetPlayerClass()->GetData()->m_aBuildable[0]);
 				}
 
 				// make sure we removed our current weapon				
 				if (pWeapon)
 				{
-					pPlayer->Weapon_Detach(pWeapon);
+					Weapon_Detach(pWeapon);
 					UTIL_Remove(pWeapon);
 				}
 
 				pNewItem->MarkAttachedEntityAsValidated();
-				pNewItem->GiveTo(pPlayer);
+				pNewItem->GiveTo(this);
 
-				pPlayer->PostInventoryApplication();
+				PostInventoryApplication();
 
 				// Refills weapon clips, too
 				for (int i = 0; i < MAX_WEAPONS; i++)
 				{
-					CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(pPlayer->GetWeapon(i));
+					CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(GetWeapon(i));
 					if (!pWeapon)
 						continue;
 
 					pWeapon->GiveDefaultAmmo();
 					pWeapon->WeaponRegenerate();
 				}
-				
-				Msg("Gave %s to player %s [%i]\n", pItemData->GetItemDefinition()->GetItemDefinitionName(), pPlayer->GetPlayerName(), ownerSteamID.GetAccountID());
-			}
-			else
-			{
-				Warning("Item not found or is not a weapon\n");
+
+				return true;
 			}
 		}
+	}
+
+	return false;
+}
+
+CON_COMMAND_F(tf_giveweapon, "Give a weapon to the player. Format: tf_giveweapon <item definition name> or <item def index>", FCVAR_CHEAT)
+{
+	CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
+	if (!pPlayer)
+		return;
+
+	bool bGiven = pPlayer->ScriptGiveWeapon(args[1]);
+
+	if (bGiven)
+	{
+		CSteamID ownerSteamID;
+		pPlayer->GetSteamID(&ownerSteamID);
+		Msg("Gave %s to player %s [%i]\n", args[1], pPlayer->GetPlayerName(), ownerSteamID.GetAccountID());
+	}
+	else
+	{
+		Warning("Item not found, is not a weapon, or cannot be used with this class.\n");
 	}
 }
 #endif

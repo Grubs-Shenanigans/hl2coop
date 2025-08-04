@@ -27,6 +27,7 @@ Whitelists:
 	- Sharpened Volcano Fragment
 	- The Sun-on-a-Stick
 	- The B.A.S.E. Jumper
+	- The Atomizer
 
 Blacklists:
 	- The Spy-Cicle
@@ -52,6 +53,14 @@ Details:
 - The Sharpened Volcano Fragment is now a reskin of the Axtinguisher.
 - Removed the fire resistance on the Sun-on-the-Stick
 - Made the Sun-on-the-Stick ignite enemies
+- Lowered the blast radius of the Scorch Shot by 20%
+- Reduced the jump height when using the Atomizer by 10%.
+- The Atomizer's triple jump is now passive. Mini-Crits will no longer occur when dealing hits while airborne.
+- Decreased the Baby Face's Blaster's movement speed penalty back to 10%
+- The Baby Face's Blaster now takes 200 damage to fill boost instead of 100.
+- The Sandman's ball now does guaranteed crits against armored players, alongside breaking armor.
+- The Sandman's ball now marks players for death if they're unarmored.
+- Fixed a bug where the Sandman doesn't play special sounds when hitting a player with a ball.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
