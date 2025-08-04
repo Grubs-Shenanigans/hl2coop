@@ -253,6 +253,11 @@ void CTFRocketLauncher::Misfire( void )
 			UTIL_TraceLine( pRocket->GetAbsOrigin(), pPlayer->EyePosition(), MASK_SOLID, pRocket, COLLISION_GROUP_NONE, &tr );
 			pRocket->Explode( &tr, pPlayer );
 		}
+
+#if defined(QUIVER_DLL)
+		// in Quiver, make it so we regain 1 rocket if it explodes (similar to 2013 beggars)
+		m_iClip1 = m_iClip1 + 1;
+#endif
 	}
 #endif
 }

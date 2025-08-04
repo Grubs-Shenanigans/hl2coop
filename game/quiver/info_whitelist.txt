@@ -75,5 +75,6 @@
 - The Sun-on-a-Stick* (w/ balance changes)
 - The B.A.S.E. Jumper
 - The Atomizer* (w/ balance changes)
+- The Beggar's Bazooka (w/ balance changes)
 
 * - Weapon was whitelisted as long as it got a rebalance.

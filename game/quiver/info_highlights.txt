@@ -95,7 +95,8 @@ Unlockable weapon balance changes:
 - Lowered the blast radius of the Scorch Shot by 20%
 - Reduced the jump height when using the Atomizer by 10%.
 - The Atomizer's triple jump is now passive. Mini-Crits will no longer occur when dealing hits while airborne.
-- The Baby Face's Blaster now takes 200 damage to fill boost instead of 100.
+- The Baby Face's Blaster now takes 150 damage to fill boost instead of 100.
+- Made it so the Beggar's Bazooka no longer reduces ammo during a misfire.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

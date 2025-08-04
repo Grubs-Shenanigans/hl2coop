@@ -5276,6 +5276,11 @@ void CTFPlayerShared::OnRemoveRuneResist( void )
 //-----------------------------------------------------------------------------
 void CTFPlayerShared::OnAddArmor(void)
 {
+	if (InCond(QF_COND_ARMORJUSTBROKE))
+	{
+		RemoveCond(QF_COND_ARMORJUSTBROKE);
+	}
+
 #ifdef CLIENT_DLL
 	// Do use the condition bit here, it's passed along and is expected to be a cond.
 	AddResistShield(&m_pOuter->m_pTempShield, m_pOuter, QF_COND_ARMOR);
