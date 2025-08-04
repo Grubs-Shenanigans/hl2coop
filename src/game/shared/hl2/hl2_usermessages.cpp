@@ -23,7 +23,9 @@ void RegisterUserMessages( void )
 	usermessages->Register( "SayText", -1 );
 	usermessages->Register( "SayText2", -1 );
 	usermessages->Register( "TextMsg", -1 );
+#ifndef BDSBASE
 	usermessages->Register( "HudMsg", -1 );
+#endif
 	usermessages->Register( "ResetHUD", 1);		// called every respawn
 	usermessages->Register( "GameTitle", 0 );
 	usermessages->Register( "ItemPickup", -1 );
@@ -40,6 +42,9 @@ void RegisterUserMessages( void )
 	usermessages->Register( "HintText", -1 );	// Displays hint text display
 	usermessages->Register( "KeyHintText", -1 );	// Displays hint text display
 	usermessages->Register( "SquadMemberDied", 0 );
+#ifdef BDSBASE
+	usermessages->Register("HudMsg", -1);
+#endif
 	usermessages->Register( "AmmoDenied", 2 );
 	usermessages->Register( "CreditsMsg", 1 );
 	usermessages->Register( "LogoTimeMsg", 4 );

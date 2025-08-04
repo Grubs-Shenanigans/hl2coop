@@ -558,3 +558,9 @@ bds_content/**/mapsrc/*.prt
 bds_content/**/mapsrc/*.vmx
 
 game/*/OfflinePracticeconfig.vdf
+game/*/cfg/server_blacklist.txt
+game/*/ServerConfig.vdf
+game/*/stats.txt
+game/*/textwindow_temp.html
+game/*/voice_ban.dt
+game/*.exe
