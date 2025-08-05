@@ -117,7 +117,11 @@ public:
 
 	virtual const char*			GetEffectLabelText( void ) { return "#TF_CLEAVER"; }
 
+#ifdef BDSBASE
+	virtual float		InternalGetEffectBarRechargeTime(void) { return 7.6f; }
+#else
 	virtual float		InternalGetEffectBarRechargeTime( void ) { return 5.1; }
+#endif
 
 #ifdef GAME_DLL
 	virtual const AngularImpulse GetAngularImpulse( void ){ return AngularImpulse( 0, 500, 0 ); }

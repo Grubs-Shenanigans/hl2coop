@@ -102,6 +102,7 @@ Unlockable weapon balance changes:
 - The Reserve Shooter now crits airborne opponents (not including jumping or air jumping players) within 3 seconds of it being deployed. After the 3 seconds has elapsed, the crits are downgraded to mini-crits.
 - The Reserve Shooter now has a 15% fire rate penalty.
 - Made it so the the Flying Guillotine guarantees full crits on long distance hits with enemies that just got their armor broken.
+- Increased the recharge time for the Flying Guillotine from 5.1 seconds to 7.6 seconds.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

@@ -15,6 +15,30 @@
 				"custom item"		"1"
 			}
 		}
+		
+		"quiver_jokeweapon"
+		{
+			"jokeitem" "1"
+			"show_in_armory"	"0"
+			"min_ilevel"		"69"
+			"max_ilevel"		"69"
+			"static_attrs"
+			{
+				"joke item"		"1"
+			}
+		}
+		
+		"quiver_customweapon_staging"
+		{
+			"staging" "1"
+			"show_in_armory"	"0"
+			"min_ilevel"		"1"
+			"max_ilevel"		"1"
+			"static_attrs"
+			{
+				"test item"		"1"
+			}
+		}
 	
 		// custom
 		"weapon_quiver_generic_demoshield"
@@ -788,6 +812,61 @@
 			"mouse_pressed_sound"	"ui/item_light_gun_pickup.wav"
 			"drop_sound"		"ui/item_light_gun_drop.wav"
 		}
+		
+		"weapon_quiver_joke_lexecuteur"
+		{
+			"base_item_name"	"L'Executeur"
+			"prefab"	"quiver_jokeweapon"
+			"item_class"	"tf_weapon_revolver"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+				"can_craft_count"	"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_deal_critical_damage"	"1"
+				"can_deal_mvm_penetration_damage"	"1"
+				"can_deal_long_distance_damage"	"1"
+			}
+			"item_type_name"	"#TF_Weapon_Revolver"
+			"item_name"	"#Quiver_Joke_lexecutor"
+			"item_description"	"#Quiver_Joke_lexecutor_Desc"
+			"item_slot"	"secondary"
+			"item_quality"	"unique"
+			"propername"	"1"
+			"item_logname"	"bleedfor8seconds"
+			"item_iconname"	"enforcer"
+			"image_inventory"	"backpack/workshop/weapons/c_models/c_snub_nose/c_snub_nose"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"inspect_panel_dist" 			"32"
+			"model_player"	"models/workshop/weapons/c_models/c_snub_nose/c_snub_nose.mdl"
+			"attach_to_hands" "1"
+			"used_by_classes"
+			{
+				"spy"	"1"
+			}
+			"static_attrs"
+			{
+				"min_viewmodel_offset"		"10 0 -6"
+				"damage penalty" "0.01"
+				"maxammo secondary reduced" "0.33"
+				"clip size penalty" "0.16"
+				"Reload time increased" "2"
+				"bleeding duration" "8"
+			}
+			"mouse_pressed_sound"	"ui/item_light_gun_pickup.wav"
+			"drop_sound"		"ui/item_light_gun_drop.wav"
+			"visuals"
+			{
+				"sound_single_shot"	"Weapon_Enforcer.Single"
+				"sound_burst"	"Weapon_Enforcer.SingleCrit"
+			}
+		}
 	}
 
 	"items"
@@ -898,6 +977,13 @@
 			"prefab"	"weapon_quiver_hitmann"
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_hitmann"
+		}
+		"34411"
+		{
+			"name"		"L'Executeur"
+			"prefab"	"weapon_quiver_joke_lexecuteur"
+			"first_sale_date"	"2024/06/14"
+			"xifier_class_remap"	"weapon_quiver_joke_lexecuteur"
 		}
 	}
 	

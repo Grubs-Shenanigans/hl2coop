@@ -40,6 +40,8 @@ Added the following Source SDK Pull Requests:
 	- #1466: MAX_MENU_STRING increase (increased to 4096 characters)
 	- #1469: Fix Sappers becoming indestructible under certain circumstances
 	- #1470: Fix ownerless sentry rockets dealing no damage
+	- #1472: Reimplement sv_showhitboxes for listen servers only
+	- #1473: Fix Diamondback getting revenge crits from earlier kills when switched onto
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
@@ -76,6 +78,7 @@ Details:
 - Fixed a bug where you couldn't send armored enemies airborne.
 - Fixed the armor broken condition not respecting some mini-crit attributes.
 - Made it so the the Flying Guillotine guarantees full crits on long distance hits with enemies that just got their armor broken.
+- Increased the recharge time for the Flying Guillotine from 5.1 seconds to 7.6 seconds.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

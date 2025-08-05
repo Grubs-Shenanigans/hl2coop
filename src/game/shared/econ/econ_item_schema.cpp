@@ -55,7 +55,6 @@
 
 using namespace GCSDK;
 
-
 CEconItemSchema & GEconItemSchema()
 {
 #if defined( EXTERNALTESTS_DLL )
@@ -3208,6 +3207,19 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	if (!m_bSoloItem)
 	{
 		m_bSoloItem = m_pKVItem->GetInt("soloitem", 0) != 0;
+
+#ifdef QUIVER_DLL
+		// Bleed. for EIGHT SECONDS.
+		if (!m_bSoloItem && CommandLine()->FindParm("-bleedfor8seconds"))
+		{
+			m_bSoloItem = m_pKVItem->GetInt("jokeitem", 0) != 0;
+		}
+#endif
+
+		if (!m_bSoloItem && CommandLine()->FindParm("-customstaging"))
+		{
+			m_bSoloItem = m_pKVItem->GetInt("staging", 0) != 0;
+		}
 	}
 #else
 	//if there's no custom schema, no items can be solo items.
