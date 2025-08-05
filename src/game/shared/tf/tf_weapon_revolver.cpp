@@ -389,6 +389,15 @@ bool CTFRevolver::Deploy( void )
 //-----------------------------------------------------------------------------
 void CTFRevolver::Detach( void )
 {
+#ifdef BDSBASE
+	// Reset always to avoid switching to Diamondback giving crits from earlier kills
+	CTFPlayer* pPlayer = GetTFPlayerOwner();
+	if (pPlayer)
+	{
+		pPlayer->m_Shared.SetRevengeCrits(0);
+		pPlayer->m_Shared.RemoveCond(TF_COND_CRITBOOSTED);
+	}
+#else
 	if ( SapperKillsCollectCrits() )
 	{
 		CTFPlayer *pPlayer = GetTFPlayerOwner();
@@ -398,6 +407,7 @@ void CTFRevolver::Detach( void )
 			pPlayer->m_Shared.RemoveCond( TF_COND_CRITBOOSTED );
 		}
 	}
+#endif
 
 	BaseClass::Detach();
 }
