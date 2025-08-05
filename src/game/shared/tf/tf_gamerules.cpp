@@ -6305,9 +6305,6 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 			if ( pVictim && ( pVictim->m_Shared.InCond( TF_COND_URINE ) ||
 			                  pVictim->m_Shared.InCond( TF_COND_MARKEDFORDEATH ) ||
 			                  pVictim->m_Shared.InCond( TF_COND_MARKEDFORDEATH_SILENT ) ||
-#if defined(QUIVER_DLL)
-							  pVictim->m_Shared.InCond(QF_COND_ARMORJUSTBROKE) ||
-#endif
 			                  pVictim->m_Shared.InCond( TF_COND_PASSTIME_PENALTY_DEBUFF ) ) )
 			{
 				bAllSeeCrit = true;
@@ -6326,6 +6323,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 #ifdef BDSBASE
 			else if (pTFAttacker && (pTFAttacker->m_Shared.InCond(TF_COND_MINICRITBOOSTED)))
 			{
+				bAllSeeCrit = true;
 				info.SetCritType(CTakeDamageInfo::CRIT_MINI);
 				eBonusEffect = kBonusEffect_MiniCrit;
 				eDamageBonusCond = TF_COND_MINICRITBOOSTED;
@@ -6333,6 +6331,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 #if defined(QUIVER_DLL)
 			else if (pTFAttacker && (pTFAttacker->m_Shared.InCond(QF_COND_ARMORJUSTBROKE)))
 			{
+				bAllSeeCrit = true;
 				info.SetCritType(CTakeDamageInfo::CRIT_MINI);
 				eBonusEffect = kBonusEffect_MiniCrit;
 				eDamageBonusCond = QF_COND_ARMORJUSTBROKE;
@@ -6484,6 +6483,22 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 						}
 					}
 
+#ifdef BDSBASE
+					// Some weapons minicrit *any* target in the air, regardless of how they got there.
+					int iMiniCritAirborneDeploy = 0;
+					CALL_ATTRIB_HOOK_INT_ON_OTHER( pWeapon, iMiniCritAirborneDeploy, mini_crit_airborne_deploy );
+					if ( iMiniCritAirborneDeploy > 0 &&
+						 pWeapon &&
+						 ( gpGlobals->curtime - pWeapon->GetLastDeployTime() ) < iMiniCritAirborneDeploy &&
+						 pVictim && !( pVictim->GetFlags() & FL_ONGROUND ) &&
+						 ( pVictim->GetWaterLevel() == WL_NotInWater ) && (!pVictim->m_Shared.IsAirDashing() && !pVictim->m_Shared.IsJumping()))
+					{
+						bAllSeeCrit = true;
+						info.SetCritType( CTakeDamageInfo::CRIT_MINI );
+						eBonusEffect = kBonusEffect_MiniCrit;
+						break;
+					}
+#else
 					//// Some weapons minicrit *any* target in the air, regardless of how they got there.
 					//int iMiniCritAirborneDeploy = 0;
 					//CALL_ATTRIB_HOOK_INT_ON_OTHER( pWeapon, iMiniCritAirborneDeploy, mini_crit_airborne_deploy );
@@ -6500,6 +6515,33 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 					//	eBonusEffect = kBonusEffect_MiniCrit;
 					//	break;
 					//}
+#endif
+
+#if defined(QUIVER_DLL)
+					// Some weapons crit *any* target in the air, regardless of how they got there.
+					int iCritModeSwitchAirborneDeploy = 0;
+					CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iCritModeSwitchAirborneDeploy, crit_mode_switch_airborne_deploy);
+					if (iCritModeSwitchAirborneDeploy > 0 &&
+						pWeapon &&
+						pVictim && !(pVictim->GetFlags() & FL_ONGROUND) &&
+						(pVictim->GetWaterLevel() == WL_NotInWater) && (!pVictim->m_Shared.IsAirDashing() && !pVictim->m_Shared.IsJumping()))
+					{
+						if ((gpGlobals->curtime - pWeapon->GetLastDeployTime()) < iCritModeSwitchAirborneDeploy)
+						{
+							info.SetCritType(CTakeDamageInfo::CRIT_FULL);
+							eBonusEffect = kBonusEffect_Crit;
+							bitsDamage |= DMG_CRITICAL;
+							info.AddDamageType(DMG_CRITICAL);
+						}
+						else
+						{
+							bAllSeeCrit = true;
+							info.SetCritType(CTakeDamageInfo::CRIT_MINI);
+							eBonusEffect = kBonusEffect_MiniCrit;
+						}
+						break;
+					}
+#endif
 				}
 			}
 
@@ -6541,6 +6583,30 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 			}
 		}
 	}
+
+#if defined(QUIVER_DLL)
+	if (pVictim && pVictim->m_Shared.InCond(QF_COND_ARMORJUSTBROKE))
+	{
+		if (info.GetCritType() == CTakeDamageInfo::CRIT_NONE)
+		{
+			bAllSeeCrit = true;
+			info.SetCritType(CTakeDamageInfo::CRIT_MINI);
+			eBonusEffect = kBonusEffect_MiniCrit;
+		}
+		else if (info.GetCritType() == CTakeDamageInfo::CRIT_MINI)
+		{
+			int iPromoteMiniCritToCritArmorBreak  = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iPromoteMiniCritToCritArmorBreak, minicrits_become_crits_armor_break);
+			if (iPromoteMiniCritToCritArmorBreak == 1)
+			{
+				info.SetCritType(CTakeDamageInfo::CRIT_FULL);
+				eBonusEffect = kBonusEffect_Crit;
+				bitsDamage |= DMG_CRITICAL;
+				info.AddDamageType(DMG_CRITICAL);
+			}
+		}
+	}
+#endif
 
 	if ( info.GetCritType() == CTakeDamageInfo::CRIT_MINI )
 	{
@@ -7618,6 +7684,22 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 				}
 			}
 		}
+
+#ifdef QUIVER_DLL
+		//before we end resists, calculate the additional resist layer. 
+		if (pVictim->ArmorValue() > 0)
+		{
+			CTakeDamageInfo inputInfo = info;
+			inputInfo.SetDamage(flRealDamage);
+
+			float armorCalculate = pVictim->DamageArmor(inputInfo, pTFAttacker, iDamageTypeBits);
+
+			if (armorCalculate > 0.0f)
+			{
+				flRealDamage = armorCalculate;
+			}
+		}
+#endif
 
 		// End Resists
 
@@ -19516,6 +19598,23 @@ const char *CTFGameRules::FormatVideoName( const char *videoName, bool bWithExte
 			V_strncpy( strFullpath, "media/" "vsh_intro", MAX_PATH );
 		}
 	}
+#if defined(QUIVER_DLL)
+	else if (Q_strstr(videoName, "dm_") || Q_strstr(videoName, "tdm_"))
+	{
+		char strTempPath[MAX_PATH];
+		Q_strncpy(strTempPath, "media/", MAX_PATH);
+		Q_strncat(strTempPath, videoName, MAX_PATH);
+		Q_strncat(strTempPath, FILE_EXTENSION_ANY_MATCHING_VIDEO, MAX_PATH);
+
+		VideoSystem_t vSystem = VideoSystem::NONE;
+
+		// default to vsh_intro video if we can't find the specified video
+		if (!g_pVideo || g_pVideo->LocatePlayableVideoFile(strTempPath, "GAME", &vSystem, strFullpath, sizeof(strFullpath), VideoSystemFeature::PLAY_VIDEO_FILE_IN_MATERIAL) != VideoResult::SUCCESS)
+		{
+			V_strncpy(strFullpath, "media/" "tdm_intro", MAX_PATH);
+		}
+	}
+#endif
 	else
 	{
 		Q_strncat( strFullpath, videoName, MAX_PATH );

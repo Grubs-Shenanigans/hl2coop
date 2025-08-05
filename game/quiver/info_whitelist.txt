@@ -76,5 +76,8 @@
 - The B.A.S.E. Jumper
 - The Atomizer* (w/ balance changes)
 - The Beggar's Bazooka (w/ balance changes)
+- Darwin's Danger Shield* (w/ balance changes)
+- The Cleaner's Carbine* (w/ balance changes)
+- The Reserve Shooter (w/ balance changes)
 
 * - Weapon was whitelisted as long as it got a rebalance.

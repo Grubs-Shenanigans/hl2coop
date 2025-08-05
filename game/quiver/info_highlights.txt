@@ -97,6 +97,11 @@ Unlockable weapon balance changes:
 - The Atomizer's triple jump is now passive. Mini-Crits will no longer occur when dealing hits while airborne.
 - The Baby Face's Blaster now takes 150 damage to fill boost instead of 100.
 - Made it so the Beggar's Bazooka no longer reduces ammo during a misfire.
+- The Darwin's Danger Shield now only gives a 15 max health bonus and a 10 max armor bonus instead of afterburn immunity and fire resistance.
+- Instead of a meter that does mini-crits when filled, The Cleaner's Carbine has been rebalanced to give 3 seconds of crits on kill, however these crits are affected by falloff (similar to the post-JI Ambassador)
+- The Reserve Shooter now crits airborne opponents (not including jumping or air jumping players) within 3 seconds of it being deployed. After the 3 seconds has elapsed, the crits are downgraded to mini-crits.
+- The Reserve Shooter now has a 15% fire rate penalty.
+- Made it so the the Flying Guillotine guarantees full crits on long distance hits with enemies that just got their armor broken.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

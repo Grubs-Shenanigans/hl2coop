@@ -29,6 +29,9 @@ Whitelists:
 	- The B.A.S.E. Jumper
 	- The Atomizer
 	- The Beggar's Bazooka
+	- Darwin's Danger Shield
+	- The Cleaner's Carbine
+	- The Reserve Shooter
 
 Blacklists:
 	- The Spy-Cicle
@@ -64,6 +67,15 @@ Details:
 - Fixed a bug where the Sandman doesn't play special sounds when hitting a player with a ball.
 - Fixed the broken armor effect sometimes not completely getting removed when the player gets an armor refill.
 - Made it so the Beggar's Bazooka no longer reduces ammo during a misfire.
+- The Darwin's Danger Shield now only gives a 15 max health bonus and a 10 max armor bonus instead of afterburn immunity and fire resistance.
+- Instead of a meter that does mini-crits when filled, The Cleaner's Carbine has been rebalanced to give 3 seconds of crits on kill, however these crits are affected by falloff (similar to the post-JI Ambassador)
+- Fixed the Engineer's build PDA not having proper mini-crit glow colors
+- Fixed the stock flame thrower not having proper mini-crit glow colors
+- The Reserve Shooter now crits airborne opponents (not including jumping or air jumping players) within 3 seconds of it being deployed. After the 3 seconds has elapsed, the crits are downgraded to mini-crits.
+- The Reserve Shooter now has a 15% fire rate penalty.
+- Fixed a bug where you couldn't send armored enemies airborne.
+- Fixed the armor broken condition not respecting some mini-crit attributes.
+- Made it so the the Flying Guillotine guarantees full crits on long distance hits with enemies that just got their armor broken.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

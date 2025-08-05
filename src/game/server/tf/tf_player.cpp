@@ -4073,6 +4073,7 @@ void CTFPlayer::Spawn()
 
 #if defined(QUIVER_DLL)
 	SetMaxArmor();
+	SetArmorValue(m_iMaxArmor);
 
 	if (TFGameRules() && ((TFGameRules()->IsInTDMMode() && qf_tdm_spawnprotection.GetBool()) || TFGameRules()->IsPowerupMode()))
 	{
@@ -4334,6 +4335,7 @@ void CTFPlayer::Regenerate( bool bRefillHealthAndAmmo /*= true*/ )
 	InitClass();
 #ifdef QUIVER_DLL
 	SetMaxArmor();
+	SetArmorValue(m_iMaxArmor);
 #endif
 	m_bRegenerating.Set( false );
 
@@ -5660,6 +5662,10 @@ void CTFPlayer::PostInventoryApplication( void )
 	// Apply set bonuses.
 	ApplySetBonuses();
 
+#if defined(QUIVER_DLL)
+	SetMaxArmor();
+#endif
+
 	// Remove our disguise if we can't disguise.
 	if ( !CanDisguise() )
 	{
@@ -5880,49 +5886,80 @@ bool CTFPlayer::ScriptGiveWeapon(const char* pszWeapon)
 			int iClass = GetPlayerClass()->GetClassIndex();
 
 			if (!pItemData->GetStaticData()->CanBeUsedByClass(iClass))
-			{
 				return false;
-			}
 
 			int iSlot = pItemData->GetStaticData()->GetLoadoutSlot(iClass);
-			CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(GetEntityForLoadoutSlot(iSlot));
 
-			// we need to force translating the name here.
-			// GiveNamedItem will not translate if we force creating the item
-			const char* pTranslatedWeaponName = TranslateWeaponEntForClass(pItemData->GetStaticData()->GetItemClass(), iClass);
-			CTFWeaponBase* pNewItem = dynamic_cast<CTFWeaponBase*>(GiveNamedItem(pTranslatedWeaponName, 0, pItemData, true));
-			if (pNewItem)
+			if (!IsValidPickupWeaponSlot(iSlot))
+				return false;
+
+			CBaseEntity* pEnt = dynamic_cast<CBaseEntity*>(GetEntityForLoadoutSlot(iSlot, true));
+			if (pEnt)
 			{
-				CTFWeaponBuilder* pBuilder = dynamic_cast<CTFWeaponBuilder*>((CBaseEntity*)pNewItem);
-				if (pBuilder)
+				// we need to force translating the name here.
+				// GiveNamedItem will not translate if we force creating the item
+				const char* pTranslatedWeaponName = TranslateWeaponEntForClass(pItemData->GetStaticData()->GetItemClass(), iClass);
+				CTFWeaponBase* pNewItem = dynamic_cast<CTFWeaponBase*>(GiveNamedItem(pTranslatedWeaponName, 0, pItemData, true));
+				if (pNewItem)
 				{
-					pBuilder->SetSubType(GetPlayerClass()->GetData()->m_aBuildable[0]);
-				}
+					DevMsg("ITEM IS A WEAPON\n");
 
-				// make sure we removed our current weapon				
-				if (pWeapon)
+					CTFWeaponBuilder* pBuilder = dynamic_cast<CTFWeaponBuilder*>((CBaseEntity*)pNewItem);
+					if (pBuilder)
+					{
+						pBuilder->SetSubType(GetPlayerClass()->GetData()->m_aBuildable[0]);
+					}
+
+					// make sure we removed our current weapon		
+					CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(pEnt);
+					if (pWeapon)
+					{
+						Weapon_Detach(pWeapon);
+					}
+					UTIL_Remove(pEnt);
+
+					pNewItem->MarkAttachedEntityAsValidated();
+					pNewItem->GiveTo(this);
+
+					PostInventoryApplication();
+
+					// Refills weapon clips, too
+					for (int i = 0; i < MAX_WEAPONS; i++)
+					{
+						CTFWeaponBase* pWeapon2 = dynamic_cast<CTFWeaponBase*>(GetWeapon(i));
+						if (!pWeapon2)
+							continue;
+
+						pWeapon2->GiveDefaultAmmo();
+						pWeapon2->WeaponRegenerate();
+					}
+
+					return true;
+				}
+				else
 				{
-					Weapon_Detach(pWeapon);
-					UTIL_Remove(pWeapon);
+					CTFWearable* pNewWearable = dynamic_cast<CTFWearable*>(GiveNamedItem(pTranslatedWeaponName, 0, pItemData, true));
+
+					if (pNewWearable)
+					{
+						DevMsg("ITEM IS A WEARABLE\n");
+
+						// make sure we removed our current weapon				
+						CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(pEnt);
+						if (pWeapon)
+						{
+							Weapon_Detach(pWeapon);
+						}
+						UTIL_Remove(pEnt);
+
+						pNewWearable->MarkAttachedEntityAsValidated();
+						pNewWearable->GiveTo(this);
+
+						PostInventoryApplication();
+
+						return true;
+					}
 				}
-
-				pNewItem->MarkAttachedEntityAsValidated();
-				pNewItem->GiveTo(this);
-
-				PostInventoryApplication();
-
-				// Refills weapon clips, too
-				for (int i = 0; i < MAX_WEAPONS; i++)
-				{
-					CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(GetWeapon(i));
-					if (!pWeapon)
-						continue;
-
-					pWeapon->GiveDefaultAmmo();
-					pWeapon->WeaponRegenerate();
-				}
-
-				return true;
 			}
 		}
 	}
@@ -9649,8 +9686,6 @@ void CTFPlayer::SetMaxArmor(int iVal)
 	}
 
 	m_iMaxArmor = iArmor;
-
-	SetArmorValue(m_iMaxArmor);
 }
 
 void CTFPlayer::IncrementArmorValue(int nCount, int nMaxValue)
@@ -9659,14 +9694,10 @@ void CTFPlayer::IncrementArmorValue(int nCount, int nMaxValue)
 
 	BaseClass::IncrementArmorValue(nCount, nMaxValue);
 
-	if (ArmorValue() > 0 && ArmorValue() > oldArmor)
+	if ((oldArmor <= 0 && ArmorValue() > oldArmor) && (ArmorValue() > 0))
 	{
 		m_Shared.AddCond(QF_COND_ARMOR, -1);
 		m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
-	}
-	else if (ArmorValue() <= 0)
-	{
-		m_Shared.RemoveCond(QF_COND_ARMOR);
 	}
 }
 
@@ -9678,10 +9709,6 @@ void CTFPlayer::SetArmorValue(int value)
 	{
 		m_Shared.AddCond(QF_COND_ARMOR, -1);
 		m_Shared.RemoveCond(QF_COND_ARMORJUSTBROKE);
-	}
-	else if (ArmorValue() <= 0)
-	{
-		m_Shared.RemoveCond(QF_COND_ARMOR);
 	}
 }
 #endif
@@ -10208,18 +10235,6 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 					info.SetDamage(m_iHealth - 1);
 				}
 			}
-		}
-	}
-#endif
-
-#ifdef QUIVER_DLL
-	if (ArmorValue() > 0)
-	{
-		float armorCalculate = DamageArmor(info, pTFAttacker, bitsDamage);
-
-		if (armorCalculate > 0.0f)
-		{
-			info.SetDamage(armorCalculate);
 		}
 	}
 #endif
@@ -12810,9 +12825,8 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 	// if we died, and we have armor, break the armor so our shield goes away.
 	// if the damage penetrates, we set the armor value to 0 silently.
 	if (!DoesDamagePenetrateArmor(info, info.GetDamageType()))
-	
 	{
-		if (ArmorValue() > 0)
+		if ((ArmorValue() > 0))
 		{
 			BreakArmor(info, pPlayerAttacker, info.GetDamageType(), false);
 		}
@@ -12820,6 +12834,7 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 	else
 	{
 		SetArmorValue(0);
+		m_Shared.RemoveCond(QF_COND_ARMOR);
 	}
 #endif
 
