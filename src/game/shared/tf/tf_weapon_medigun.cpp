@@ -300,7 +300,11 @@ void CWeaponMedigun::WeaponReset( void )
 		CALL_ATTRIB_HOOK_INT_ON_OTHER(pOwner, iPreserveUberCharge, preserve_ubercharge);
 		if (iPreserveUberCharge > 0)
 		{
+#ifdef _WIN32
 			m_flChargeLevelToPreserve = (iPreserveUberCharge / 99.f);
+#else
+			m_flChargeLevelToPreserve = (iPreserveUberCharge / 100.f);
+#endif
 		}
 #endif
 		m_flChargeLevel = Min( (float)m_flChargeLevel, m_flChargeLevelToPreserve );
