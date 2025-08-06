@@ -296,11 +296,11 @@ void CWeaponMedigun::WeaponReset( void )
 	{
 		// This is determined via an attribute in SetStoredChargeLevel()
 #ifdef BDSBASE
-		int iPreserveUber = 0;
-		CALL_ATTRIB_HOOK_INT_ON_OTHER(pOwner, iPreserveUber, preserve_ubercharge);
-		if (iPreserveUber)
+		int iPreserveUberCharge = 0;
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(pOwner, iPreserveUberCharge, preserve_ubercharge);
+		if (iPreserveUberCharge > 0)
 		{
-			m_flChargeLevelToPreserve = (iPreserveUber / 99.f);
+			m_flChargeLevelToPreserve = (iPreserveUberCharge / 99.f);
 		}
 #endif
 		m_flChargeLevel = Min( (float)m_flChargeLevel, m_flChargeLevelToPreserve );
