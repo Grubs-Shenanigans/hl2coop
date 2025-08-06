@@ -27,7 +27,7 @@
 - The Quick-Fix (w/ balance changes)
 - The Übersaw
 - The Amputator
-- The Vita-Saw
+- The Vita-Saw (w/ balance changes)
 - The Huntsman/Fortified Compound (w/ balance changes)
 - The Killing Gloves of Boxing
 - The Cloak and Dagger (w/ balance changes)
@@ -57,7 +57,6 @@
 - The Homewrecker/Maul
 - The Powerjack
 - The Hot Hand
-- The Brass Beast
 - The Huo-Long Heater
 - The Dalokoh's Bar/Fishcake
 - The Second Banana
@@ -78,6 +77,7 @@
 - The Beggar's Bazooka (w/ balance changes)
 - Darwin's Danger Shield* (w/ balance changes)
 - The Cleaner's Carbine* (w/ balance changes)
-- The Reserve Shooter (w/ balance changes)
+- The Reserve Shooter
+- The Pain Train
 
 * - Weapon was whitelisted as long as it got a rebalance.

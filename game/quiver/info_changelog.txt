@@ -10,7 +10,6 @@ Whitelists:
 	- The Homewrecker/Maul
 	- The Powerjack
 	- The Hot Hand
-	- The Brass Beast
 	- The Huo-Long Heater
 	- The Dalokoh's Bar/Fishcake
 	- The Second Banana
@@ -32,6 +31,7 @@ Whitelists:
 	- Darwin's Danger Shield
 	- The Cleaner's Carbine
 	- The Reserve Shooter
+	- The Pain Train
 
 Blacklists:
 	- The Spy-Cicle
@@ -73,12 +73,14 @@ Details:
 - Instead of a meter that does mini-crits when filled, The Cleaner's Carbine has been rebalanced to give 3 seconds of crits on kill, however these crits are affected by falloff (similar to the post-JI Ambassador)
 - Fixed the Engineer's build PDA not having proper mini-crit glow colors
 - Fixed the stock flame thrower not having proper mini-crit glow colors
-- The Reserve Shooter now crits airborne opponents (not including jumping or air jumping players) within 3 seconds of it being deployed. After the 3 seconds has elapsed, the crits are downgraded to mini-crits.
-- The Reserve Shooter now has a 15% fire rate penalty.
 - Fixed a bug where you couldn't send armored enemies airborne.
 - Fixed the armor broken condition not respecting some mini-crit attributes.
 - Made it so the the Flying Guillotine guarantees full crits on long distance hits with enemies that just got their armor broken.
 - Increased the recharge time for the Flying Guillotine from 5.1 seconds to 7.6 seconds.
+- Changed out the Dragon's Fury's -20 max armor attribute for a 25% damage reduction against unarmored players.
+- Added a 25% damage penalty on the Vita-Saw.
+- Removed the -10 max health penalty on the Vita-Saw.
+- Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

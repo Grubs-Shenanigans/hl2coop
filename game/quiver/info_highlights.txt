@@ -81,7 +81,7 @@ Unlockable weapon balance changes:
 - Fixed Ullapool Caber explosions not counting as melee kills.
 - Fixed Ullapool Caber not using mini-crits when charging.
 - Restored the Dragon's Fury to its original Jungle Inferno version.
-- The Dragon's Fury now 100% crits vs players that just had their armor break, in return for 20 less max armor on the user.
+- The Dragon's Fury now 100% crits vs players that just had their armor break, in return for 25% reduced damage against armor.
 - The Dragon's Fury's unused pressure meter now shows up by default, allowing you to view its pressure when switching weapons.
 - Fixed Gunslinger being able to pause melee hit combos when holstering the weapon.
 - Reduced the reload penalty on the Shortstop from 50% to 25%.
@@ -99,10 +99,11 @@ Unlockable weapon balance changes:
 - Made it so the Beggar's Bazooka no longer reduces ammo during a misfire.
 - The Darwin's Danger Shield now only gives a 15 max health bonus and a 10 max armor bonus instead of afterburn immunity and fire resistance.
 - Instead of a meter that does mini-crits when filled, The Cleaner's Carbine has been rebalanced to give 3 seconds of crits on kill, however these crits are affected by falloff (similar to the post-JI Ambassador)
-- The Reserve Shooter now crits airborne opponents (not including jumping or air jumping players) within 3 seconds of it being deployed. After the 3 seconds has elapsed, the crits are downgraded to mini-crits.
-- The Reserve Shooter now has a 15% fire rate penalty.
 - Made it so the the Flying Guillotine guarantees full crits on long distance hits with enemies that just got their armor broken.
 - Increased the recharge time for the Flying Guillotine from 5.1 seconds to 7.6 seconds.
+- Added a 25% damage penalty on the Vita-Saw.
+- Removed the -10 max health penalty on the Vita-Saw.
+- Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

@@ -10034,6 +10034,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		}
 	}
 	
+#if !defined(QUIVER_DLL)
 #ifdef BDSBASE
 	if (pTFAttacker && pTFAttacker->IsPlayerClass(TF_CLASS_MEDIC) && pWeapon && pWeapon->GetWeaponID() == TF_WEAPON_BONESAW)
 	{
@@ -10125,6 +10126,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			}
 		}
 	}
+#endif
 #endif
 
 	if ( bIsSoldierRocketJumping || bIsDemomanPipeJumping )

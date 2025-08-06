@@ -134,6 +134,9 @@ public:
 	void			SetChargeLevel( float flChargeLevel ) { m_flChargeLevel = flChargeLevel; }
 	void			SetChargeLevelToPreserve( float flAmount );
 	float			GetChargeLevel( void ) const { return m_flChargeLevel; }
+#ifdef BDSBASE
+	float			GetChargeLevelToPreserve(void) const { return m_flChargeLevelToPreserve; }
+#endif
 	float			GetMinChargeAmount( void ) const;
 
 	virtual void	OnControlStunned( void );

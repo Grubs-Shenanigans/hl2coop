@@ -659,6 +659,10 @@ void CTFFlameThrower::ItemPostFrame()
 				//FireProjectile( pOwner );
 				float flMultAmmoPerShot = 1.0f;
 				CALL_ATTRIB_HOOK_FLOAT( flMultAmmoPerShot, mult_airblast_cost );
+#ifdef BDSBASE
+				// after we calculate our airblast cost, consider other weapons
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pOwner, flMultAmmoPerShot, mult_airblast_cost_nonflamethrower);
+#endif
 				int iAmmoPerShot = tf_flamethrower_burstammo.GetInt() * flMultAmmoPerShot;
 				FireAirBlast( iAmmoPerShot );
 			}
@@ -1205,6 +1209,10 @@ void CTFFlameThrower::SecondaryAttack()
 	CALL_ATTRIB_HOOK_INT( iBuffType, set_buff_type );
 	float flMultAmmoPerShot = 1.0f;
 	CALL_ATTRIB_HOOK_FLOAT( flMultAmmoPerShot, mult_airblast_cost );
+#ifdef BDSBASE
+	// after we calculate our airblast cost, consider other weapons
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pOwner, flMultAmmoPerShot, mult_airblast_cost_nonflamethrower);
+#endif
 	int iAmmoPerShot = tf_flamethrower_burstammo.GetInt() * flMultAmmoPerShot;
 
 	if ( iBuffType != 0 )

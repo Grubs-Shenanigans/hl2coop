@@ -231,6 +231,10 @@ void CTFWeaponFlameBall::SecondaryAttack( void )
 	CALL_ATTRIB_HOOK_INT( iChargedAirblast, set_charged_airblast );
 	float flMultAmmoPerShot = 1.0f;
 	CALL_ATTRIB_HOOK_FLOAT( flMultAmmoPerShot, mult_airblast_cost );
+#ifdef BDSBASE
+	// after we calculate our airblast cost, consider other weapons
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pPlayer, flMultAmmoPerShot, mult_airblast_cost_nonflamethrower);
+#endif
 	int iAmmoPerShot = tf_flamethrower_burstammo.GetInt() * flMultAmmoPerShot;
 
 
