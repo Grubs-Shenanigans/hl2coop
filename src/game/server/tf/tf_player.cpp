@@ -291,6 +291,10 @@ ConVar tf_halloween_allow_ghost_hit_by_kart_delay( "tf_halloween_allow_ghost_hit
 ConVar tf_maxhealth_drain_hp_min( "tf_maxhealth_drain_hp_min", "100", FCVAR_DEVELOPMENTONLY );
 ConVar tf_maxhealth_drain_deploy_cost( "tf_maxhealth_drain_deploy_cost", "20", FCVAR_DEVELOPMENTONLY );
 
+#ifdef BDSBASE
+ConVar tf_itemtest_players_take_damage("tf_itemtest_players_take_damage", "0", FCVAR_CHEAT, "If non-zero players will be able to take damage in itemtest");
+#endif
+
 extern ConVar sv_vote_allow_spectators;
 ConVar sv_vote_late_join_time( "sv_vote_late_join_time", "90", FCVAR_NONE, "Grace period after the match starts before players who join the match receive a vote-creation cooldown" );
 ConVar sv_vote_late_join_cooldown( "sv_vote_late_join_cooldown", "300", FCVAR_NONE, "Length of the vote-creation cooldown when joining the server after the grace period has expired" );
@@ -11600,7 +11604,11 @@ void CTFPlayer::PlayDamageResistSound( float flStartDamage, float flModifiedDama
 //-----------------------------------------------------------------------------
 int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
+#ifdef BDSBASE
+	if ( TFGameRules()->IsInItemTestingMode() && !IsFakeClient() && !tf_itemtest_players_take_damage.GetBool() )
+#else
 	if ( TFGameRules()->IsInItemTestingMode() && !IsFakeClient() )
+#endif
 		return 0;
 
 	bool bUsingUpgrades = TFGameRules()->GameModeUsesUpgrades();
