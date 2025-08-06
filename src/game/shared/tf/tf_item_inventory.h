@@ -21,6 +21,10 @@
 
 #define LOADOUT_SLOT_USE_BASE_ITEM		0
 
+#ifdef BDSBASE
+#define TF_CUSTOM_ITEMS_ID_LIMIT 65536
+#endif
+
 namespace vgui
 {
 	class Panel;

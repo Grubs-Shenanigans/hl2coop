@@ -312,7 +312,7 @@ bool CTFInventoryManager::EquipItemInLoadout( int iClass, int iSlot, itemid_t iI
 #ifdef BDSBASE
 	CEconItemView* pItem = m_LocalInventory.GetInventoryItemByItemID(iItemID);
 
-	if (iItemID < 100000)
+	if (iItemID < TF_CUSTOM_ITEMS_ID_LIMIT)
 	{
 		int count = TFInventoryManager()->GetSoloItemCount();
 		for (int i = 0; i < count; i++)
@@ -1170,7 +1170,7 @@ void CTFPlayerInventory::EquipLocal(uint64 ulItemID, equipped_class_t unClass, e
 #ifdef BDSBASE
 	itemid_t ulPreviousItem = m_LoadoutItems[unClass][unSlot];
 
-	if (ulPreviousItem != 0 && ulPreviousItem < 100000)
+	if (ulPreviousItem != 0 && ulPreviousItem < TF_CUSTOM_ITEMS_ID_LIMIT)
 	{
 		int count = TFInventoryManager()->GetSoloItemCount();
 		for (int i = 0; i < count; i++)
@@ -1201,7 +1201,7 @@ void CTFPlayerInventory::EquipLocal(uint64 ulItemID, equipped_class_t unClass, e
 
 	// Equip the new item and add it to our loadout.
 #ifdef BDSBASE
-	if (ulItemID < 100000)
+	if (ulItemID < TF_CUSTOM_ITEMS_ID_LIMIT)
 	{
 		int count = TFInventoryManager()->GetSoloItemCount();
 		CEconItemView* pItem = NULL;
@@ -1709,7 +1709,7 @@ CEconItemView* CTFPlayerInventory::GetDefaultItemInLoadout(int iClass, int iSlot
 				return pItem;
 		}
 
-		if (m_LoadoutItems[iClass][iSlot] < 100000)
+		if (m_LoadoutItems[iClass][iSlot] < TF_CUSTOM_ITEMS_ID_LIMIT)
 		{
 			int count = TFInventoryManager()->GetSoloItemCount();
 

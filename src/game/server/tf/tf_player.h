@@ -677,7 +677,7 @@ public:
 	CEconItemView* GetEquippedItemForLoadoutSlot(int iLoadoutSlot) {
 		auto itemID = m_EquippedLoadoutItemIndices[iLoadoutSlot];
 		CEconItemView* pItem;
-		if (itemID < 100000)
+		if (itemID < TF_CUSTOM_ITEMS_ID_LIMIT)
 		{
 			int count = TFInventoryManager()->GetSoloItemCount();
 			for (int i = 0; i < count; i++)
