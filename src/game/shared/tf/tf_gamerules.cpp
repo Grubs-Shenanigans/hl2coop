@@ -921,6 +921,9 @@ ConVar tf_mvm_allow_upgrade_inspect("tf_mvm_allow_upgrade_inspect", "-1", FCVAR_
 ConVar tf_mvm_buybacks_method("tf_mvm_buybacks_method", "0", FCVAR_REPLICATED, "When set to 0, use the traditional, currency-based system.  When set to 1, use finite, charge-based system.", true, 0.0, true, 1.0);
 ConVar tf_mvm_buybacks_per_wave("tf_mvm_buybacks_per_wave", "3", FCVAR_REPLICATED, "The fixed number of buybacks players can use per-wave.");
 
+ConVar sv_freezepanel_hide_item("sv_freezepanel_hide_item", "0", FCVAR_REPLICATED, "If non-zero items will not show in the death freeze panel");
+ConVar sv_freezepanel_hide_rune("sv_freezepanel_hide_rune", "0", FCVAR_REPLICATED, "If non-zero runes will not show in the death freeze panel");
+
 ConVar tf_mvm_disguise_on_backstab_mode("tf_mvm_disguise_on_backstab_mode", "0", FCVAR_REPLICATED, "When set to 1, disables MvM-specific nerfs for disguise on backstab weapons.");
 #else
 ConVar tf_mvm_buybacks_method("tf_mvm_buybacks_method", "0", FCVAR_REPLICATED | FCVAR_HIDDEN, "When set to 0, use the traditional, currency-based system.  When set to 1, use finite, charge-based system.", true, 0.0, true, 1.0);
