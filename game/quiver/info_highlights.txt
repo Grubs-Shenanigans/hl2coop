@@ -48,6 +48,8 @@ Stock weapon balance changes:
 - Slightly increased aiming move speed to be more consistent with the main move speed.
 - Changed the default Grenade Launcher ammo count from 4 to 6.
 - All miniguns now have full accuracy and damage upon revving up.
+- Increased the syringeguns' syringe speed from 1000 hu/s to 1500 hu/s
+- Increased the syringeguns' base damage from 10 to 15 per syringe
 
 Unlockable weapon balance changes:
 - The Shortstop's shove has a doubled pushback force (from 400 to 800).

@@ -44,7 +44,11 @@ PRECACHE_REGISTER_FN(PrecacheSyringe);
 // CTFProjectile_Syringe
 //-----------------------------------------------------------------------------
 #define SYRINGE_GRAVITY		0.3f
+#ifdef QUIVER_DLL
+#define SYRINGE_VELOCITY	1500.0f
+#else
 #define SYRINGE_VELOCITY	1000.0f
+#endif
 // Purpose:
 //-----------------------------------------------------------------------------
 CTFBaseProjectile *CTFProjectile_Syringe::Create( 

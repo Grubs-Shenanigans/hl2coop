@@ -92,6 +92,8 @@ Details:
 - Removed the Hitman's Executioner. The weapon offered too much risk for too little reward, and functioned as a even more gimped Ambassador.
 - Reverted the Ambassador's Jungle Inferno changes.
 - Increased the wait time between Ambassador shots from 1.0 seconds to 1.5 seconds.
+- Increased the syringeguns' syringe speed from 1000 hu/s to 1500 hu/s
+- Increased the syringeguns' base damage from 10 to 15 per syringe
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
