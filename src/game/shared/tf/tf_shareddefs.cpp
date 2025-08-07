@@ -439,6 +439,8 @@ static const char *g_aConditionNames[] =
 #if defined(QUIVER_DLL)
 	"QF_COND_ARMORJUSTBROKE",					// = 132
 	"QF_COND_ARMOR",							// = 133
+	"QF_COND_UNBREAKABLE_ARMOR",				// = 134
+	"QF_COND_ARMOR_BUFF",						// = 135
 #endif
 #endif
 

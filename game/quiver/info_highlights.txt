@@ -35,6 +35,7 @@ Custom Weapons:
 - Heavy gets another minigun, called the Ludmila, which increases the Heavy's survivability in exchange for damage and minigun spinup time.
 - The Soldier gets a melee that's a blast from the past, The Vitality Glitch, which increases the damage and move speed of the user when on low health, in return for damage, move speed, and armor durability.
 - The Spy gets a revolver called the Hitman's Executioner that allows you to fire close-range headshots if you're behind the enemy. In return, more mini-crit damage is taken when active.
+- The Medic gets a new Medigun called the Überrüstungsheiler that heals armor on top of health. Its ÜberCharge fully repairs armor and makes it unbreakable.
 
 Stock weapon balance changes:
 - Random critical hits have been disabled. 

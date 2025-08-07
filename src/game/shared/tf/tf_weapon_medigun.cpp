@@ -54,6 +54,9 @@ MedigunEffects_t g_MedigunEffects[MEDIGUN_NUM_CHARGE_TYPES] =
 	{ TF_COND_MEDIGUN_UBER_BULLET_RESIST,	TF_COND_LAST,					 "WeaponMedigun_Vaccinator.InvulnerableOn",		"WeaponMedigun_Vaccinator.InvulnerableOff" },		// TF_COND_MEDIGUN_UBER_BULLET_RESIST,
 	{ TF_COND_MEDIGUN_UBER_BLAST_RESIST,	TF_COND_LAST,					 "WeaponMedigun_Vaccinator.InvulnerableOn",		"WeaponMedigun_Vaccinator.InvulnerableOff" },		// TF_COND_MEDIGUN_UBER_BLAST_RESIST,
 	{ TF_COND_MEDIGUN_UBER_FIRE_RESIST,		TF_COND_LAST,					 "WeaponMedigun_Vaccinator.InvulnerableOn",		"WeaponMedigun_Vaccinator.InvulnerableOff" },		// TF_COND_MEDIGUN_UBER_FIRE_RESIST,
+#if defined(QUIVER_DLL)
+	{ QF_COND_UNBREAKABLE_ARMOR,		TF_COND_LAST,					 "WeaponMedigun_Vaccinator.InvulnerableOn",		"WeaponMedigun_Vaccinator.InvulnerableOff" },		// QF_COND_UNBREAKABLE_ARMOR,
+#endif
 };
 
 struct MedigunResistConditions_t
@@ -217,6 +220,9 @@ const char *g_pszMedigunHealSounds[] =
 	"WeaponMedigun_Vaccinator.Healing",	// MEDIGUN_CHARGE_BULLET_RESIST,
 	"WeaponMedigun_Vaccinator.Healing",	// MEDIGUN_CHARGE_BLAST_RESIST,
 	"WeaponMedigun_Vaccinator.Healing",	// MEDIGUN_CHARGE_FIRE_RESIST,
+#if defined(QUIVER_DLL)
+	"WeaponMedigun_Vaccinator.Healing",	// MEDIGUN_CHARGE_UNBREAKABLE_ARMOR,
+#endif
 };
 COMPILE_TIME_ASSERT( ARRAYSIZE( g_pszMedigunHealSounds ) == MEDIGUN_NUM_CHARGE_TYPES );
 
@@ -2091,6 +2097,26 @@ void CWeaponMedigun::SecondaryAttack( void )
 			m_bHealingSelf = true;
 		}
 	}
+#if defined(QUIVER_DLL)
+	else if (GetMedigunType() == MEDIGUN_ARMOR_REPAIR)
+	{
+		if (IsReleasingCharge())
+		{
+			if (pOwner->ArmorValue() < pOwner->GetMaxArmor())
+			{
+				pOwner->SetArmorValue(pOwner->GetMaxArmor());
+			}
+
+			if (pTFPlayerPatient)
+			{
+				if (pTFPlayerPatient->ArmorValue() < pTFPlayerPatient->GetMaxArmor())
+				{
+					pTFPlayerPatient->SetArmorValue(pTFPlayerPatient->GetMaxArmor());
+				}
+			}
+		}
+	}
+#endif
 #endif // GAME_DLL
 
 	// STAGING_MEDIC

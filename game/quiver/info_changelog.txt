@@ -42,6 +42,8 @@ Added the following Source SDK Pull Requests:
 	- #1470: Fix ownerless sentry rockets dealing no damage
 	- #1472: Reimplement sv_showhitboxes for listen servers only
 	- #1473: Fix Diamondback getting revenge crits from earlier kills when switched onto
+	- #1475: Add convar to allow taking damage in itemtest
+	- #1476: Add convars for server owners to hide the freezepanel showing held item
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
@@ -81,6 +83,7 @@ Details:
 - Added a 25% damage penalty on the Vita-Saw.
 - Removed the -10 max health penalty on the Vita-Saw.
 - Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
+- Added the Überrüstungsheiler, a new Medigun for the Medic that heals armor on top of health. Its ÜberCharge fully repairs armor and makes it unbreakable.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

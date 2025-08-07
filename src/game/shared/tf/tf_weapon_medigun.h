@@ -26,6 +26,9 @@ enum medigun_weapontypes_t
 	MEDIGUN_UBER,
 	MEDIGUN_QUICKFIX,
 	MEDIGUN_RESIST,
+#if defined(QUIVER_DLL)
+	MEDIGUN_ARMOR_REPAIR,
+#endif
 };
 
 enum medigun_resist_types_t

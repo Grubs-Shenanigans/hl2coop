@@ -921,6 +921,8 @@ private:
 #if defined(QUIVER_DLL)
 	void OnAddArmor(void);
 	void OnRemoveArmor(void);
+	void OnAddUnbreakableArmor(void);
+	void OnRemoveUnbreakableArmor(void);
 #endif
 
 	float GetCritMult( void );
@@ -1029,6 +1031,9 @@ private:
 	float					m_flDisguiseHealFraction;	// Same for disguised healing
 	float					m_flBestOverhealDecayMult;
 	float					m_flHealedPerSecondTimer;
+#if defined(QUIVER_DLL)
+	float					m_flArmorFraction;
+#endif
 
 	float m_flChargeEffectOffTime[MEDIGUN_NUM_CHARGE_TYPES];
 	bool  m_bChargeSoundEffectsOn[MEDIGUN_NUM_CHARGE_TYPES];

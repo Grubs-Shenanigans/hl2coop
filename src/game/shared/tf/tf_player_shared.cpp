@@ -1943,6 +1943,16 @@ void CTFPlayerShared::OnConditionAdded( ETFCond eCond )
 		OnAddMarkedForDeathSilent();
 		break;
 	}
+
+	case QF_COND_UNBREAKABLE_ARMOR:
+		OnAddUnbreakableArmor();
+		break;
+
+	case QF_COND_ARMOR_BUFF:
+#ifdef GAME_DLL
+		m_flArmorFraction = 0;
+#endif
+		break;
 #endif
 
 	default:
@@ -2303,6 +2313,18 @@ void CTFPlayerShared::OnConditionRemoved( ETFCond eCond )
 		OnRemoveMarkedForDeathSilent();
 		break;
 	}
+
+	case QF_COND_UNBREAKABLE_ARMOR:
+#ifdef CLIENT_DLL
+		OnRemoveUnbreakableArmor();
+#endif
+		break;
+
+	case QF_COND_ARMOR_BUFF:
+#ifdef GAME_DLL
+		m_flArmorFraction = 0;
+#endif
+		break;
 #endif
 
 	default:
@@ -2771,6 +2793,76 @@ void CTFPlayerShared::ConditionGameRulesThink( void )
 		}
 	}
 
+#if defined(QUIVER_DLL)
+	if (InCond(QF_COND_ARMOR_BUFF))
+	{
+		float flTimeSinceDamage = gpGlobals->curtime - m_pOuter->GetLastDamageReceivedTime();
+		float flArmorRate = 0.0f;
+		float flScale = 1.0f;
+		bool bExit = false;
+
+		for (int i = 0; i < m_aHealers.Count(); i++)
+		{
+			Assert(m_aHealers[i].pHealer);
+
+			// ignore dispensers.
+			if (m_aHealers[i].bDispenserHeal)
+				continue;
+
+			EHANDLE pHealer = m_aHealers[i].pHealer;
+			if (!pHealer)
+				continue;
+
+			CTFPlayer* pTFPlayer = ToTFPlayer(pHealer);
+
+			if (pTFPlayer)
+			{
+				//IMPORTANT!! this is where we define armor rate...
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFPlayer, flArmorRate, add_medigun_armorrepairrate);
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFPlayer, flArmorRate, mult_medigun_healrate);
+
+				float flMinTimeSinceDamage = 0.f;
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFPlayer, flMinTimeSinceDamage, mult_medigun_armor_timesincedamage);
+				if (flMinTimeSinceDamage > 0.f)
+				{
+					float flReduction = (flMinTimeSinceDamage * 0.5f);
+
+					if (flTimeSinceDamage <= flReduction)
+					{
+						bExit = true;
+					}
+					else if ((flTimeSinceDamage > flReduction) && (flTimeSinceDamage <= flMinTimeSinceDamage))
+					{
+						CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFPlayer, flScale, mult_medigun_armor_timesincedamage_scale);
+					}
+				}
+			}
+		}
+
+		// exit if we have no armor rate.
+		if (flArmorRate == 0.0f)
+		{
+			bExit = true;
+		}
+
+		if (!bExit)
+		{
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(m_pOuter, flArmorRate, mult_dispenser_armor_rate);
+
+			// Scale this if needed
+			m_flArmorFraction += gpGlobals->frametime * flArmorRate * flScale;
+
+			int iArmorToGive = (int)m_flArmorFraction;
+
+			if (iArmorToGive > 0)
+			{
+				m_flArmorFraction -= iArmorToGive;
+				m_pOuter->IncrementArmorValue(iArmorToGive, m_pOuter->GetMaxArmor());
+			}
+		}
+	}
+#endif
+
 	if ( !InCond( TF_COND_HEALTH_OVERHEALED ) && m_pOuter->GetHealth() > ( m_pOuter->GetMaxHealth() - m_pOuter->GetRuneHealthBonus() ) )
 	{
 		AddCond( TF_COND_HEALTH_OVERHEALED, PERMANENT_CONDITION );
@@ -3073,6 +3165,10 @@ void CTFPlayerShared::ConditionGameRulesThink( void )
 	//TestAndExpireChargeEffect( MEDIGUN_CHARGE_BULLET_RESIST );
 	//TestAndExpireChargeEffect( MEDIGUN_CHARGE_BLAST_RESIST );
 	//TestAndExpireChargeEffect( MEDIGUN_CHARGE_FIRE_RESIST );
+#if defined(QUIVER_DLL)
+	//if this causes issues, remove it
+	TestAndExpireChargeEffect(MEDIGUN_CHARGE_UNBREAKABLE_ARMOR);
+#endif
 
 	if ( InCond( TF_COND_STEALTHED_BLINK ) )
 	{
@@ -5294,6 +5390,20 @@ void CTFPlayerShared::OnRemoveArmor(void)
 {
 #ifdef CLIENT_DLL
 	RemoveResistShield(&m_pOuter->m_pTempShield, m_pOuter);
+#endif
+}
+
+void CTFPlayerShared::OnAddUnbreakableArmor(void)
+{
+#ifdef CLIENT_DLL
+	AddUberScreenEffect(m_pOuter);
+#endif
+}
+
+void CTFPlayerShared::OnRemoveUnbreakableArmor(void)
+{
+#ifdef CLIENT_DLL
+	RemoveUberScreenEffect(m_pOuter);
 #endif
 }
 #endif
@@ -9028,7 +9138,12 @@ bool CTFPlayerShared::CanRecieveMedigunChargeEffect( medigun_charge_types eType 
 		if ( ( eType == MEDIGUN_CHARGE_MEGAHEAL ) 
 		  || ( eType == MEDIGUN_CHARGE_BULLET_RESIST )
 		  || ( eType == MEDIGUN_CHARGE_BLAST_RESIST )
+#if defined(QUIVER_DLL)
+		  || (eType == MEDIGUN_CHARGE_FIRE_RESIST) 
+		  || (eType == MEDIGUN_CHARGE_UNBREAKABLE_ARMOR))
+#else
 		  || ( eType == MEDIGUN_CHARGE_FIRE_RESIST ) )
+#endif
 		{
 			bCanRecieve = true;
 		}
@@ -9091,6 +9206,22 @@ void CTFPlayerShared::Heal( CBaseEntity *pHealer, float flAmount, float flOverhe
 		CTFPlayer *pPlayer = ToTFPlayer( pHealer );
 		Assert(pPlayer);
 		pPlayer->m_AchievementData.AddTargetToHistory( m_pOuter );
+
+#if defined(QUIVER_DLL)
+		CTFWeaponBase* pWeapon = pPlayer->GetActiveTFWeapon();
+		if (pWeapon)
+		{
+			CWeaponMedigun* pMedigun = dynamic_cast<CWeaponMedigun*>(pWeapon);
+			if (pMedigun)
+			{
+				if (pMedigun->GetMedigunType() == MEDIGUN_ARMOR_REPAIR)
+				{
+					AddCond(QF_COND_ARMOR_BUFF, PERMANENT_CONDITION, pHealer);
+				}
+			}
+		}
+#endif
+
 		pPlayer->TeamFortress_SetSpeed();
 	}
 }
@@ -9116,6 +9247,27 @@ float CTFPlayerShared::StopHealing( CBaseEntity *pHealer )
 	if ( !m_aHealers.Count() )
 	{
 		RemoveCond( TF_COND_HEALTH_BUFF );
+
+#if defined(QUIVER_DLL)
+		if (pHealer && pHealer->IsPlayer())
+		{
+			CTFPlayer* pPlayer = ToTFPlayer(pHealer);
+			Assert(pPlayer);
+
+			CTFWeaponBase* pWeapon = pPlayer->GetActiveTFWeapon();
+			if (pWeapon)
+			{
+				CWeaponMedigun* pMedigun = dynamic_cast<CWeaponMedigun*>(pWeapon);
+				if (pMedigun)
+				{
+					if (pMedigun->GetMedigunType() == MEDIGUN_ARMOR_REPAIR)
+					{
+						RemoveCond(QF_COND_ARMOR_BUFF);
+					}
+				}
+			}
+		}
+#endif
 	}
 
 	RecalculateChargeEffects();
@@ -9184,6 +9336,9 @@ void CTFPlayerShared::RecalculateChargeEffects( bool bInstantRemove )
 	SetChargeEffect( MEDIGUN_CHARGE_BULLET_RESIST,	aCharges[MEDIGUN_CHARGE_BULLET_RESIST].bActive,	bInstantRemove, g_MedigunEffects[ MEDIGUN_CHARGE_BULLET_RESIST ],	0.0f,						aCharges[MEDIGUN_CHARGE_BULLET_RESIST].pProvider );
 	SetChargeEffect( MEDIGUN_CHARGE_BLAST_RESIST,	aCharges[MEDIGUN_CHARGE_BLAST_RESIST].bActive,	bInstantRemove, g_MedigunEffects[ MEDIGUN_CHARGE_BLAST_RESIST ],	0.0f,						aCharges[MEDIGUN_CHARGE_BLAST_RESIST].pProvider );
 	SetChargeEffect( MEDIGUN_CHARGE_FIRE_RESIST,	aCharges[MEDIGUN_CHARGE_FIRE_RESIST].bActive,	bInstantRemove, g_MedigunEffects[ MEDIGUN_CHARGE_FIRE_RESIST ],		0.0f,						aCharges[MEDIGUN_CHARGE_FIRE_RESIST].pProvider );
+#if defined(QUIVER_DLL)
+	SetChargeEffect(MEDIGUN_CHARGE_UNBREAKABLE_ARMOR, aCharges[MEDIGUN_CHARGE_UNBREAKABLE_ARMOR].bActive, bInstantRemove, g_MedigunEffects[MEDIGUN_CHARGE_UNBREAKABLE_ARMOR], 0.0f, aCharges[MEDIGUN_CHARGE_UNBREAKABLE_ARMOR].pProvider);
+#endif
 }
 
 //-----------------------------------------------------------------------------

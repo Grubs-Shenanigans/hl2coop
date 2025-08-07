@@ -9505,6 +9505,9 @@ void CTFPlayer::BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, 
 	if (DoesDamagePenetrateArmor(info, bitsDamage))
 		return;
 
+	if (m_Shared.InCond(QF_COND_UNBREAKABLE_ARMOR))
+		return;
+
 	if (!bNoArmor)
 	{
 		// armor should break at this point.
@@ -9608,6 +9611,33 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 		{
 			Warning("	DAMAGE PENETRATES ARMOR\n");
 		}
+
+		return damage;
+	}
+
+	// if we have the unbreakable armor perk, calculate it without considering armor reduction.
+	if (m_Shared.InCond(QF_COND_UNBREAKABLE_ARMOR))
+	{
+		/*
+		if (ArmorValue() < GetMaxArmor())
+		{
+			SetArmorValue(GetMaxArmor());
+		}
+		*/
+
+		if (debug)
+		{
+			Warning("	PLAYER HAS UNBREAKABLE ARMOR, CALCULATING WITHOUT REMOVING ARMOR OR PENETRATION\n");
+		}
+
+		float flNew = (damage * flRatio);
+
+		if (debug)
+		{
+			Msg("	NEW DAMAGE: %f\n", flNew);
+		}
+
+		damage = flNew;
 
 		return damage;
 	}
