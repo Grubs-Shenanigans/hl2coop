@@ -32,6 +32,7 @@ Whitelists:
 	- The Cleaner's Carbine
 	- The Reserve Shooter
 	- The Pain Train
+	- The Ambassador
 
 Blacklists:
 	- The Spy-Cicle
@@ -88,6 +89,9 @@ Details:
 - Added the Überrüstungsheiler, a new Medigun for the Medic that heals armor on top of health. Its ÜberCharge fully repairs armor and makes it unbreakable.
 - Added a 20% cloak duration penalty to the Conniver's Kunai.
 - Spies can now "fake" a reload by disguising and pressing the reload key with a full clip in their revolver.
+- Removed the Hitman's Executioner. The weapon offered too much risk for too little reward, and functioned as a even more gimped Ambassador.
+- Reverted the Ambassador's Jungle Inferno changes.
+- Increased the wait time between Ambassador shots from 1.0 seconds to 1.5 seconds.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

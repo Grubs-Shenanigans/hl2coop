@@ -35,7 +35,6 @@ Custom Weapons:
 - The Engineer has an alternative PDA called the Valkyrie 3S, which increases your sentry turn rate in return for your buildings' maximum health.
 - Heavy gets another minigun, called the Ludmila, which increases the Heavy's survivability in exchange for damage and minigun spinup time.
 - The Soldier gets a melee that's a blast from the past, The Vitality Glitch, which increases the damage and move speed of the user when on low health, in return for damage, move speed, and armor durability.
-- The Spy gets a revolver called the Hitman's Executioner that allows you to fire close-range headshots if you're behind the enemy. In return, more mini-crit damage is taken when active.
 - The Medic gets a new Medigun called the Überrüstungsheiler that heals armor on top of health. Its ÜberCharge fully repairs armor and makes it unbreakable.
 
 Stock weapon balance changes:
@@ -107,6 +106,8 @@ Unlockable weapon balance changes:
 - Removed the -10 max health penalty on the Vita-Saw.
 - Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
 - Added a 20% cloak duration penalty to the Conniver's Kunai.
+- Reverted the Ambassador's Jungle Inferno changes.
+- Increased the wait time between Ambassador shots from 1.0 seconds to 1.5 seconds.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

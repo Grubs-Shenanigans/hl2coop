@@ -82,7 +82,19 @@ bool CTFRevolver::DefaultReload( int iClipSize1, int iClipSize2, int iActivity )
 //-----------------------------------------------------------------------------
 int	CTFRevolver::GetDamageType( void ) const
 {
+#ifdef BDSBASE
+	float flLastAccuracyCheckTime = 0.0f;
+	CALL_ATTRIB_HOOK_FLOAT(flLastAccuracyCheckTime, revolver_accuracy_check_time);
+
+	if (flLastAccuracyCheckTime == 0.0f)
+	{
+		flLastAccuracyCheckTime = 1.f;
+	}
+
+	if (CanHeadshot() && (gpGlobals->curtime - m_flLastAccuracyCheck > flLastAccuracyCheckTime))
+#else
 	if ( CanHeadshot() && (gpGlobals->curtime - m_flLastAccuracyCheck > 1.f) )
+#endif
 	{
 		int iDamageType = BaseClass::GetDamageType() | DMG_USE_HITLOCATIONS;
 		return iDamageType;
@@ -103,17 +115,7 @@ bool CTFRevolver::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget /*
 	if ( pPlayer && pPlayer->m_Shared.IsCritBoosted() )
 		return true;
 
-#if defined(QUIVER_DLL)
-	// allow headshots when behind an enemy.
-	int iHeadshotBackAttack = 0;
-	CALL_ATTRIB_HOOK_INT(iHeadshotBackAttack, closerange_backattack_headshot);
-	if (iHeadshotBackAttack == 0)
-	{
-		// Magic.
-		if (pTarget && (pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin()).Length2DSqr() > Square(1200.f))
-			return false;
-	}
-#else
+#if !defined(QUIVER_DLL)
 	// Magic.
 	if ( pTarget && ( pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin() ).Length2DSqr() > Square( 1200.f ) )
 		return false;
@@ -126,39 +128,7 @@ bool CTFRevolver::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget /*
 		return !CanHeadshot();
 	}
 
-#if defined(QUIVER_DLL)
-	// if we only headshot from the back, don't crit. we should only crit when we headshot from the back.
-	if (iHeadshotBackAttack == 1)
-	{
-		Vector toEnt = pPlayer->GetAbsOrigin() - pTarget->GetAbsOrigin();
-		if (toEnt.LengthSqr() < Square(256.0f) && bIsHeadshot)
-		{
-			Vector entForward;
-			AngleVectors(pTarget->EyeAngles(), &entForward);
-			toEnt.z = 0;
-			toEnt.NormalizeInPlace();
-
-			if (DotProduct(toEnt, entForward) < 0.259f)	// 75 degrees from center (total of 150)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-		return true;
-	}
-#else
 	return true;
-#endif
 }
 
 #ifdef BDSBASE

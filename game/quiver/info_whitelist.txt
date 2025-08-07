@@ -79,5 +79,6 @@
 - The Cleaner's Carbine* (w/ balance changes)
 - The Reserve Shooter
 - The Pain Train
+- The Ambassador (w/ balance changes)
 
 * - Weapon was whitelisted as long as it got a rebalance.

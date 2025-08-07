@@ -8801,6 +8801,7 @@ ConVar qf_debug_armor_damage("qf_debug_armor_damage", "0", FCVAR_CHEAT);
 bool CTFPlayer::DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDamage)
 {
 	bool debug = qf_debug_armor_damage.GetBool();
+	bool bPenetrated = false;
 
 	int iAttackIgnoresArmor = 0;
 	CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iAttackIgnoresArmor, mod_pierce_armor);
@@ -8809,22 +8810,43 @@ bool CTFPlayer::DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDa
 		CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iAttackIgnoresArmor, mod_pierce_resists_absorbs);
 	}
 
-	if (iAttackIgnoresArmor && debug)
+	if (iAttackIgnoresArmor)
 	{
-		Warning("	DAMAGE PIERCES ARMOR BASED ON ATTRIBUTE\n");
+		if (debug)
+		{
+			Warning("	DAMAGE PIERCES ARMOR BASED ON ATTRIBUTE\n");
+		}
+
+		bPenetrated = true;
+	}
+
+	CTFWeaponBase* pTFWeapon = (CTFWeaponBase*)info.GetWeapon();
+	bool bWeaponCanPierceArmor = (pTFWeapon && pTFWeapon->CanPierceArmor());
+
+	if (bWeaponCanPierceArmor)
+	{
+		if (debug)
+		{
+			Warning("	WEAPON CAN PIERCE ARMOR\n");
+		}
+
+		bPenetrated = true;
 	}
 
 	// armor doesn't protect against drown damage!
 	// also against bleeding or other special damage types that should penetrate.
-
-
-	bool bHasBlacklistedDamgeTypes = (bitsDamage & (DMG_GENERIC)) ||
+	bool bHasBlacklistedDamageTypes = (bitsDamage & (DMG_GENERIC)) ||
 									(bitsDamage & (DMG_DROWN)) ||
 									(bitsDamage & (DMG_VEHICLE));
 
-	if (debug && bHasBlacklistedDamgeTypes)
+	if (bHasBlacklistedDamageTypes)
 	{
-		Warning("	DAMAGE TYPE PENETRATES ARMOR\n");
+		if (debug)
+		{
+			Warning("	DAMAGE TYPE PENETRATES ARMOR\n");
+		}
+
+		bPenetrated = true;
 	}
 
 	bool bHasBlacklistedCustomDamage = false;
@@ -8854,17 +8876,18 @@ bool CTFPlayer::DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDa
 									info.GetDamageCustom() == TF_DMG_CUSTOM_BOOTS_STOMP ||
 									info.GetDamageCustom() == TF_DMG_CUSTOM_SAPPER_RECORDER_DEATH);
 
-		if (debug && bHasBlacklistedCustomDamage)
+		if (bHasBlacklistedCustomDamage)
 		{
-			Warning("	CUSTOM DAMAGE #%i PENETRATES ARMOR\n", info.GetDamageCustom());
+			if (debug)
+			{
+				Warning("	CUSTOM DAMAGE #%i PENETRATES ARMOR\n", info.GetDamageCustom());
+			}
+
+			bPenetrated = true;
 		}
 	}
 
-	bool bCanDamageArmor = (iAttackIgnoresArmor ||
-							bHasBlacklistedDamgeTypes ||
-							bHasBlacklistedCustomDamage);
-
-	return bCanDamageArmor;
+	return bPenetrated;
 }
 #endif
 
