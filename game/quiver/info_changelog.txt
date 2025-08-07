@@ -44,6 +44,8 @@ Added the following Source SDK Pull Requests:
 	- #1473: Fix Diamondback getting revenge crits from earlier kills when switched onto
 	- #1475: Add convar to allow taking damage in itemtest
 	- #1476: Add convars for server owners to hide the freezepanel showing held item
+	- #1480: Fixed Widowmaker not giving metal on friendly disguises
+	- #1481: Workaround for CTFStatPanel not hiding on freezecam screenshot
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
@@ -85,6 +87,7 @@ Details:
 - Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
 - Added the Überrüstungsheiler, a new Medigun for the Medic that heals armor on top of health. Its ÜberCharge fully repairs armor and makes it unbreakable.
 - Added a 20% cloak duration penalty to the Conniver's Kunai.
+- Spies can now "fake" a reload by disguising and pressing the reload key with a full clip in their revolver.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
