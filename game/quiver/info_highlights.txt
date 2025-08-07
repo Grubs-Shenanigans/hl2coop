@@ -105,6 +105,7 @@ Unlockable weapon balance changes:
 - Added a 25% damage penalty on the Vita-Saw.
 - Removed the -10 max health penalty on the Vita-Saw.
 - Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
+- Added a 20% cloak duration penalty to the Conniver's Kunai.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

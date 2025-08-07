@@ -933,11 +933,6 @@
 					"attribute_class"	"mult_medigun_uberchargerate"
 					"value"	"1.35"
 				}
-				"heal rate bonus"
-				{
-					"attribute_class"	"mult_medigun_healrate"
-					"value" "1.25"
-				}
 				"ubercharge overheal rate penalty"
 				{
 					"attribute_class"	"mult_medigun_overheal_uberchargerate"

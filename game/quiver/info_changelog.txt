@@ -84,6 +84,7 @@ Details:
 - Removed the -10 max health penalty on the Vita-Saw.
 - Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
 - Added the Überrüstungsheiler, a new Medigun for the Medic that heals armor on top of health. Its ÜberCharge fully repairs armor and makes it unbreakable.
+- Added a 20% cloak duration penalty to the Conniver's Kunai.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
