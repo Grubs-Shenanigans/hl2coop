@@ -8820,19 +8820,6 @@ bool CTFPlayer::DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDa
 		bPenetrated = true;
 	}
 
-	CTFWeaponBase* pTFWeapon = (CTFWeaponBase*)info.GetWeapon();
-	bool bWeaponCanPierceArmor = (pTFWeapon && pTFWeapon->CanPierceArmor());
-
-	if (bWeaponCanPierceArmor)
-	{
-		if (debug)
-		{
-			Warning("	WEAPON CAN PIERCE ARMOR\n");
-		}
-
-		bPenetrated = true;
-	}
-
 	// armor doesn't protect against drown damage!
 	// also against bleeding or other special damage types that should penetrate.
 	bool bHasBlacklistedDamageTypes = (bitsDamage & (DMG_GENERIC)) ||
@@ -11053,7 +11040,11 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 					if ( !FVisible( pTFBlastVictim, MASK_OPAQUE ) )
 						continue;
 
+#if defined(QUIVER_DLL)
+					pTFBlastVictim->m_Shared.MakeBleed(pTFGasTosser, pGasCan, 0.1f, ((TFGameRules() && TFGameRules()->IsMannVsMachineMode()) ? 150.f : 50.f), false, TF_DMG_CUSTOM_BURNING);
+#else
 					pTFBlastVictim->m_Shared.MakeBleed( pTFGasTosser, pGasCan, 0.1f, 350.f, false, TF_DMG_CUSTOM_BURNING );
+#endif
 					DispatchParticleEffect( "dragons_fury_effect", pTFBlastVictim->GetAbsOrigin(), vec3_angle );
 					bExploded = true;
 				}

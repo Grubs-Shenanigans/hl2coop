@@ -541,10 +541,6 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 #endif
 #endif
 
-#if defined(QUIVER_DLL)
-	virtual bool		CanPierceArmor(void) const { return false; }
-#endif
-
 // Server specific.
 #if !defined( CLIENT_DLL )
 

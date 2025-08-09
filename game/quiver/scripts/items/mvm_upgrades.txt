@@ -467,14 +467,6 @@
 		}
 		"57"
 		{
-			"attribute"	"explode_on_ignite"
-			"icon"		"achievements/tf_demoman_achieve_progress3"
-			"increment"	"1"			// 
-			"cap"		"1"			// 
-			"cost"		"400"
-		}
-		"58"
-		{
 			"attribute"	"dmg pierces resists absorbs"
 			"icon"		"mvm/upgradeicons/upgrade_resistance_bullet"
 			"increment"	"1"			// 

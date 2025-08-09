@@ -15,6 +15,9 @@
 #include "tf_logic_robot_destruction.h"
 #include "ispatialpartition.h"
 #include "tf_fx.h"
+#ifdef BDSBASE
+#include "func_respawnroom.h"
+#endif
 #endif // GAME_DLL
 
 #ifdef CLIENT_DLL

@@ -2100,6 +2100,7 @@ public:
 		
 		if ( m_pOfflinePractice_MapSelectionPanel->DoSetup() )
 		{
+
 			// create the command to execute
 			CFmtStr1024 fmtMapCommand(
 				"disconnect\nwait\nwait\nmaxplayers %i\n\nprogress_enable\nmap %s\n",

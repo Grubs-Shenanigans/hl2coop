@@ -117,6 +117,15 @@ Unlockable weapon balance changes:
 - Removed the Eviction Notice's speed boost on hit.
 - Increased the Eviction Notice's passive speed boost on active from 15% to 20%.
 - Made the Eviction Notice do 33% less damage against armor.
+- Removed the Neon Annihilator's damage against sappers.
+- Upon covering enemies with gas, enemies now have a 50% fire damage vulnerability.
+- Decreased the Gas Passer's charge rate from 60 seconds to 45 seconds.
+- Decreased the Gas Passer's damage requirement from 750 to 350.
+- Fixed a bug where the Gas Passer's gas can cover people in gas through spawnrooms.
+	- The throwing through walls bug has been fixed as well! It's been fixed a while back.
+- Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
+	- In MvM, the Gas Passer's explosion damage was decreased from 350 to 150.
+	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 50.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

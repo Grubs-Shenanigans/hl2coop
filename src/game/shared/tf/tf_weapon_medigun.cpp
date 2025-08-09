@@ -307,9 +307,9 @@ void CWeaponMedigun::WeaponReset( void )
 		if (iPreserveUberCharge > 0)
 		{
 #ifdef _WIN32
-			m_flChargeLevelToPreserve = (iPreserveUberCharge / 99.f);
+			m_flChargeLevelToPreserve = Max(m_flChargeLevelToPreserve, iPreserveUberCharge / 99.f);
 #else
-			m_flChargeLevelToPreserve = (iPreserveUberCharge / 100.f);
+			m_flChargeLevelToPreserve = Max(m_flChargeLevelToPreserve, iPreserveUberCharge / 100.f);
 #endif
 		}
 #endif

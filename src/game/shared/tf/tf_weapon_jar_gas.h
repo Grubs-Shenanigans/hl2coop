@@ -57,7 +57,11 @@ public:
 	virtual bool Holster( CBaseCombatWeapon *pSwitchingTo = NULL ) OVERRIDE;
 #endif // GAME_DLL
 
+#if defined(QUIVER_DLL)
+	virtual const char* GetEffectLabelText(void) OVERRIDE { return "#Quiver_Gas"; }
+#else
 	virtual const char* GetEffectLabelText( void ) OVERRIDE { return "#TF_Gas"; }
+#endif
 	virtual bool ShouldUpdateMeter() const OVERRIDE;
 	virtual float InternalGetEffectBarRechargeTime( void ) OVERRIDE { return 0.f; }
 

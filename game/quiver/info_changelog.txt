@@ -32,6 +32,8 @@ Whitelists:
 	- The Reserve Shooter
 	- The Pain Train
 	- The Ambassador
+	- The Neon Annihilator
+	- The Gas Passer
 
 Blacklists:
 	- The Spy-Cicle
@@ -46,6 +48,7 @@ Added the following Source SDK Pull Requests:
 	- #1476: Add convars for server owners to hide the freezepanel showing held item
 	- #1480: Fixed Widowmaker not giving metal on friendly disguises
 	- #1481: Workaround for CTFStatPanel not hiding on freezecam screenshot
+	- #1484: Fix class select animation playback
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
@@ -103,6 +106,16 @@ Details:
 - Increased the Eviction Notice's passive speed boost on active from 15% to 20%.
 - Made the Eviction Notice do 33% less damage against armor.
 - Added killstreaks to the custom weapons.
+- Fixed a bug where offline practice variables reset upon closing a background map.
+- Removed the Neon Annihilator's damage against sappers.
+- Upon covering enemies with gas, enemies now have a 50% fire damage vulnerability.
+- Decreased the Gas Passer's charge rate from 60 seconds to 45 seconds.
+- Decreased the Gas Passer's damage requirement from 750 to 350.
+- Fixed a bug where the Gas Passer's gas can cover people in gas through spawnrooms.
+	- The throwing through walls bug has been fixed as well! It's been fixed a while back.
+- Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
+	- In MvM, the Gas Passer's explosion damage was decreased from 350 to 150.
+	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 50.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
@@ -272,6 +285,9 @@ Whitelists:
 	- The Tomislav
 	- The L'Etranger
 
+Blacklists:
+ 	- The Ambassador
+
 Added the following Source SDK Pull Requests:
 	- #1402: Fix mouse mode not working in MvM scoreboard
 	- #1404: Add metal change number batching
@@ -293,7 +309,6 @@ Details:
 - Re-added the speed and damage penalty to the Vitality Glitch.
 - Replaced the reduced healing from medics attribute with a mark for death attribute on the Vitality Glitch.
 - Added a mark for death penalty for 3.5 seconds when your armor breaks.
-- Removed the Ambassador from the whitelist.
 - Slightly increased the volume of the armor break sound.
 - Enhanced the armor break event.
 - Added a 25% charge rate boost on the Railgun.
