@@ -13,6 +13,7 @@
 			"static_attrs"
 			{
 				"custom item"		"1"
+				"killstreak tier NO MARKETING NAME"	"1"
 			}
 		}
 		
@@ -25,6 +26,7 @@
 			"static_attrs"
 			{
 				"joke item"		"1"
+				"killstreak tier NO MARKETING NAME"	"1"
 			}
 		}
 		
@@ -37,6 +39,7 @@
 			"static_attrs"
 			{
 				"test item"		"1"
+				"killstreak tier NO MARKETING NAME"	"1"
 			}
 		}
 	
