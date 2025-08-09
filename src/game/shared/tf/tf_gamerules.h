@@ -103,8 +103,11 @@ extern ConVar tf_mvm_disguise_on_backstab_mode;
 
 enum BotModelTypes_t
 {
-	MODEL_MVM = 1,
-	MODEL_ZOMBIE
+	MODEL_NORMAL = 0,
+	MODEL_MVM,
+	MODEL_ZOMBIE,
+
+	MODEL_OVERRIDE_COUNT
 };
 
 extern ConVar tf_bot_models_override;

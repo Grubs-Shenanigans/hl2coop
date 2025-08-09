@@ -1415,7 +1415,11 @@ void C_BaseEntity::UpdateVisibility()
 			CEconItemDefinition* pData = pItem->GetStaticData();
 			if (pData)
 			{
+#if (defined(BDSBASE_CURATED_ITEMS) && defined(BDSBASE_CURATED_ITEMS_GIVEWHITELISTEDITEMS))
+				if (pData->IsSoloItem() || pData->IsWhitelisted())
+#else
 				if (pData->IsSoloItem())
+#endif
 				{
 					bForceAllow = true;
 				}

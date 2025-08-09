@@ -201,7 +201,7 @@ public:
 #endif
 
 #ifdef BDSBASE
-	CEconItemView*		AddSoloItem(int id);
+	CEconItemView*		AddSoloItem(int id, bool bWhitelisted = false);
 #endif
 
 	// Returns the item data for the base item in the loadout slot for a given class

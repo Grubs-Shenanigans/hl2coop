@@ -23,8 +23,12 @@
 
 extern ConVar tf_respawn_on_loadoutchanges;
 
-ConVar tf_show_preset_explanation_in_class_loadout( "tf_show_preset_explanation_in_class_loadout", "1", FCVAR_HIDDEN | FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
+ConVar tf_show_preset_explanation_in_class_loadout("tf_show_preset_explanation_in_class_loadout", "1", FCVAR_HIDDEN | FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+#if (defined(BDSBASE) && defined(BDSBASE_CURATED_ITEMS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS))
+ConVar tf_show_taunt_explanation_in_class_loadout("tf_show_taunt_explanation_in_class_loadout", "0", FCVAR_HIDDEN | FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+#else
 ConVar tf_show_taunt_explanation_in_class_loadout( "tf_show_taunt_explanation_in_class_loadout", "1", FCVAR_HIDDEN | FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
+#endif
 
 void ParticleSlider_UpdateRequest( int iLoadoutPosition, float value )
 {
@@ -102,6 +106,82 @@ bool IsTauntPanelPosition( int iButtonPos )
 	return iButtonPos >= 9 && iButtonPos <= 16;
 }
 
+#if (defined(BDSBASE) && defined(BDSBASE_CURATED_ITEMS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS))
+const LoadoutPanelPositioningInstance g_DefaultLoadoutPanelPositioning =
+{
+	{
+		1,	// LOADOUT_POSITION_PRIMARY = 0,
+		2,	// LOADOUT_POSITION_SECONDARY,
+		3,	// LOADOUT_POSITION_MELEE,
+		0,	// LOADOUT_POSITION_UTILITY,  // STAGING ONLY
+		0,	// LOADOUT_POSITION_BUILDING,
+		0,	// LOADOUT_POSITION_PDA,
+		0,	// LOADOUT_POSITION_PDA2,
+		0,	// LOADOUT_POSITION_HEAD,
+		0,	// LOADOUT_POSITION_MISC,
+		4,	// LOADOUT_POSITION_ACTION,
+		0,	// LOADOUT_POSITION_MISC2,
+		0,	// LOADOUT_POSITION_TAUNT,
+		0,	// LOADOUT_POSITION_TAUNT2,
+		0,	// LOADOUT_POSITION_TAUNT3,
+		0,	// LOADOUT_POSITION_TAUNT4,
+		0,	// LOADOUT_POSITION_TAUNT5,
+		0,	// LOADOUT_POSITION_TAUNT6,
+		0,	// LOADOUT_POSITION_TAUNT7,
+		0,	// LOADOUT_POSITION_TAUNT8,
+	}
+};
+
+const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Spy =
+{
+	{
+		0,	// LOADOUT_POSITION_PRIMARY = 0,
+		1,	// LOADOUT_POSITION_SECONDARY,
+		2,	// LOADOUT_POSITION_MELEE,
+		0,	// LOADOUT_POSITION_UTILITY,  // STAGING ONLY
+		4,	// LOADOUT_POSITION_BUILDING,		// sapper
+		0,	// LOADOUT_POSITION_PDA,			// disguise kit (Hidden)
+		3,	// LOADOUT_POSITION_PDA2,			// Watch
+		0,	// LOADOUT_POSITION_HEAD,
+		0,	// LOADOUT_POSITION_MISC,
+		5,	// LOADOUT_POSITION_ACTION,
+		0,	// LOADOUT_POSITION_MISC2,
+		0,	// LOADOUT_POSITION_TAUNT,
+		0,	// LOADOUT_POSITION_TAUNT2,
+		0,	// LOADOUT_POSITION_TAUNT3,
+		0,	// LOADOUT_POSITION_TAUNT4,
+		0,	// LOADOUT_POSITION_TAUNT5,
+		0,	// LOADOUT_POSITION_TAUNT6,
+		0,	// LOADOUT_POSITION_TAUNT7,
+		0,	// LOADOUT_POSITION_TAUNT8,
+	}
+};
+
+const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Engineer =
+{
+	{
+		1,	// LOADOUT_POSITION_PRIMARY = 0,
+		2,	// LOADOUT_POSITION_SECONDARY,
+		3,	// LOADOUT_POSITION_MELEE,
+		0,	// LOADOUT_POSITION_UTILITY,  // STAGING ONLY
+		0,	// LOADOUT_POSITION_BUILDING,
+		4,	// LOADOUT_POSITION_PDA,
+		0,	// LOADOUT_POSITION_PDA2,
+		0,	// LOADOUT_POSITION_HEAD,
+		0,	// LOADOUT_POSITION_MISC,
+		5,	// LOADOUT_POSITION_ACTION,
+		0,	// LOADOUT_POSITION_MISC2,
+		0,	// LOADOUT_POSITION_TAUNT,
+		0,	// LOADOUT_POSITION_TAUNT2,
+		0,	// LOADOUT_POSITION_TAUNT3,
+		0,	// LOADOUT_POSITION_TAUNT4,
+		0,	// LOADOUT_POSITION_TAUNT5,
+		0,	// LOADOUT_POSITION_TAUNT6,
+		0,	// LOADOUT_POSITION_TAUNT7,
+		0,	// LOADOUT_POSITION_TAUNT8,
+	}
+};
+#else
 const LoadoutPanelPositioningInstance g_DefaultLoadoutPanelPositioning =
 {
 	{
@@ -177,6 +257,7 @@ const LoadoutPanelPositioningInstance g_LoadoutPanelPositioning_Engineer =
 		16,	// LOADOUT_POSITION_TAUNT8,
 	}
 };
+#endif
 
 const LoadoutPanelPositioningInstance *g_VisibleLoadoutSlotsPerClass[] =
 {
@@ -464,6 +545,37 @@ void CClassLoadoutPanel::ApplySchemeSettings( vgui::IScheme *pScheme )
 	m_pBuildablesButton = dynamic_cast<CExButton*>( FindChildByName("BuildablesButton") );
 	m_pCharacterLoadoutButton = dynamic_cast<CExImageButton*>( FindChildByName("CharacterLoadoutButton") );
 	m_pTauntLoadoutButton = dynamic_cast<CExImageButton*>( FindChildByName("TauntLoadoutButton") );
+#if (defined(BDSBASE) && defined(BDSBASE_CURATED_ITEMS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS))
+	if (m_pTauntHintLabel)
+	{
+		m_pTauntHintLabel->SetVisible(false);
+		m_pTauntHintLabel->SetEnabled(false);
+	}
+
+	if (m_pTauntLabel)
+	{
+		m_pTauntLabel->SetVisible(false);
+		m_pTauntLabel->SetEnabled(false);
+	}
+
+	if (m_pTauntCaratLabel)
+	{
+		m_pTauntCaratLabel->SetVisible(false);
+		m_pTauntCaratLabel->SetEnabled(false);
+	}
+
+	if (m_pCharacterLoadoutButton)
+	{
+		m_pCharacterLoadoutButton->SetVisible(false);
+		m_pCharacterLoadoutButton->SetEnabled(false);
+	}
+
+	if (m_pTauntLoadoutButton)
+	{
+		m_pTauntLoadoutButton->SetVisible(false);
+		m_pTauntLoadoutButton->SetEnabled(false);
+	}
+#endif
 	m_pPassiveAttribsLabel = dynamic_cast<CExLabel*>( FindChildByName("PassiveAttribsLabel") );
 	m_pLoadoutPresetPanel = dynamic_cast<CLoadoutPresetPanel*>( FindChildByName( "loadout_preset_panel" ) );
 	if (m_pLoadoutPresetPanel)

@@ -14,7 +14,6 @@ Whitelists:
 	- The Dalokoh's Bar/Fishcake
 	- The Second Banana
 	- The Gloves of Running Urgently/Bread Bite
-	- The Fists of Steel
 	- The Eviction Notice
 	- The Widowmaker
 	- The Eureka Effect
@@ -94,6 +93,15 @@ Details:
 - Increased the wait time between Ambassador shots from 1.0 seconds to 1.5 seconds.
 - Increased the syringeguns' syringe speed from 1000 hu/s to 1500 hu/s
 - Increased the syringeguns' base damage from 10 to 15 per syringe
+- Disabled cosmetics, as newer cosmetics added to the base TF2 harm team recognition, alongside performance problems. However, cosmetic weapons (australiums, stranges, etc) and reskins are allowed.
+- Whitelisted weapons are now given to players even if they don't own them, allowing each player to be on an equal playing field.
+- Fixed BLU Scout using the incorrect team color pants. For real this time.
+- Changed the quality color of custom weapons.
+- Gave a 20% damage vulnerability to the Eviction Notice to replace its maximum health drain.
+- Replaced the Eviction Notice's 60% damage penalty with a 15% damage bonus.
+- Removed the Eviction Notice's speed boost on hit.
+- Increased the Eviction Notice's passive speed boost on active from 15% to 20%.
+- Made the Eviction Notice do 33% less damage against armor.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

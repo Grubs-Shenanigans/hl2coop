@@ -66,7 +66,11 @@ ConVar tf_bot_debug_tags( "tf_bot_debug_tags", "0", FCVAR_CHEAT, "ent_text will 
 ConVar tf_bot_spawn_use_preset_roster("tf_bot_spawn_use_preset_roster", "0", FCVAR_NONE, "Bot will choose class from a preset class table.");
 
 ConVar tf_bot_give_items("tf_bot_give_items", "1", FCVAR_GAMEDLL);
+#if (defined(BDSBASE_CURATED_ITEMS) && (!defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS)))
+ConVar tf_bot_give_items_skip_reskins("tf_bot_give_items_skip_reskins", "1", FCVAR_DEVELOPMENTONLY);
+#else
 ConVar tf_bot_give_items_skip_reskins("tf_bot_give_items_skip_reskins", "0", FCVAR_GAMEDLL);
+#endif
 #else
 ConVar tf_bot_spawn_use_preset_roster("tf_bot_spawn_use_preset_roster", "1", FCVAR_CHEAT, "Bot will choose class from a preset class table.");
 #endif

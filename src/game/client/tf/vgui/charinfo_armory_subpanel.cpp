@@ -505,7 +505,7 @@ void CArmoryPanel::SetFilterTo( int iItemDef, armory_filters_t nFilter )
 			//	- Items that haven't asked to be shown
 #ifdef BDSBASE
 #ifdef BDSBASE_CURATED_ITEMS
-#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
+#if (defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS) || defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS))
 			if (pDef->IsHidden() || pDef->GetQuality() == k_unItemQuality_Any || pDef->GetQuality() == AE_NORMAL || !pDef->ShouldShowInArmory())
 #else
 			if (pDef->IsHidden())

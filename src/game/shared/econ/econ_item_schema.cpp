@@ -3227,7 +3227,7 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 #endif
 
 #ifdef BDSBASE_CURATED_ITEMS
-#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
+#if (defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS) || defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS))
 	m_bIsReskin = m_pKVItem->GetInt("reskin", 0) != 0;
 
 	//allow if we're on the whitelist too
@@ -3240,10 +3240,10 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	m_bIsReskin = false;
 #endif
 #else
+	m_bWhitelisted = true;
 	//if stock only w/ cosmetics aren't enabled, no reskins are allowed.
 	m_bIsReskin = false;
 #endif
-
 #endif
 	m_pszItemLogClassname = m_pKVItem->GetString( "item_logname", NULL );
 	m_pszItemIconClassname = m_pKVItem->GetString( "item_iconname", NULL );
@@ -3876,6 +3876,7 @@ CEconItemSchema::CEconItemSchema( )
 #ifdef BDSBASE
 ,	m_mapSoloItems(DefLessFunc(int))
 ,	m_mapBaseAndSoloItems(DefLessFunc(int))
+,	m_mapWhitelistedItems(DefLessFunc(int))
 #endif
 ,	m_unVersion( 0 )
 #if defined(CLIENT_DLL) || defined(GAME_DLL)
@@ -4377,6 +4378,7 @@ void CEconItemSchema::Reset( void )
 #ifdef BDSBASE
 	m_mapSoloItems.Purge();
 	m_mapBaseAndSoloItems.Purge();
+	m_mapWhitelistedItems.Purge();
 #endif
 	m_mapRecipes.PurgeAndDeleteElements();
 	m_vecTimedRewards.Purge();
@@ -5370,6 +5372,7 @@ bool CEconItemSchema::BInitItems( KeyValues *pKVItems, CUtlVector<CUtlString> *p
 #ifdef BDSBASE
 	m_mapSoloItems.Purge();
 	m_mapBaseAndSoloItems.Purge();
+	m_mapWhitelistedItems.Purge();
 #endif
 	m_vecBundles.Purge();
 	m_mapQuestObjectives.PurgeAndDeleteElements();
@@ -5452,6 +5455,39 @@ bool CEconItemSchema::BInitItems( KeyValues *pKVItems, CUtlVector<CUtlString> *p
 				{
 					m_mapSoloItems.Insert(nItemIndex, pItemDef);
 					m_mapBaseAndSoloItems.Insert(nItemIndex, pItemDef);
+				}
+
+				if (pItemDef->IsWhitelisted())
+				{
+#if (defined(BDSBASE_CURATED_ITEMS) && defined(BDSBASE_CURATED_ITEMS_GIVEWHITELISTEDITEMS))
+					bool bIsSpecial = false;
+
+					if (pItemDef->IsReskin())
+					{
+						bIsSpecial = true;
+					}
+
+					static CSchemaAttributeDefHandle pAttrDef_DefaultWear("texture_wear_default");
+					float flWearOut;
+					if (pAttrDef_DefaultWear)
+					{
+						bIsSpecial = FindAttribute_UnsafeBitwiseCast<attrib_value_t>(pItemDef, pAttrDef_DefaultWear, &flWearOut);
+					}
+
+					static CSchemaAttributeDefHandle pAttrDef_LimitedQuantity("limited quantity item");
+					float flLimitedOut;
+					if (pAttrDef_LimitedQuantity)
+					{
+						bIsSpecial = FindAttribute_UnsafeBitwiseCast<attrib_value_t>(pItemDef, pAttrDef_LimitedQuantity, &flLimitedOut);
+					}
+#else
+					bool bIsSpecial = false;
+#endif
+
+					if (!bIsSpecial)
+					{
+						m_mapWhitelistedItems.Insert(nItemIndex, pItemDef);
+					}
 				}
 #endif
 
@@ -6440,7 +6476,7 @@ bool CEconItemSchema::FindItemInWhitelist(int index)
 #ifdef BDSBASE_CURATED_ITEMS
 		bool bIsReskin = pReskinItemDef->IsAllowed();
 
-#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
+#if (defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS))
 #if defined(TF_DLL) || defined(TF_CLIENT_DLL)
 		bool bIsWeapon = ((pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_PRIMARY) ||
 			(pDef->GetDefaultLoadoutSlot() == LOADOUT_POSITION_SECONDARY) ||

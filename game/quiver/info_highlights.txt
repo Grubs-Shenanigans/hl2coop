@@ -14,6 +14,8 @@ Highlights:
 - Disabled the Match Status HUD, and restored the original TF2 round timer.
 - Disabled stun in most instances, except in MvM where it's crucial against robots.
 - Disabled player glows on spawn and spectator (except in MvM).
+- Disabled cosmetics, as newer cosmetics added to the base TF2 harm team recognition, alongside performance problems. However, cosmetic weapons (australiums, stranges, etc) and reskins are allowed.
+- Whitelisted weapons are now given to players even if they don't own them, allowing each player to be on an equal playing field.
 
 Class changes:
 - Run speeds have been increased across all 9 classes. However, one aspect remains: Heavies are the slowest, Scouts are the fastest.
@@ -110,6 +112,11 @@ Unlockable weapon balance changes:
 - Added a 20% cloak duration penalty to the Conniver's Kunai.
 - Reverted the Ambassador's Jungle Inferno changes.
 - Increased the wait time between Ambassador shots from 1.0 seconds to 1.5 seconds.
+- Gave a 20% damage vulnerability to the Eviction Notice to replace its maximum health drain.
+- Replaced the Eviction Notice's 60% damage penalty with a 15% damage bonus.
+- Removed the Eviction Notice's speed boost on hit.
+- Increased the Eviction Notice's passive speed boost on active from 15% to 20%.
+- Made the Eviction Notice do 33% less damage against armor.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

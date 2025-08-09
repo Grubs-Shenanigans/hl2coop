@@ -1119,7 +1119,7 @@ void CBackpackPanel::AssignItemToPanel( CItemModelPanel *pPanel, int iIndex )
 #endif
 			{
 #ifdef BDSBASE
-#if (defined(BDSBASE_CURATED_ITEMS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS))
+#if (defined(BDSBASE_CURATED_ITEMS) && (!defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS)))
 				pItemDef = mapItems[it];
 #else
 				// Instead of linking to this base item definition, link to the definition of what it will become
@@ -1144,7 +1144,7 @@ void CBackpackPanel::AssignItemToPanel( CItemModelPanel *pPanel, int iIndex )
 #ifdef QUIVER_DLL
 				if (mapItems[it]->IsSoloItem())
 				{
-					tempItem.Init(pItemDef->GetDefinitionIndex(), AE_CUSTOMIZED, AE_USE_SCRIPT_VALUE, true);
+					tempItem.Init(pItemDef->GetDefinitionIndex(), CUSTOM_ITEM_QUALITY, AE_USE_SCRIPT_VALUE, true);
 				}
 				else
 				{

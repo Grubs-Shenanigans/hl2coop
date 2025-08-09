@@ -618,6 +618,9 @@ void CTFBotManager::RevertOfflinePracticeConvars()
 	tf_bot_auto_vacate.Revert();
 	tf_bot_difficulty.Revert();
 	tf_bot_offline_practice.Revert();
+#ifdef BDSBASE
+	tf_bot_models_override.Revert();
+#endif
 }
 
 

@@ -232,7 +232,7 @@ void CTFInventoryManager::PostInit( void )
 }
 
 #ifdef BDSBASE
-CEconItemView* CTFInventoryManager::AddSoloItem(int id)
+CEconItemView* CTFInventoryManager::AddSoloItem(int id, bool bWhitelisted)
 {
 	CEconItemView* pItemView = new CEconItemView;
 	CEconItem* pItem = new CEconItem;
@@ -240,14 +240,36 @@ CEconItemView* CTFInventoryManager::AddSoloItem(int id)
 	pItem->m_unAccountID = 0;
 	pItem->m_unDefIndex = id;
 	pItem->SetFlags(kEconItemFlag_NonEconomy);
+#if defined(QUIVER_DLL)
+	if (bWhitelisted)
+	{
+		CAttribute_String attrStr;
+		attrStr.set_value("#given");
+		static CSchemaAttributeDefHandle pAttrDef_QualityTextOverride("quality text override");
+		pItem->SetDynamicAttributeValue(pAttrDef_QualityTextOverride, attrStr);
+
+		pItem->SetOrigin(kEconItemOrigin_QuestLoanerItem);
+	}
+#endif
 	pItemView->Init(id, AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, false);
 	pItemView->SetItemID(id);
+
 #if CLIENT_DLL
 	pItemView->SetNonSOEconItem(pItem);
 #endif
+
 #if defined(QUIVER_DLL)
-	pItemView->SetItemQuality(AE_CUSTOMIZED);
+	if (bWhitelisted)
+	{
+		pItemView->SetItemQuality(GIVEN_ITEM_QUALITY);
+		pItemView->SetItemLevel(1);
+	}
+	else
+	{
+		pItemView->SetItemQuality(CUSTOM_ITEM_QUALITY);
+	}
 #endif
+
 	m_pSoloLoadoutItems.AddToTail(pItemView);
 
 	return pItemView;
@@ -290,6 +312,19 @@ void CTFInventoryManager::GenerateBaseItems( void )
 		for (int it = iStart; it != mapItemsSolo.InvalidIndex(); it = mapItemsSolo.NextInorder(it))
 		{
 			AddSoloItem(mapItemsSolo[it]->GetDefinitionIndex());
+		}
+	}
+#endif
+
+#if (defined(BDSBASE_CURATED_ITEMS) && defined(BDSBASE_CURATED_ITEMS_GIVEWHITELISTEDITEMS))
+	const CEconItemSchema::WhitelistedItemDefinitionMap_t& mapItemsWhitelisted = GetItemSchema()->GetWhitelistedItemDefinitionMap();
+
+	if (mapItemsWhitelisted.Count() > 0)
+	{
+		iStart = 0;
+		for (int it = iStart; it != mapItemsWhitelisted.InvalidIndex(); it = mapItemsWhitelisted.NextInorder(it))
+		{
+			AddSoloItem(mapItemsWhitelisted[it]->GetDefinitionIndex(), true);
 		}
 	}
 #endif
@@ -1639,7 +1674,7 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 		{
 			bIsReskin = pItemData->IsAllowed();
 
-#ifdef BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS
+#if (defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS))
 			bool bIsWeapon = ((iSlot == LOADOUT_POSITION_PRIMARY) ||
 				(iSlot == LOADOUT_POSITION_SECONDARY) ||
 				(iSlot == LOADOUT_POSITION_MELEE) ||

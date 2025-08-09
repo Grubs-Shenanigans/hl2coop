@@ -61,7 +61,9 @@ BDSBASE_CURATED_ITEMS
 - Prevents non-stock items from showing up in the loadout panel and loads whitelisted items for a curated item selection. 
 - To add an item to the curated item list, simply add "stock_whitelist" in its item definition. 
 - You may re-enable cosmetics and weapon stranges, reskins, etc by using BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS. Items that represent reskins must have "reskin" set to 1 in your desired item schema definitions. 
+- You may re-enable only weapon stranges, reskins, etc by using BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS. Items that represent reskins must have "reskin" set to 1 in your desired item schema definitions. 
 - Using this with BDSBASE_CUSTOM_SCHEMA would also allow custom items to be allowed with this option. If you only need BDSBASE_CUSTOM_SCHEMA for custom attributes, use BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS.
+- You can give curated items with BDSBASE_CURATED_ITEMS_GIVEWHITELISTEDITEMS. If you don't want items to show up with this enabled, set "reskin" to 1 in your desired item schema definitions.
 
 BDSBASE_ECON_LOADOUT_ONLY
 - Games: TF2

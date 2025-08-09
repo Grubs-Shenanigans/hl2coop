@@ -9653,11 +9653,17 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 			Warning("	PLAYER HAS UNBREAKABLE ARMOR, CALCULATING WITHOUT REMOVING ARMOR OR PENETRATION\n");
 		}
 
+		if (debug)
+		{
+			Msg("	OLD DAMAGE: %.2f\n", damage);
+		}
+
 		float flNew = (damage * flRatio);
 
 		if (debug)
 		{
-			Msg("	NEW DAMAGE: %f\n", flNew);
+			Msg("	%.2f * %.2f = %.2f\n", damage, flRatio, flNew);
+			Msg("	NEW DAMAGE: %.2f\n", flNew);
 		}
 
 		damage = flNew;
@@ -9667,19 +9673,45 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 	if (ArmorValue() > 0)
 	{
+		if (debug)
+		{
+			Msg("	OLD DAMAGE: %.2f\n", damage);
+		}
+
 		float flNew = (damage * flRatio);
+
+		if (debug)
+		{
+			Msg("	%.2f * %.2f = %.2f\n", damage, flRatio, flNew);
+		}
+
 		float flArmor = (flNew * flAdditionalCost);
+
+		if (debug)
+		{
+			Msg("	%.2f * %.2f = %.2f\n", flNew, flAdditionalCost, flArmor);
+			Msg("	ESTIMATED ARMOR: %.2f\n", flArmor);
+		}
+
+		float flOldArmor = flArmor;
+
 		if (pTFAttacker)
 		{
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTFAttacker, flArmor, mult_armor_onhit);
 		}
 		CALL_ATTRIB_HOOK_FLOAT(flArmor, mult_armor);
 
+		if (debug)
+		{
+			Msg("	ARMOR ADJUSTED BY %.2f WITH ATTRIBUTES\n", (flArmor / flOldArmor));
+			Msg("	ARMOR AFTER ATTRIBUTES: %.2f\n", flArmor);
+		}
+
 		IncrementArmorValue(-flArmor, 0);
 
 		if (debug)
 		{
-			Msg("	ARMOR REDUCED BY: %f\n", flArmor);
+			Msg("	ARMOR REDUCED BY: %.2f\n", flArmor);
 		}
 
 		if (ArmorValue() <= 0)
@@ -9689,7 +9721,7 @@ float CTFPlayer::DamageArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker
 
 		if (debug)
 		{
-			Msg("	NEW DAMAGE: %f\n", flNew);
+			Msg("	NEW DAMAGE: %.2f\n", flNew);
 		}
 
 		damage = flNew;

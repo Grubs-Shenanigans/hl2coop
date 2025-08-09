@@ -542,6 +542,10 @@ enum EEconItemQuality
 	AE_DEPRECATED_UNIQUE = 3,
 };
 
+#if defined(QUIVER_DLL)
+#define CUSTOM_ITEM_QUALITY AE_RARITY_ANCIENT
+#define GIVEN_ITEM_QUALITY AE_PAINTKITWEAPON
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: colors used in the display of attributes

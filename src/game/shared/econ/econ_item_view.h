@@ -237,8 +237,12 @@ public:
 		MarkDescriptionDirty();
 	}
 
+#ifdef BDSBASE
+	void					EnsureDescriptionIsBuilt(void) const;
+#else
 private:
 	void					EnsureDescriptionIsBuilt( void ) const;
+#endif
 	void					MarkDescriptionDirty( void );
 public:
 	void					SetGrayedOutReason( const char *pszGrayedOutReason );

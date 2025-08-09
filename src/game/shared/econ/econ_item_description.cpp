@@ -3409,6 +3409,18 @@ void CEconItemDescription::Generate_VisibleAttributes( const CLocalizationProvid
 	Assert( pLocalizationProvider );
 	Assert( pEconItem );
 
+#if defined(QUIVER_DLL)
+	// hack
+	const GameItemDefinition_t* pItemDef = pEconItem->GetItemDefinition();
+	if (!pItemDef)
+		return;
+
+	if (pItemDef->IsWhitelisted())
+	{
+		AddDescLine(pLocalizationProvider->Find("#Quiver_Whitelisted"), ATTRIB_COL_NEUTRAL, kDescLineFlag_Attribute);
+	}
+#endif
+
 	CVisibleAttributeDisplayer AttributeDisplayer;
 	pEconItem->IterateAttributes( &AttributeDisplayer );
 	AttributeDisplayer.SortAttributes();

@@ -61,8 +61,7 @@
 - The Dalokoh's Bar/Fishcake
 - The Second Banana
 - The Gloves of Running Urgently/Bread Bite
-- The Fists of Steel
-- The Eviction Notice
+- The Eviction Notice (w/ balance changes)
 - The Widowmaker
 - The Eureka Effect
 - The Blutsauger

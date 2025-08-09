@@ -1284,7 +1284,11 @@ public:
 	bool		IsSoloItem(void) const				{ return m_bSoloItem; }
 	bool		IsReskin(void) const				{ return m_bIsReskin; }
 	bool		IsWhitelisted(void) const			{ return m_bWhitelisted; }
+#if (defined(BDSBASE_CURATED_ITEMS) && (!defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS)))
+	bool		IsAllowed(void) const				{ return IsWhitelisted(); }
+#else
 	bool		IsAllowed(void) const				{ return (IsWhitelisted() || IsReskin()); }
+#endif
 #endif
 	bool		IsBundle( void ) const				{ return m_BundleInfo != NULL; }
 	bool		HasProperName( void ) const			{ return m_bProperName; }
@@ -2637,6 +2641,9 @@ public:
 
 	typedef CUtlMap<int, CEconItemDefinition*, int>	BaseAndSoloItemDefinitionMap_t;
 	const BaseAndSoloItemDefinitionMap_t& GetBaseAndSoloItemDefinitionMap() const { return m_mapBaseAndSoloItems; }
+
+	typedef CUtlMap<int, CEconItemDefinition*, int>	WhitelistedItemDefinitionMap_t;
+	const WhitelistedItemDefinitionMap_t& GetWhitelistedItemDefinitionMap() const { return m_mapWhitelistedItems; }
 #endif
 
 	typedef CUtlDict<CEconLootListDefinition *>	LootListDefinitionMap_t;
@@ -2970,6 +2977,7 @@ private:
 	// List of all solo items, is a sublist of mapItems
 	SoloItemDefinitionMap_t								m_mapSoloItems;
 	BaseAndSoloItemDefinitionMap_t						m_mapBaseAndSoloItems;
+	WhitelistedItemDefinitionMap_t						m_mapWhitelistedItems;
 #endif
 
 #if defined(CLIENT_DLL) || defined(GAME_DLL)
