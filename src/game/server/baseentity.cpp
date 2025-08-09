@@ -318,6 +318,30 @@ IMPLEMENT_SERVERCLASS_ST_NOBASE( CBaseEntity, DT_BaseEntity )
 
 END_SEND_TABLE()
 
+#ifdef BDSBASE
+static bool g_bInRegisterModelLoadCallback = false;
+static void MarkDynamicModelLoadedStringTable(const model_t* pModel)
+{
+#ifndef BDSBASE_TEMP_FIXDYNAMICMODELS
+	if (CommandLine()->CheckParm("-dynamicmodelsfix"))
+#endif
+	{
+		// engine bugfix: ensure this dynamic model is marked as loaded in the string table
+		// TODO remove this when the engine is updated
+		extern INetworkStringTable* g_pStringTableDynamicModels;
+		if (g_pStringTableDynamicModels)
+		{
+			const char* pModelName = modelinfo->GetModelName(pModel);
+			int nIdx = g_pStringTableDynamicModels->FindStringIndex(pModelName);
+			if (nIdx != INVALID_STRING_INDEX)
+			{
+				bool bLoaded = true;
+				g_pStringTableDynamicModels->SetStringUserData(nIdx, sizeof(bLoaded), &bLoaded);
+			}
+		}
+	}
+}
+#endif
 
 // dynamic models
 class CBaseEntityModelLoadProxy
@@ -335,7 +359,16 @@ protected:
 public:
 	explicit CBaseEntityModelLoadProxy( CBaseEntity *pEntity ) : m_pHandler( new Handler( pEntity ) ) { }
 	~CBaseEntityModelLoadProxy() { delete m_pHandler; }
+#ifdef BDSBASE
+	void Register(int nModelIndex) const
+	{
+		g_bInRegisterModelLoadCallback = true;
+		modelinfo->RegisterModelLoadCallback(nModelIndex, m_pHandler);
+		g_bInRegisterModelLoadCallback = false;
+	}
+#else
 	void Register( int nModelIndex ) const { modelinfo->RegisterModelLoadCallback( nModelIndex, m_pHandler ); }
+#endif
 	operator CBaseEntity * () const { return m_pHandler->m_pEntity; }
 
 private:
@@ -347,6 +380,9 @@ static CUtlHashtable< CBaseEntityModelLoadProxy, empty_t, PointerHashFunctor, Po
 
 void CBaseEntityModelLoadProxy::Handler::OnModelLoadComplete( const model_t *pModel )
 {
+#ifdef BDSBASE
+	MarkDynamicModelLoadedStringTable(pModel);
+#endif
 	m_pEntity->OnModelLoadComplete( pModel );
 	sg_DynamicLoadHandlers.Remove( m_pEntity ); // NOTE: destroys *this!
 }

@@ -91,6 +91,12 @@ BDSBASE_ACHIEVEMENT_NOTIFICATIONS
 - Users can easily change the look of the panels with the cl_achievements_theme command.
 - This allows users to easily see unlocked achievements and achievement progress.
 
+BDSBASE_TEMP_FIXDYNAMICMODELS
+- Games: All
+- This enables Pull Request #1483 (https://github.com/ValveSoftware/source-sdk-2013/pull/1483) by default which fixes issues with dynamic models in listen servers.
+- This is a temporary workaround and is not recomended to be enabled with future versions of the engine.
+- If this is disabled, use the command line variable -dynamicmodelsfix to enable the fix.
+
 ## Credits:
 - TheBetaM for the custom schema code. (https://github.com/TheBetaM/tf-solo)
 - rafradek for some bot AI changes (sigsegv-mvm) (https://github.com/rafradek/sigsegv-mvm)

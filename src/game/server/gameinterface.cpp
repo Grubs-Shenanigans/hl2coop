@@ -236,6 +236,10 @@ INetworkStringTable *g_pStringTableServerPopFiles = NULL;
 INetworkStringTable *g_pStringTableServerMapCycleMvM = NULL;
 #endif
 
+#ifdef BDSBASE
+INetworkStringTable* g_pStringTableDynamicModels = NULL;
+#endif
+
 CStringTableSaveRestoreOps g_VguiScreenStringOps;
 
 // Holds global variables shared between engine and game.
@@ -1512,6 +1516,10 @@ void CServerGameDLL::CreateNetworkStringTables( void )
 #ifdef TF_DLL
 	g_pStringTableServerPopFiles = networkstringtable->CreateStringTable( "ServerPopFiles", 128 );
 	g_pStringTableServerMapCycleMvM = networkstringtable->CreateStringTable( "ServerMapCycleMvM", 128 );
+#endif
+
+#ifdef BDSBASE
+	g_pStringTableDynamicModels = networkstringtable->FindTable("DynamicModels");
 #endif
 
 	bool bPopFilesValid = true;
