@@ -119,6 +119,8 @@ Details:
 - Implemented NeoDement's Missing Killicons Pack.
 - Pyro bots can now reflect most projectiles.
 - Re-enabled stun for taunt kills.
+- Removed the Railgun's headshot charge penalty.
+- Restored the original 2007 knife model.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

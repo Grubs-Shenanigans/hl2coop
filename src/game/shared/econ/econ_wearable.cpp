@@ -466,6 +466,10 @@ RenderGroup_t CEconWearable::GetRenderGroup()
 	return BaseClass::GetRenderGroup();
 }
 
+#ifdef BDSBASE
+ConVar econ_allow_paint_tint("econ_allow_paint_tint", "1", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Wearable tint colors
 //-----------------------------------------------------------------------------
@@ -475,6 +479,15 @@ public:
 	void OnBind( void *pC_BaseEntity )
 	{
 		Assert( m_pResult );
+
+#ifdef BDSBASE
+		if (!econ_allow_paint_tint.GetBool())
+		{
+			m_pResult->SetVecValue(0, 0, 0);
+			return;
+		}
+#endif
+
 		Vector vResult = Vector( 0, 0, 0 );
 
 		if ( pC_BaseEntity )

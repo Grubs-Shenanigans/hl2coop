@@ -417,11 +417,6 @@
 					"attribute_class"	"sniper_fires_tracer"
 					"value"	"1"
 				}
-				"sniper no headshot without full charge"
-				{
-					"attribute_class"	"sniper_no_headshot_without_full_charge"
-					"value" "1"
-				}
 				"crit on hard hit"
 				{
 					"attribute_class"	"crit_on_hard_hit"
