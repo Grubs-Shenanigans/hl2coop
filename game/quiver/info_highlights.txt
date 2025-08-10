@@ -125,7 +125,7 @@ Unlockable weapon balance changes:
 	- The throwing through walls bug has been fixed as well! It's been fixed a while back.
 - Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
 	- In MvM, the Gas Passer's explosion damage was decreased from 350 to 150.
-	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 50.
+	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 75.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

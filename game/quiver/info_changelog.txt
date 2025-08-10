@@ -48,7 +48,7 @@ Added the following Source SDK Pull Requests:
 	- #1476: Add convars for server owners to hide the freezepanel showing held item
 	- #1480: Fixed Widowmaker not giving metal on friendly disguises
 	- #1481: Workaround for CTFStatPanel not hiding on freezecam screenshot
-	- #1484: Fix class select animation playback
+	- #1483: (Temporary) Fix issues with dynamic models on listen servers
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
@@ -115,7 +115,7 @@ Details:
 	- The throwing through walls bug has been fixed as well! It's been fixed a while back.
 - Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
 	- In MvM, the Gas Passer's explosion damage was decreased from 350 to 150.
-	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 50.
+	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 75.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
