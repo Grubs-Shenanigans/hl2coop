@@ -11041,7 +11041,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 						continue;
 
 #if defined(QUIVER_DLL)
-					pTFBlastVictim->m_Shared.MakeBleed(pTFGasTosser, pGasCan, 0.1f, ((TFGameRules() && TFGameRules()->IsMannVsMachineMode()) ? 150.f : 50.f), false, TF_DMG_CUSTOM_BURNING);
+					pTFBlastVictim->m_Shared.MakeBleed(pTFGasTosser, pGasCan, 0.1f, ((TFGameRules() && TFGameRules()->IsMannVsMachineMode()) ? 150.f : 75.f), false, TF_DMG_CUSTOM_BURNING);
 #else
 					pTFBlastVictim->m_Shared.MakeBleed( pTFGasTosser, pGasCan, 0.1f, 350.f, false, TF_DMG_CUSTOM_BURNING );
 #endif
