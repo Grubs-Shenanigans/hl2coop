@@ -116,6 +116,7 @@ Details:
 - Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
 	- In MvM, the Gas Passer's explosion damage was decreased from 350 to 150.
 	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 75.
+- Implemented NeoDement's Missing Killicons Pack.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

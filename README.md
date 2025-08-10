@@ -100,6 +100,10 @@ BDSBASE_TEMP_FIXDYNAMICMODELS
 ## Credits:
 - TheBetaM for the custom schema code. (https://github.com/TheBetaM/tf-solo)
 - rafradek for some bot AI changes (sigsegv-mvm) (https://github.com/rafradek/sigsegv-mvm)
+- Missing Killicons Pack by NeoDement
+- The Valve Developer Community for the following articles:
+https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
+https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%2526_Fixes
 
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.

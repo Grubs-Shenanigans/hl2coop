@@ -294,11 +294,11 @@
 		}
 		"obj_sentrygun"
 		{
-				"dfile"	"HUD/d_images"
-				"dnegfile"	"HUD/dneg_images"
-				"x"		"96"
-				"y"		"160"
-				"width"		"64"
+				"dfile"	"HUD/d_images_v2"
+				"dnegfile"	"HUD/dneg_images_v2"
+				"x"		"107"
+				"y"		"162"
+				"width"		"76"
 				"height"	"32"
 		}
 		"obj_sentrygun2"
@@ -332,18 +332,18 @@
 		{
 				"dfile"	"HUD/d_images"
 				"dnegfile"	"HUD/dneg_images"
-				"x"		"0"
+				"x"		"6"
 				"y"		"32"
-				"width"		"96"
+				"width"		"47"
 				"height"	"32"
 		}
 		"pistol_scout"
 		{
 				"dfile"	"HUD/d_images"
 				"dnegfile"	"HUD/dneg_images"
-				"x"		"0"
+				"x"		"6"
 				"y"		"32"
-				"width"		"96"
+				"width"		"47"
 				"height"	"32"
 		}
 		"nailgun"
@@ -370,7 +370,7 @@
 				"dnegfile"	"HUD/dneg_images"
 				"x"		"0"
 				"y"		"128"
-				"width"		"96"
+				"width"		"75"
 				"height"	"32"
 		}
 		"club"
@@ -501,11 +501,11 @@
 		}
 		"fireaxe"
 		{
-				"dfile"	"HUD/d_images"
-				"dnegfile"	"HUD/dneg_images"
-				"x"		"0"
+				"dfile"	"HUD/d_images_v2"
+				"dnegfile"	"HUD/dneg_images_v2"
+				"x"		"13"
 				"y"		"480"
-				"width"		"96"
+				"width"		"78"
 				"height"	"32"
 		}
 		"bonesaw"
@@ -530,9 +530,9 @@
 		{
 				"dfile"	"HUD/d_images"
 				"dnegfile"	"HUD/dneg_images"
-				"x"		"96"
+				"x"		"100"
 				"y"		"32"
-				"width"		"96"
+				"width"		"68"
 				"height"	"32"
 		}
 		"flaregun"
@@ -559,7 +559,7 @@
 				"dnegfile"	"HUD/dneg_images"
 				"x"		"96"
 				"y"		"192"
-				"width"		"96"
+				"width"		"87"
 				"height"	"32"
 		}		
 		"tf_projectile_pipe_remote"
@@ -591,11 +591,11 @@
 		}
 		"headshot"
 		{
-				"dfile"	"HUD/d_images"
-				"dnegfile"	"HUD/dneg_images"
+				"dfile"	"HUD/d_images_v2"
+				"dnegfile"	"HUD/dneg_images_v2"
 				"x"		"120"
 				"y"		"352"
-				"width"		"42"
+				"width"		"44"
 				"height"	"32"
 		}
 		"backstab"
@@ -924,11 +924,11 @@
 		}
 		"rocketlauncher_directhit"
 		{
-				"dfile"	"HUD/d_images"
-				"dnegfile"	"HUD/dneg_images"
-				"x"		"368"
-				"y"		"263"
-				"width"		"92"
+				"dfile"	"HUD/d_images_v2"
+				"dnegfile"	"HUD/dneg_images_v2"
+				"x"		"256"
+				"y"		"32"
+				"width"		"116"
 				"height"	"32"
 		}
 		"sticky_resistance"
@@ -1041,11 +1041,11 @@
 		}
 		"force_a_nature"
 		{
-				"dfile"	"HUD/d_images"
-				"dnegfile"	"HUD/dneg_images"
-				"x"		"368"
-				"y"		"363"
-				"width"		"128"
+				"dfile"	"HUD/d_images_v2"
+				"dnegfile"	"HUD/dneg_images_v2"
+				"x"		"257"
+				"y"		"64"
+				"width"		"102"
 				"height"	"32"
 		}
 		"deflect_huntsman_flyingburn_headshot"
@@ -1231,10 +1231,10 @@
 		"fryingpan"
 		{
 				"dfile"	"HUD/d_images_v2"
-				"dnegfile"	"HUD/dneg_images_v2"
-				"x"		"96"
+				"dnegfile"	"HUD/dneg_images_v2"		
+				"x"		"109"
 				"y"		"768"
-				"width"		"96"
+				"width"		"70"
 				"height"	"32"
 		}
 		"back_scratcher"
@@ -2319,9 +2319,9 @@
 		{
 				"dfile"	"HUD/d_images_v2"
 				"dnegfile"	"HUD/dneg_images_v2"
-				"x"		"384"
+				"x"		"390"
 				"y"		"512"
-				"width"		"96"
+				"width"		"100"
 				"height"	"32"
 		}
 		
@@ -3784,13 +3784,107 @@
 				"height"	"32"
 		}
 
+//Bat Outta Hell
+		"skullbat"
+		{
+				"dfile"	"HUD/d_images_community"
+				"dnegfile"	"HUD/dneg_images_community"
+				"x"		"0"
+				"y"		"0"
+				"width"		"93"
+				"height"	"32"
+		}
+
+//Telefrag (killed by teleporting player)
+		"telefrag"
+		{
+				"dfile"	"HUD/d_images_community"
+				"dnegfile"	"HUD/dneg_images_community"
+				"x"		"0"
+				"y"		"32"
+				"width"		"63"
+				"height"	"32"
+		}
+//Short Circuit right click kill
+		"tf_projectile_mechanicalarmor"
+		{
+				"dfile"	"HUD/d_images_community"
+				"dnegfile"	"HUD/dneg_images_community"
+				"x"		"0"
+				"y"		"64"
+				"width"		"63"
+				"height"	"32"
+		}
+//Flying Guillotine reflect kill
+		"cleaver_reflect"
+		{
+				"dfile"	"HUD/d_images_community"
+				"dnegfile"	"HUD/dneg_images_community"
+				"x"		"0"
+				"y"		"96"
+				"width"		"64"
+				"height"	"32"
+		}
+
+//Grappling Hook kill (Mannpower Mode weapon)
+		"tf_projectile_grapplinghook"
+		{
+				"dfile"	"HUD/d_images_community"
+				"dnegfile"	"HUD/dneg_images_community"
+				"x"		"128"
+				"y"		"0"
+				"width"		"113"
+				"height"	"32"
+		}
+
+//Cow Mangler reflect kill
+		"tf_projectile_energy_ball"
+		{
+				"dfile"	"HUD/d_images_community"
+				"dnegfile"	"HUD/dneg_images_community"
+				"x"		"128"
+				"y"		"96"
+				"width"		"63"
+				"height"	"32"
+		}
+//MVM Projectile Shield
+		"entity_medigun_shield"
+		{
+				"dfile"	"HUD/d_images_community"
+				"dnegfile"	"HUD/dneg_images_community"
+				"x"		"128"
+				"y"		"128"
+				"width"		"47"
+				"height"	"32"
+		}
+
 		"gas"
 		{
-				"dfile"	"HUD/d_images"
-				"dnegfile"	"HUD/dneg_images"
-				"x"		"263"
-				"y"		"256"
-				"width"		"64"
+				"dfile"	"HUD/d_images_community"
+				"dnegfile"	"HUD/dneg_images_community"
+				"x"		"128"
+				"y"		"32"
+				"width"		"63"
+				"height"	"32"
+		}
+
+		"sentrybuster"
+		{
+				"dfile"	"HUD/d_images_community"
+				"dnegfile"	"HUD/dneg_images_community"
+				"x"		"0"
+				"y"		"128"
+				"width"		"81"
+				"height"	"32"
+		}
+
+		"mech_reflect"
+		{
+				"dfile"	"HUD/d_images_community"
+				"dnegfile"	"HUD/dneg_images_community"
+				"x"		"128"
+				"y"		"64"
+				"width"		"63"
 				"height"	"32"
 		}
 	}

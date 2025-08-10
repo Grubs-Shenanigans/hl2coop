@@ -369,7 +369,11 @@ void CTFBotMissionSuicideBomber::Detonate( CTFBot *me )
 
 			int damage = MAX( victim->GetMaxHealth(), victim->GetHealth() );
 
+#ifdef BDSBASE
+			CTakeDamageInfo info( me, me, 4 * damage, DMG_BLAST, TF_DMG_CUSTOM_SENTRYBUSTER_DETONATE );
+#else
 			CTakeDamageInfo info( me, me, 4 * damage, DMG_BLAST, TF_DMG_CUSTOM_NONE );
+#endif
 			if ( tf_bot_suicide_bomb_friendly_fire.GetBool() )
 			{
 				info.SetForceFriendlyFire( true );

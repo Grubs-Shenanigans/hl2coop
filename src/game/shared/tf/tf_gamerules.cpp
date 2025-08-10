@@ -12944,6 +12944,10 @@ const char *CTFGameRules::GetKillingWeaponName( const CTakeDamageInfo &info, CTF
 	{
 		killer_weapon_name = "tf_weapon_taunt_trickshot";
 	}
+	else if (info.GetDamageCustom() == TF_DMG_CUSTOM_SENTRYBUSTER_DETONATE)
+	{
+		killer_weapon_name = "sentrybuster";
+	}
 #endif
 	else if ( info.GetDamageCustom() == TF_DMG_CUSTOM_THROWABLE ||
 			  info.GetDamageCustom() == TF_DMG_CUSTOM_THROWABLE_KILL )			// Throwables
@@ -13047,6 +13051,12 @@ const char *CTFGameRules::GetKillingWeaponName( const CTakeDamageInfo &info, CTF
 					{
 						killer_weapon_name = "rescue_ranger_reflect";
 					}
+#ifdef BDSBASE
+					else if (*iWeaponID == TF_WEAPON_MECHANICAL_ARM)
+					{
+						killer_weapon_name = "mech_reflect";
+					}
+#endif
 				}
 				else if ( *iWeaponID == TF_WEAPON_ROCKETLAUNCHER_DIRECTHIT )
 				{
@@ -13078,6 +13088,12 @@ const char *CTFGameRules::GetKillingWeaponName( const CTakeDamageInfo &info, CTF
 						{
 							killer_weapon_name = "loose_cannon_reflect";
 						}
+#ifdef BDSBASE
+						else if (*iWeaponID == TF_WEAPON_GRENADE_CLEAVER)
+						{
+							killer_weapon_name = "cleaver_reflect";
+						}
+#endif
 					}
 				}
 #ifdef BDSBASE
