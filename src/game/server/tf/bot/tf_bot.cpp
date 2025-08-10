@@ -28,6 +28,9 @@
 #include "tf_weapon_medigun.h"
 #include "func_respawnroom.h"
 #include "soundenvelope.h"
+#ifdef BDSBASE
+#include "tf_projectile_energy_ball.h"
+#endif
 
 #include "econ_entity_creation.h"
 
@@ -42,7 +45,9 @@ ConVar tf_bot_force_class( "tf_bot_force_class", "", FCVAR_GAMEDLL, "If set to a
 ConVar tf_bot_notice_gunfire_range( "tf_bot_notice_gunfire_range", "3000", FCVAR_GAMEDLL );
 ConVar tf_bot_notice_quiet_gunfire_range( "tf_bot_notice_quiet_gunfire_range", "500", FCVAR_GAMEDLL );
 ConVar tf_bot_sniper_personal_space_range( "tf_bot_sniper_personal_space_range", "1000", FCVAR_CHEAT, "Enemies beyond this range don't worry the Sniper" );
+#ifndef BDSBASE
 ConVar tf_bot_pyro_deflect_tolerance( "tf_bot_pyro_deflect_tolerance", "0.5", FCVAR_CHEAT );
+#endif
 ConVar tf_bot_keep_class_after_death( "tf_bot_keep_class_after_death", "0", FCVAR_GAMEDLL );
 ConVar tf_bot_prefix_name_with_difficulty( "tf_bot_prefix_name_with_difficulty", "0", FCVAR_GAMEDLL, "Append the skill level of the bot to the bot's name" );
 ConVar tf_bot_near_point_travel_distance( "tf_bot_near_point_travel_distance", "750", FCVAR_CHEAT, "If within this travel distance to the current point, bot is 'near' it" );
@@ -4424,6 +4429,77 @@ bool CTFBot::ShouldFireCompressionBlast( void )
 		if ( pObject->IsPlayer() )
 			continue;
 
+#ifdef BDSBASE
+		bool bSeesProjectile = false;
+
+		CTFBaseRocket* pBaseRocket = dynamic_cast<CTFBaseRocket*>(pObject);
+		if (pBaseRocket)
+		{
+			// is this something I want to deflect?
+			if (pBaseRocket->IsDeflectable())
+			{
+				bSeesProjectile = true;
+			}
+		}
+
+		if (!bSeesProjectile)
+		{
+			CTFGrenadePipebombProjectile* pBaseGrenade = dynamic_cast<CTFGrenadePipebombProjectile*>(pObject);
+			if (pBaseGrenade)
+			{
+				// is this something I want to deflect?
+				if (pBaseGrenade->IsDeflectable())
+				{
+					bSeesProjectile = true;
+				}
+			}
+		}
+
+		// we can't deflect it.
+		if (!bSeesProjectile)
+			continue;
+
+		if (bSeesProjectile)
+		{
+			// on hard or expert, we're not restricted to what projectiles we should reflect.
+			// on lower difficulties, only deflect rockets or energy balls.
+			if (!IsDifficulty(CTFBot::HARD) && !IsDifficulty(CTFBot::EXPERT))
+			{
+				bool bCanReflectThisProj = false;
+
+				CTFProjectile_Rocket* pRocket = dynamic_cast<CTFProjectile_Rocket*>(pObject);
+				if (pRocket)
+				{
+					bCanReflectThisProj = true;
+				}
+				else
+				{
+					CTFProjectile_EnergyBall* pBall = dynamic_cast<CTFProjectile_EnergyBall*>(pObject);
+					if (pBall)
+					{
+						bCanReflectThisProj = true;
+					}
+				}
+
+				if (!bCanReflectThisProj)
+					continue;
+			}
+
+			// is it headed right for me?
+			Vector vecThemUnitVel = pObject->GetAbsVelocity();
+			vecThemUnitVel.z = 0.0f;
+			vecThemUnitVel.NormalizeInPlace();
+
+			Vector horzForward(vecForward.x, vecForward.y, 0.0f);
+			horzForward.NormalizeInPlace();
+
+			if (DotProduct(horzForward, vecThemUnitVel) > 0)
+				continue;
+
+			// bounce it!
+			return true;
+		}
+#else
 		// is this something I want to deflect?
 		if ( !pObject->IsDeflectable() )
 			continue;
@@ -4448,6 +4524,7 @@ bool CTFBot::ShouldFireCompressionBlast( void )
 
 		// bounce it!
 		return true;
+#endif
 	}
 
 	return false;

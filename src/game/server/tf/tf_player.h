@@ -843,6 +843,9 @@ public:
 
 	void				ClearTauntAttack();
 	float				GetTauntAttackTime() const { return m_flTauntAttackTime; }
+#ifdef BDSBASE
+	bool				IsPerformingTauntAttack() const { return (m_iTauntAttack != TAUNTATK_NONE); }
+#endif
 
 	void				SetRPSResult( int iRPSResult ) { m_iTauntRPSResult = iRPSResult; }
 

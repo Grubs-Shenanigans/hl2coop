@@ -10199,8 +10199,12 @@ bool CTFPlayerShared::AddToSpyCloakMeter( float val, bool bForce )
 void CTFPlayerShared::StunPlayer(float flTime, float flReductionAmount, int iStunFlags, CTFPlayer* pAttacker)
 {
 #if defined(QUIVER_DLL)
-	// in quiver, disable most instances of stun unless we're in MvM.
-	if (!qf_allow_stun.GetBool() && (TFGameRules() && !TFGameRules()->IsMannVsMachineMode()))
+	// in quiver, disable most instances of stun unless we're in MvM or taunt killing.
+#ifdef GAME_DLL
+	if (!qf_allow_stun.GetBool() && ((TFGameRules() && !TFGameRules()->IsMannVsMachineMode()) && (pAttacker && !pAttacker->IsTaunting() && !pAttacker->IsPerformingTauntAttack()) ))
+#else
+	if (!qf_allow_stun.GetBool() && ((TFGameRules() && !TFGameRules()->IsMannVsMachineMode()) && (pAttacker && !pAttacker->IsTaunting())))
+#endif
 		return;
 #endif
 
