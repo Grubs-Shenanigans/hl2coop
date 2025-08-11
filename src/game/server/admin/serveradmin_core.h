@@ -11,7 +11,6 @@ struct CommandEntry
 {
     const char* moduleName;
     const char* chatCommand;
-    const char* consoleCommand;
     bool requiresArguments;
     const char* consoleMessage;
     const char* helpMessage;

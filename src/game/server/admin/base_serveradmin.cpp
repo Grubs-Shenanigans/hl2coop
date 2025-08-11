@@ -906,9 +906,9 @@ void CBase_Admin::CheckChatText( char *p, int bufsize )
 
 	p = p + 1;
 
-	FOR_EACH_VEC(g_pBaseAdmin->g_AdminCommands, i)
+	FOR_EACH_VEC(BaseAdmin()->GetCommands(), i)
 	{
-		const CommandEntry *entry = g_pBaseAdmin->g_AdminCommands[i];
+		const CommandEntry *entry = BaseAdmin()->GetCommands()[i];
 
 		size_t cmdLen = strlen(entry->chatCommand);
 		if (Q_strncmp(p, entry->chatCommand, cmdLen) == 0)
@@ -918,11 +918,11 @@ void CBase_Admin::CheckChatText( char *p, int bufsize )
 			if (entry->requiresArguments)
 			{
 				const char* args = p + cmdLen;
-				Q_snprintf(consoleCmd, sizeof(consoleCmd), "%s%s", entry->consoleCommand, args);
+				Q_snprintf(consoleCmd, sizeof(consoleCmd), "sa %s%s", entry->chatCommand, args);
 			}
 			else
 			{
-				Q_snprintf(consoleCmd, sizeof(consoleCmd), "%s", entry->consoleCommand);
+				Q_snprintf(consoleCmd, sizeof(consoleCmd), "sa %s", entry->chatCommand);
 			}
 
 			if (pPlayer)
@@ -1040,5 +1040,171 @@ void ToggleModule_ChangeCallback(IConVar* pConVar, char const* pOldString, float
 {
 	BaseAdmin()->ReloadCommands();
 }
+
+const char* PrintHelpStringForCommand(const char* cmd)
+{
+	FOR_EACH_VEC(BaseAdmin()->GetCommands(), i)
+	{
+		const CommandEntry* entry = BaseAdmin()->GetCommands()[i];
+
+		if (Q_strncmp(cmd, entry->chatCommand, strlen(entry->chatCommand)) == 0)
+		{
+			return UTIL_VarArgs("[%s] (Flags: %s) %s %s\n", entry->moduleName, entry->requiredFlags, entry->chatCommand, entry->helpMessage);
+		}
+	}
+
+	return "";
+}
+
+void PrintCommandHelpStrings(bool isServerConsole, CBasePlayer* pAdmin)
+{
+	const char* szTitle = "[Server Admin] Usage: sa <command> [arguments]\n==============================================\n";
+
+	if (isServerConsole)
+	{
+		Msg(szTitle);
+	}
+	else
+	{
+		if (pAdmin)
+		{
+			ClientPrint(pAdmin, HUD_PRINTCONSOLE, szTitle);
+		}
+	}
+
+	if (BaseAdmin()->GetCommands().IsEmpty())
+	{
+		const char* szError = "No commands found!\n";
+
+		if (isServerConsole)
+		{
+			Msg(szError);
+		}
+		else
+		{
+			if (pAdmin)
+			{
+				ClientPrint(pAdmin, HUD_PRINTCONSOLE, szError);
+			}
+		}
+		return;
+	}
+
+	FOR_EACH_VEC(BaseAdmin()->GetCommands(), i)
+	{
+		const CommandEntry* entry = BaseAdmin()->GetCommands()[i];
+
+		if (!isServerConsole)
+		{
+			if (pAdmin && !IsCommandAllowed(entry->chatCommand, false, pAdmin))
+				continue;
+		}
+
+		const char* szMsg = PrintHelpStringForCommand(entry->chatCommand);
+
+		if (isServerConsole)
+		{
+			Msg(szMsg);
+		}
+		else
+		{
+			if (pAdmin)
+			{
+				ClientPrint(pAdmin, HUD_PRINTCONSOLE, szMsg);
+			}
+		}
+	}
+}
+
+static void PrintAdminHelp(CBasePlayer* pPlayer = NULL, bool isServerConsole = false)
+{
+	if (isServerConsole)
+	{
+		PrintCommandHelpStrings(true, NULL);
+		return;
+	}
+
+	if (!pPlayer)
+		return;
+
+	PrintCommandHelpStrings(false, pPlayer);
+}
+
+static void AdminCommand(const CCommand& args)
+{
+	CBasePlayer* pPlayer = UTIL_GetCommandClient();
+
+	if (!g_bAdminSystem && engine->IsDedicatedServer())
+	{
+		if (UTIL_IsCommandIssuedByServerAdmin())
+		{
+			Msg("Admin system disabled by the -noadmin launch command\nRemove launch command and restart the server\n");
+		}
+		else if (pPlayer)
+		{
+			ClientPrint(pPlayer, HUD_PRINTTALK, "Admin system disabled by the -noadmin launch command\n");
+		}
+		return;
+	}
+
+	AdminReplySource replySource = GetCmdReplySource(pPlayer);
+
+	// Handle "sa" with no arguments (print help menu)
+	if (args.ArgC() < 2)
+	{
+		if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
+		{
+			PrintAdminHelp(NULL, true);
+		}
+		else if (pPlayer)
+		{
+			PrintAdminHelp(pPlayer);
+		}
+		return;
+	}
+
+	// Extract the subcommand
+	const char* subCommand = args.Arg(1);
+
+	AdminCommandFunction commandFunc = FindAdminCommand(subCommand);
+	if (!commandFunc)
+	{
+		if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
+		{
+			Msg("[Server Admin] Unknown command: %s\n", subCommand);
+			PrintAdminHelp(NULL, true);
+		}
+		else if (pPlayer)
+		{
+			AdminReply(replySource, pPlayer, "[Server Admin] Unknown command: %s", subCommand);
+			PrintAdminHelp(pPlayer);
+		}
+		return;
+	}
+
+	// Server console can run anything without permission checks
+	if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
+	{
+		commandFunc(args);
+		return;
+	}
+
+	bool isAllowed = false;
+
+	if (pPlayer)
+	{
+		isAllowed = IsCommandAllowed(subCommand, false, pPlayer);
+	}
+
+	if (!isAllowed)
+	{
+		AdminReply(replySource, pPlayer, "You do not have access to this command.");
+		return;
+	}
+
+	commandFunc(args);
+}
+
+ConCommand sa("sa", AdminCommand, "Admin menu.", FCVAR_SERVER_CAN_EXECUTE | FCVAR_CLIENTCMD_CAN_EXECUTE);
 
 #endif

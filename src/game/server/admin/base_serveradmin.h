@@ -174,12 +174,13 @@ extern bool IsSteamIDAdmin(const char* steamID);
 extern AdminCommandFunction FindAdminCommand(const char* cmd);
 extern bool IsCommandAllowed(const char* cmd, bool isServerConsole, CBasePlayer* pAdmin);
 extern void PrintCommandHelpStrings(bool isServerConsole, CBasePlayer* pAdmin);
+const char* PrintHelpStringForCommand(const char* cmd);
 
 // convars should use this callback to function!!!
 extern void ToggleModule_ChangeCallback(IConVar* pConVar, char const* pOldString, float flOldValue);
 
-#define REGISTER_ADMIN_COMMAND(moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func)                     \
-    BaseAdmin()->AddCommand(new CommandEntry{ moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func });
+#define REGISTER_ADMIN_COMMAND(moduleName, chatName, usesArguments, consoleText, helpString, flags, func)                     \
+    BaseAdmin()->AddCommand(new CommandEntry{ moduleName, chatName, usesArguments, consoleText, helpString, flags, func });
 
 #define REGISTER_ADMIN_COMMAND_TOGGLE(toggleCvarName, moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func)                    \
     {ConVarRef toggleCvar( toggleCvarName );                                                                                                                      \

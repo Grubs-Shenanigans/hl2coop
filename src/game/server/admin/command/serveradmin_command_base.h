@@ -299,83 +299,9 @@ static void ReloadAdminsCommand( const CCommand &args )
 	AdminReply( replySource, pPlayer, "Admins list has been reloaded." );
 }
 
-void PrintCommandHelpStrings(bool isServerConsole, CBasePlayer* pAdmin)
-{
-	const char* szTitle = "[Server Admin] Usage: sa <command> [arguments]\n==============================================\n";
-
-	if (isServerConsole)
-	{
-		Msg(szTitle);
-	}
-	else
-	{
-		if (pAdmin)
-		{
-			ClientPrint(pAdmin, HUD_PRINTCONSOLE, szTitle);
-		}
-	}
-
-	if (BaseAdmin()->GetCommands().IsEmpty())
-	{
-		const char* szError = "No commands found!\n";
-
-		if (isServerConsole)
-		{
-			Msg(szError);
-		}
-		else
-		{
-			if (pAdmin)
-			{
-				ClientPrint(pAdmin, HUD_PRINTCONSOLE, szError);
-			}
-		}
-		return;
-	}
-
-	FOR_EACH_VEC(BaseAdmin()->GetCommands(), i)
-	{
-		const CommandEntry *entry = BaseAdmin()->GetCommands()[i];
-
-		if (!isServerConsole)
-		{
-			if (pAdmin && !IsCommandAllowed(entry->chatCommand, false, pAdmin))
-				continue;
-		}
-
-		const char* szMsg = UTIL_VarArgs("[%s] (Flags: %s) %s %s\n", entry->moduleName, entry->requiredFlags, entry->chatCommand, entry->helpMessage);
-
-		if (isServerConsole)
-		{
-			Msg(szMsg);
-		}
-		else
-		{
-			if (pAdmin)
-			{
-				ClientPrint(pAdmin, HUD_PRINTCONSOLE, szMsg);
-			}
-		}
-	}
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: Help commands
 //-----------------------------------------------------------------------------
-static void PrintAdminHelp( CBasePlayer *pPlayer = NULL, bool isServerConsole = false )
-{
-	if ( isServerConsole )
-	{
-		PrintCommandHelpStrings(true, NULL);
-		return;
-	}
-
-	if ( !pPlayer ) 
-		return;
-
-	PrintCommandHelpStrings(false, pPlayer);
-}
-
 static void VersionCommand(const CCommand& args)
 {
 	CBasePlayer* pPlayer = UTIL_GetCommandClient();
@@ -2425,113 +2351,35 @@ static void UnbanPlayerCommand(const CCommand& args)
 	}
 }
 
-static void AdminCommand(const CCommand& args)
-{
-	CBasePlayer* pPlayer = UTIL_GetCommandClient();
-
-	if (!g_bAdminSystem && engine->IsDedicatedServer())
-	{
-		if (UTIL_IsCommandIssuedByServerAdmin())
-		{
-			Msg("Admin system disabled by the -noadmin launch command\nRemove launch command and restart the server\n");
-		}
-		else if (pPlayer)
-		{
-			ClientPrint(pPlayer, HUD_PRINTTALK, "Admin system disabled by the -noadmin launch command\n");
-		}
-		return;
-	}
-
-	AdminReplySource replySource = GetCmdReplySource(pPlayer);
-
-	// Handle "sa" with no arguments (print help menu)
-	if (args.ArgC() < 2)
-	{
-		if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
-		{
-			PrintAdminHelp(NULL, true);
-		}
-		else if (pPlayer)
-		{
-			PrintAdminHelp(pPlayer);
-		}
-		return;
-	}
-
-	// Extract the subcommand
-	const char* subCommand = args.Arg(1);
-
-	AdminCommandFunction commandFunc = FindAdminCommand(subCommand);
-	if (!commandFunc)
-	{
-		if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
-		{
-			Msg("[Server Admin] Unknown command: %s\n", subCommand);
-			PrintAdminHelp(NULL, true);
-		}
-		else if (pPlayer)
-		{
-			AdminReply(replySource, pPlayer, "[Server Admin] Unknown command: %s", subCommand);
-			PrintAdminHelp(pPlayer);
-		}
-		return;
-	}
-
-	// Server console can run anything without permission checks
-	if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
-	{
-		commandFunc(args);
-		return;
-	}
-
-	bool isAllowed = false;
-
-	if (pPlayer)
-	{
-		isAllowed = IsCommandAllowed(subCommand, false, pPlayer);
-	}
-
-	if (!isAllowed)
-	{
-		AdminReply(replySource, pPlayer, "You do not have access to this command.");
-		return;
-	}
-
-	commandFunc(args);
-}
-
-ConCommand sa("sa", AdminCommand, "Admin menu.", FCVAR_SERVER_CAN_EXECUTE | FCVAR_CLIENTCMD_CAN_EXECUTE);
-
 #define COMMAND_MODULE_NAME "Base Commands"
 
 static void LoadBaseCommandModule()
 {
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "say", "sa say", true, NULL, "<message> -> Sends an admin formatted message to all players in the chat", "j", AdminSay);
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "csay", "sa csay", true, NULL, "<message> -> Sends a centered message to all players", "j", AdminCSay );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "chat", "sa chat", true, NULL, "<message> -> Sends a chat message to connected admins only", "j", AdminChat );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "psay", "sa psay", true, NULL, "<name|#userID> <message> -> Sends a private message to a player", "j", AdminPSay );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "ban", "sa ban", true, NULL, "<name|#userID> <time> [reason] -> Ban a player", "d", BanPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "kick", "sa kick", true, NULL, "<name|#userID> [reason] -> Kick a player", "c", KickPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "addban", "sa addban", true, NULL, "<time> <SteamID3> [reason] -> Add a manual ban to banned_user.cfg", "m", AddBanCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "unban", "sa unban", true, NULL, "<SteamID3> -> Remove a banned SteamID from banned_user.cfg", "e", UnbanPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "slay", "sa slay", true, NULL, "<name|#userID> -> Slay a player", "f", SlayPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "slap", "sa slap", true, NULL, "<name|#userID> [amount] -> Slap a player with damage if defined", "f", SlapPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "gag", "sa gag", true, NULL, "<name|#userID> -> Gag a player", "j", GagPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "ungag", "sa ungag", true, NULL, "<name|#userID> -> Ungag a player", "j", UnGagPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "mute", "sa mute", true, NULL, "<name|#userID> -> Mute a player", "j", MutePlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "unmute", "sa unmute", true, NULL, "<name|#userID> -> Unmute a player", "j", UnMutePlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "team", "sa team", true, NULL, "<name|#userID> <team index> -> Move a player to another team", "f", TeamPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "bring", "sa bring", true, NULL, "<name|#userID> -> Teleport a player to where an admin is aiming", "f", BringPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "goto", "sa goto", true, NULL, "<name|#userID> -> Teleport yourself to a player", "f", GotoPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "map", "sa map", true, NULL, "<map name> -> Change the map", "g", MapCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "noclip", "sa noclip", true, NULL, "<name|#userID> -> Toggle noclip mode for a player", "f", NoClipPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "cvar", "sa cvar", true, NULL, "<cvar name> [new value|reset] -> Modify or reset any cvar's value", "h", CVarCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "exec", "sa exec", true, NULL, "<filename> -> Executes a configuration file", "i", ExecFileCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "rcon", "sa rcon", true, NULL, "<command> [value] -> Send a command as if it was written in the server console", "m", RconCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "reloadadmins", "sa reloadadmins", false, NULL, "-> Refresh the admin cache", "i", ReloadAdminsCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "help", "sa help", false, "Check your console for output.\n", "-> Provide instructions on how to use the admin interface", "b", HelpPlayerCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "version", "sa version", false, "Check your console for output.\n", "-> Display version", "a", VersionCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "sa", "sa", false, "Check your console for output.\n", "-> List commands", "a", NULL );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "say", true, NULL, "<message> -> Sends an admin formatted message to all players in the chat", "j", AdminSay);
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "csay", true, NULL, "<message> -> Sends a centered message to all players", "j", AdminCSay );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "chat", true, NULL, "<message> -> Sends a chat message to connected admins only", "j", AdminChat );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "psay", true, NULL, "<name|#userID> <message> -> Sends a private message to a player", "j", AdminPSay );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "ban", true, NULL, "<name|#userID> <time> [reason] -> Ban a player", "d", BanPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "kick", true, NULL, "<name|#userID> [reason] -> Kick a player", "c", KickPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "addban", true, NULL, "<time> <SteamID3> [reason] -> Add a manual ban to banned_user.cfg", "m", AddBanCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "unban", true, NULL, "<SteamID3> -> Remove a banned SteamID from banned_user.cfg", "e", UnbanPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "slay", true, NULL, "<name|#userID> -> Slay a player", "f", SlayPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "slap", true, NULL, "<name|#userID> [amount] -> Slap a player with damage if defined", "f", SlapPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "gag", true, NULL, "<name|#userID> -> Gag a player", "j", GagPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "ungag", true, NULL, "<name|#userID> -> Ungag a player", "j", UnGagPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "mute", true, NULL, "<name|#userID> -> Mute a player", "j", MutePlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "unmute", true, NULL, "<name|#userID> -> Unmute a player", "j", UnMutePlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "team", true, NULL, "<name|#userID> <team index> -> Move a player to another team", "f", TeamPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "bring", true, NULL, "<name|#userID> -> Teleport a player to where an admin is aiming", "f", BringPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "goto", true, NULL, "<name|#userID> -> Teleport yourself to a player", "f", GotoPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "map", true, NULL, "<map name> -> Change the map", "g", MapCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "noclip", true, NULL, "<name|#userID> -> Toggle noclip mode for a player", "f", NoClipPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "cvar", true, NULL, "<cvar name> [new value|reset] -> Modify or reset any cvar's value", "h", CVarCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "exec", true, NULL, "<filename> -> Executes a configuration file", "i", ExecFileCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "rcon", true, NULL, "<command> [value] -> Send a command as if it was written in the server console", "m", RconCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "reloadadmins", false, NULL, "-> Refresh the admin cache", "i", ReloadAdminsCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "help", false, "Check your console for output.\n", "-> Provide instructions on how to use the admin interface", "b", HelpPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "version", false, "Check your console for output.\n", "-> Display version", "a", VersionCommand );
 }
 
 #endif
