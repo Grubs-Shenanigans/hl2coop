@@ -563,4 +563,3 @@ game/*/ServerConfig.vdf
 game/*/stats.txt
 game/*/textwindow_temp.html
 game/*/voice_ban.dt
-game/*.exe

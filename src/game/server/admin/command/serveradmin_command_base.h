@@ -1853,13 +1853,13 @@ static void SlayPlayerCommand(const CCommand& args)
 		ExecuteSlay(pTarget);
 
 		logDetails.Format("(Reason: %s)", slayReason);
-		CBase_Admin::LogAction(pPlayer, pTarget, "slew", logDetails.Get());
+		CBase_Admin::LogAction(pPlayer, pTarget, "slayed", logDetails.Get());
 
-		PrintActionMessage(pPlayer, replySource, "slew", pTarget->GetPlayerName(), NULL, slayReason);
+		PrintActionMessage(pPlayer, replySource, "slayed", pTarget->GetPlayerName(), NULL, slayReason);
 
 		if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
 		{
-			Msg("Slew player %s (Reason: %s)\n", pTarget->GetPlayerName(), slayReason);
+			Msg("Slayed player %s (Reason: %s)\n", pTarget->GetPlayerName(), slayReason);
 		}
 	}
 	else
@@ -1874,14 +1874,14 @@ static void SlayPlayerCommand(const CCommand& args)
 			}
 		}
 
-		BuildGroupTargetMessage(partialName, pPlayer, "slew", NULL, logDetails, chatMessage, true, slayReason);
+		BuildGroupTargetMessage(partialName, pPlayer, "slayed", NULL, logDetails, chatMessage, true, slayReason);
 
-		CBase_Admin::LogAction(pPlayer, NULL, "slew", logDetails.Get(), partialName + 1);
+		CBase_Admin::LogAction(pPlayer, NULL, "slayed", logDetails.Get(), partialName + 1);
 		UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs("%s.\n", chatMessage.Get()));
 
 		if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
 		{
-			Msg("Slew %d player%s (Reason: %s)\n",
+			Msg("Slayed %d player%s (Reason: %s)\n",
 				slainCount, slainCount == 1 ? "" : "s", slayReason);
 		}
 	}
@@ -2351,6 +2351,166 @@ static void UnbanPlayerCommand(const CCommand& args)
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Toggle Buddha
+//-----------------------------------------------------------------------------
+static void ToggleBuddhaForPlayer(CBasePlayer* pTarget)
+{
+	if (pTarget->m_debugOverlays & OVERLAY_BUDDHA_MODE)
+	{
+		pTarget->m_debugOverlays &= ~OVERLAY_BUDDHA_MODE;
+		Msg("Buddha Mode off...\n");
+	}
+	else
+	{
+		pTarget->m_debugOverlays |= OVERLAY_BUDDHA_MODE;
+		Msg("Buddha Mode on...\n");
+	}
+}
+
+static void BuddhaPlayerCommand(const CCommand& args)
+{
+	CBasePlayer* pAdmin = UTIL_GetCommandClient();
+	AdminReplySource replySource = GetCmdReplySource(pAdmin);
+
+	if (!pAdmin && replySource != ADMIN_REPLY_SERVER_CONSOLE)
+	{
+		Msg("Command must be issued by a player or the server console.\n");
+		return;
+	}
+
+	if (args.ArgC() < 3)
+	{
+		AdminReply(replySource, pAdmin, "Usage: sa buddha <name|#userID>");
+		return;
+	}
+
+	const char* partialName = args.Arg(2);
+	CUtlVector<CBasePlayer*> targetPlayers;
+	CBasePlayer* pTarget = NULL;
+
+	if (!ParsePlayerTargets(pAdmin, replySource, partialName, targetPlayers, pTarget, true))
+		return;
+
+	if (pTarget)
+	{
+		ToggleBuddhaForPlayer(pTarget);
+
+		CBase_Admin::LogAction(pAdmin, pTarget, "toggled buddha for", "");
+
+		if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
+		{
+			Msg("Console toggled buddha for player %s.\n", pTarget->GetPlayerName());
+			UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs(
+				"Console toggled buddha for %s\n",
+				pTarget->GetPlayerName()
+			));
+		}
+		else
+		{
+			UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs(
+				"Admin %s toggled buddha for %s\n",
+				pAdmin ? pAdmin->GetPlayerName() : "Console", pTarget->GetPlayerName()
+			));
+		}
+
+		return;
+	}
+
+	for (int i = 0; i < targetPlayers.Count(); i++)
+	{
+		if (targetPlayers[i]->IsAlive())
+		{
+			ToggleBuddhaForPlayer(targetPlayers[i]);
+		}
+	}
+
+	CUtlString logDetails, chatMessage;
+	BuildGroupTargetMessage(partialName, pAdmin, "toggled buddha for", NULL, logDetails, chatMessage, false, NULL);
+
+	CBase_Admin::LogAction(pAdmin, NULL, "toggled buddha for", logDetails.Get());
+
+	UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs("%s.\n", chatMessage.Get()));
+
+	if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
+	{
+		Msg("Toggled buddha for %d player%s\n", targetPlayers.Count(), targetPlayers.Count() == 1 ? "" : "s");
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Toggle God
+//-----------------------------------------------------------------------------
+static void GodPlayerCommand(const CCommand& args)
+{
+	CBasePlayer* pAdmin = UTIL_GetCommandClient();
+	AdminReplySource replySource = GetCmdReplySource(pAdmin);
+
+	if (!pAdmin && replySource != ADMIN_REPLY_SERVER_CONSOLE)
+	{
+		Msg("Command must be issued by a player or the server console.\n");
+		return;
+	}
+
+	if (args.ArgC() < 3)
+	{
+		AdminReply(replySource, pAdmin, "Usage: sa god <name|#userID>");
+		return;
+	}
+
+	const char* partialName = args.Arg(2);
+	CUtlVector<CBasePlayer*> targetPlayers;
+	CBasePlayer* pTarget = NULL;
+
+	if (!ParsePlayerTargets(pAdmin, replySource, partialName, targetPlayers, pTarget, true))
+		return;
+
+	if (pTarget)
+	{
+		pTarget->ToggleFlag(FL_GODMODE);
+
+		CBase_Admin::LogAction(pAdmin, pTarget, "toggled god for", "");
+
+		if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
+		{
+			Msg("Console toggled god for player %s.\n", pTarget->GetPlayerName());
+			UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs(
+				"Console toggled god for %s\n",
+				pTarget->GetPlayerName()
+			));
+		}
+		else
+		{
+			UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs(
+				"Admin %s toggled god for %s\n",
+				pAdmin ? pAdmin->GetPlayerName() : "Console", pTarget->GetPlayerName()
+			));
+		}
+
+		return;
+	}
+
+	for (int i = 0; i < targetPlayers.Count(); i++)
+	{
+		if (targetPlayers[i]->IsAlive())
+		{
+			targetPlayers[i]->ToggleFlag(FL_GODMODE);
+		}
+	}
+
+	CUtlString logDetails, chatMessage;
+	BuildGroupTargetMessage(partialName, pAdmin, "toggled god for", NULL, logDetails, chatMessage, false, NULL);
+
+	CBase_Admin::LogAction(pAdmin, NULL, "toggled god for", logDetails.Get());
+
+	UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs("%s.\n", chatMessage.Get()));
+
+	if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
+	{
+		Msg("Toggled god for %d player%s\n", targetPlayers.Count(), targetPlayers.Count() == 1 ? "" : "s");
+	}
+}
+
 #define COMMAND_MODULE_NAME "Base Commands"
 
 static void LoadBaseCommandModule()
@@ -2374,6 +2534,8 @@ static void LoadBaseCommandModule()
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "goto", true, NULL, "<name|#userID> -> Teleport yourself to a player", "f", GotoPlayerCommand );
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "map", true, NULL, "<map name> -> Change the map", "g", MapCommand );
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "noclip", true, NULL, "<name|#userID> -> Toggle noclip mode for a player", "f", NoClipPlayerCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "buddha", true, NULL, "<name|#userID> -> Toggle buddha mode for a player", "f", BuddhaPlayerCommand);
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "god", true, NULL, "<name|#userID> -> Toggle god mode for a player", "f", GodPlayerCommand);
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "cvar", true, NULL, "<cvar name> [new value|reset] -> Modify or reset any cvar's value", "h", CVarCommand );
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "exec", true, NULL, "<filename> -> Executes a configuration file", "i", ExecFileCommand );
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "rcon", true, NULL, "<command> [value] -> Send a command as if it was written in the server console", "m", RconCommand );
