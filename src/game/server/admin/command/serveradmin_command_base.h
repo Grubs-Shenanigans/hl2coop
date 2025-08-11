@@ -2511,6 +2511,71 @@ static void GodPlayerCommand(const CCommand& args)
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Execute VScripts
+//-----------------------------------------------------------------------------
+static void ExecVScriptCommand(const CCommand& args)
+{
+	CBasePlayer* pAdmin = UTIL_GetCommandClient();
+	AdminReplySource replySource = GetCmdReplySource(pAdmin);
+
+	if (!pAdmin && replySource != ADMIN_REPLY_SERVER_CONSOLE)
+	{
+		Msg("Command must be issued by a player or the server console.\n");
+		return;
+	}
+
+	if (args.ArgC() < 3)
+	{
+		AdminReply(replySource, pAdmin, "Usage: sa vscript <filename>");
+		return;
+	}
+
+	const char* inputFilename = args.Arg(2);
+
+	// Make the .cfg extension optional but if server ops add it, 
+	// then take it into account to avoid a double extension
+	char filename[MAX_PATH];
+	if (!Q_stristr(inputFilename, ".nut"))
+	{
+		Q_snprintf(filename, sizeof(filename), "%s.nut", inputFilename);
+	}
+	else
+	{
+		Q_strncpy(filename, inputFilename, sizeof(filename));
+	}
+
+	char fullPath[MAX_PATH];
+	Q_snprintf(fullPath, sizeof(fullPath), "scripts/vscripts/%s", filename);
+
+	if (!filesystem->FileExists(fullPath))
+	{
+		AdminReply(replySource, pAdmin, UTIL_VarArgs("VScript file '%s' not found in scripts/vscripts folder.", filename));
+	}
+
+	engine->ServerCommand(UTIL_VarArgs("script_execute %s\n", filename));
+
+	CBase_Admin::LogAction(
+		pAdmin,
+		NULL,
+		"executed vscript file",
+		filename
+	);
+
+	CUtlString message;
+	if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
+	{
+		Msg("Executing vscript file: %s\n", filename);
+	}
+	else
+	{
+		message.Format("Admin %s executed vscript file: %s",
+			pAdmin ? pAdmin->GetPlayerName() : "Console", filename);
+
+		UTIL_ClientPrintAll(HUD_PRINTTALK, message.Get());
+	}
+}
+
 #define COMMAND_MODULE_NAME "Base Commands"
 
 static void LoadBaseCommandModule()
@@ -2538,6 +2603,7 @@ static void LoadBaseCommandModule()
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "god", true, NULL, "<name|#userID> -> Toggle god mode for a player", "f", GodPlayerCommand);
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "cvar", true, NULL, "<cvar name> [new value|reset] -> Modify or reset any cvar's value", "h", CVarCommand );
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "exec", true, NULL, "<filename> -> Executes a configuration file", "i", ExecFileCommand );
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "vscript", true, NULL, "<filename> -> Executes a vscript file or code", "i", ExecVScriptCommand);
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "rcon", true, NULL, "<command> [value] -> Send a command as if it was written in the server console", "m", RconCommand );
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "reloadadmins", false, NULL, "-> Refresh the admin cache", "i", ReloadAdminsCommand );
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "help", false, "Check your console for output.\n", "-> Provide instructions on how to use the admin interface", "b", HelpPlayerCommand );
