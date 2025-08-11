@@ -175,16 +175,17 @@ extern AdminCommandFunction FindAdminCommand(const char* cmd);
 extern bool IsCommandAllowed(const char* cmd, bool isServerConsole, CBasePlayer* pAdmin);
 extern void PrintCommandHelpStrings(bool isServerConsole, CBasePlayer* pAdmin);
 
+// convars should use this callback to function!!!
 extern void ToggleModule_ChangeCallback(IConVar* pConVar, char const* pOldString, float flOldValue);
 
-#define CONVAR_MODULE_TOGGLE(name, defaultVal, flags, helpString)                     \
-    ConVar moduleToggle(name, defaultVal, flags, helpString, ToggleModule_ChangeCallback);
+#define REGISTER_ADMIN_COMMAND(moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func)                     \
+    BaseAdmin()->AddCommand(new CommandEntry{ moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func });
 
-#define REGISTER_ADMIN_COMMAND(toggleCvarName, moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func)                     \
-    {ConVarRef toggleCvar( toggleCvarName ); \
-    if (toggleCvar.GetBool()) \
-    {                          \
-        BaseAdmin()->AddCommand(new CommandEntry{ moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func });                \
+#define REGISTER_ADMIN_COMMAND_TOGGLE(toggleCvarName, moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func)                    \
+    {ConVarRef toggleCvar( toggleCvarName );                                                                                                                      \
+    if (toggleCvar.GetBool())                                                                                                                                      \
+    {                                                                                                                                                               \
+        REGISTER_ADMIN_COMMAND(moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func);                                              \
     }}
 #endif
 
