@@ -641,7 +641,11 @@ public:
 
 	const char *GetLastKnownPlaceName( void ) const	{ return m_szLastPlaceName; }	// return the last nav place name the player occupied
 
+#ifdef BDSBASE
+	virtual void			CheckChatText(char* p, int bufsize);
+#else
 	virtual void			CheckChatText( char *p, int bufsize ) {}
+#endif
 
 	virtual void			CreateRagdollEntity( void ) { return; }
 
@@ -768,6 +772,9 @@ public:
 	void	SetLastUserCommand( const CUserCmd &cmd );
 	const CUserCmd *GetLastUserCommand( void );
 	
+#ifdef BDSBASE
+	bool IsPlayerBot() const;
+#endif
 	virtual bool IsBot() const;		// IMPORTANT: This returns true for ANY type of bot. If your game uses different, incompatible types of bots check your specific bot type before casting
 	virtual bool IsBotOfType( int botType ) const;	// return true if this player is a bot of the specific type (zero is invalid)
 	virtual int GetBotType( void ) const;			// return a unique int representing the type of bot instance this is
@@ -856,6 +863,15 @@ public:
 #ifdef BDSBASE
 	float GetLadderCooldownTime() const { return m_flLadderCooldownTime; }
 	void SetLadderCooldownTime(float cooldownTime) { m_flLadderCooldownTime = cooldownTime; }
+
+	bool IsGagged() const { return m_bIsGagged; }
+	void SetGagged(bool gagged) { m_bIsGagged = gagged; }
+	bool IsMuted() const { return m_bIsMuted; }
+	void SetMuted(bool muted) { m_bIsMuted = muted; }
+	void SetLastCommandWasFromChat(bool enabled) { m_bLastCommandWasFromChat = enabled; }
+	bool WasCommandUsedFromChat() { return m_bLastCommandWasFromChat; }
+	void SetChatCommandResetThink();
+	void ChatCommandResetThink();
 #endif
 
 private:
@@ -880,6 +896,11 @@ private:
 	float m_flChatPenaltyMultiplier;
 	float m_flLastPenaltyDecayTime;
 	int					iDamageTime;
+
+	// Gagged and muted
+	bool m_bIsGagged;
+	bool m_bIsMuted;
+	bool m_bLastCommandWasFromChat;
 #endif
 
 public:

@@ -1948,6 +1948,10 @@ void CHL2MP_Player::SetReady( bool bReady )
 
 void CHL2MP_Player::CheckChatText( char *p, int bufsize )
 {
+#ifdef BDSBASE
+	BaseClass::CheckChatText(p, bufsize);
+#endif
+
 	//Look for escape sequences and replace
 
 	char *buf = new char[bufsize];

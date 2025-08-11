@@ -69,6 +69,9 @@
 #include "dt_utlvector_send.h"
 #include "vote_controller.h"
 #include "ai_speech.h"
+#ifdef BDSBASE
+#include "admin/base_serveradmin.h"
+#endif
 
 #if defined USES_ECON_ITEMS
 #include "econ_wearable.h"
@@ -9234,6 +9237,21 @@ CBaseEntity *CBasePlayer::DoubleCheckUseNPC( CBaseEntity *pNPC, const Vector &ve
 	return pNPC;
 }
 
+#ifdef BDSBASE
+// because IsBot() && IsFakeClient() just don't seem to work with HL2MP bots??
+bool CBasePlayer::IsPlayerBot() const
+{
+	if (IsFakeClient())
+		return true;
+
+	if (IsNextBot())
+		return true;
+
+	const char* steamID = engine->GetPlayerNetworkIDString(edict());
+
+	return (steamID && Q_strcmp(steamID, "BOT") == 0);
+}
+#endif
 
 bool CBasePlayer::IsBot() const
 {
@@ -10146,3 +10164,26 @@ void* SendProxy_SendNonLocalDataTable( const SendProp *pProp, const void *pStruc
 }
 REGISTER_SEND_PROXY_NON_MODIFIED_POINTER( SendProxy_SendNonLocalDataTable );
 
+#ifdef BDSBASE
+// Peter: This is here for the server admin stuff. 
+// We are doing this because using a chat command goes through `sa`, then calls `sa slap`, 
+// but between those two calls, the get reply source is reset so it ends up printing 
+// to console rather than to chat when the command is typed in the chat. 
+// Therefore this timer below gives enough time for the chat text to be printed. 
+// There may be a better way, but this will do it for now.
+
+void CBasePlayer::SetChatCommandResetThink()
+{
+	SetContextThink(&CBasePlayer::ChatCommandResetThink, gpGlobals->curtime + 0.05f, "ChatCommandResetThink");
+}
+
+void CBasePlayer::ChatCommandResetThink()
+{
+	SetLastCommandWasFromChat(false);
+}
+
+void CBasePlayer::CheckChatText(char* p, int bufsize)
+{
+	CBase_Admin::CheckChatText(p, bufsize);
+}
+#endif

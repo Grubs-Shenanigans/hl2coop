@@ -95,6 +95,8 @@
 #ifdef HL2MP
 #include "hl2mp/weapon_physcannon.h"
 #endif
+
+#include "admin/base_serveradmin.h"
 #endif
 
 #ifdef TF_DLL
@@ -985,6 +987,13 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 		pItemSchema->BInitFromDelayedBuffer();
 	}
 #endif // USES_ECON_ITEMS
+
+#ifdef BDSBASE
+	if (!background)
+	{
+		CBase_Admin::InitAdminSystem();
+	}
+#endif
 
 	ResetWindspeed();
 	UpdateChapterRestrictions( pMapName );

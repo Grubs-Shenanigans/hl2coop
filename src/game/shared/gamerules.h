@@ -410,6 +410,15 @@ public:
 
 	virtual void ProcessVerboseLogOutput( void ){}
 
+#ifdef BDSBASE
+	void SetMapChangeOnGoing(bool enabled) { bMapChangeOnGoing = enabled; }
+	void SetMapChange(bool enabled) { bMapChange = enabled; }
+	bool IsMapChangeOnGoing() const { return bMapChangeOnGoing; }
+	bool IsMapChange() const { return bMapChange; }
+	void SetScheduledMapName(const char* mapName) { Q_strncpy(m_scheduledMapName, mapName, sizeof(m_scheduledMapName)); }
+	void HandleMapChange();
+#endif
+
 #endif
 
 	virtual const char *GetGameTypeName( void ){ return NULL; }
@@ -441,6 +450,13 @@ protected:
 #ifndef CLIENT_DLL
 private:
 	float m_flNextVerboseLogOutput;
+
+#ifdef BDSBASE
+	bool bMapChangeOnGoing;
+	bool bMapChange;
+	float m_flMapChangeTime;
+	char m_scheduledMapName[64];  // The map name to change to
+#endif
 #endif // CLIENT_DLL
 };
 
