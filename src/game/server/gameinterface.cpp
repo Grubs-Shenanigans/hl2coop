@@ -989,7 +989,8 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 #endif // USES_ECON_ITEMS
 
 #ifdef BDSBASE
-	if (!background)
+	// admin system is for MP games only.
+	if (!background && (gpGlobals->maxClients > 1))
 	{
 		CBase_Admin::InitAdminSystem();
 	}

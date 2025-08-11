@@ -8,10 +8,12 @@
 #include "fmtstr.h"
 
 //MODULES
-#include "serveradmin_command_base.h"
+#include "serveradmin_register.h"
 
 // always comes last
 #include "tier0/memdbgon.h"
+
+#ifdef BDSBASE
 
 CBase_Admin *g_pBaseAdmin = NULL;
 bool g_bAdminSystem = false;
@@ -91,7 +93,7 @@ CBase_Admin::CBase_Admin()
 	m_steamID = NULL;
 	m_permissions = NULL;
 
-	InitAdminCommands();
+	RegisterCommands();
 }
 
 CBase_Admin::~CBase_Admin()
@@ -283,6 +285,8 @@ bool IsSteamIDAdmin( const char *steamID )
 	return false;
 }
 
+//ConVar sa_listenserverhostimmune("sa_listenserverhostimmune", "1", FCVAR_DEVELOPMENTONLY);
+
 //-----------------------------------------------------------------------------
 // Purpose: Check if a player has admin permissions
 //-----------------------------------------------------------------------------
@@ -291,7 +295,7 @@ bool CBase_Admin::IsPlayerAdmin( CBasePlayer *pPlayer, const char *requiredFlags
 	if ( !pPlayer )
 		return false;
 
-	if ( !engine->IsDedicatedServer() && pPlayer == UTIL_GetListenServerHost() )
+	if (!engine->IsDedicatedServer() && pPlayer == UTIL_GetListenServerHost())
 	{
 		// We only need to see this once
 		if ( !bIsListenServerMsg )
@@ -470,6 +474,8 @@ int CBase_Admin::GetRedNumber()
 	return TEAM_REBELS;
 #elif TF_DLL
 	return TF_TEAM_RED;
+#else
+	return TEAM_UNASSIGNED;
 #endif
 }
 
@@ -479,6 +485,8 @@ int CBase_Admin::GetBlueNumber()
 	return TEAM_COMBINE;
 #elif TF_DLL
 	return TF_TEAM_BLUE;
+#else
+	return TEAM_UNASSIGNED;
 #endif
 }
 
@@ -755,13 +763,13 @@ bool CBase_Admin::FindSpecialTargetGroup( const char *targetSpecifier )
 //-----------------------------------------------------------------------------
 AdminCommandFunction FindAdminCommand(const char* cmd)
 {
-	FOR_EACH_VEC(BaseAdmin()->g_AdminCommands, i)
+	FOR_EACH_VEC(BaseAdmin()->GetCommands(), i)
 	{
-		const CommandEntry& entry = BaseAdmin()->g_AdminCommands[i];
+		const CommandEntry *entry = BaseAdmin()->GetCommands()[i];
 
-		if (Q_stricmp(entry.chatCommand, cmd) == 0)
+		if (Q_stricmp(entry->chatCommand, cmd) == 0)
 		{
-			return entry.function;
+			return entry->function;
 		}
 	}
 
@@ -770,11 +778,11 @@ AdminCommandFunction FindAdminCommand(const char* cmd)
 
 bool IsCommandAllowed(const char* cmd, bool isServerConsole, CBasePlayer* pAdmin)
 {
-	FOR_EACH_VEC(BaseAdmin()->g_AdminCommands, i)
+	FOR_EACH_VEC(BaseAdmin()->GetCommands(), i)
 	{
-		const CommandEntry& entry = BaseAdmin()->g_AdminCommands[i];
+		const CommandEntry *entry = BaseAdmin()->GetCommands()[i];
 
-		if (Q_stricmp(entry.chatCommand, cmd) == 0)
+		if (Q_stricmp(entry->chatCommand, cmd) == 0)
 		{
 			if (!isServerConsole)
 			{
@@ -787,9 +795,22 @@ bool IsCommandAllowed(const char* cmd, bool isServerConsole, CBasePlayer* pAdmin
 
 				if (!bImmunity)
 				{
-					if (!CBase_Admin::IsPlayerAdmin(pAdmin, entry.requiredFlags))
+					if (strchr(entry->requiredFlags, ADMIN_UNDEFINED) != NULL)
 					{
-						return false;
+						return true;
+					}
+
+					if (!CBase_Admin::IsPlayerAdmin(pAdmin, entry->requiredFlags))
+					{
+						//do we at least have the b flag?
+						if (CBase_Admin::IsPlayerAdmin(pAdmin, "b"))
+						{
+							return true;
+						}
+						else
+						{
+							return false;
+						}
 					}
 				}
 			}
@@ -801,39 +822,6 @@ bool IsCommandAllowed(const char* cmd, bool isServerConsole, CBasePlayer* pAdmin
 	}
 
 	return false;
-}
-
-void PrintCommandHelpStrings(bool isServerConsole, CBasePlayer *pAdmin)
-{
-	const char* szTitle = "[Server Admin] Usage: sa <command> [arguments]\n==============================================\n\n";
-
-	if (isServerConsole)
-	{
-		Msg(szTitle);
-	}
-	else
-	{
-		ClientPrint(pAdmin, HUD_PRINTCONSOLE, szTitle);
-	}
-
-	FOR_EACH_VEC(BaseAdmin()->g_AdminCommands, i)
-	{
-		const CommandEntry& entry = BaseAdmin()->g_AdminCommands[i];
-
-		if (IsCommandAllowed(entry.chatCommand, isServerConsole, pAdmin))
-		{
-			const char* szMsg = UTIL_VarArgs("[%s] %s %s\n", entry.moduleName, entry.chatCommand, entry.helpMessage);
-
-			if (isServerConsole)
-			{
-				Msg(szMsg);
-			}
-			else
-			{
-				ClientPrint(pAdmin, HUD_PRINTCONSOLE, szMsg);
-			}
-		}
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -901,11 +889,6 @@ void CBase_Admin::InitAdminSystem()
 	}
 }
 
-void CBase_Admin::InitAdminCommands()
-{
-	LoadBaseCommandModule();
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: Checks chat for certain strings (chat commands)
 //-----------------------------------------------------------------------------
@@ -925,30 +908,30 @@ void CBase_Admin::CheckChatText( char *p, int bufsize )
 
 	FOR_EACH_VEC(g_pBaseAdmin->g_AdminCommands, i)
 	{
-		const CommandEntry& entry = g_pBaseAdmin->g_AdminCommands[i];
+		const CommandEntry *entry = g_pBaseAdmin->g_AdminCommands[i];
 
-		size_t cmdLen = strlen(entry.chatCommand);
-		if (Q_strncmp(p, entry.chatCommand, cmdLen) == 0)
+		size_t cmdLen = strlen(entry->chatCommand);
+		if (Q_strncmp(p, entry->chatCommand, cmdLen) == 0)
 		{
 			char consoleCmd[256];
 
-			if (entry.requiresArguments)
+			if (entry->requiresArguments)
 			{
 				const char* args = p + cmdLen;
-				Q_snprintf(consoleCmd, sizeof(consoleCmd), "%s%s", entry.consoleCommand, args);
+				Q_snprintf(consoleCmd, sizeof(consoleCmd), "%s%s", entry->consoleCommand, args);
 			}
 			else
 			{
-				Q_snprintf(consoleCmd, sizeof(consoleCmd), "%s", entry.consoleCommand);
+				Q_snprintf(consoleCmd, sizeof(consoleCmd), "%s", entry->consoleCommand);
 			}
 
 			if (pPlayer)
 			{
 				pPlayer->SetLastCommandWasFromChat(true);
 				engine->ClientCommand(pPlayer->edict(), consoleCmd);
-				if (entry.consoleMessage)
+				if (entry->consoleMessage)
 				{
-					ClientPrint(pPlayer, HUD_PRINTTALK, entry.consoleMessage);
+					ClientPrint(pPlayer, HUD_PRINTTALK, entry->consoleMessage);
 				}
 			}
 			return;
@@ -1045,3 +1028,17 @@ void CBase_Admin::LogAction( CBasePlayer *pAdmin, CBasePlayer *pTarget, const ch
 	filesystem->FPrintf( g_AdminLogFile, "%s", logEntry.Get() );
 	filesystem->Flush( g_AdminLogFile );
 }
+
+void CBase_Admin::ReloadCommands(void)
+{
+	g_AdminCommands.PurgeAndDeleteElements();
+	RegisterCommands();
+	DevMsg("Reloaded commands.\n");
+}
+
+void ToggleModule_ChangeCallback(IConVar* pConVar, char const* pOldString, float flOldValue)
+{
+	BaseAdmin()->ReloadCommands();
+}
+
+#endif

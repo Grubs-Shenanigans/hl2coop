@@ -1,7 +1,9 @@
 #ifndef BASE_SERVERADMIN_H
 #define BASE_SERVERADMIN_H
 
-#include "admin\serveradmin_command_core.h"
+#ifdef BDSBASE
+
+#include "admin\serveradmin_core.h"
 
 #define VERSION				"1.0"
 
@@ -73,8 +75,7 @@ public:
     const char *GetSteamID() const { return m_steamID; }
 
     static void InitAdminSystem();
-    void AddCommand(CommandEntry entry) {g_AdminCommands.AddToTail(entry);}
-    static CUtlMap<CUtlString, AdminData_t> &GetAdminMap();
+    static CUtlMap<CUtlString, AdminData_t>& GetAdminMap();
     static bool ParseAdminFile( const char *filename, CUtlMap<CUtlString, AdminData_t> &outAdminMap );
     static void SaveAdminCache();  // For persisting updated list if needed
     static bool IsPlayerAdmin( CBasePlayer *pPlayer, const char *requiredFlags );
@@ -85,6 +86,10 @@ public:
     void ResetSpecialTargetGroup();
     static void CheckChatText( char *p, int bufsize );
     static void LogAction( CBasePlayer *pAdmin, CBasePlayer *pTarget, const char *action, const char *details = "", const char *groupTarget = nullptr );
+
+    CUtlVector<CommandEntry *>& GetCommands() { return g_AdminCommands; }
+    void AddCommand(CommandEntry *entry) { g_AdminCommands.AddToTail(entry); }
+    void ReloadCommands();
 
 	int GetRedNumber();
 	int GetBlueNumber();
@@ -110,12 +115,6 @@ public:
     void TargetAllHumans( bool enabled ) { bHumans = enabled; }
 
 private:
-    void InitAdminCommands();
-
-public:
-    CUtlVector<CommandEntry> g_AdminCommands;
-
-private:
     const char *m_steamID;
     const char *m_permissions;
 
@@ -131,6 +130,8 @@ private:
     bool bHumans;
 
     static bool bIsListenServerMsg;
+
+    CUtlVector<CommandEntry *> g_AdminCommands;
 };
 
 extern CUtlVector<CBase_Admin *> g_AdminList;
@@ -173,5 +174,18 @@ extern bool IsSteamIDAdmin(const char* steamID);
 extern AdminCommandFunction FindAdminCommand(const char* cmd);
 extern bool IsCommandAllowed(const char* cmd, bool isServerConsole, CBasePlayer* pAdmin);
 extern void PrintCommandHelpStrings(bool isServerConsole, CBasePlayer* pAdmin);
+
+extern void ToggleModule_ChangeCallback(IConVar* pConVar, char const* pOldString, float flOldValue);
+
+#define CONVAR_MODULE_TOGGLE(name, defaultVal, flags, helpString)                     \
+    ConVar moduleToggle(name, defaultVal, flags, helpString, ToggleModule_ChangeCallback);
+
+#define REGISTER_ADMIN_COMMAND(toggleCvarName, moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func)                     \
+    {ConVarRef toggleCvar( toggleCvarName ); \
+    if (toggleCvar.GetBool()) \
+    {                          \
+        BaseAdmin()->AddCommand(new CommandEntry{ moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func });                \
+    }}
+#endif
 
 #endif // BASE_SERVERADMIN_H

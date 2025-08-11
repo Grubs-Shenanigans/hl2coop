@@ -738,12 +738,17 @@ $Project
 			}
 		}
 		
-		$Folder	"Base Admin"
+		$Folder	"Admin" [$BDSBASE]
 		{
 			$File	"admin\base_serveradmin.cpp" [$BDSBASE]
 			$File	"admin\base_serveradmin.h" [$BDSBASE]
-			$File	"admin\serveradmin_command_core.h" [$BDSBASE]
-			$File	"admin\serveradmin_command_base.h" [$BDSBASE]
+			$File	"admin\serveradmin_core.h" [$BDSBASE]
+			$File	"admin\serveradmin_register.h" [$BDSBASE]
+			
+			$Folder	"Commands" [$BDSBASE]
+			{
+				$File	"admin\command\serveradmin_command_base.h" [$BDSBASE]
+			}
 		}
 
 		$Folder	"temporary entities"
