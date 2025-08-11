@@ -390,6 +390,8 @@
 	"name" "BIG SHOT"
 	"name" "100,000 kromer"
 	"name" "SupaMasterOfKungFu"
-	//QF exclusive
 	"name" "BringBackQuickplay"
+	"name" "Guest 1337"
+	"name" "The Grox"
+	"name" "CHARGE ME!"
 }

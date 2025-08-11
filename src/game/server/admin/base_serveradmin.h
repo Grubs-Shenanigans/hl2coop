@@ -1,7 +1,7 @@
 #ifndef BASE_SERVERADMIN_H
 #define BASE_SERVERADMIN_H
 
-#include "cbase.h"
+#include "admin\serveradmin_command_core.h"
 
 #define VERSION				"1.0"
 
@@ -49,9 +49,9 @@ enum AdminReplySource
     ADMIN_REPLY_CHAT
 };
 
-
 extern CUtlMap<const char *, SpecialTarget> g_SpecialTargets;
 extern CUtlMap<int, bool> g_PlayerCommandSourceMap;
+extern bool g_bAdminSystem;
 
 struct AdminData_t
 {
@@ -73,13 +73,13 @@ public:
     const char *GetSteamID() const { return m_steamID; }
 
     static void InitAdminSystem();
+    void AddCommand(CommandEntry entry) {g_AdminCommands.AddToTail(entry);}
     static CUtlMap<CUtlString, AdminData_t> &GetAdminMap();
     static bool ParseAdminFile( const char *filename, CUtlMap<CUtlString, AdminData_t> &outAdminMap );
     static void SaveAdminCache();  // For persisting updated list if needed
     static bool IsPlayerAdmin( CBasePlayer *pPlayer, const char *requiredFlags );
     static void ClearAllAdmins();
     static CBase_Admin *GetAdmin( const char *steamID );
-    // static void RegisterAdminCommands();
     static void AddAdmin( const char *steamID, const char *permissions );
     bool FindSpecialTargetGroup( const char *targetSpecifier );
     void ResetSpecialTargetGroup();
@@ -110,6 +110,12 @@ public:
     void TargetAllHumans( bool enabled ) { bHumans = enabled; }
 
 private:
+    void InitAdminCommands();
+
+public:
+    CUtlVector<CommandEntry> g_AdminCommands;
+
+private:
     const char *m_steamID;
     const char *m_permissions;
 
@@ -129,11 +135,43 @@ private:
 
 extern CUtlVector<CBase_Admin *> g_AdminList;
 
+
 extern CBase_Admin *g_pBaseAdmin;
 
 inline CBase_Admin *BaseAdmin()
 {
     return static_cast< CBase_Admin * >( g_pBaseAdmin );
 }
+
+extern AdminReplySource GetCmdReplySource(CBasePlayer* pPlayer);
+extern void AdminReply(AdminReplySource source, CBasePlayer* pPlayer, const char* fmt, ...);
+extern bool ParsePlayerTargets(
+    CBasePlayer* pAdmin,
+    AdminReplySource replySource,
+    const char* partialName,
+    CUtlVector<CBasePlayer*>& targetPlayers,
+    CBasePlayer*& pSingleTarget,
+    bool excludeDeadPlayers = false);
+extern int GetBuildNumber();
+extern void BuildGroupTargetMessage(
+    const char* partialName,
+    CBasePlayer* pPlayer,
+    const char* action,
+    const char* duration,
+    CUtlString& logDetails,
+    CUtlString& chatMessage,
+    bool hasReason,
+    const char* reason = NULL);
+extern void PrintActionMessage(
+    CBasePlayer* pPlayer,
+    bool isServerConsole,
+    const char* action,
+    const char* targetName,
+    const char* duration,
+    const char* reason);
+extern bool IsSteamIDAdmin(const char* steamID);
+extern AdminCommandFunction FindAdminCommand(const char* cmd);
+extern bool IsCommandAllowed(const char* cmd, bool isServerConsole, CBasePlayer* pAdmin);
+extern void PrintCommandHelpStrings(bool isServerConsole, CBasePlayer* pAdmin);
 
 #endif // BASE_SERVERADMIN_H

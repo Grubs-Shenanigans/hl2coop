@@ -28,6 +28,8 @@ This base is specific to multiplayer mod projects.
 - Multiplayer NPC support with the BDSBASE_NPC preprocessor definition.
 - Various optional preprocessor definitions for changing TF2's behavior.
 - Menu music in map backgrounds with adjustable volume and mix volume.
+- Server Admin tools support (based off #948) with extendable module-based command interface.
+- Animated Avatars support (based off #1380)
 
 ## Options/Preprocessor Definitions
 These options are meant to be added to the VPC files (client and server) of the mod you wish to modify.
