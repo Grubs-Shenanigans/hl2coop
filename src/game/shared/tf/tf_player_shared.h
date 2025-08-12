@@ -1112,6 +1112,12 @@ private:
 	float					m_flFeignDeathEnd;
 	CNetworkVar( bool, m_bFeignDeathReady );
 
+#ifdef BDSBASE
+#ifdef GAME_DLL
+	float					m_flPowerplayLaugh;
+#endif
+#endif
+
 	CNetworkVar( int, m_iDesiredPlayerClass );
 
 	float m_flNextBurningSound;

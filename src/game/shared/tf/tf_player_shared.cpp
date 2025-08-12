@@ -1955,6 +1955,22 @@ void CTFPlayerShared::OnConditionAdded( ETFCond eCond )
 		break;
 #endif
 
+#ifdef BDSBASE
+	case TF_COND_POWERPLAY:
+		AddCond(TF_COND_INVULNERABLE_USER_BUFF);
+		AddCond(TF_COND_CRITBOOSTED_USER_BUFF);
+		AddCond(TF_COND_MEGAHEAL);
+#if defined(QUIVER_DLL)
+		AddCond(QF_COND_UNBREAKABLE_ARMOR);
+#else
+		AddCond(TF_COND_MEDIGUN_UBER_BULLET_RESIST);
+		AddCond(TF_COND_MEDIGUN_UBER_BLAST_RESIST);
+		AddCond(TF_COND_MEDIGUN_UBER_FIRE_RESIST);
+#endif
+		OnAddBurning();
+		break;
+#endif
+
 	default:
 		break;
 	}
@@ -2324,6 +2340,22 @@ void CTFPlayerShared::OnConditionRemoved( ETFCond eCond )
 #ifdef GAME_DLL
 		m_flArmorFraction = 0;
 #endif
+		break;
+#endif
+
+#ifdef BDSBASE
+	case TF_COND_POWERPLAY:
+		RemoveCond(TF_COND_INVULNERABLE_USER_BUFF);
+		RemoveCond(TF_COND_CRITBOOSTED_USER_BUFF);
+		RemoveCond(TF_COND_MEGAHEAL);
+#if defined(QUIVER_DLL)
+		RemoveCond(QF_COND_UNBREAKABLE_ARMOR);
+#else
+		RemoveCond(TF_COND_MEDIGUN_UBER_BULLET_RESIST);
+		RemoveCond(TF_COND_MEDIGUN_UBER_BLAST_RESIST);
+		RemoveCond(TF_COND_MEDIGUN_UBER_FIRE_RESIST);
+#endif
+		OnRemoveBurning();
 		break;
 #endif
 
@@ -3250,6 +3282,54 @@ void CTFPlayerShared::ConditionGameRulesThink( void )
 			RemoveCond( TF_COND_BLEEDING );
 		}
 	}
+
+#ifdef BDSBASE
+	if (InCond(TF_COND_POWERPLAY))
+	{
+#ifdef GAME_DLL
+		if (m_flPowerplayLaugh < gpGlobals->curtime)
+		{
+			if (m_pOuter->GetPlayerClass())
+			{
+				const char* szScene = "";
+
+				switch (m_pOuter->GetPlayerClass()->GetClassIndex())
+				{
+					case TF_CLASS_SCOUT: 
+						szScene = "scenes/player/scout/low/435.vcd";
+						break;
+					case TF_CLASS_SNIPER: 
+						szScene = "scenes/player/sniper/low/1674.vcd";
+						break;
+					case TF_CLASS_SOLDIER: 
+						szScene = "scenes/player/soldier/low/1346.vcd";
+						break;
+					case TF_CLASS_DEMOMAN: 
+						szScene = "scenes/player/demoman/low/954.vcd";
+						break;
+					case TF_CLASS_MEDIC: 
+						szScene = "scenes/player/medic/low/608.vcd";
+						break;
+					case TF_CLASS_HEAVYWEAPONS: 
+						szScene = "scenes/player/heavy/low/270.vcd";
+						break;
+					case TF_CLASS_PYRO: 
+						szScene = "scenes/player/pyro/low/1485.vcd";
+						break;
+					case TF_CLASS_SPY: 
+						szScene = "scenes/player/spy/low/1312.vcd";
+						break;
+					case TF_CLASS_ENGINEER: 
+						szScene = "scenes/player/engineer/low/103.vcd";
+						break;
+				}
+
+				m_flPowerplayLaugh = gpGlobals->curtime + m_pOuter->PlayScene(szScene) + 1.0f;
+			}
+		}
+#endif
+	}
+#endif
 
 	{
 		m_flSpyTranqBuffDuration = 0;
