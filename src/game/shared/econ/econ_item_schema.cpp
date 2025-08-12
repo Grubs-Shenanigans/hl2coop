@@ -3233,14 +3233,14 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	//allow if we're on the whitelist too
 	if (!m_bIsReskin)
 	{
-		m_bWhitelisted = m_pKVItem->GetInt("stock_whitelist", 0) != 0;
+		m_bWhitelisted = m_pKVItem->GetInt("whitelist", 0) != 0;
 	}
 #else
-	m_bWhitelisted = m_pKVItem->GetInt("stock_whitelist", 0) != 0;
+	m_bWhitelisted = m_pKVItem->GetInt("whitelist", 0) != 0;
 	m_bIsReskin = false;
 #endif
 #else
-	m_bWhitelisted = true;
+	m_bWhitelisted = m_pKVItem->GetInt("blacklist", 0) == 0;
 	//if stock only w/ cosmetics aren't enabled, no reskins are allowed.
 	m_bIsReskin = false;
 #endif
@@ -6470,7 +6470,7 @@ bool CEconItemSchema::FindItemInWhitelist(int index)
 		bool bShouldLoad = bIsStock;
 #endif
 #else
-		bool bShouldLoad = true;
+		bool bShouldLoad = pReskinItemDef->IsAllowed();
 #endif
 
 #ifdef BDSBASE_CURATED_ITEMS

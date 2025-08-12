@@ -1688,6 +1688,17 @@ CEconItemView *CTFPlayerInventory::GetItemInLoadout( int iClass, int iSlot )
 #endif
 		}
 	}
+#else
+	CEconItemView* pItemInSlot = GetDefaultItemInLoadout(iClass, iSlot);
+	if (pItemInSlot)
+	{
+		CTFItemDefinition* pItemData = pItemInSlot->GetStaticData();
+
+		if (pItemData)
+		{
+			skipAcc = !pItemData->IsAllowed();
+		}
+	}
 #endif
 
 	if (skipAcc)

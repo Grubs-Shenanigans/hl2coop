@@ -1285,9 +1285,9 @@ public:
 	bool		IsReskin(void) const				{ return m_bIsReskin; }
 	bool		IsWhitelisted(void) const			{ return m_bWhitelisted; }
 #if (defined(BDSBASE_CURATED_ITEMS) && (!defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS)))
-	bool		IsAllowed(void) const				{ return IsWhitelisted(); }
-#else
 	bool		IsAllowed(void) const				{ return (IsWhitelisted() || IsReskin()); }
+#else
+	bool		IsAllowed(void) const				{ return IsWhitelisted(); }
 #endif
 #endif
 	bool		IsBundle( void ) const				{ return m_BundleInfo != NULL; }
