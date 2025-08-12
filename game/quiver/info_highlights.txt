@@ -28,11 +28,6 @@ Class changes:
 - Spies can now "fake" a reload by disguising and pressing the reload key with a full clip.
 
 Custom Weapons:
-- All Demoknight swords and shields have been truncated into the Charge Shield and the Sword.
-	- The Charge Shield provides fast turning control, the ability to refill 35% of your charge through melee kills and increased armor durability at the expense of getting a slower armor repair rate from dispensers.
-	- The Sword is similar to the Eyelander, but it offers a 20% damage bonus in return for 35% of both primary and secondary ammo, 15 less armor, and 40 less maximum health.
-	- When both weapons are used, Demoknights have tougher armor and use a more powerful melee than stock in exchange for your secondary, a portion of your health and armor, and your grenade launcher's ammo supply. Due to the Sword's speed and health bonus, a Demoknight can gain up to 200 health, and run nearly as fast as a Scout.
-	-  Alternative versions of the Sword are available, replicating the look of various versions of the Eyelander.
 - Heavy gets a minigun to go alongside his regular one, known as the Artillery Cannon. It is fires powerful, accurate rounds at the expense of bullet count and fire rate.
 - The Sniper has an alternative Sniper Rifle called the Railgun, allowing the Sniper to fire charged shots without zooming and penetrate through multiple targets at the expense of armor durability.
 - The Engineer has an alternative PDA called the Valkyrie 3S, which increases your sentry turn rate in return for your buildings' maximum health.

@@ -82,5 +82,15 @@
 - The Neon Annihilator (w/ balance changes)
 - The Gas Passer (w/ balance changes)
 - The Winger* (w/ balance changes)
+- The Thermal Thruster
+- Ali Baba's Wee Booties/The Bootlegger
+- The Eyelander/Horseless Headless Horsemann's Headtaker/Nessie's Nine Iron
+- The Scotsman's Skullcutter
+- The Claidheamh Mòr
+- The Half-Zatoichi
+- The Persian Persuader
+- The Chargin' Targe
+- The Splendid Screen
+- The Tide Turner
 
 * - Weapon was whitelisted as long as it got a rebalance.

@@ -101,39 +101,6 @@ class CAchievementQuiver_CaberKill : public CBaseTFAchievement
 };
 DECLARE_ACHIEVEMENT(CAchievementQuiver_CaberKill, ACHIEVEMENT_QUIVER_CABERTAUNTKILL, "QUIVER_CABERTAUNTKILL", 5);
 
-//----------------------------------------------------------------------------------------------------------------
-class CAchievementQuiver_Assassination : public CBaseTFAchievement
-{
-	void Init()
-	{
-		SetFlags(ACH_SAVE_GLOBAL | ACH_LISTEN_KILL_ENEMY_EVENTS);
-		SetGoal(1);
-		SetStoreProgressInSteam(true);
-	}
-
-	virtual void Event_EntityKilled(CBaseEntity* pVictim, CBaseEntity* pAttacker, CBaseEntity* pInflictor, IGameEvent* event)
-	{
-		if (!pVictim || !pVictim->IsPlayer())
-			return;
-
-		if (pAttacker == C_BasePlayer::GetLocalPlayer() && event->GetInt("weaponid") == TF_WEAPON_REVOLVER)
-		{
-			C_TFPlayer* pTFVictim = ToTFPlayer(pVictim);
-			if (pTFVictim && pTFVictim->IsPlayerClass(TF_CLASS_SNIPER))
-			{
-				if (FStrEq(event->GetString("weapon_logclassname", ""), "hitmans_executioner"))
-				{
-					if (IsHeadshot(event->GetInt("customkill")))
-					{
-						IncrementCount();
-					}
-				}
-			}
-		}
-	}
-};
-DECLARE_ACHIEVEMENT(CAchievementQuiver_Assassination, ACHIEVEMENT_QUIVER_KILLINGHITMAN, "QUIVER_KILLINGHITMAN", 5);
-
 class CAchievementQuiver_RailgunHeadshot : public CBaseTFAchievement
 {
 	void Init()

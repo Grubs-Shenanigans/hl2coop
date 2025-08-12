@@ -44,221 +44,6 @@
 		}
 	
 		// custom
-		"weapon_quiver_generic_demoshield"
-		{
-			"enabled"		"1"
-			"prefab"		"quiver_customweapon"
-			"item_class"		"tf_wearable_demoshield"
-			"craft_class"	"weapon"
-			"craft_material_type"	"weapon"
-			"capabilities"
-			{
-				"nameable"		"1"
-			}
-			"tags"
-			{
-				"can_deal_damage"			"1"
-				"can_be_equipped_by_soldier_or_demo"	"1"
-			}
-			"base_item_name"	"Shield"
-			"show_in_armory"	"1"
-			"item_type_name" 	"#TF_Wearable_Shield"
-			"item_name"		"#Quiver_Shield"
-			"item_description"	"#TF_Unique_Achievement_Shield_Desc"
-			"item_slot"		"secondary"
-			"equip_region"	"arms"
-			"anim_slot"		"FORCE_NOT_USED"
-			"item_quality"		"unique"
-			"propername"		"1"
-			"item_logname"	"demoshield"
-			"item_iconname"	"demoshield"
-			"image_inventory"	"backpack/weapons/c_models/c_targe/c_targe"
-			"image_inventory_size_w"		"128"
-			"image_inventory_size_h"		"82"
-			"inspect_panel_dist" 			"33"
-			"model_player"	"models/weapons/c_models/c_targe/c_targe.mdl"
-			"act_as_wearable" "1"
-			"attach_to_hands"	"0"
-			"attach_to_hands_vm_only"	"1"
-			"drop_type"	"drop"
-			"used_by_classes"
-			{
-				"demoman"	"1"
-			}
-			"attributes"
-			{
-				"armor damage taken reduced"
-				{
-					"attribute_class"	"mult_armor"
-					"value"			"0.7"
-				}
-				"armor taken from dispensers decreased"
-				{
-					"attribute_class"	"mult_dispenser_armor_rate"
-					"value"			"0.5"
-				}
-				"armor repair cost increased on reciever"
-				{
-					"attribute_class"	"mult_armor_repair_cost_reciever"
-					"value"			"1.40"
-				}
-				"charge recharge rate increased"
-				{
-					"attribute_class"	"charge_recharge_rate"
-					"value"			"1.45"
-				}
-				"charge impact damage increased"
-				{
-					"attribute_class"	"charge_impact_damage"
-					"value"			"1.5"
-				}
-				"mult charge turn control"
-				{
-					"attribute_class"	"charge_turn_control"
-					"value"			"8.5"
-				}
-				"kill refills meter"
-				{
-					"attribute_class"	"kill_refills_meter"
-					"value"			"0.50"
-				}
-				"lose demo charge on damage when charging"
-				{
-					"attribute_class"	"lose_demo_charge_on_damage_when_charging"
-					"value"				"1"
-				}
-				"allowed in medieval mode"
-				{
-					"attribute_class"	"allowed_in_medieval_mode"
-					"value"	"1"
-				}
-			}
-			"mouse_pressed_sound"	"ui/item_wood_pole_pickup.wav"
-			"drop_sound"		"ui/item_wood_pole_drop.wav"
-			"xifier_class_remap"	"weapon_targe"
-		}
-		
-		"weapon_quiver_generic_sword"
-		{
-			"prefab"	"quiver_customweapon weapon_sword"
-			"capabilities"
-			{
-				"nameable"		"1"
-			}
-			"tags"
-			{
-				"can_deal_damage"			"1"
-				"can_be_equipped_by_soldier_or_demo"	"1"
-				"can_deal_critical_damage"	"1"
-				"can_deal_taunt_damage"		"1"
-			}
-			"base_item_name"	"Sword"
-			"item_name"	"#Quiver_Sword"
-			"item_description"	"#TF_Unique_Achievement_Sword_Desc"
-			"propername"	"1"
-			"image_inventory"	"backpack/weapons/c_models/c_claymore/c_claymore"
-			"model_player"	"models/weapons/c_models/c_claymore/c_claymore.mdl"
-			"used_by_classes"
-			{
-				"demoman"	"1"
-			}
-			"static_attrs"
-			{
-				"min_viewmodel_offset"					"12 -3 -10"
-			}
-			"visuals"
-			{
-				"sound_melee_miss"	"Weapon_Sword.Swing"
-				"sound_melee_hit"	"Weapon_Sword.HitFlesh"
-				"sound_melee_hit_world"	"Weapon_Sword.HitWorld"
-				"sound_burst"		"Weapon_Sword.SwingCrit"
-				"sound_special1"	"Sword.Hit"
-				"sound_special2"	"Sword.Idle"
-				"styles"
-				{
-					"0"
-					{
-						"skin_red" "0"
-						"skin_blu" "1"
-						"selectable"	"0"
-					}
-					"1"
-					{
-						"skin_red"	"2"
-						"skin_blu"	"3"
-						"selectable"	"0"
-						"image_inventory"	"backpack/weapons/c_models/c_claymore/c_claymore_gold"
-					}
-				}
-			}
-			"attributes"
-			{
-				"armor damage increased on target"
-				{
-					"attribute_class"	"mult_armor_onhit"
-					"value"				"1.50"
-				}
-				"is_a_sword"
-				{
-					"attribute_class"	"is_a_sword"
-					"value"				"72"
-				}
-				"crit mod disabled"
-				{
-					"attribute_class"	"mult_crit_chance"
-					"value"	"0"
-				}
-				"max health additive penalty"
-				{
-					"attribute_class"	"add_maxhealth"
-					"value" "-40"
-				}
-				"damage bonus"
-				{
-					"attribute_class"	"mult_dmg"
-					"value"	"1.25"
-				}
-				"maxammo primary reduced"
-				{
-					"attribute_class"	"mult_maxammo_primary"
-					"value"				"0.65"
-				}
-				"maxammo secondary reduced"
-				{
-					"attribute_class"	"mult_maxammo_secondary"
-					"value"				"0.65"
-				}
-				"decapitate type"
-				{
-					"attribute_class"	"decapitate_type"
-					"value"	"1"
-				}
-				"kill eater score type"
-				{
-					"attribute_class"	"kill_eater_score_type"
-					"value" 	"6"									
-				}
-				"kill eater kill type"
-				{
-					"attribute_class"	"kill_eater_kill_type"
-					"value"	"6"			
-				}
-				"special taunt"
-				{
-					"attribute_class"	"special_taunt"
-					"value" "1"
-				}
-				"max armor additive penalty"
-				{
-					"attribute_class"	"add_maxarmor"
-					"value" "-15"
-				}
-			}
-			"mouse_pressed_sound"	"ui/item_knife_large_pickup.wav"
-			"drop_sound"		"ui/item_metal_weapon_drop.wav"
-			"xifier_class_remap"	"eyelander"
-		}
-		
 		"weapon_quiver_artillery_cannon"
 		{
 			"enabled"	"1"
@@ -887,6 +672,97 @@
 			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
+		
+		"weapon_quiver_jumpshield"
+		{
+			"enabled"		"1"
+			"prefab"	"quiver_customweapon"
+			"item_class"		"tf_wearable_demoshield"
+			"craft_class"	"weapon"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"		"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_be_equipped_by_soldier_or_demo"	"1"
+			}
+			"base_item_name"	"Jump Shield"
+			"show_in_armory"	"1"
+			"item_type_name" 	"#TF_Wearable_Shield"
+			"item_name"		"#Quiver_JumpShield"
+			"item_description"	"#TF_Unique_Achievement_Shield_Desc"
+			"item_slot"		"secondary"
+			"equip_region"	"arms"
+			"anim_slot"		"FORCE_NOT_USED"
+			"item_quality"		"unique"
+			"propername"	"1"
+			"min_ilevel"		"1"
+			"max_ilevel"		"99"
+			"item_logname"	"jumpshield"
+			"item_iconname"	"jumpshield"
+			"image_inventory"	"backpack/weapons/c_models/c_targe/c_targe"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"inspect_panel_dist" 			"33"
+			"model_player"	"models/weapons/c_models/c_targe/c_targe.mdl"
+			"act_as_wearable" "1"
+			"attach_to_hands"	"0"
+			"attach_to_hands_vm_only"	"1"
+			"drop_type"	"drop"
+			"used_by_classes"
+			{
+				"demoman"	"1"
+			}
+			"attributes"
+			{
+				"mult charge turn control"
+				{
+					"attribute_class"	"charge_turn_control"
+					"value"			"2"
+				}
+				"armor damage taken reduced"
+				{
+					"attribute_class"	"mult_armor"
+					"value"			"0.7"
+				}
+				"armor taken from dispensers decreased"
+				{
+					"attribute_class"	"mult_dispenser_armor_rate"
+					"value"			"0.5"
+				}
+				"armor repair cost increased on reciever"
+				{
+					"attribute_class"	"mult_armor_repair_cost_reciever"
+					"value"			"1.40"
+				}
+				"charge allow jump for charge"
+				{
+					"attribute_class"	"charge_allow_jump_for_charge"
+					"value"			"0.20"
+				}
+				"bhop penalty on charge"
+				{
+					"attribute_class"	"mod_bhop_boost_from_charge"
+					"value" "0.7"
+				}
+				"max armor additive penalty"
+				{
+					"attribute_class"	"add_maxarmor"
+					"value" "-15"
+				}
+				"allowed in medieval mode"
+				{
+					"attribute_class"	"allowed_in_medieval_mode"
+					"value"	"1"
+				}
+			}
+			"mouse_pressed_sound"	"ui/item_wood_pole_pickup.wav"
+			"drop_sound"		"ui/item_wood_pole_drop.wav"
+			"xifier_class_remap"	"weapon_targe"
+		}
 	}
 
 	"items"
@@ -894,64 +770,12 @@
 		// custom items
 		"34400"
 		{
-			"name"		"Shield"
-			"prefab"	"weapon_quiver_generic_demoshield"
-			"first_sale_date"	"2010/09/29"
-			"xifier_class_remap"	"weapon_quiver_generic_demoshield"
-		}
-		"34401"
-		{
-			"name"		"Sword"
-			"prefab"	"weapon_quiver_generic_sword"
-			"first_sale_date"	"2010/09/29"
-			"xifier_class_remap"	"weapon_quiver_generic_sword"
-		}
-		"34402"
-		{
-			"name"		"Australium Sword"
-			"prefab"	"weapon_quiver_generic_sword"
-			"item_name"	"#Quiver_Sword_short"
-			"first_sale_date"	"2010/09/29"
-			"xifier_class_remap"	"weapon_quiver_generic_sword_golden"
-			"attributes"
-			{
-				"is australium item"
-				{
-					"attribute_class"	"is_australium_item"
-					"value"	 "1"
-				}
-				"item style override"
-				{
-					"attribute_class"	"item_style_override"
-					"value"	"1"
-				}
-			}
-		}
-		"34403"
-		{
-			"name"		"Festive Sword"
-			"prefab"	"weapon_quiver_generic_sword"
-			"propername"	"0"
-			"craft_class"	""
-			"item_name"		"#Quiver_FestiveSword"
-			"min_ilevel"	"1"
-			"max_ilevel"	"99"
-			"image_inventory"	"backpack/weapons/c_models/c_claymore/c_claymore_xmas"
-			"model_player"		"models/weapons/c_models/c_claymore/c_claymore_xmas.mdl"
-			"xifier_class_remap"	"weapon_quiver_generic_sword_festive"
-			"static_attrs"
-			{
-				"min_viewmodel_offset"		"10 -3 -10"	
-			}
-		}
-		"34405"
-		{
 			"name"		"Artillery Cannon"
 			"prefab"	"weapon_quiver_artillery_cannon"
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_artillery_cannon"
 		}
-		"34406"
+		"34401"
 		{
 			"name"	"Railgun"
 			"first_sale_date"	"2011/08/11"
@@ -970,40 +794,47 @@
 			}
 			"xifier_class_remap"	"weapon_quiver_railgun"
 		}
-		"34407"
+		"34402"
 		{
 			"name"		"Valkyrie"
 			"prefab"	"weapon_quiver_sentrypda"
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_sentrypda"
 		}
-		"34408"
+		"34403"
 		{
 			"name"		"Ludmila"
 			"prefab"	"weapon_quiver_ludmila"
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_ludmila"
 		}
-		"34409"
+		"34404"
 		{
 			"name"		"Vitality Glitch"
 			"prefab"	"weapon_quiver_pickaxe"
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_pickaxe"
 		}
-		"34410"
+		"34405"
 		{
 			"name"		"L'Executeur"
 			"prefab"	"weapon_quiver_joke_lexecuteur"
 			"first_sale_date"	"2024/06/14"
 			"xifier_class_remap"	"weapon_quiver_joke_lexecuteur"
 		}
-		"34411"
+		"34406"
 		{
 			"name"		"Armor Healing Medigun"
 			"prefab"	"weapon_quiver_armor_medigun"
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_armor_medigun"
+		}
+		"34407"
+		{
+			"name"		"Jump Shield"
+			"prefab"	"weapon_quiver_jumpshield"
+			"first_sale_date"	"2010/09/29"
+			"xifier_class_remap"	"weapon_quiver_jumpshield"
 		}
 	}
 	

@@ -35,6 +35,16 @@ Whitelists:
 	- The Neon Annihilator
 	- The Gas Passer
 	- The Winger
+	- The Thermal Thruster
+	- Ali Baba's Wee Booties/The Bootlegger
+	- Eyelander/Horseless Headless Horsemann's Headtaker/Nessie's Nine Iron
+	- The Scotsman's Skullcutter
+	- The Claidheamh Mòr
+	- The Half-Zatoichi
+	- The Persian Persuader
+	- The Chargin' Targe
+	- The Splendid Screen
+	- The Tide Turner
 
 Blacklists:
 	- The Spy-Cicle
@@ -126,6 +136,9 @@ Details:
 - Restored the original 2007 knife model.
 - The Winger now has a 50% reduction to your bunnyhop speed boost.
 - Decreased the The Winger's clip size from 60% to 50%.
+- Removed the Assassinating the Assassin achievement
+- Removed the Charge Shield and the Sword, as the centralized Demoknight playstyle originally proposed for QF unfairly restricts Demoknights from playing the way they wish. 
+- Added The Sun-Jumper, which allows the Demoman to get increased armor durability and the ability to jump while charging, at the cost of his charge, his armor's repair rate, and his max armor.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
