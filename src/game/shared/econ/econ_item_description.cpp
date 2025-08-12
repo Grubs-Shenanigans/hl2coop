@@ -2664,7 +2664,11 @@ static bool IsItemEquipped( uint32 unAccountID, const CEconItemDefinition *pSear
 	Assert( pSearchItemDef );
 	Assert( ppFoundSetItemDef );
 
-	CPlayerInventory *pInv = InventoryManager()->GetInventoryForAccount( unAccountID );
+#ifdef BDSBASE
+	CPlayerInventory* pInv = TFInventoryManager()->GetLocalInventory();
+#else
+	CPlayerInventory* pInv = InventoryManager()->GetInventoryForAccount(unAccountID);
+#endif
 	if ( !pInv )
 		return false;
 
@@ -2679,9 +2683,6 @@ static bool IsItemEquipped( uint32 unAccountID, const CEconItemDefinition *pSear
 		Assert( pInvItemDef );
 
 		if ( pInvItemDef->GetSetItemRemap() != pSearchItemDef->GetDefinitionIndex() )
-			continue;
-
-		if ( !pInvItem->IsEquipped() )
 			continue;
 
 		*ppFoundSetItemDef = pInvItemDef;

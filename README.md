@@ -97,6 +97,11 @@ BDSBASE_TEMP_FIXDYNAMICMODELS
 - This is a temporary workaround and is not recomended to be enabled with future versions of the engine.
 - If this is disabled, use the command line variable -dynamicmodelsfix to enable the fix.
 
+BDSBASE_DISABLE_BACKOFF
+- Games: TF2
+- This disables the delay between Steam API requests introduced with the TF2 SDK, making it so items can be loaded instantly like in normal TF2.
+- Valve wanted the backoff system to reduce the amount of requests from mods sent to the Steam servers. Please be responsible when using this.
+
 ## Credits:
 - TheBetaM for the custom schema code. (https://github.com/TheBetaM/tf-solo)
 - rafradek for some bot AI changes (sigsegv-mvm) (https://github.com/rafradek/sigsegv-mvm)

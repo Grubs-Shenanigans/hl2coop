@@ -81,5 +81,6 @@
 - The Ambassador (w/ balance changes)
 - The Neon Annihilator (w/ balance changes)
 - The Gas Passer (w/ balance changes)
+- The Winger* (w/ balance changes)
 
 * - Weapon was whitelisted as long as it got a rebalance.

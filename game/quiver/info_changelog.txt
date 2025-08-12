@@ -34,6 +34,7 @@ Whitelists:
 	- The Ambassador
 	- The Neon Annihilator
 	- The Gas Passer
+	- The Winger
 
 Blacklists:
 	- The Spy-Cicle
@@ -50,6 +51,7 @@ Added the following Source SDK Pull Requests:
 	- #1481: Workaround for CTFStatPanel not hiding on freezecam screenshot
 	- #1483: (Temporary) Fix issues with dynamic models on listen servers
 	- #948: Add proper server admin tools (heavily modified)
+	- #1490: Fix Thermal Thruster passives not being removed if it's unequipped during use (or player is a Medic)
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
@@ -122,6 +124,8 @@ Details:
 - Re-enabled stun for taunt kills.
 - Removed the Railgun's headshot charge penalty.
 - Restored the original 2007 knife model.
+- The Winger now has a 50% reduction to your bunnyhop speed boost.
+- Decreased the The Winger's clip size from 60% to 50%.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

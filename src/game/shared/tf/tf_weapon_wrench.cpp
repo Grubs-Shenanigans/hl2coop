@@ -371,6 +371,23 @@ void CTFWrench::Detach( void )
 					pSentry->DetonateObject();
 				}
 			}
+
+#ifdef BDSBASE
+			int iCanUpgradeMiniBuilding = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pPlayer, iCanUpgradeMiniBuilding, can_upgrade_mini_building);
+			if (iCanUpgradeMiniBuilding)
+			{
+				// Just detonate Sentries if we're a mini but we have a higher upgrade level.
+				CObjectSentrygun* pSentry = dynamic_cast<CObjectSentrygun*>(pPlayer->GetObjectOfType(OBJ_SENTRYGUN));
+				if (pSentry)
+				{
+					if (pSentry->IsMiniBuilding() && pSentry->GetUpgradeLevel() > 1)
+					{
+						pSentry->DetonateObject();
+					}
+				}
+			}
+#endif
 		}
 	}
 

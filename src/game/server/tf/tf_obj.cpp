@@ -2925,6 +2925,19 @@ bool CBaseObject::CheckUpgradeOnHit( CTFPlayer *pPlayer )
 	return false;
 }
 
+#ifdef BDSBASE
+bool CBaseObject::CanUpgradeOnHit() const
+{ 
+	int CanUpgradeMiniBuilding = 0;
+	if (GetBuilder())
+	{
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(GetBuilder(), CanUpgradeMiniBuilding, can_upgrade_mini_building);
+	}
+
+	return !(IsDisposableBuilding() || (IsMiniBuilding() && !CanUpgradeMiniBuilding));
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
@@ -2942,7 +2955,14 @@ bool CBaseObject::CanBeUpgraded( CTFPlayer *pPlayer )
 	if ( IsUpgrading() )
 		return false;
 
+#ifdef BDSBASE
+	int CanUpgradeMiniBuilding = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(pPlayer, CanUpgradeMiniBuilding, can_upgrade_mini_building);
+
+	if ((IsMiniBuilding() && !CanUpgradeMiniBuilding) || IsDisposableBuilding())
+#else
 	if ( IsMiniBuilding() || IsDisposableBuilding() )
+#endif
 		return false;
 
 	// only engineers

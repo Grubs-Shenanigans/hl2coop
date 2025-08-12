@@ -308,6 +308,14 @@ void CTFGCClientSystem::InvalidatePingData()
 // Backoff api
 void CTFGCClientSystem::WebapiInventoryState_t::Backoff()
 {
+#ifdef BDSBASE
+#ifdef BDSBASE_DISABLE_BACKOFF
+	m_rtNextRequest = 0;
+	m_nBackoffSec = 0;
+	return;
+#endif
+#endif
+
 	if (m_nBackoffSec == 0)
 #ifdef BDSBASE
 		m_nBackoffSec = GC_BACKOFF_RATELIMIT_TIME;

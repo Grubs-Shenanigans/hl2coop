@@ -1017,7 +1017,18 @@ void C_BaseObject::GetTargetIDDataString( OUT_Z_BYTECAP(iMaxLenInBytes) wchar_t 
 	}
 
 	// level 1 and 2 show upgrade progress
+#ifdef BDSBASE
+	int CanUpgradeMiniBuilding = 0;
+
+	if (pBuilder)
+	{
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(pBuilder, CanUpgradeMiniBuilding, can_upgrade_mini_building);
+	}
+
+	if ( !(IsMiniBuilding() && !CanUpgradeMiniBuilding) && !IsDisposableBuilding() )
+#else
 	if ( !IsMiniBuilding() && !IsDisposableBuilding() )
+#endif
 	{
 		_snwprintf( wszUpgradeProgress, ARRAYSIZE(wszUpgradeProgress) - 1, L"%d / %d", m_iUpgradeMetal, GetUpgradeMetalRequired() );
 		wszUpgradeProgress[ ARRAYSIZE(wszUpgradeProgress)-1 ] = '\0';

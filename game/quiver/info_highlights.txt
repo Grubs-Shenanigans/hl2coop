@@ -127,6 +127,8 @@ Unlockable weapon balance changes:
 - Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
 	- In MvM, the Gas Passer's explosion damage was decreased from 350 to 150.
 	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 75.
+- The Winger now has a 50% reduction to your bunnyhop speed boost.
+- Decreased the The Winger's clip size from 60% to 50%.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

@@ -362,7 +362,7 @@ public:
 protected:
 
 #ifdef BDSBASE
-	virtual bool CanUpgradeOnHit() const { return !(IsDisposableBuilding() || IsMiniBuilding()); }
+	virtual bool CanUpgradeOnHit() const;
 #else
 	virtual bool CanBeUpgraded() const { return !(IsDisposableBuilding() || IsMiniBuilding()); }
 #endif

@@ -1381,6 +1381,14 @@ bool CTFGameMovement::CheckJumpButton()
 #ifdef BDSBASE
 #if defined(QUIVER_DLL)
 	float flBhopBoost = (sv_bhop_qf_classboost_disable.GetBool() ? sv_bhop_boost.GetFloat() : m_pTFPlayer->GetPlayerClass()->GetBhopSpeedBoost());
+	// Passive version
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(m_pTFPlayer, flBhopBoost, mod_bhop_boost);
+	// Weapon-restricted version
+	CTFWeaponBase* pWpn = m_pTFPlayer->GetActiveTFWeapon();
+	if (pWpn)
+	{
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWpn, flBhopBoost, mod_bhop_boost_from_weapon);
+	}
 #else
 	float flBhopBoost = sv_bhop_boost.GetFloat();
 #endif
@@ -1508,7 +1516,9 @@ bool CTFGameMovement::CheckJumpButton()
 	// Passive version
 	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( m_pTFPlayer, flJumpMod, mod_jump_height );
 	// Weapon-restricted version
+#if !defined(QUIVER_DLL)
 	CTFWeaponBase *pWpn = m_pTFPlayer->GetActiveTFWeapon();
+#endif
 	if ( pWpn )
 	{
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWpn, flJumpMod, mod_jump_height_from_weapon );

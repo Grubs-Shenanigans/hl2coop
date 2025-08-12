@@ -236,9 +236,9 @@ CEconItemView* CTFInventoryManager::AddSoloItem(int id, bool bWhitelisted)
 {
 	CEconItemView* pItemView = new CEconItemView;
 	CEconItem* pItem = new CEconItem;
+	pItem->SetDefinitionIndex(id);
 	pItem->SetItemID(id);
 	pItem->m_unAccountID = 0;
-	pItem->m_unDefIndex = id;
 	pItem->SetFlags(kEconItemFlag_NonEconomy);
 #if defined(QUIVER_DLL)
 	if (bWhitelisted)

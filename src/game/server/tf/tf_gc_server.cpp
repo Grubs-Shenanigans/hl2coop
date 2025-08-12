@@ -4029,6 +4029,14 @@ ConVar tf_mm_trusted( "tf_mm_trusted", "0", FCVAR_NOTIFY | FCVAR_HIDDEN,
 // Backoff api
 void CTFGCServerSystem::WebapiEquipmentState_t::Backoff()
 {
+#ifdef BDSBASE
+#ifdef BDSBASE_DISABLE_BACKOFF
+	m_rtNextRequest = 0;
+	m_nBackoffSec = 0;
+	return;
+#endif
+#endif
+
 	if ( m_nBackoffSec == 0 )
 #ifdef BDSBASE
 		m_nBackoffSec = GC_BACKOFF_RATELIMIT_TIME;

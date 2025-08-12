@@ -483,7 +483,7 @@
 			}
 			"static_attrs"
 			{
-				"min_viewmodel_offset"					"10 0 -10"				
+				"min_viewmodel_offset"					"10 0 -10"	
 			}
 			"attributes"
 			{
