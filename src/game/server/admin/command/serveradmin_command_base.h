@@ -2603,7 +2603,7 @@ static void LoadBaseCommandModule()
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "god", true, NULL, "<name|#userID> -> Toggle god mode for a player", "f", GodPlayerCommand);
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "cvar", true, NULL, "<cvar name> [new value|reset] -> Modify or reset any cvar's value", "h", CVarCommand );
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "exec", true, NULL, "<filename> -> Executes a configuration file", "i", ExecFileCommand );
-	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "vscript", true, NULL, "<filename> -> Executes a vscript file or code", "i", ExecVScriptCommand);
+	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "vscript", true, NULL, "<filename> -> Executes a vscript file", "i", ExecVScriptCommand);
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "rcon", true, NULL, "<command> [value] -> Send a command as if it was written in the server console", "m", RconCommand );
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "reloadadmins", false, NULL, "-> Refresh the admin cache", "i", ReloadAdminsCommand );
 	REGISTER_ADMIN_COMMAND(COMMAND_MODULE_NAME, "help", false, "Check your console for output.\n", "-> Provide instructions on how to use the admin interface", "b", HelpPlayerCommand );
