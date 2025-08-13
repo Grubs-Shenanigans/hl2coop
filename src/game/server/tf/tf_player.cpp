@@ -19500,13 +19500,6 @@ void CTFPlayer::Taunt( taunts_t iTauntIndex, int iTauntConcept )
 			m_flTauntAttackTime = gpGlobals->curtime + 3.2f;
 			m_iTauntAttack = TAUNTATK_ENGINEER_ARM_IMPALE;
 		}
-#ifdef QUIVER_DLL
-		else if (!V_stricmp(szResponse, "scenes/workshop/player/engineer/low/taunt_texan_trickshot.vcd"))
-		{
-			m_flTauntAttackTime = gpGlobals->curtime + 3.46f;
-			m_iTauntAttack = TAUNTATK_ENGINEER_TRICKSHOT;
-		}
-#endif
 	}
 }
 

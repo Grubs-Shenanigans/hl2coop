@@ -93,37 +93,11 @@ CTFLaserPointer::~CTFLaserPointer()
 //-----------------------------------------------------------------------------
 void CTFLaserPointer::Precache()
 {
-#ifdef QUIVER_DLL
-	PrecacheModel(TF_WEAPON_TAUNT_WRANGLER_REVOLVER_MODEL);
-#endif
-
 	BaseClass::Precache();
 
 	PrecacheModel( LASER_DOT_SPRITE_RED );
 	PrecacheModel( LASER_DOT_SPRITE_BLUE );
 }
-
-#ifdef QUIVER_DLL
-#ifdef CLIENT_DLL
-//-----------------------------------------------------------------------------
-// Purpose:
-// ----------------------------------------------------------------------------
-int CTFLaserPointer::GetWorldModelIndex(void)
-{
-	// Engineer guitar support.
-	CTFPlayer* pPlayer = ToTFPlayer(GetOwner());
-	if (pPlayer && pPlayer->GetPlayerClass() && (pPlayer->GetPlayerClass()->GetClassIndex() == TF_CLASS_ENGINEER) &&
-		(pPlayer->m_Shared.InCond(TF_COND_TAUNTING)) && (pPlayer->m_Shared.GetTauntIndex() == TAUNT_BASE_WEAPON))
-	{
-		// While we are taunting, replace our normal world model with the guitar.
-		m_iWorldModelIndex = modelinfo->GetModelIndex(TF_WEAPON_TAUNT_WRANGLER_REVOLVER_MODEL);
-		return m_iWorldModelIndex;
-	}
-
-	return BaseClass::GetWorldModelIndex();
-}
-#endif
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose:
