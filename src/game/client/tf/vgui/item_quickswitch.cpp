@@ -432,6 +432,12 @@ void CItemQuickSwitchPanel::CloseQS( void )
 			// Tell the GC to tell server that we should respawn if we're in a respawn room
 		}
 
+#ifdef BDSBASE
+#ifdef INVENTORY_VIA_WEBAPI
+		TFInventoryManager()->QueueGCInventoryChangeNotification();
+#endif
+#endif
+
 		// Send the preset panel a msg so it can save the change
 		CEconItemView *pCurItemData = TFInventoryManager()->GetItemInLoadoutForClass( m_iClass, m_iSlot );
 		if ( pCurItemData )

@@ -4029,14 +4029,6 @@ ConVar tf_mm_trusted( "tf_mm_trusted", "0", FCVAR_NOTIFY | FCVAR_HIDDEN,
 // Backoff api
 void CTFGCServerSystem::WebapiEquipmentState_t::Backoff()
 {
-#ifdef BDSBASE
-#ifdef BDSBASE_DISABLE_BACKOFF
-	m_rtNextRequest = 0;
-	m_nBackoffSec = 0;
-	return;
-#endif
-#endif
-
 	if ( m_nBackoffSec == 0 )
 #ifdef BDSBASE
 		m_nBackoffSec = GC_BACKOFF_RATELIMIT_TIME;
@@ -4049,7 +4041,7 @@ void CTFGCServerSystem::WebapiEquipmentState_t::Backoff()
 	m_rtNextRequest = CRTime::RTime32TimeCur() + m_nBackoffSec;
 
 #ifdef BDSBASE
-	DevWarning("[GC SERVER] Backing off for an additional %i seconds.\n", m_nBackoffSec);
+	DevWarning("Backing off for an additional %i seconds.\n", m_nBackoffSec);
 #endif
 }
 
@@ -4178,6 +4170,9 @@ void CTFGCServerSystem::WebapiEquipmentThinkRequest( CSteamID steamID, WebapiEqu
 		SteamAPICall_t callResult;
 		if ( !SteamHTTP()->SendHTTPRequest( state.m_hEquipmentRequest, &callResult ) )
 		{
+#ifdef BDSBASE
+			DevWarning("Equipment request failed.\n");
+#endif
 			state.Backoff();
 			return;
 		}
@@ -4202,6 +4197,9 @@ void CTFGCServerSystem::WebapiEquipmentThinkRequest( CSteamID steamID, WebapiEqu
 		// Don't allow spamming this api -- wait 20 seconds before we ask gc for items again
 		state.RequestSucceeded();
 		state.Backoff();
+#ifdef BDSBASE
+		DevWarning("Inventory received: backing off before another request.\n");
+#endif
 		state.m_eState = kWebapiEquipmentState_WaitingForClientRequest;
 		break;
 
@@ -4245,8 +4243,16 @@ void CTFGCServerSystem::OnWebapiEquipmentReceived( CSteamID steamID, HTTPRequest
 	state.Backoff();
 	state.m_eState = kWebapiEquipmentState_RequestInventory;
 
+#ifdef BDSBASE
+	if (!SteamHTTP())
+	{
+		DevWarning("Could not access HTTP API.\n");
+		return;
+	}
+#else
 	if ( !SteamHTTP() )
 		return;
+#endif
 
 	if( bIOFailure || !pInfo || state.m_hEquipmentRequest != pInfo->m_hRequest )
 	{
@@ -4255,6 +4261,9 @@ void CTFGCServerSystem::OnWebapiEquipmentReceived( CSteamID steamID, HTTPRequest
 		{
 			SteamHTTP()->ReleaseHTTPRequest( state.m_hEquipmentRequest );
 		}
+#ifdef BDSBASE
+		DevWarning("Equipment state request invalid.\n");
+#endif
 		return;
 	}
 
@@ -4262,6 +4271,9 @@ void CTFGCServerSystem::OnWebapiEquipmentReceived( CSteamID steamID, HTTPRequest
 	if ( !pInfo->m_bRequestSuccessful || pInfo->m_eStatusCode != k_EHTTPStatusCode200OK )
 	{
 		SteamHTTP()->ReleaseHTTPRequest( state.m_hEquipmentRequest );
+#ifdef BDSBASE
+		DevWarning("Equipment state request failed.\n");
+#endif
 		return;
 	}
 
@@ -4290,6 +4302,30 @@ void CTFGCServerSystem::OnWebapiEquipmentReceived( CSteamID steamID, HTTPRequest
 	case k_EResultOK:
 		break;
 
+#ifdef BDSBASE
+	case k_EResultFail:
+	{
+		DevWarning("Equipment response failed.\n");
+		return; // will retry after backoff timer expires
+	}
+
+	case k_EResultValueOutOfRange:
+	{
+
+		// client gave us garbage?  Let's give them the benefit of the doubt and try again.
+		DevWarning("Equipment request from client failed.\n");
+		state.m_eState = kWebapiEquipmentState_NotifyClientOfFailure;
+		return;
+	}
+
+	case k_EResultNotLoggedOn:
+	{
+		// Ticket didn't authenticate successfully, ask them to send us a new one
+		DevWarning("Equipment request authentication failed.\n");
+		state.m_eState = kWebapiEquipmentState_NotifyClientOfFailure;
+		return;
+	}
+#else
 	case k_EResultFail:
 		return; // will retry after backoff timer expires
 
@@ -4302,6 +4338,7 @@ void CTFGCServerSystem::OnWebapiEquipmentReceived( CSteamID steamID, HTTPRequest
 		// Ticket didn't authenticate successfully, ask them to send us a new one
 		state.m_eState = kWebapiEquipmentState_NotifyClientOfFailure;
 		return;
+#endif
 
 	default:
 	{
@@ -4446,6 +4483,28 @@ void CTFGCServerSystem::SDK_ApplyLocalLoadout(CGCClientSharedObjectCache* pCache
 #endif
 		}
 	}
+
+#ifdef BDSBASE
+	// Copied from CGC_RespawnPostLoadoutChange
+	// Find the player with this steamID
+
+	CSteamID tmpID;
+	for (int i = 1; i <= gpGlobals->maxClients; i++)
+	{
+		CTFPlayer* pPlayer = ToTFPlayer(UTIL_PlayerByIndex(i));
+		if (!pPlayer)
+			continue;
+
+		if (!pPlayer->GetSteamID(&tmpID))
+			continue;
+
+		if (tmpID == playerSteamID && pPlayer->GetRespawnOnLoadoutChanges())
+		{
+			pPlayer->CheckInstantLoadoutRespawn();
+			break;
+		}
+	}
+#endif
 }
 
 #endif // #ifdef ENABLE_GC_MATCHMAKING

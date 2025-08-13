@@ -154,7 +154,11 @@ void CLoadoutPresetPanel::LoadPreset( int iPresetIndex )
 
 	if (m_pClassLoadoutPanel)
 	{
+#ifdef BDSBASE
+		m_pClassLoadoutPanel->OnLoadoutUpdate();
+#else
 		m_pClassLoadoutPanel->UpdateModelPanels();
+#endif
 	}
 }
 

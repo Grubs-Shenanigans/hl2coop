@@ -308,14 +308,6 @@ void CTFGCClientSystem::InvalidatePingData()
 // Backoff api
 void CTFGCClientSystem::WebapiInventoryState_t::Backoff()
 {
-#ifdef BDSBASE
-#ifdef BDSBASE_DISABLE_BACKOFF
-	m_rtNextRequest = 0;
-	m_nBackoffSec = 0;
-	return;
-#endif
-#endif
-
 	if (m_nBackoffSec == 0)
 #ifdef BDSBASE
 		m_nBackoffSec = GC_BACKOFF_RATELIMIT_TIME;
@@ -328,7 +320,7 @@ void CTFGCClientSystem::WebapiInventoryState_t::Backoff()
 	m_rtNextRequest = CRTime::RTime32TimeCur() + m_nBackoffSec;
 
 #ifdef BDSBASE
-	DevWarning("[GC CLIENT] Backing off for an additional %i seconds.\n", m_nBackoffSec);
+	DevWarning("Backing off for an additional %i seconds.\n", m_nBackoffSec);
 #endif
 }
 
@@ -370,6 +362,9 @@ void CTFGCClientSystem::WebapiInventoryThink()
 		state.m_hSteamAuthTicket = SteamUser()->GetAuthTicketForWebApi( "tf2sdk" );
 		if ( state.m_hSteamAuthTicket == k_HAuthTicketInvalid )
 		{
+#ifdef BDSBASE
+			DevWarning("Steam auth ticket request invalid.\n");
+#endif
 			state.Backoff();
 			return;
 		}
@@ -433,6 +428,9 @@ void CTFGCClientSystem::WebapiInventoryThink()
 		SteamAPICall_t callResult;
 		if ( !SteamHTTP()->SendHTTPRequest( state.m_hInventoryRequest, &callResult ) )
 		{
+#ifdef BDSBASE
+			DevWarning("Steam inventory request failed.\n");
+#endif
 			state.Backoff();
 			return;
 		}
@@ -646,12 +644,26 @@ void CTFGCClientSystem::OnWebapiAuthTicketReceived( GetTicketForWebApiResponse_t
 	state.m_eState = kWebapiInventoryState_RequestAuthToken;
 
 	// Check that the request succeeded
+#ifdef BDSBASE
+	if (pInfo->m_eResult != k_EResultOK)
+	{
+		DevWarning("Steam auth ticket failed.\n");
+		return;
+	}
+
+	if (pInfo->m_cubTicket < 0 || pInfo->m_cubTicket > pInfo->k_nCubTicketMaxLength)
+	{
+		DevWarning("Steam auth ticket invalid.\n");
+		return;
+	}
+#else
 	if ( pInfo->m_eResult != k_EResultOK )
 		return;
 
 	// Validate the token makes sense
 	if ( pInfo->m_cubTicket < 0 || pInfo->m_cubTicket > pInfo->k_nCubTicketMaxLength )
 		return;
+#endif
 
 	// Copy the token
 	state.m_bufAuthToken.SetCount( pInfo->m_cubTicket );
@@ -676,6 +688,19 @@ void CTFGCClientSystem::OnWebapiServerAuthTicketReceived( GetTicketForWebApiResp
 	state.Backoff();
 	state.m_eState = kWebapiInventoryState_RequestServerAuthToken;
 
+#ifdef BDSBASE
+	if (pInfo->m_eResult != k_EResultOK)
+	{
+		DevWarning("Steam server auth ticket failed.\n");
+		return;
+	}
+
+	if (pInfo->m_cubTicket < 0 || pInfo->m_cubTicket > pInfo->k_nCubTicketMaxLength)
+	{
+		DevWarning("Steam server auth ticket invalid.\n");
+		return;
+	}
+#else
 	// Check that the request succeeded
 	if ( pInfo->m_eResult != k_EResultOK )
 		return;
@@ -683,6 +708,7 @@ void CTFGCClientSystem::OnWebapiServerAuthTicketReceived( GetTicketForWebApiResp
 	// Validate the token makes sense
 	if ( pInfo->m_cubTicket < 0 || pInfo->m_cubTicket > pInfo->k_nCubTicketMaxLength )
 		return;
+#endif
 
 	// Copy the token
 	state.m_bufServerAuthToken.SetCount( pInfo->m_cubTicket );
@@ -731,6 +757,9 @@ void CTFGCClientSystem::OnWebapiInventoryReceived( HTTPRequestCompleted_t* pInfo
 
 	if ( !pInfo->m_bRequestSuccessful || pInfo->m_eStatusCode != k_EHTTPStatusCode200OK )
 	{
+#ifdef BDSBASE
+		DevWarning("Steam inventory request failed.\n");
+#endif
 		SteamHTTP()->ReleaseHTTPRequest( pInfo->m_hRequest );
 		return;
 	}
@@ -760,6 +789,21 @@ void CTFGCClientSystem::OnWebapiInventoryReceived( HTTPRequestCompleted_t* pInfo
 	case k_EResultOK:
 		break;
 
+#ifdef BDSBASE
+	case k_EResultFail:
+	{
+		DevWarning("Steam inventory response failed.\n");
+		return; // will retry after backoff timer expires
+	}
+
+	case k_EResultNotLoggedOn:
+	{
+		// re-request authentication after backoff time
+		DevWarning("Steam inventory authentication failed.\n");
+		state.m_eState = kWebapiInventoryState_RequestAuthToken;
+		return;
+	}
+#else
 	case k_EResultFail:
 		return; // will retry after backoff timer expires
 
@@ -767,6 +811,7 @@ void CTFGCClientSystem::OnWebapiInventoryReceived( HTTPRequestCompleted_t* pInfo
 		// re-request authentication after backoff time
 		state.m_eState = kWebapiInventoryState_RequestAuthToken;
 		return;
+#endif
 
 	default:
 	{

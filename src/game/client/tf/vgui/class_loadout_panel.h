@@ -77,6 +77,10 @@ public:
 	virtual void OnNavigateTo( const char* panelName ) OVERRIDE;
 	virtual void OnNavigateFrom( const char* panelName ) OVERRIDE;
 
+#ifdef BDSBASE
+	void OnLoadoutUpdate(void);
+#endif
+
 	void		 SetClass( int iClass );
 	void		 SetTeam( int iTeam );
 

@@ -833,6 +833,12 @@ void CEquipGrapplingHookNotification::Accept()
 	}
 
 	TFInventoryManager()->EquipItemInLoadout( pLocalPlayer->GetPlayerClass()->GetClassIndex(), LOADOUT_POSITION_ACTION, iItemId );
+
+#ifdef BDSBASE
+#ifdef INVENTORY_VIA_WEBAPI
+	TFInventoryManager()->QueueGCInventoryChangeNotification();
+#endif
+#endif
 	
 	// Tell the GC to tell server that we should respawn if we're in a respawn room
 

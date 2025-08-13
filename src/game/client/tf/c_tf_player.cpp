@@ -211,7 +211,11 @@ ConVar cl_autoreload( "cl_autoreload", "1", FCVAR_USERINFO | FCVAR_ARCHIVE, "Whe
 ConVar cl_holdzoom("cl_holdzoom", "0", FCVAR_USERINFO | FCVAR_ARCHIVE, "When set to 1, sniper rifle will zoom as long as you hold the zoom button.");
 #endif
 
+#ifdef BDSBASE
+ConVar tf_respawn_on_loadoutchanges("tf_respawn_on_loadoutchanges", "1", FCVAR_CLIENTDLL | FCVAR_ARCHIVE | FCVAR_USERINFO, "When set to 1, you will automatically respawn whenever you change loadouts inside a respawn zone.");
+#else
 ConVar tf_respawn_on_loadoutchanges( "tf_respawn_on_loadoutchanges", "1", FCVAR_ARCHIVE, "When set to 1, you will automatically respawn whenever you change loadouts inside a respawn zone." );
+#endif
 
 ConVar sb_dontshow_maxplayer_warning( "sb_dontshow_maxplayer_warning", "0", FCVAR_ARCHIVE );
 ConVar sb_close_browser_on_connect( "sb_close_browser_on_connect", "1", FCVAR_ARCHIVE );

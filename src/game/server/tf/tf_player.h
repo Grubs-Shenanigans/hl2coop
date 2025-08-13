@@ -272,6 +272,9 @@ public:
 	void				SetRememberActiveWeapon( bool bRememberActiveWeapon ) { m_bRememberActiveWeapon = bRememberActiveWeapon; }
 
 #ifdef BDSBASE
+	void				SetRespawnOnLoadoutChanges(bool bRespawnOnLoadoutChange) { m_bRespawnOnLoadoutChange = bRespawnOnLoadoutChange; }
+	bool				GetRespawnOnLoadoutChanges() const { return m_bRespawnOnLoadoutChange; }
+
 	virtual void		Regenerate(bool bRefillHealthAndAmmo = true);
 #else
 	void				Regenerate(bool bRefillHealthAndAmmo = true);
@@ -1354,6 +1357,9 @@ private:
 	bool				m_bSwitchedClass;
 	bool				m_bRememberLastWeapon;
 	bool				m_bRememberActiveWeapon;
+#ifdef BDSBASE
+	bool				m_bRespawnOnLoadoutChange;
+#endif
 	int					m_iActiveWeaponTypePriorToDeath;
 
 	CHandle< CTFWeaponBuilder > m_hWeaponBuilder;

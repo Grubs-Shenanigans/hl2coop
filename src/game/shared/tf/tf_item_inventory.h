@@ -245,6 +245,10 @@ public:
 	CPlayerInventory	*GetLocalInventory( void ) { return &m_LocalInventory; }
 	CTFPlayerInventory	*GetLocalTFInventory( void );
 
+#ifdef BDSBASE
+	void				QueueGCInventoryChangeNotification();
+#endif
+
 	// Try and equip the specified item in the specified class's loadout slot
 	bool				EquipItemInLoadout( int iClass, int iSlot, itemid_t iItemID );
 
@@ -258,6 +262,10 @@ public:
 	virtual int			GetBackpackPositionFromBackend( uint32 iBackendPosition ) { return ExtractBackpackPositionFromBackend(iBackendPosition); }
 
 	virtual void		UpdateInventoryEquippedState(CPlayerInventory *pInventory, uint64 ulItemID, equipped_class_t unClass, equipped_slot_t unSlot);
+
+#ifdef BDSBASE
+	float			m_flQueuedGCNotificationTime;
+#endif
 
 private:
 	CTFPlayerInventory	m_LocalInventory;
