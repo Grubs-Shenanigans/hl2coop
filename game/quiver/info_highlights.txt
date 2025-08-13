@@ -114,8 +114,8 @@ Unlockable weapon balance changes:
 - Made the Eviction Notice do 33% less damage against armor.
 - Removed the Neon Annihilator's damage against sappers.
 - Upon covering enemies with gas, enemies now have a 50% fire damage vulnerability.
-- Decreased the Gas Passer's charge rate from 60 seconds to 45 seconds.
-- Decreased the Gas Passer's damage requirement from 750 to 350.
+- Decreased the Gas Passer's charge rate from 60 seconds to 40 seconds.
+- Decreased the Gas Passer's damage requirement from 750 to 450.
 - Fixed a bug where the Gas Passer's gas can cover people in gas through spawnrooms.
 	- The throwing through walls bug has been fixed as well! It's been fixed a while back.
 - Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
@@ -124,6 +124,8 @@ Unlockable weapon balance changes:
 - The Winger now has a 50% reduction to your bunnyhop speed boost.
 - Decreased the The Winger's clip size from 60% to 50%.
 - Increased the Thermal Thruster's deploy and holster speed by 50%
+- Increased Mad Milk recharge time to 35 seconds
+- Reduced Gas Passer gas cloud lifetime from 5 seconds to 4 seconds
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

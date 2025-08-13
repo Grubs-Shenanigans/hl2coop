@@ -37,7 +37,7 @@ Whitelists:
 	- The Winger
 	- The Thermal Thruster
 	- Ali Baba's Wee Booties/The Bootlegger
-	- Eyelander/Horseless Headless Horsemann's Headtaker/Nessie's Nine Iron
+	- The Eyelander/Horseless Headless Horsemann's Headtaker/Nessie's Nine Iron
 	- The Scotsman's Skullcutter
 	- The Claidheamh Mòr
 	- The Half-Zatoichi
@@ -46,6 +46,7 @@ Whitelists:
 	- The Splendid Screen
 	- The Tide Turner
 	- The Natascha
+	- Mad Milk
 
 Blacklists:
 	- The Spy-Cicle
@@ -123,8 +124,8 @@ Details:
 - Fixed a bug where offline practice variables reset upon closing a background map.
 - Removed the Neon Annihilator's damage against sappers.
 - Upon covering enemies with gas, enemies now have a 50% fire damage vulnerability.
-- Decreased the Gas Passer's charge rate from 60 seconds to 45 seconds.
-- Decreased the Gas Passer's damage requirement from 750 to 350.
+- Decreased the Gas Passer's charge rate from 60 seconds to 40 seconds.
+- Decreased the Gas Passer's damage requirement from 750 to 450.
 - Fixed a bug where the Gas Passer's gas can cover people in gas through spawnrooms.
 	- The throwing through walls bug has been fixed as well! It's been fixed a while back.
 - Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
@@ -143,6 +144,8 @@ Details:
 - Moved the Ludmila's stats to the Natascha, and removed the Ludmila.
 - Disabled texture streaming by default.
 - Increased the Thermal Thruster's deploy and holster speed by 50%
+- Increased Mad Milk recharge time to 35 seconds
+- Reduced Gas Passer gas cloud lifetime from 5 seconds to 4 seconds
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

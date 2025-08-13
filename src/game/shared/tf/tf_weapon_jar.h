@@ -56,7 +56,11 @@ public:
 	virtual CBaseEntity *FireJar( CTFPlayer *pPlayer );
 	virtual void		TossJarThink( void );
 
+#if defined(QUIVER_DLL)
+	virtual float		InternalGetEffectBarRechargeTime(void) { return 35.1; }
+#else
 	virtual float		InternalGetEffectBarRechargeTime( void ) { return 20.1; }
+#endif
 
 	virtual const char*			GetEffectLabelText( void ) { return "#TF_JAR"; }
 
