@@ -408,7 +408,6 @@ criterion "WeaponIsKritzkrieg" "item_name" "The Kritzkrieg" "required" weight 10
 criterion "WeaponIsBow" "item_type_name" "#TF_Weapon_CompoundBow" "required" weight 10
 criterion "WeaponIsEqualizer" "item_name" "The Equalizer" "required" weight 10
 criterion "WeaponIsEscapePlan" "item_name" "The Escape Plan" "required" weight 10
-criterion "WeaponIsVitalityGlitch" "item_name" "Vitality Glitch" "required" weight 10
 criterion "WeaponIsDirectHit" "item_name" "The Direct Hit" "required" weight 10
 criterion "WeaponIsBeggarsBazooka" "item_name" "The Beggar's Bazooka" "required" weight 10
 criterion "WeaponIsBanner" "item_name" "The Buff Banner" "required" weight 10
@@ -509,6 +508,9 @@ criterion "WeaponIsMutatedMilk" "item_name" "Mutated Milk" "required" weight 10
 criterion "WeaponIsDragonsFury" "item_name" "The Dragon's Fury" "required" weight 10
 criterion "WeaponIsGasCan" "item_name" "The Gas Passer" "required" weight 10
 criterion "WeaponIsSlap" "item_name" "The Hot Hand" "required" weight 10
+
+//QUIVER CUSTOM
+criterion "WeaponIsVitalityGlitch" "item_name" "Vitality Glitch" "required" weight 10
 
 //Custom healed concept and critical hit
 criterion "IsBeingHealed" "beinghealed" "1" "required"

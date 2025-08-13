@@ -180,6 +180,11 @@ enum
 
 #define TF_WEAPON_TAUNT_FRONTIER_JUSTICE_GUITAR_MODEL	"models/player/items/engineer/guitar.mdl"
 
+#ifdef QUIVER_DLL
+//START PRAYIN BOY!
+#define TF_WEAPON_TAUNT_WRANGLER_REVOLVER_MODEL			"models/workshop/player/items/engineer/taunt_texan_trickshot/taunt_texan_trickshot.mdl"
+#endif
+
 //-----------------------------------------------------------------------------
 // Used in calculating the health percentage of a player
 //-----------------------------------------------------------------------------

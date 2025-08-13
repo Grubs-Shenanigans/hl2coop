@@ -444,6 +444,10 @@
 	{
 		scene "scenes/player/engineer/low/taunt09.vcd"
 	}
+	response "EngineerTauntTrickshot"
+	{
+		scene "scenes/workshop/player/engineer/low/taunt_texan_trickshot.vcd"
+	}
 
 	rule EngineerTauntPlayerPrimary
 	{
@@ -483,7 +487,7 @@
 	rule EngineerTauntLaserPointer
 	{
 		criteria ConceptPlayerTaunt IsEngineer WeaponIsLaserPointer
-		response EngineerTauntSecondary
+		response EngineerTauntTrickshot
 	}
 	rule EngineerTauntHalloween
 	{

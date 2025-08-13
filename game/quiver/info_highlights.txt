@@ -127,6 +127,8 @@ Unlockable weapon balance changes:
 - Increased Mad Milk recharge time to 35 seconds
 - Reduced Gas Passer gas cloud lifetime from 5 seconds to 4 seconds
 - Added a 25% reload time increase penalty to the Enforcer.
+- The Pretty Boy's Pocket Pistol is now usable by the Engineer.
+- Added the Texan Trickshot as a kill taunt to the Wrangler.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

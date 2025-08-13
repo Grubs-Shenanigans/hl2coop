@@ -69,6 +69,12 @@ public:
 	virtual bool UsesClipsForAmmo1( void ) const { return false; }
 	virtual bool UsesClipsForAmmo2( void ) const { return false; }
 
+#ifdef QUIVER_DLL
+#ifdef CLIENT_DLL
+	int			GetWorldModelIndex(void);
+#endif
+#endif
+
 #ifdef GAME_DLL
 	CLaserDot*	GetLaserDot() { return m_hLaserDot.Get(); }
 	bool		HasLaserDot() { return GetLaserDot()?true:false; }

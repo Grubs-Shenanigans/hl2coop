@@ -65,6 +65,10 @@ public:
 	virtual int		GetWeaponID( void ) const			{ return TF_WEAPON_PISTOL_SCOUT; }
 };
 
+#ifdef BDSBASE
+#define SCOUTPRIMARY_MINPUSHDIST 50.0f
+#endif
+
 class CTFPistol_ScoutPrimary : public CTFPistol_Scout
 {
 public:

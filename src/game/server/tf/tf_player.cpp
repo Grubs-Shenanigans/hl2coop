@@ -19486,12 +19486,27 @@ void CTFPlayer::Taunt( taunts_t iTauntIndex, int iTauntConcept )
 		{
 			m_flTauntAttackTime = gpGlobals->curtime + 3.695f;
 			m_iTauntAttack = TAUNTATK_ENGINEER_GUITAR_SMASH;
+#ifdef BDSBASE
+			CTFWeaponBase* pWeapon = GetActiveTFWeapon();
+			if (pWeapon)
+			{
+				// If there's no prop scene, our weapon is being repurposed
+				pWeapon->SetIsBeingRepurposedForTaunt(true);
+			}
+#endif
 		}
 		else if ( !V_stricmp( szResponse, "scenes/player/engineer/low/taunt09.vcd" ) )
 		{
 			m_flTauntAttackTime = gpGlobals->curtime + 3.2f;
 			m_iTauntAttack = TAUNTATK_ENGINEER_ARM_IMPALE;
 		}
+#ifdef QUIVER_DLL
+		else if (!V_stricmp(szResponse, "scenes/workshop/player/engineer/low/taunt_texan_trickshot.vcd"))
+		{
+			m_flTauntAttackTime = gpGlobals->curtime + 3.46f;
+			m_iTauntAttack = TAUNTATK_ENGINEER_TRICKSHOT;
+		}
+#endif
 	}
 }
 
@@ -20465,6 +20480,15 @@ void CTFPlayer::DoTauntAttack( void )
 				pEnt->TakeDamage( CTakeDamageInfo( this, this, GetActiveTFWeapon(), vecForward * 12, WorldSpaceCenter(), 500.0f, DMG_CLUB, TF_DMG_CUSTOM_TAUNTATK_ENGINEER_GUITAR_SMASH ) );
 			}
 		}
+
+#ifdef BDSBASE
+		CTFWeaponBase* pWeapon = GetActiveTFWeapon();
+		if (pWeapon)
+		{
+			// If there's no prop scene, our weapon is being repurposed
+			pWeapon->SetIsBeingRepurposedForTaunt(false);
+		}
+#endif
 	}
 	else if ( iTauntAttack == TAUNTATK_SHOW_ITEM )
 	{

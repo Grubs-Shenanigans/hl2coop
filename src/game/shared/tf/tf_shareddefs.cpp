@@ -1691,6 +1691,24 @@ wpntranslation_class_weapons_t pszWpnEntTranslationList[] =
 		}
 	},
 
+#ifdef QUIVER_DLL
+	{
+		"tf_weapon_handgun_scout_secondary",
+		{
+			"",							// TF_CLASS_UNDEFINED = 0,
+			"tf_weapon_handgun_scout_secondary",	// TF_CLASS_SCOUT,
+			"",							// TF_CLASS_SNIPER,
+			"",							// TF_CLASS_SOLDIER,
+			"",							// TF_CLASS_DEMOMAN,
+			"",							// TF_CLASS_MEDIC,
+			"",							// TF_CLASS_HEAVYWEAPONS,
+			"",							// TF_CLASS_PYRO,
+			"",							// TF_CLASS_SPY,
+			"tf_weapon_pistol",			// TF_CLASS_ENGINEER,		
+		}
+	},
+#endif
+
 	{
 		"tf_weapon_shovel",
 		{

@@ -157,7 +157,11 @@ void CTFPistol_ScoutPrimary::Push( void )
 		const Vector vHull = Vector( 16.f, 16.f, 16.f );
 		trace_t trace;
 
+#ifdef BDSBASE
+		float flDist = SCOUTPRIMARY_MINPUSHDIST;
+#else
 		float flDist = 50.f;
+#endif
 		UTIL_TraceHull( vecEyes, vecEyes + vecForward * flDist,  -vHull, vHull, MASK_SOLID, &traceFilter, &trace );
 		
 		bool bDebug = false;

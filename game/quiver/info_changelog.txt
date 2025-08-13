@@ -147,6 +147,10 @@ Details:
 - Increased Mad Milk recharge time to 35 seconds
 - Reduced Gas Passer gas cloud lifetime from 5 seconds to 4 seconds
 - Added a 25% reload time increase penalty to the Enforcer.
+- The Pretty Boy's Pocket Pistol is now usable by the Engineer.
+- Added the Texan Trickshot as a kill taunt to the Wrangler.
+- Fixed the Frontier Justice's taunt not correctly hiding the guitar.
+- Fixed bots activating the Shortstop's Shove at the wrong distance.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
