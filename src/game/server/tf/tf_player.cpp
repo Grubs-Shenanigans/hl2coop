@@ -19910,7 +19910,11 @@ void CTFPlayer::DoTauntAttack( void )
 						// don't stun giants
 						if ( !pVictim->IsMiniBoss() )
 						{
+#ifdef BDSBASE
+							pVictim->m_Shared.StunPlayer(3.0f, 1.0, TF_STUN_BOTH | TF_STUN_NO_EFFECTS | TF_STUN_TAUNTKILL, this);
+#else
 							pVictim->m_Shared.StunPlayer( 3.0f, 1.0, TF_STUN_BOTH | TF_STUN_NO_EFFECTS, this );
+#endif
 						}
 
 						if ( iTauntAttack == TAUNTATK_ENGINEER_ARM_IMPALE )
@@ -20388,7 +20392,11 @@ void CTFPlayer::DoTauntAttack( void )
 						// don't stun giants
 						if ( !pVictim->IsMiniBoss() )
 						{
+#ifdef BDSBASE
+							pVictim->m_Shared.StunPlayer(1.5f, 1.0, TF_STUN_BOTH | TF_STUN_NO_EFFECTS | TF_STUN_TAUNTKILL, this);
+#else
 							pVictim->m_Shared.StunPlayer( 1.5f, 1.0, TF_STUN_BOTH | TF_STUN_NO_EFFECTS, this );
+#endif
 						}
 						pVictim->TakeDamage( CTakeDamageInfo( this, this, GetActiveTFWeapon(), vecForward, WorldSpaceCenter(), 1, DMG_BULLET | DMG_PREVENT_PHYSICS_FORCE, TF_DMG_CUSTOM_TAUNTATK_UBERSLICE ) );
 					}

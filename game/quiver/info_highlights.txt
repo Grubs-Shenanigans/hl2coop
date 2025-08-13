@@ -34,6 +34,7 @@ Custom Weapons:
 - Heavy gets another minigun, called the Ludmila, which increases the Heavy's survivability in exchange for damage and minigun spinup time.
 - The Soldier gets a melee that's a blast from the past, The Vitality Glitch, which increases the damage and move speed of the user when on low health, in return for damage, move speed, and armor durability.
 - The Medic gets a new Medigun called the Überrüstungsheiler that heals armor on top of health. Its ÜberCharge fully repairs armor and makes it unbreakable.
+- Demoknights have a new shield called The Sun-Jumper, which allows increased armor durability and the ability to jump while charging, at the cost of his charge, his armor's repair rate, and his max armor.
 
 Stock weapon balance changes:
 - Random critical hits have been disabled. 
@@ -51,21 +52,25 @@ Stock weapon balance changes:
 
 Unlockable weapon balance changes:
 - The Shortstop's shove has a doubled pushback force (from 400 to 800).
+- Reduced the reload penalty on the Shortstop from 50% to 25%.
+- Added a 25 max health increase to the Shortstop to mirror its original set.
 - The Ullapool Caber's explosion radius was increased by 15%.
 - The Ullapool Caber's explosion damage was increased by 35%.
 - The Ullapool Caber now has a 30 second recharge.
+- Fixed Ullapool Caber explosions not counting as melee kills.
+- Fixed Ullapool Caber not using mini-crits when charging.
 - Added a taunt kill for the Ullapool Caber (The Show-and-Tell/Caber Swing).
-- Increased the Jag's repair rate penalty from 20% to 33%
+- Increased the Jag's repair rate penalty from 20% to 33%.
 - Lowered the Gunslinger's max health bonus to 15 and added a 10 max armor bonus.
 - The Gunslinger now has a 10% slower armor repair rate from dispensers.
+- Decreased Mini-Sentry range from 1100 hammer units to 825 hammer units.
 - The Enforcer's 20% damage bonus is now a normal 20% damage bonus.
-- The Wrangler's sentry disable time when switching from the weapon is now set to 1.5 seconds.
 - The per-backstab health bonus you get with the Conniver's Kunai was decreased from 140 health to 85, reducing the maximum health per backstab kill from 210 to 155.
+- Added a 20% cloak duration penalty to the Conniver's Kunai.
 - The Flare Gun now deploys 15% faster.
-- When using the Cloak and Dagger, the jumping/bunnyhopping cloak drain increases to 4x.
+- When using the Cloak and Dagger, jumping/bunnyhopping increases cloak drain to 4x its normal speed.
 - The Quick Fix now can heal surrounding teammates with its Ubercharge.
 - The Backburner now has a small move speed penalty when active.
-- Decreased Mini-Sentry range from 1100 hammer units to 825 hammer units.
 - All Australium weapons will now turn players gold.
 - The Axtinguisher now fully crits against burning targets, at the expense of 33% less damage against non-burning players.
 - Reduced the holster penalty on the Axtinguisher from 35% to 25%.
@@ -79,14 +84,9 @@ Unlockable weapon balance changes:
 - The Warrior's Spirit's 50 health on kill attribute was changed to an attribute awarding up to 10 health on hit.
 - The Warrior's Spirit now lowers the Heavy's max health by 20.
 - Lowered the Warrior's Spirit's damage bonus from 30 to 25.
-- Fixed Ullapool Caber explosions not counting as melee kills.
-- Fixed Ullapool Caber not using mini-crits when charging.
 - Restored the Dragon's Fury to its original Jungle Inferno version.
 - The Dragon's Fury now 100% crits vs players that just had their armor break, in return for 25% reduced damage against armor.
 - The Dragon's Fury's unused pressure meter now shows up by default, allowing you to view its pressure when switching weapons.
-- Fixed Gunslinger being able to pause melee hit combos when holstering the weapon.
-- Reduced the reload penalty on the Shortstop from 50% to 25%.
-- Added a 25 max health increase to the Shortstop to mirror its original set.
 - The Sandman's ball now breaks armor. It also does 100% guaranteed critical hits against armored players.
 - The Sandman's ball now marks players for death if they're unarmored.
 - The Family Business is now a multi-class shotgun for everyone except Soldier.
@@ -105,7 +105,6 @@ Unlockable weapon balance changes:
 - Added a 25% damage penalty on the Vita-Saw.
 - Removed the -10 max health penalty on the Vita-Saw.
 - Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
-- Added a 20% cloak duration penalty to the Conniver's Kunai.
 - Reverted the Ambassador's Jungle Inferno changes.
 - Increased the wait time between Ambassador shots from 1.0 seconds to 1.5 seconds.
 - Gave a 20% damage vulnerability to the Eviction Notice to replace its maximum health drain.
@@ -124,6 +123,7 @@ Unlockable weapon balance changes:
 	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 75.
 - The Winger now has a 50% reduction to your bunnyhop speed boost.
 - Decreased the The Winger's clip size from 60% to 50%.
+- Increased the Thermal Thruster's deploy and holster speed by 50%
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

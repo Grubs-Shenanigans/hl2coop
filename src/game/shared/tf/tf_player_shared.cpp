@@ -10285,11 +10285,7 @@ void CTFPlayerShared::StunPlayer(float flTime, float flReductionAmount, int iStu
 {
 #if defined(QUIVER_DLL)
 	// in quiver, disable most instances of stun unless we're in MvM or taunt killing.
-#ifdef GAME_DLL
-	if (!qf_allow_stun.GetBool() && ((TFGameRules() && !TFGameRules()->IsMannVsMachineMode()) && (pAttacker && !pAttacker->IsTaunting() && !pAttacker->IsPerformingTauntAttack()) ))
-#else
-	if (!qf_allow_stun.GetBool() && ((TFGameRules() && !TFGameRules()->IsMannVsMachineMode()) && (pAttacker && !pAttacker->IsTaunting())))
-#endif
+	if (!qf_allow_stun.GetBool() && (TFGameRules() && !TFGameRules()->IsMannVsMachineMode()) && !(iStunFlags & TF_STUN_TAUNTKILL))
 		return;
 #endif
 
@@ -12564,6 +12560,16 @@ bool CTFPlayer::Weapon_Switch( CBaseCombatWeapon *pWeapon, int viewmodelindex )
 			{
 				// this actually calls Holster() to start the anim. Then we do another Holster call when we actually switch weapon.
 				pActiveWeapon->StartHolsterAnim();
+#ifdef BDSBASE
+				//increase anim speed
+				float flAnimSpeed = 1.0f;
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pActiveWeapon, flAnimSpeed, holster_anim_speed);
+
+				if (flAnimSpeed != 1.0f)
+				{
+					GetViewModel(0)->SetPlaybackRate(flAnimSpeed);
+				}
+#endif
 				m_Shared.m_flHolsterAnimTime = gpGlobals->curtime + flHolsterAnimTime;
 				m_Shared.m_hSwitchTo = pWeapon;
 				return false;

@@ -348,6 +348,12 @@ ConVar cl_backgroundmap_music("cl_backgroundmap_music", "1", FCVAR_ARCHIVE);
 ConVar cl_backgroundmap_music_volume("cl_backgroundmap_music_volume", "1.0", FCVAR_ARCHIVE);
 ConVar cl_backgroundmap_music_duck("cl_backgroundmap_music_duck", "1.0", FCVAR_ARCHIVE);
 
+#ifdef QUIVER_DLL
+ConVar cl_no_texture_stream("cl_no_texture_stream", "1", FCVAR_ARCHIVE);
+#else
+ConVar cl_no_texture_stream("cl_no_texture_stream", "0", FCVAR_ARCHIVE);
+#endif
+
 #ifdef BDSBASE_DISCORD
 #ifdef WIN32
 // Discord RPC
@@ -960,6 +966,14 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 
 #ifndef NO_STEAM
 	ClientSteamContext().Activate();
+#endif
+
+#ifdef BDSBASE
+	// if -no_texture_stream isn't enabled, append the parm if we're using the cvar
+	if (cl_no_texture_stream.GetBool() && !CommandLine()->CheckParm("-no_texture_stream"))
+	{
+		CommandLine()->AppendParm("-no_texture_stream", NULL);
+	}
 #endif
 
 	// We aren't happy unless we get all of our interfaces.

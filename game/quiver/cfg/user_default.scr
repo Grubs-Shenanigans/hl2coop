@@ -541,13 +541,6 @@ DESCRIPTION INFO_OPTIONS
 		{ "0" }
 	}
 
-	"tf_use_match_hud"
-	{
-		"#TF_UseMatchHUD"
-		{ BOOL }
-		{ "1" }
-	}
-
 	"category5"
 	{
 		"#TF_OptionCategory_Replay"
@@ -638,6 +631,14 @@ DESCRIPTION INFO_OPTIONS
 		"#Tooltip_Multiplayer_Decal_Limit"
 		{ NUMBER 0 4096 }
 		{ "200" }
+	}
+	
+	"cl_no_texture_stream"
+	{
+		"#TF_NoTextureStream"
+		"#Tooltip_NoTextureStream"
+		{ BOOL }
+		{ "1" }
 	}
 	
 	"category7"

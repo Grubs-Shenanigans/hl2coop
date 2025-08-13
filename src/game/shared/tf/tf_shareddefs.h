@@ -1375,6 +1375,9 @@ enum
 #define TF_STUN_BY_TRIGGER					(1<<7)
 #define TF_STUN_BOTH						TF_STUN_MOVEMENT | TF_STUN_CONTROLS
 #define TF_STUN_SOUND						(1<<8)
+#ifdef BDSBASE
+#define TF_STUN_TAUNTKILL					(1<<9)
+#endif
 
 
 //-----------------

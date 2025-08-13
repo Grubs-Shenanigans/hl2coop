@@ -309,102 +309,6 @@
 				}
 			}
 		}
-		"weapon_quiver_ludmila"
-		{
-			"base_item_name"	"Ludmila"
-			"prefab"	"quiver_customweapon"
-			"first_sale_date"	"2010/09/29"
-			"item_class"	"tf_weapon_minigun"
-			"craft_class"	"weapon"
-			"craft_material_type"	"weapon"
-			"capabilities"
-			{
-				"nameable"		"1"
-			}
-			"tags"
-			{
-				"can_deal_damage"			"1"
-				"can_deal_critical_damage"	"1"
-				"can_deal_mvm_penetration_damage"	"1"
-				"can_deal_long_distance_damage"	"1"
-				"can_be_festivized"		"1"
-			}
-			"show_in_armory"	"1"
-			"item_type_name"	"#TF_Weapon_Minigun"
-			"item_name"	"#Quiver_Ludmila"
-			"item_slot"	"primary"
-			"item_logname"	"ludmila"
-			"item_iconname"	"natascha"
-			"image_inventory"	"backpack/weapons/c_models/c_w_ludmila/c_w_ludmila"
-			"image_inventory_size_w"		"128"
-			"image_inventory_size_h"		"82"
-			"model_player"	"models/weapons/c_models/c_minigun/c_minigun_natascha.mdl"
-			"use_viewmodels"	"1"
-			"model_view_override"	"models/weapons/v_models/v_ludmila_heavy.mdl"
-			"inspect_panel_dist" "88"
-			"attach_to_hands"	"1"
-			"item_quality"	"unique"
-			"used_by_classes"
-			{
-				"heavy"	"1"
-			}
-			"static_attrs"
-			{
-				"min_viewmodel_offset"		"10 0 -9"
-			}
-			"attributes"
-			{
-				"max armor additive bonus"
-				{
-					"attribute_class"	"add_maxarmor"
-					"value" "15"
-				}
-				"armor damage increased on target"
-				{
-					"attribute_class"	"mult_armor_onhit"
-					"value"	"1.20"
-				}
-				"aiming knockback resistance heavy ver"
-				{
-					"attribute_class"	"mult_aiming_knockback_resistance"
-					"value"	"0.75"
-				}
-				"damage penalty"
-				{
-					"attribute_class"	"mult_dmg"
-					"value"	"0.85"
-				}
-				"armor taken from dispensers decreased"
-				{
-					"attribute_class"	"mult_dispenser_armor_rate"
-					"value"			"0.85"
-				}
-				"armor repair cost increased on reciever"
-				{
-					"attribute_class"	"mult_armor_repair_cost_reciever"
-					"value"			"1.20"
-				}
-			}
-			"visuals"
-			{
-				"attached_models_festive"
-				{
-					"0"
-					{
-						"model"	"models/weapons/c_models/c_minigun/c_minigun_festivizer.mdl"
-					}
-				}
-				"sound_reload"	"Weapon_Minifun.Reload"
-				"sound_empty"	"Weapon_Minifun.ClipEmpty"
-				"sound_double_shot"	"Weapon_Minifun.Fire"
-				"sound_special1"	"Weapon_Minifun.WindUp"
-				"sound_special2"	"Weapon_Minifun.WindDown"
-				"sound_special3"	"Weapon_Minifun.Spin"
-				"sound_burst"	"Weapon_Minifun.FireCrit"
-			}
-			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
-			"drop_sound"		"ui/item_heavy_gun_drop.wav"
-		}
 		"weapon_quiver_pickaxe"
 		{
 			"base_item_name"	"Vitality Glitch"
@@ -803,33 +707,26 @@
 		}
 		"34403"
 		{
-			"name"		"Ludmila"
-			"prefab"	"weapon_quiver_ludmila"
-			"first_sale_date"	"2010/09/29"
-			"xifier_class_remap"	"weapon_quiver_ludmila"
-		}
-		"34404"
-		{
 			"name"		"Vitality Glitch"
 			"prefab"	"weapon_quiver_pickaxe"
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_pickaxe"
 		}
-		"34405"
+		"34404"
 		{
 			"name"		"L'Executeur"
 			"prefab"	"weapon_quiver_joke_lexecuteur"
 			"first_sale_date"	"2024/06/14"
 			"xifier_class_remap"	"weapon_quiver_joke_lexecuteur"
 		}
-		"34406"
+		"34405"
 		{
 			"name"		"Armor Healing Medigun"
 			"prefab"	"weapon_quiver_armor_medigun"
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_armor_medigun"
 		}
-		"34407"
+		"34406"
 		{
 			"name"		"Jump Shield"
 			"prefab"	"weapon_quiver_jumpshield"

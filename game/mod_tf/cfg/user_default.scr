@@ -638,6 +638,14 @@ DESCRIPTION INFO_OPTIONS
 		{ "200" }
 	}
 	
+	"cl_no_texture_stream"
+	{
+		"#TF_NoTextureStream"
+		"#Tooltip_NoTextureStream"
+		{ BOOL }
+		{ "0" }
+	}
+	
 	"category7"
 	{
 		"#TF_OptionCategory_Misc"
