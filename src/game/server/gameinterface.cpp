@@ -1377,10 +1377,11 @@ void CServerGameDLL::PreClientUpdate( bool simulating )
 			anim->DrawServerHitboxes();
 
 		}
+
 	}
 	else
 	{
-		DevMsg("sv_showhitboxes only allowed on listen servers");
+		DevMsg("sv_showhitboxes only on allowed on listen servers");
 	}
 #else
 #ifdef _DEBUG
