@@ -142,7 +142,6 @@ Details:
 - Removed the Charge Shield and the Sword, as the centralized Demoknight playstyle originally proposed for QF unfairly restricts Demoknights from playing the way they wish. 
 - Added The Sun-Jumper, which allows the Demoman to get increased armor durability and the ability to jump while charging, at the cost of his charge, his armor's repair rate, and his max armor.
 - Moved the Ludmila's stats to the Natascha, and removed the Ludmila.
-- Disabled texture streaming by default.
 - Increased the Thermal Thruster's deploy and holster speed by 50%
 - Increased Mad Milk recharge time to 35 seconds
 - Reduced Gas Passer gas cloud lifetime from 5 seconds to 4 seconds
@@ -151,6 +150,10 @@ Details:
 - Added the Texan Trickshot as a kill taunt to the Wrangler.
 - Fixed the Frontier Justice's taunt not correctly hiding the guitar.
 - Fixed bots activating the Shortstop's Shove at the wrong distance.
+- Disabled texture streaming.
+- Improved the main menu scaling on different resolutions.
+- Changed the main menu order to be more logical.
+- added the ability to go up to 130 FOV in the options.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
