@@ -1284,7 +1284,7 @@ public:
 	bool		IsSoloItem(void) const				{ return m_bSoloItem; }
 	bool		IsReskin(void) const				{ return m_bIsReskin; }
 	bool		IsWhitelisted(void) const			{ return m_bWhitelisted; }
-#if (defined(BDSBASE_CURATED_ITEMS) && (!defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS)))
+#if (defined(BDSBASE_CURATED_ITEMS) && (defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS) || defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS)))
 	bool		IsAllowed(void) const				{ return (IsWhitelisted() || IsReskin()); }
 #else
 	bool		IsAllowed(void) const				{ return IsWhitelisted(); }
