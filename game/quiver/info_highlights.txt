@@ -106,7 +106,6 @@ Unlockable weapon balance changes:
 - Removed the -10 max health penalty on the Vita-Saw.
 - Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
 - Reverted the Ambassador's Jungle Inferno changes.
-- Increased the wait time between Ambassador shots from 1.0 seconds to 1.5 seconds.
 - Gave a 20% damage vulnerability to the Eviction Notice to replace its maximum health drain.
 - Replaced the Eviction Notice's 60% damage penalty with a 15% damage bonus.
 - Removed the Eviction Notice's speed boost on hit.
@@ -129,6 +128,7 @@ Unlockable weapon balance changes:
 - Added a 25% reload time increase penalty to the Enforcer.
 - The Pretty Boy's Pocket Pistol is now usable by the Engineer.
 - Added the Texan Trickshot as a kill taunt to the Wrangler.
+- Added the Classic tracer to the Ambassador.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

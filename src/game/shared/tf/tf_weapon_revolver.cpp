@@ -82,19 +82,7 @@ bool CTFRevolver::DefaultReload( int iClipSize1, int iClipSize2, int iActivity )
 //-----------------------------------------------------------------------------
 int	CTFRevolver::GetDamageType( void ) const
 {
-#ifdef BDSBASE
-	float flLastAccuracyCheckTime = 0.0f;
-	CALL_ATTRIB_HOOK_FLOAT(flLastAccuracyCheckTime, revolver_accuracy_check_time);
-
-	if (flLastAccuracyCheckTime == 0.0f)
-	{
-		flLastAccuracyCheckTime = 1.f;
-	}
-
-	if (CanHeadshot() && (gpGlobals->curtime - m_flLastAccuracyCheck > flLastAccuracyCheckTime))
-#else
 	if ( CanHeadshot() && (gpGlobals->curtime - m_flLastAccuracyCheck > 1.f) )
-#endif
 	{
 		int iDamageType = BaseClass::GetDamageType() | DMG_USE_HITLOCATIONS;
 		return iDamageType;

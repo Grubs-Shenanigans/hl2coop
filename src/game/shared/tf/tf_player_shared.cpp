@@ -10808,7 +10808,7 @@ void CTFPlayer::MaybeDrawRailgunBeam( IRecipientFilter *pFilter, CTFWeaponBase *
 			iShouldUseClassicTracer = 0;
 		}
 
-		if (pRifle && (iShouldUseClassicTracer || pRifle->GetRifleType() == RIFLE_CLASSIC))
+		if ((pRifle && pRifle->GetRifleType() == RIFLE_CLASSIC) || iShouldUseClassicTracer)
 #else
 		if ( pRifle && ( pRifle->GetRifleType() == RIFLE_CLASSIC ) )
 #endif
