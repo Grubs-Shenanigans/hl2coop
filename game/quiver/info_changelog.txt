@@ -153,7 +153,8 @@ Details:
 - Disabled texture streaming.
 - Improved the main menu scaling on different resolutions.
 - Changed the main menu order to be more logical.
-- added the ability to go up to 130 FOV in the options.
+- Added the ability to go up to 130 FOV in the options.
+	- Note that you will see some visual glitches in the skybox on higher FOVs. This is an engine issue that cannot be fixed at this time.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
