@@ -733,7 +733,7 @@ ConVar tf_bot_models_override("tf_bot_models_override", "0", FCVAR_REPLICATED | 
 
 #if defined(QUIVER_DLL)
 ConVar qf_tdm_enable("qf_tdm_enable", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, all maps with an undefined game mode become Team Deathmatch maps.");
-ConVar qf_tdm_fraglimit("qf_tdm_fraglimit", "25", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "seperate value to set if mp_fraglimit isn't set");
+ConVar qf_tdm_fraglimit("qf_tdm_fraglimit", "30", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "seperate value to set if mp_fraglimit isn't set");
 ConVar qf_tdm_scorewar("qf_tdm_scorewar", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, points will be removed on kill. i.e. if a RED player kills a BLU player, the BLU team score will go down by 1.");
 ConVar qf_tdm_first_blood("qf_tdm_first_blood", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Rewards the first player to get a kill each round.");
 ConVar qf_tdm_overtimewait("qf_tdm_overtimewait", "6", FCVAR_REPLICATED | FCVAR_NOTIFY, "Amount of time (in seconds) the game will wait before choosing a TDM winner.");
