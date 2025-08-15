@@ -3870,7 +3870,18 @@ int CBaseObject::GetMaxHealthForCurrentLevel( void )
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( GetOwner(), iMaxHealth, mult_engy_building_health );
 	}
 	
+#ifdef BDSBASE
+	int CanUpgradeMiniBuilding = 0;
+
+	if (GetOwner())
+	{
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(GetOwner(), CanUpgradeMiniBuilding, can_upgrade_mini_building);
+	}
+
+	if (!(IsMiniBuilding() && !CanUpgradeMiniBuilding) && (GetUpgradeLevel() > 1))
+#else
 	if ( !IsMiniBuilding() && ( GetUpgradeLevel() > 1 ) )
+#endif
 	{
 		float flMultiplier = pow( UPGRADE_LEVEL_HEALTH_MULTIPLIER, GetUpgradeLevel() - 1 );
 		iMaxHealth = (int)( iMaxHealth * flMultiplier );
