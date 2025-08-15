@@ -23,9 +23,6 @@ class C_MuzzleFlashModel;
 enum
 {
 	SHIELD_NONE = 0,
-#ifdef QUIVER_DLL
-	SHIELD_DISABLE,
-#endif
 	SHIELD_NORMAL,	// 33% damage taken
 	SHIELD_MAX,		// 10% damage taken, no inactive period
 };

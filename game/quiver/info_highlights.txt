@@ -129,6 +129,7 @@ Unlockable weapon balance changes:
 - The Pretty Boy's Pocket Pistol is now usable by the Engineer.
 - Added the Texan Trickshot as a kill taunt to the Wrangler.
 - Added the Classic tracer to the Ambassador.
+- Nerfed the Wrangler's shield's damage resistance from 67% to 40%.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

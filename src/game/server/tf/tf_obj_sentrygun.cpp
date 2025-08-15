@@ -953,11 +953,7 @@ bool CObjectSentrygun::FindTarget()
 
 	// Don't auto track to targets while under the effects of the player shield.
 	// The shield fades 3 seconds after we disengage from player control.
-#ifdef QUIVER_DLL
-	if (m_nShieldLevel == SHIELD_NORMAL || m_nShieldLevel == SHIELD_DISABLE)
-#else
 	if (m_nShieldLevel == SHIELD_NORMAL)
-#endif
 		return false;
 
 	// is there an active truce?
@@ -1761,11 +1757,7 @@ void CObjectSentrygun::SentryRotate( void )
 	if ( !MoveTurret() )
 	{
 		// Change direction
-#ifdef QUIVER_DLL
-		if ( IsDisabled() || ( m_nShieldLevel == SHIELD_NORMAL || m_nShieldLevel == SHIELD_DISABLE ) )
-#else
 		if ( IsDisabled() || m_nShieldLevel == SHIELD_NORMAL )
-#endif
 		{
 			EmitSound( "Building_Sentrygun.Disabled" );
 			m_vecGoalAngles.x = 30;
@@ -2024,11 +2016,7 @@ int CObjectSentrygun::OnTakeDamage( const CTakeDamageInfo &info )
 	CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetWeapon(), iAttackIgnoresResists, mod_pierce_resists_absorbs );
 
 	// If we are shielded due to player control, we take less damage.
-#ifdef QUIVER_DLL
-	bool bFullyShielded = ( m_nShieldLevel > SHIELD_DISABLE && !iAttackIgnoresResists ) && !HasSapper() && !IsPlasmaDisabled();
-#else
 	bool bFullyShielded = ( m_nShieldLevel > 0 && !iAttackIgnoresResists ) && !HasSapper() && !IsPlasmaDisabled();
-#endif
 	if ( bFullyShielded )
 	{
 		float flDamage = newInfo.GetDamage();

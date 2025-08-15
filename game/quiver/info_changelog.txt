@@ -155,6 +155,7 @@ Details:
 - Added the ability to go up to 130 FOV in the options.
 	- Note that you will see some visual glitches in the skybox on higher FOVs. This is an engine issue that cannot be fixed at this time.
 - Added the Classic tracer to the Ambassador.
+- Nerfed the Wrangler's shield's damage resistance from 67% to 40%
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

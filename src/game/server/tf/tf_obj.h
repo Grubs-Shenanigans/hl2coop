@@ -69,14 +69,15 @@ DECLARE_AUTO_LIST( IBaseObjectAutoList );
 enum
 {
 	SHIELD_NONE = 0,
-#ifdef QUIVER_DLL
-	SHIELD_DISABLE,
-#endif
 	SHIELD_NORMAL,	// 33% damage taken, no tracking
 	SHIELD_MAX,		// 10% damage taken, tracking
 };
 
+#ifdef QUIVER_DLL
+#define SHIELD_NORMAL_VALUE		0.60f
+#else
 #define SHIELD_NORMAL_VALUE		0.33f
+#endif
 #define SHIELD_MAX_VALUE		0.10f
 
 // ------------------------------------------------------------------------ //

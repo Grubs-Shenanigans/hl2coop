@@ -196,11 +196,7 @@ void C_ObjectSentrygun::OnDataChanged( DataUpdateType_t updateType )
 
 	if ( m_nShieldLevel != m_nOldShieldLevel || m_bRecreateShield )
 	{
-#ifdef QUIVER_DLL
-		if ( m_nShieldLevel > SHIELD_DISABLE )
-#else
 		if ( m_nShieldLevel > 0 )
-#endif
 		{
 			CreateShield();
 		}
