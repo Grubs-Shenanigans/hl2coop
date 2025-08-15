@@ -818,6 +818,20 @@ void CClassLoadoutPanel::OnKeyCodePressed( vgui::KeyCode code )
 	}
 }
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CClassLoadoutPanel::OnKeyCodeTyped(vgui::KeyCode code)
+{
+	if (code == KEY_ESCAPE)
+	{
+		OnClosing();
+	}
+
+	BaseClass::OnKeyCodeTyped(code);
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

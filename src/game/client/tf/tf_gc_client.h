@@ -354,6 +354,9 @@ private:
 
 		// Did we make any changes that we need to communicate to a server?
 		bool m_bLocalChangesApplied = false;
+#ifdef BDSBASE
+		bool m_bDidApplyLocalChanges = false;
+#endif
 
 		// Backoff
 		RTime32 m_rtNextRequest = 0;
