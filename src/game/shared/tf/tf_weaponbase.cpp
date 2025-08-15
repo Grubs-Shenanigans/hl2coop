@@ -1431,42 +1431,6 @@ bool CTFWeaponBase::ForceWeaponSwitch() const
 //-----------------------------------------------------------------------------
 void CTFWeaponBase::Detach( void )
 {
-#ifdef BDSBASE
-	CTFPlayer* pPlayer = GetTFPlayerOwner();
-	if (pPlayer)
-	{
-		bool bDetonateObjects = true;
-
-		// In MvM mode, leave engineer's buildings after he dies
-		if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
-		{
-			if (pPlayer->GetTeamNumber() != TF_TEAM_PVE_DEFENDERS)
-			{
-				bDetonateObjects = false;
-			}
-		}
-
-		// Only detonate if we are unequipping gunslinger
-		if (bDetonateObjects)
-		{
-			int iCanUpgradeMiniBuilding = 0;
-			CALL_ATTRIB_HOOK_INT_ON_OTHER(pPlayer, iCanUpgradeMiniBuilding, can_upgrade_mini_building);
-			if (iCanUpgradeMiniBuilding)
-			{
-				// Just detonate Sentries if we're a mini but we have a higher upgrade level.
-				CObjectSentrygun* pSentry = dynamic_cast<CObjectSentrygun*>(pPlayer->GetObjectOfType(OBJ_SENTRYGUN));
-				if (pSentry)
-				{
-					if (pSentry->IsMiniBuilding() && pSentry->GetUpgradeLevel() > 1)
-					{
-						pSentry->DetonateObject();
-					}
-				}
-			}
-		}
-	}
-#endif
-
 	BaseClass::Detach();
 }
 

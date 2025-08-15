@@ -2646,7 +2646,25 @@ void CBaseObject::OnRemoveSapper( void )
 //-----------------------------------------------------------------------------
 int CBaseObject::GetUpgradeMetalRequired()
 {
+#ifdef BDSBASE
+	int CanUpgradeMiniBuilding = 0;
+
+	if (GetOwner())
+	{
+		CALL_ATTRIB_HOOK_INT_ON_OTHER(GetOwner(), CanUpgradeMiniBuilding, can_upgrade_mini_building);
+	}
+
+	int iCost = GetObjectInfo(GetType())->m_UpgradeCost;
+
+	if (!(IsMiniBuilding() && !CanUpgradeMiniBuilding))
+	{
+		iCost = (iCost / 2.0f);
+	}
+
+	return iCost;
+#else
 	return GetObjectInfo( GetType() )->m_UpgradeCost;
+#endif
 }
 
 //-----------------------------------------------------------------------------
