@@ -33,9 +33,6 @@
 #include "tf_gcmessages.h"
 #include "rtime.h"
 #include "team_train_watcher.h"
-#if defined(QUIVER_DLL)
-#include "game.h"
-#endif
 
 extern ConVar tf_mm_trusted;
 
@@ -43,10 +40,6 @@ extern ConVar tf_mm_trusted;
 static ConVar tf_stats_nogameplaycheck( "tf_stats_nogameplaycheck", "0", FCVAR_NONE , "Disable normal check for valid gameplay, send stats regardless." );
 //static ConVar tf_stats_track( "tf_stats_track", "1", FCVAR_NONE, "Turn on//off tf stats tracking." );
 //static ConVar tf_stats_verbose( "tf_stats_verbose", "0", FCVAR_NONE, "Turn on//off verbose logging of stats." );
-
-#if defined(QUIVER_DLL)
-extern ConVar qf_tdm_scorewar;
-#endif
 
 CTFGameStats CTF_GameStats;
 
@@ -1348,53 +1341,6 @@ void CTFGameStats::Event_PlayerKilledOther( CBasePlayer *pAttacker, CBaseEntity 
 	{
 		IncrementStat( pPlayerAttacker, TFSTAT_KILLS_RUNECARRIER, 1 );
 	}
-
-#if defined(QUIVER_DLL)
-	// if we have a frag limit, increment the score of the team
-	// in addition, reduce the score for the victim if its a death.
-	if (fraglimit.GetInt() > 0 && 
-		TFGameRules()->IsInTDMMode() && 
-		!TFGameRules()->IsInWaitingForPlayers() && 
-			(TFGameRules()->State_Get() != GR_STATE_TEAM_WIN && 
-			TFGameRules()->State_Get() != GR_STATE_RESTART && 
-			TFGameRules()->State_Get() != GR_STATE_STALEMATE))
-	{
-		if (TFTeamMgr() && pPlayerVictim && pPlayerAttacker)
-		{
-			// suicides shouldn't add or take away from score.
-			if (pPlayerAttacker != pPlayerVictim)
-			{
-				bool bCountScore = true;
-
-				// non-wrangled sentry kills are calculated differently
-				CObjectSentrygun* sentrygun = dynamic_cast<CObjectSentrygun*>(info.GetInflictor());
-				if (sentrygun && !sentrygun->IsPlayerControlled() && !sentrygun->DoesSentryCountAsFullKill())
-				{
-					// every 2 kills counts as a kill.
-					int iKillCount = sentrygun->GetKills();
-					if ((iKillCount % 2) > 0)
-					{
-						bCountScore = false;
-					}
-				}
-
-				if (bCountScore)
-				{
-					TFTeamMgr()->AddTeamScore(pPlayerAttacker->GetTeamNumber(), 1);
-					if (qf_tdm_scorewar.GetBool())
-					{
-						TFTeamMgr()->AddTeamScore(pPlayerVictim->GetTeamNumber(), -1);
-
-						if (TFTeamMgr()->GetTeam(pPlayerVictim->GetTeamNumber())->GetScore() < 0)
-						{
-							TFTeamMgr()->GetTeam(pPlayerVictim->GetTeamNumber())->SetScore(0);
-						}
-					}
-				}
-			}
-		}
-	}
-#endif
 }
 
 void CTFGameStats::Event_KillDetail( CTFPlayer* pKiller, CTFPlayer* pVictim, CTFPlayer* pAssister, IGameEvent* event /*player_death*/, const CTakeDamageInfo &info )

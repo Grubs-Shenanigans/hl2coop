@@ -8604,7 +8604,7 @@ void CTFGameRules::Think()
 			if ( State_Get() != GR_STATE_BONUS && State_Get() != GR_STATE_TEAM_WIN && State_Get() != GR_STATE_GAME_OVER && IsInWaitingForPlayers() == false )
 			{
 #if defined(QUIVER_DLL)
-				if ( CheckFragLimit() )
+				if ( CheckFragLimit())
 					return;
 #endif
 
@@ -9785,6 +9785,24 @@ bool CTFGameRules::CheckFragLimit()
 		{
 			SetWinningTeam(pMaxTeam->GetTeamNumber(), WINREASON_WINLIMIT);
 			return true;
+		}
+		else if (InOvertime())
+		{
+			//we went into overtime. anything goes after the timer ends.
+			int iWinningTeam = TEAM_UNASSIGNED;
+			int iBlueScore = TFTeamMgr()->GetTeam(TF_TEAM_BLUE)->GetScore();
+			int iRedScore = TFTeamMgr()->GetTeam(TF_TEAM_RED)->GetScore();
+			if (iBlueScore > iRedScore)
+			{
+				iWinningTeam = TF_TEAM_BLUE;
+			}
+			else if (iRedScore > iBlueScore)
+			{
+				iWinningTeam = TF_TEAM_RED;
+			}
+
+			// if neither won, we are sent into a stalemate.
+			SetWinningTeam(iWinningTeam, WINREASON_WINLIMIT);
 		}
 	}
 
