@@ -735,6 +735,8 @@ ConVar tf_bot_models_override("tf_bot_models_override", "0", FCVAR_REPLICATED | 
 ConVar qf_tdm_enable("qf_tdm_enable", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, all maps with an undefined game mode become Team Deathmatch maps.");
 ConVar qf_tdm_fraglimit("qf_tdm_fraglimit", "25", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "seperate value to set if mp_fraglimit isn't set");
 ConVar qf_tdm_scorewar("qf_tdm_scorewar", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, points will be removed on kill. i.e. if a RED player kills a BLU player, the BLU team score will go down by 1.");
+ConVar qf_tdm_first_blood("qf_tdm_first_blood", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Rewards the first player to get a kill each round.");
+ConVar qf_tdm_overtimewait("qf_tdm_overtimewait", "6", FCVAR_REPLICATED | FCVAR_NOTIFY, "Amount of time (in seconds) the game will wait before choosing a TDM winner.");
 #endif
 
 #ifdef GAME_DLL
@@ -867,9 +869,6 @@ ConVar tf_arena_change_limit( "tf_arena_change_limit", "1", FCVAR_REPLICATED | F
 ConVar tf_arena_override_cap_enable_time( "tf_arena_override_cap_enable_time", "-1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Overrides the time (in seconds) it takes for the capture point to become enable, -1 uses the level designer specified time." );
 ConVar tf_arena_override_team_size( "tf_arena_override_team_size", "0", FCVAR_REPLICATED, "Overrides the maximum team size in arena mode. Set to zero to keep the default behavior of 1/3 maxplayers.");
 ConVar tf_arena_first_blood( "tf_arena_first_blood", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Rewards the first player to get a kill each round." );
-#if defined(QUIVER_DLL)
-ConVar qf_tdm_first_blood("qf_tdm_first_blood", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Rewards the first player to get a kill each round.");
-#endif
 extern ConVar tf_arena_preround_time;
 extern ConVar tf_arena_max_streak;
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
@@ -8604,7 +8603,7 @@ void CTFGameRules::Think()
 			if ( State_Get() != GR_STATE_BONUS && State_Get() != GR_STATE_TEAM_WIN && State_Get() != GR_STATE_GAME_OVER && IsInWaitingForPlayers() == false )
 			{
 #if defined(QUIVER_DLL)
-				if ( CheckFragLimit())
+				if (CheckTDMFragLimit())
 					return;
 #endif
 
@@ -9749,7 +9748,16 @@ bool CTFGameRules::CheckCapsPerRound()
 }
 
 #if defined(QUIVER_DLL)
-bool CTFGameRules::CheckFragLimit()
+void CTFGameRules::SetTDMOvertimeTimer()
+{
+	if (IsInTDMMode())
+	{
+		m_bTDMOvertimeTimerStarted = true;
+		m_flTDMOvertimeWait = gpGlobals->curtime + qf_tdm_overtimewait.GetFloat();
+	}
+}
+
+bool CTFGameRules::CheckTDMFragLimit()
 {
 	if (!IsInTDMMode())
 		return false;
@@ -9786,23 +9794,29 @@ bool CTFGameRules::CheckFragLimit()
 			SetWinningTeam(pMaxTeam->GetTeamNumber(), WINREASON_WINLIMIT);
 			return true;
 		}
-		else if (InOvertime())
+		else if (InOvertime() && m_bTDMOvertimeTimerStarted)
 		{
-			//we went into overtime. anything goes after the timer ends.
-			int iWinningTeam = TEAM_UNASSIGNED;
-			int iBlueScore = TFTeamMgr()->GetTeam(TF_TEAM_BLUE)->GetScore();
-			int iRedScore = TFTeamMgr()->GetTeam(TF_TEAM_RED)->GetScore();
-			if (iBlueScore > iRedScore)
+			if (m_flTDMOvertimeWait < gpGlobals->curtime)
 			{
-				iWinningTeam = TF_TEAM_BLUE;
-			}
-			else if (iRedScore > iBlueScore)
-			{
-				iWinningTeam = TF_TEAM_RED;
-			}
+				//we went into overtime. anything goes after the timer ends.
+				int iWinningTeam = TEAM_UNASSIGNED;
+				int iBlueScore = TFTeamMgr()->GetTeam(TF_TEAM_BLUE)->GetScore();
+				int iRedScore = TFTeamMgr()->GetTeam(TF_TEAM_RED)->GetScore();
+				if (iBlueScore > iRedScore)
+				{
+					iWinningTeam = TF_TEAM_BLUE;
+				}
+				else if (iRedScore > iBlueScore)
+				{
+					iWinningTeam = TF_TEAM_RED;
+				}
 
-			// if neither won, we are sent into a stalemate.
-			SetWinningTeam(iWinningTeam, WINREASON_WINLIMIT);
+				// if neither won, we are sent into a stalemate.
+				SetWinningTeam(iWinningTeam, WINREASON_WINLIMIT);
+
+				m_bTDMOvertimeTimerStarted = false;
+				m_flTDMOvertimeWait = 0.0f;
+			}
 		}
 	}
 

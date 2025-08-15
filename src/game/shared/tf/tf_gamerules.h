@@ -857,7 +857,8 @@ bool IsCreepWaveMode( void ) const;
 	bool SetPasstimeWinningTeam();
 	bool CheckCapsPerRound();
 #if defined(QUIVER_DLL)
-	bool CheckFragLimit();
+	bool CheckTDMFragLimit();
+	void SetTDMOvertimeTimer();
 #endif
 	virtual void CheckRespawnWaves();
 	virtual void PlayWinSong( int team ) OVERRIDE;
@@ -1273,6 +1274,11 @@ private:
 	CNetworkArray( MapDefIndex_t, m_nNextMapVoteOptions, 3 );
 
 	float		m_flCTFCaptureBonusTime;
+
+#if defined(QUIVER_DLL)
+	float		m_flTDMOvertimeWait;
+	bool		m_bTDMOvertimeTimerStarted;
+#endif
 public:
 
 	bool m_bControlSpawnsPerTeam[ MAX_TEAMS ][ MAX_CONTROL_POINTS ];

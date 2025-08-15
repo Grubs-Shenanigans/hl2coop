@@ -156,6 +156,7 @@ Details:
 	- Note that you will see some visual glitches in the skybox on higher FOVs. This is an engine issue that cannot be fixed at this time.
 - Added the Classic tracer to the Ambassador.
 - Nerfed the Wrangler's shield's damage resistance from 67% to 40%.
+- Improved TDM round logic during overtime. The highest scoring team is the winner, and if neither score, it'll be sent into a stalemate. All of this will be calculated after 6 seconds of wait time.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

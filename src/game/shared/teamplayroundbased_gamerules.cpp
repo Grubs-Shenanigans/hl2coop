@@ -958,6 +958,10 @@ void CTeamplayRoundBasedRules::SetOvertime( bool bOvertime )
 			pWatcher = dynamic_cast<CTeamTrainWatcher*>( gEntList.FindEntityByClassname( pWatcher, "team_train_watcher" ) );
 		}
 #endif
+
+#if defined(QUIVER_DLL)
+		TFGameRules()->SetTDMOvertimeTimer();
+#endif
 	}
 }
 
