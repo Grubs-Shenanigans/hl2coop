@@ -17,6 +17,7 @@ Highlights:
 - Disabled cosmetics, as newer cosmetics added to the base TF2 harm team recognition, alongside performance problems. However, cosmetic weapons (australiums, stranges, etc) and reskins are allowed.
 - Whitelisted weapons are now given to players even if they don't own them, allowing each player to be on an equal playing field.
 - Implemented NeoDement's Missing Killicons Pack.
+- Implemented Ultimate Visual Fix Pack.
 
 Class changes:
 - Run speeds have been increased across all 9 classes. However, one aspect remains: Heavies are the slowest, Scouts are the fastest.

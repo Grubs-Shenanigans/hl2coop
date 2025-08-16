@@ -13,6 +13,8 @@
 	"$rimlightexponent" "4"	
 	"$rimlightboost" "2"
 
+	"$glowcolor" "1"
+
 	// Cloaking
 	"$cloakPassEnabled" "1"
 	"$sheenPassEnabled" "1"
@@ -23,7 +25,6 @@
 	"$sheenmapmaskframe" 	"0"
 	"$sheenindex" 		"0"
 
-	"$glowcolor" "1"
 	"$yellow" "0"
 
 	"Proxies"

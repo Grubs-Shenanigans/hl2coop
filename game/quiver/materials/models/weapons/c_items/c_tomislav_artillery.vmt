@@ -3,12 +3,11 @@
 	"$baseTexture" "models\weapons\c_items\c_tomislav_artillery"
 	
 	"$phong" "1"
-	"$phongexponent" "25"
-	"$phongboost" ""	
+	"$phongexponent" "165"
+	"$phongboost" "3"	
 
-	"$lightwarptexture" "models\lightwarps\weapon_lightwarp"
+	"$lightwarptexture" "models/lightwarps/weapon_lightwarp"
 	"$phongfresnelranges"	"[1.5 .5 3]"
-	"$halflambert" "1"
 
 	"$envmap" "cubemaps/cubemap_sheen001"	
 	"$envmaptint" "[2.5 2.5 2.5]"
@@ -16,8 +15,8 @@
 	"$basemapalphaphongmask" "1"
 
 	"$rimlight" "1"						
-	"$rimlightexponent" "60"				
-	"$rimlightboost" ".25"	
+	"$rimlightexponent" "40"				
+	"$rimlightboost" ".5"	
 
 	"$glowcolor" "1"
 

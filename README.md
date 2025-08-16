@@ -102,6 +102,7 @@ BDSBASE_TEMP_FIXDYNAMICMODELS
 - rafradek for some bot AI changes (sigsegv-mvm) (https://github.com/rafradek/sigsegv-mvm)
 - Mastercoms for the inventory code rewrite (https://github.com/mastercomfig/tc2/commit/cc256a113abe9eb0530cc45d07aa4e00b187d5a8)
 - Missing Killicons Pack by NeoDement
+- Ultimate Visual Fix Pack by agrastiOs, Nonhuman, N-Cognito, Whurr, PieSavvy, JarateKing, and FlaminSarge
 - The Valve Developer Community for the following articles:
 https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
 https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%2526_Fixes

@@ -7,6 +7,7 @@ Credits:
 - Bad Weapon Rehabilitation for documenting weapon balance ideas that inspired some Quiver Fortress weapon balances.
 - Mudley for making the Blue Pants for ScoutBot skin (https://gamebanana.com/mods/205192)
 - Missing Killicons Pack by NeoDement
+- Ultimate Visual Fix Pack by agrastiOs, Nonhuman, N-Cognito, Whurr, PieSavvy, JarateKing, and FlaminSarge
 - The Valve Developer Community for the following articles:
 https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
 https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%2526_Fixes

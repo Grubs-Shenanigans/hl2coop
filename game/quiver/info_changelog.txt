@@ -159,6 +159,7 @@ Details:
 - Improved TDM round logic during overtime. The highest scoring team is the winner, and if neither score, it'll be sent into a stalemate. All of this will be calculated after 6 seconds of wait time.
 - Lowered the TDM round time limit from 15 minutes to 10 minutes.
 - Increased the default TDM frag limit from 25 to 30.
+- Added the Ultimate Visual Fix Pack.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
