@@ -3277,6 +3277,9 @@ void CAI_BaseNPC::RunTask( const Task_t *pTask )
 					}
 					else if (GetSmoothedVelocity().Length() > 0.01) // use an EPSILON
 					{
+#ifdef BDSBASE
+						DevWarning("use an EPSILON damnit!!\n");
+#endif
 						// wait until you land
 						break;
 					}
