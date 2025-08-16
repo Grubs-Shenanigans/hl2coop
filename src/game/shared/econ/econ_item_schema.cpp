@@ -2311,7 +2311,7 @@ m_bSoloItem(false),
 m_bIsReskin(false),
 m_bWhitelisted(false),
 m_pszViewModelOverride(NULL),
-m_bUsableByBots(false),
+m_bUsableByBots(true),
 #endif
 m_pszItemLogClassname( NULL ),
 m_pszItemIconClassname( NULL ),
