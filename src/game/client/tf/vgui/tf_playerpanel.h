@@ -28,6 +28,24 @@ public:
 	}
 };
 
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: Custom armor panel used to show spectator target's health in Tournament HUD
+//-----------------------------------------------------------------------------
+class CTFPlayerPanelGUIArmor : public CTFSpectatorGUIArmor
+{
+public:
+	CTFPlayerPanelGUIArmor(Panel* parent, const char* name) : CTFSpectatorGUIArmor(parent, name)
+	{
+	}
+
+	virtual const char* GetResFilename(void)
+	{
+		return "resource/UI/SpectatorTournamentGUIArmor.res";
+	}
+};
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: A panel representing a player, shown in tournament mode Spec GUI
 //-----------------------------------------------------------------------------

@@ -11331,6 +11331,10 @@ void CTFPlayer::CommitSuicide( bool bExplode /* = false */, bool bForce /*= fals
 	m_bSuicideExplode = bExplode;
 	m_iSuicideCustomKillFlags = TF_DMG_CUSTOM_SUICIDE;
 
+#if defined(QUIVER_DLL)
+	m_Shared.RemoveCond(QF_COND_ARMOR);
+#endif
+
 	BaseClass::CommitSuicide( bExplode, bForce );
 }
 
@@ -12971,8 +12975,9 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 	else
 	{
 		SetArmorValue(0);
-		m_Shared.RemoveCond(QF_COND_ARMOR);
 	}
+
+	m_Shared.RemoveCond(QF_COND_ARMOR);
 #endif
 
 	SpeakConceptIfAllowed( MP_CONCEPT_DIED );

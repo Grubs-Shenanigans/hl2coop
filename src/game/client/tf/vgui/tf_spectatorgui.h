@@ -45,6 +45,27 @@ public:
 	}
 };
 
+#if defined(QUIVER_DLL)
+//-----------------------------------------------------------------------------
+// Purpose: Custom armor panel used to show spectator target's armor
+//-----------------------------------------------------------------------------
+class CTFSpectatorGUIArmor : public CTFHudPlayerArmor
+{
+public:
+	CTFSpectatorGUIArmor(Panel* parent, const char* name) : CTFHudPlayerArmor(parent, name)
+	{
+	}
+
+	virtual const char* GetResFilename(void)
+	{
+		return "resource/UI/SpectatorGUIArmor.res";
+	}
+	virtual void OnThink()
+	{
+		// Do nothing. We're just preventing the base health panel from updating.
+	}
+};
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: TF Spectator UI
