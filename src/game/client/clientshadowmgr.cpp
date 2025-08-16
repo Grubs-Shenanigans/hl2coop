@@ -3943,7 +3943,7 @@ void CClientShadowMgr::ComputeShadowDepthTextures( const CViewSetup &viewSetup )
 			static int bitchCount = 0;
 			if (bitchCount < 10)
 			{
-				Warning("Too many bitches this frame!\n");
+				Warning("Too many shadow maps bitching this frame!\n");
 				bitchCount++;
 			}
 #else
