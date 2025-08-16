@@ -41,6 +41,25 @@ public:
 	}
 };
 
+#if defined(QUIVER_DLL)
+//-----------------------------------------------------------------------------
+// Purpose: Custom armor panel used in the freeze panel to show killer's armor
+//-----------------------------------------------------------------------------
+class CTFFreezePanelArmor : public CTFHudPlayerArmor
+{
+public:
+	CTFFreezePanelArmor(Panel* parent, const char* name) : CTFHudPlayerArmor(parent, name)
+	{
+	}
+
+	virtual const char* GetResFilename(void) OVERRIDE { return "resource/UI/FreezePanelKillerArmor.res"; }
+	virtual void OnThink()
+	{
+		// Do nothing. We're just preventing the base health panel from updating.
+	}
+};
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
