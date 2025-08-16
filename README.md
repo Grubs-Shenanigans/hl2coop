@@ -57,7 +57,8 @@ BDSBASE_LEGACY_MAINMENU
 
 BDSBASE_CURATED_ITEMS
 - Games: TF2
-- NOTE: you don't need to enable this to blacklist items. To blacklist items, simply add "blacklist" 1 in its item definition. 
+- NOTE: You don't need to enable this to blacklist items. To blacklist items, simply add "blacklist" 1 in its item definition.
+- NOTE: If you'd like to prevent bots from using some items, even if they are whitelisted, add "usable_by_bots" 0 to the item's definition. Note that this will get ignored in MvM.
 - Prevents non-stock items from showing up in the loadout panel and loads whitelisted items for a curated item selection. 
 - To add an item to the curated item list, simply add "whitelist" 1 in its item definition. 
 - You may re-enable cosmetics and weapon stranges, reskins, etc by using BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS. Items that represent reskins must have "reskin" set to 1 in your desired item schema definitions. 

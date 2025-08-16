@@ -4755,6 +4755,12 @@ const CEconItemDefinition* CTFBot::GiveRandomItemEx(loadout_positions_t loadoutP
 	{
 		CTFItemDefinition* pItemDef = dynamic_cast<CTFItemDefinition*>(mapItemDefs[iItem]);
 
+		if (!pItemDef->CanBeUsedByBots())
+		{
+			// if we can't use this item, don't even consider it.
+			continue;
+		}
+
 		if (pItemDef->GetEconTool())
 		{
 			// no tools plz

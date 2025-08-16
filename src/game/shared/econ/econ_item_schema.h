@@ -1289,6 +1289,7 @@ public:
 #else
 	bool		IsAllowed(void) const				{ return IsWhitelisted(); }
 #endif
+	bool		CanBeUsedByBots(void) const			{ return m_bUsableByBots; }
 #endif
 	bool		IsBundle( void ) const				{ return m_BundleInfo != NULL; }
 	bool		HasProperName( void ) const			{ return m_bProperName; }
@@ -1624,6 +1625,7 @@ private:
 	bool			m_bSoloItem;
 	bool			m_bIsReskin;
 	bool			m_bWhitelisted;
+	bool			m_bUsableByBots;
 #endif
 	bool			m_bImported;
 
