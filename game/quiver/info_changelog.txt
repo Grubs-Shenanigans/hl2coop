@@ -160,7 +160,8 @@ Details:
 - Lowered the TDM round time limit from 15 minutes to 10 minutes.
 - Increased the default TDM frag limit from 25 to 30.
 - Added the Ultimate Visual Fix Pack.
-- Fixed a bug where shields can sometimes persist after a player dies.
+- Added armor percentages to the player target ID hud.
+- Changed Armor visualization. Instead of using Vaccinator shields, the game will now add cosmetics to the player that represent armor. 
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

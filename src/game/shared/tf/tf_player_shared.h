@@ -741,6 +741,10 @@ public:
 	void SetDefaultItemChargeMeters( void );
 #endif // GAME_DLL
 
+#ifdef BDSBASE
+	void ForceRemoveShield(void);
+#endif
+
 private:
 	CNetworkVarEmbedded( localplayerscoring_t,	m_ScoreData );
 	CNetworkVarEmbedded( localplayerscoring_t,	m_RoundScoreData );
@@ -920,7 +924,9 @@ private:
 
 #if defined(QUIVER_DLL)
 	void OnAddArmor(void);
-	void OnRemoveArmor(void);
+	void AddAmorCosmetics(void);
+	void RemoveArmorCosmetics(void);
+	bool HasArmorCosmeticsEquipped(void);
 	void OnAddUnbreakableArmor(void);
 	void OnRemoveUnbreakableArmor(void);
 #endif

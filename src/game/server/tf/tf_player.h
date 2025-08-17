@@ -616,6 +616,8 @@ public:
 	void ScriptSetArmor(int iVal, bool bAdd) { if (bAdd) { IncrementArmorValue(iVal); } else { SetArmorValue(iVal); } }
 	bool DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDamage);
 	void BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage, bool bNoArmor);
+	void BreakArmorEffect();
+	void AutoBreakArmor();
 #endif
 
 	void PlayerUse( void );

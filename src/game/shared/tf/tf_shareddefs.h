@@ -239,6 +239,10 @@ extern const char g_szBotBossSentryBusterModel[ MAX_PATH ];
 
 extern const char g_szRomePromoItems_Hat[TF_LAST_NORMAL_CLASS][ MAX_PATH ];
 extern const char g_szRomePromoItems_Misc[TF_LAST_NORMAL_CLASS][ MAX_PATH ];
+#if defined(QUIVER_DLL)
+// QF armor items
+extern const char g_szArmorItems[TF_LAST_NORMAL_CLASS][MAX_PATH];
+#endif
 
 int GetClassIndexFromString( const char *pClassName, int nLastClassIndex = TF_LAST_NORMAL_CLASS );
 

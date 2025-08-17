@@ -9507,6 +9507,38 @@ BEGIN_DATADESC(CSparkTrail)
 DEFINE_THINKFUNC(SparkThink),
 END_DATADESC()
 
+void CTFPlayer::AutoBreakArmor()
+{
+	SetArmorValue(0);
+	m_Shared.RemoveArmorCosmetics();
+}
+
+void CTFPlayer::BreakArmorEffect()
+{
+	if (!m_Shared.IsStealthed())
+	{
+		// in most instances, we SHOULD have an inflictor.
+		CBroadcastRecipientFilter filter;
+		te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
+
+		CBaseEntity* pTrail;
+		int sparkcount = RandomInt(2, 3);
+		for (int i = 0; i < sparkcount; i++)
+		{
+			pTrail = CreateEntityByName("sparktrail");
+			pTrail->SetOwnerEntity(this);
+			DispatchSpawn(pTrail);
+		}
+
+		EmitSound("Game.ArmorBreakAll");
+	}
+	else
+	{
+		CSingleUserRecipientFilter filter2(this);
+		EmitSound("Game.ArmorBreakAll");
+	}
+}
+
 void CTFPlayer::BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage, bool bNoArmor)
 {
 	if (m_Shared.IsInvulnerable())
@@ -9524,23 +9556,7 @@ void CTFPlayer::BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, 
 		SetArmorValue(0);
 	}
 
-	if (!m_Shared.IsStealthed())
-	{
-		// in most instances, we SHOULD have an inflictor.
-		CBroadcastRecipientFilter filter;
-		te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
-
-		CBaseEntity* pTrail;
-		int sparkcount = RandomInt(2, 3);
-		for (int i = 0; i < sparkcount; i++)
-		{
-			pTrail = CreateEntityByName("sparktrail");
-			pTrail->SetOwnerEntity(this);
-			DispatchSpawn(pTrail);
-		}
-	}
-
-	EmitSound("Game.ArmorBreakAll");
+	BreakArmorEffect();
 
 	if (!(bitsDamage & (DMG_FALL)))
 	{
@@ -10650,6 +10666,13 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	bool bMedicExplosiveResist	= m_Shared.InCond( TF_COND_MEDIGUN_UBER_BLAST_RESIST )	|| m_Shared.InCond( TF_COND_MEDIGUN_SMALL_BLAST_RESIST );
 	bool bMedicFireResist		= m_Shared.InCond( TF_COND_MEDIGUN_UBER_FIRE_RESIST )	|| m_Shared.InCond( TF_COND_MEDIGUN_SMALL_FIRE_RESIST );
 
+#if defined(QUIVER_DLL)
+	if (!bMedicBulletResist)
+	{
+		bMedicBulletResist = m_Shared.InCond(QF_COND_UNBREAKABLE_ARMOR);
+	}
+#endif
+
 	if( ( bMedicBulletResist && ( bitsDamage & DMG_BULLET	) ) )
 	{
 		pzsMedigunResistEffect = CFmtStr( "vaccinator_%s_buff1_burst", pzsTeam );
@@ -11330,10 +11353,6 @@ void CTFPlayer::CommitSuicide( bool bExplode /* = false */, bool bForce /*= fals
 
 	m_bSuicideExplode = bExplode;
 	m_iSuicideCustomKillFlags = TF_DMG_CUSTOM_SUICIDE;
-
-#if defined(QUIVER_DLL)
-	m_Shared.RemoveCond(QF_COND_ARMOR);
-#endif
 
 	BaseClass::CommitSuicide( bExplode, bForce );
 }
@@ -12962,24 +12981,6 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 		return;
 	}
 
-#if defined(QUIVER_DLL)
-	// if we died, and we have armor, break the armor so our shield goes away.
-	// if the damage penetrates, we set the armor value to 0 silently.
-	if (!DoesDamagePenetrateArmor(info, info.GetDamageType()))
-	{
-		if ((ArmorValue() > 0))
-		{
-			BreakArmor(info, pPlayerAttacker, info.GetDamageType(), false);
-		}
-	}
-	else
-	{
-		SetArmorValue(0);
-	}
-
-	m_Shared.RemoveCond(QF_COND_ARMOR);
-#endif
-
 	SpeakConceptIfAllowed( MP_CONCEPT_DIED );
 
 	StateTransition( TF_STATE_DYING );	// Transition into the dying state.
@@ -14054,6 +14055,13 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 		CreateRagdollEntity( bGib, bBurning, bElectrocuted, bOnGround, bCloakedCorpse, iGoldRagdoll != 0, iIceRagdoll != 0, iRagdollsBecomeAsh != 0, iCustomDamage, ( iCritOnHardHit != 0 ) );
 	}
 
+#if defined(QUIVER_DLL)
+	// put the armor kill effect in here.
+	if (!DoesDamagePenetrateArmor(info, info.GetDamageType()) && ArmorValue() > 0)
+	{
+		BreakArmorEffect();
+	}
+#endif
 
 	// Remove all conditions...
 	m_Shared.RemoveAllCond();

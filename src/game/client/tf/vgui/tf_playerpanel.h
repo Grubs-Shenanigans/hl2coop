@@ -28,7 +28,7 @@ public:
 	}
 };
 
-#ifdef BDSBASE
+#ifdef QUIVER_DLL
 //-----------------------------------------------------------------------------
 // Purpose: Custom armor panel used to show spectator target's health in Tournament HUD
 //-----------------------------------------------------------------------------

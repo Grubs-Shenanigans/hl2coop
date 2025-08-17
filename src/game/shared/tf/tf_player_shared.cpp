@@ -1610,6 +1610,12 @@ void CTFPlayerShared::RemoveAllCond()
 #ifdef BDSBASE
 	m_pOuter->StopViewingCYOAPDA();
 #endif
+
+#if defined(QUIVER_DLL)
+#ifdef GAME_DLL
+	m_pOuter->AutoBreakArmor();
+#endif // GAME_DLL
+#endif
 }
 
 
@@ -2318,10 +2324,6 @@ void CTFPlayerShared::OnConditionRemoved( ETFCond eCond )
 		break;
 
 #if defined(QUIVER_DLL)
-	case QF_COND_ARMOR:
-		OnRemoveArmor();
-		break;
-
 	// this one is wierd because it does 3 things at once. 2 of the functions go here.
 	case QF_COND_ARMORJUSTBROKE:
 	{
@@ -3552,6 +3554,18 @@ void CTFPlayerShared::ConditionThink( void )
 		m_nHalloweenBombHeadStage = 0;
 #endif
 	}
+
+#ifdef QUIVER_DLL
+	// make sure our cosmetics are removed or added
+	if (!InCond(QF_COND_ARMOR))
+	{
+		RemoveArmorCosmetics();
+	}
+	else
+	{
+		AddAmorCosmetics();
+	}
+#endif
 
 #ifdef GAME_DLL
 	if ( TFGameRules()->IsHalloweenScenario( CTFGameRules::HALLOWEEN_SCENARIO_VIADUCT ) && InCond( TF_COND_PURGATORY ) )
@@ -5182,6 +5196,9 @@ static int GetResistShieldSkinForResistType( ETFCond eCond )
 {
 	switch( eCond )
 	{
+#if defined(QUIVER_DLL)
+		case QF_COND_ARMOR:
+#endif
 		case TF_COND_MEDIGUN_UBER_BULLET_RESIST:
 			return 2;
 
@@ -5452,6 +5469,81 @@ void CTFPlayerShared::OnRemoveRuneResist( void )
 }
 
 #if defined(QUIVER_DLL)
+#ifdef GAME_DLL
+// copied from tfbot
+void AddCosmeticArmorItem(CTFPlayer *pPlayer, const char* pszItemName)
+{
+	CItemSelectionCriteria criteria;
+	criteria.SetQuality(AE_USE_SCRIPT_VALUE);
+	criteria.BAddCondition("name", k_EOperator_String_EQ, pszItemName, true);
+
+	CBaseEntity* pItem = ItemGeneration()->GenerateRandomItem(&criteria, pPlayer->WorldSpaceCenter(), vec3_angle);
+
+	if (pItem)
+	{
+		CEconItemView* pScriptItem = static_cast<CEconEntity*>(pItem)->GetAttributeContainer()->GetItem();
+
+		// If we already have an item in that slot, remove it
+		int iClass = pPlayer->GetPlayerClass()->GetClassIndex();
+		int iTeam = pPlayer->GetTeamNumber();
+		int iSlot = pScriptItem->GetStaticData()->GetLoadoutSlot(iClass);
+		equip_region_mask_t unNewItemRegionMask = pScriptItem->GetItemDefinition() ? pScriptItem->GetItemDefinition()->GetEquipRegionConflictMask() : 0;
+
+		if (IsWearableSlot(iSlot))
+		{
+			// Remove any wearable that has a conflicting equip_region
+			for (int wbl = 0; wbl < pPlayer->GetNumWearables(); wbl++)
+			{
+				CEconWearable* pWearable = pPlayer->GetWearable(wbl);
+				if (!pWearable)
+					continue;
+
+				equip_region_mask_t unWearableRegionMask = 0;
+				if (pWearable->GetAttributeContainer()->GetItem())
+				{
+					unWearableRegionMask = pWearable->GetAttributeContainer()->GetItem()->GetItemDefinition()->GetEquipRegionConflictMask();
+				}
+
+				if (unWearableRegionMask & unNewItemRegionMask)
+				{
+					pPlayer->RemoveWearable(pWearable);
+				}
+			}
+		}
+
+		// Fake global id
+		pScriptItem->SetItemID(1);
+
+		CTFWearable* pExtraWearableItem = dynamic_cast<CTFWearable*>(CreateEntityByName("tf_wearable"));
+		if (pExtraWearableItem)
+		{
+			if (modelinfo->GetModelIndex(pScriptItem->GetPlayerDisplayModel(iClass, iTeam)) == -1)
+			{
+				// Precaching may be needed here, because we allow virtually everything to be loaded on demand now.
+				pExtraWearableItem->PrecacheModel(pScriptItem->GetPlayerDisplayModel(iClass, iTeam));
+			}
+
+			pExtraWearableItem->AddSpawnFlags(SF_NORESPAWN);
+			pExtraWearableItem->SetArmor(true);
+			pExtraWearableItem->SetAlwaysAllow(true);
+			pExtraWearableItem->MarkAttachedEntityAsValidated();
+			pExtraWearableItem->SetModel(pScriptItem->GetPlayerDisplayModel(iClass, iTeam));
+			DispatchSpawn(pExtraWearableItem);
+			pExtraWearableItem->GiveTo(pPlayer);
+		}
+
+		pPlayer->PostInventoryApplication();
+	}
+	else
+	{
+		if (pszItemName && pszItemName[0])
+		{
+			DevMsg("Invalid item %s.\n", pszItemName);
+		}
+	}
+}
+#endif // !GAME_DLL
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -5462,25 +5554,88 @@ void CTFPlayerShared::OnAddArmor(void)
 		RemoveCond(QF_COND_ARMORJUSTBROKE);
 	}
 
-#ifdef CLIENT_DLL
-	// Do use the condition bit here, it's passed along and is expected to be a cond.
-	AddResistShield(&m_pOuter->m_pTempShield, m_pOuter, QF_COND_ARMOR);
+	// armor cosmetics are handled in ConditionThink
+}
+
+void CTFPlayerShared::AddAmorCosmetics(void)
+{
+#ifdef GAME_DLL
+	if (HasArmorCosmeticsEquipped())
+		return;
+
+	int iIndex = m_pOuter->GetPlayerClass()->GetClassIndex();
+
+	CTFBot* bot = ToTFBot(m_pOuter);
+	if (bot && (bot->IsServerUsingTheFunnyMVMCvar() || (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && m_pOuter->GetTeamNumber() == TF_TEAM_PVE_INVADERS)))
+	{
+		if (bot->HasMission(CTFBot::MISSION_DESTROY_SENTRIES))
+		{
+			AddCosmeticArmorItem(m_pOuter, "tw_sentrybuster");
+			return;
+		}
+
+		AddCosmeticArmorItem(m_pOuter, g_szRomePromoItems_Misc[iIndex]);
+	}
+	else
+	{
+		AddCosmeticArmorItem(m_pOuter, g_szArmorItems[iIndex]);
+	}
 #endif
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CTFPlayerShared::OnRemoveArmor(void)
+void CTFPlayerShared::RemoveArmorCosmetics(void)
 {
-#ifdef CLIENT_DLL
-	RemoveResistShield(&m_pOuter->m_pTempShield, m_pOuter);
+#ifdef GAME_DLL
+	if (!HasArmorCosmeticsEquipped())
+		return;
+
+	// Remove any wearable that has a conflicting equip_region
+	for (int wbl = 0; wbl < m_pOuter->GetNumWearables(); wbl++)
+	{
+		CTFWearable* pWearable = dynamic_cast<CTFWearable*>(m_pOuter->GetWearable(wbl));
+		if (!pWearable)
+			continue;
+
+		if (!pWearable->IsArmor())
+			continue;
+
+		m_pOuter->RemoveWearable(pWearable);
+	}
+
+	m_pOuter->PostInventoryApplication();
+#endif
+}
+
+bool CTFPlayerShared::HasArmorCosmeticsEquipped(void)
+{
+#ifdef GAME_DLL
+	int armorCount = 0;
+
+	for (int wbl = 0; wbl < m_pOuter->GetNumWearables(); wbl++)
+	{
+		CTFWearable* pWearable = dynamic_cast<CTFWearable*>(m_pOuter->GetWearable(wbl));
+		if (!pWearable)
+			continue;
+
+		if (!pWearable->IsArmor())
+			continue;
+
+		armorCount++;
+	}
+
+	return (armorCount > 0);
+#else
+	return false;
 #endif
 }
 
 void CTFPlayerShared::OnAddUnbreakableArmor(void)
 {
 #ifdef CLIENT_DLL
+	AddResistParticle(m_pOuter, MEDIGUN_BULLET_RESIST);
 	AddUberScreenEffect(m_pOuter);
 #endif
 }
@@ -5488,7 +5643,20 @@ void CTFPlayerShared::OnAddUnbreakableArmor(void)
 void CTFPlayerShared::OnRemoveUnbreakableArmor(void)
 {
 #ifdef CLIENT_DLL
+	RemoveResistParticle(m_pOuter, MEDIGUN_BULLET_RESIST);
 	RemoveUberScreenEffect(m_pOuter);
+#endif
+}
+#endif
+
+#ifdef BDSBASE
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CTFPlayerShared::ForceRemoveShield(void)
+{
+#ifdef CLIENT_DLL
+	RemoveResistShield(&m_pOuter->m_pTempShield, m_pOuter);
 #endif
 }
 #endif
@@ -7429,13 +7597,6 @@ void CTFPlayerShared::OnAddStealthed( void )
 	{
 		RemoveResistShield( &m_pOuter->m_pTempShield, m_pOuter );
 	}
-
-#if defined(QUIVER_DLL)
-	if (m_pOuter->m_pTempShield && InCond(QF_COND_ARMOR))
-	{
-		OnRemoveArmor();
-	}
-#endif
 #endif
 
 	bool bSetInvisChangeTime = true;
@@ -7545,13 +7706,6 @@ void CTFPlayerShared::OnRemoveStealthed( void )
 	{
 		AddResistShield( &m_pOuter->m_pTempShield, m_pOuter, TF_COND_RUNE_RESIST );
 	}
-
-#if defined(QUIVER_DLL)
-	if (!m_pOuter->m_pTempShield && InCond(QF_COND_ARMOR))
-	{
-		OnAddArmor();
-	}
-#endif
 #else
 	if ( m_flCloakStartTime > 0 )
 	{

@@ -1223,15 +1223,19 @@ bool CTFBotSpawner::Spawn( const Vector &rawHere, EntityHandleVector_t *result )
 		{
 			// Apply the Rome 2 promo items to each bot. They'll be 
 			// filtered out for clients that do not have Romevision.
+#if !defined(QUIVER_DLL)
 			CMissionPopulator *pMission = dynamic_cast< CMissionPopulator* >( GetPopulator() );
 			if ( pMission && ( pMission->GetMissionType() == CTFBot::MISSION_DESTROY_SENTRIES ) )
 			{
 				newBot->AddItem( "tw_sentrybuster" );
 			}
 			else
+#endif
 			{
 				newBot->AddItem( g_szRomePromoItems_Hat[m_class] );
+#if !defined(QUIVER_DLL)
 				newBot->AddItem( g_szRomePromoItems_Misc[m_class] );
+#endif
 			}
 		}
 

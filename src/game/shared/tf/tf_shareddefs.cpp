@@ -181,6 +181,24 @@ const char g_szRomePromoItems_Misc[][ MAX_PATH ] =
 	"tw_engineerbot_armor",
 };
 
+#if defined(QUIVER_DLL)
+// QF armor items
+const char g_szArmorItems[][MAX_PATH] =
+{
+	"", //TF_CLASS_UNDEFINED
+
+	"Courtly Cuirass",
+	"Preventative Measure",
+	"The Patriot's Pouches",
+	"The Dark Age Defender",
+	"Coldfront Carapace",
+	"Immobile Suit Armor Version",
+	"dec2014 Armoured Appendages",
+	"Le Morne Uniforme",
+	"Iron Lung",
+};
+#endif
+
 const char *g_pszBreadModels[] = 
 {
 	"models/weapons/c_models/c_bread/c_bread_baguette.mdl",		// Spy

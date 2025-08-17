@@ -733,6 +733,26 @@
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_jumpshield"
 		}
+		"34407"
+		{
+			"name"		"Immobile Suit Armor Version"
+			"prefab"		"no_craft misc"
+			"item_name"		"#TF_sf14_heavy_robo_chest"
+			"item_description"		"#TF_sf14_heavy_robo_chest_Desc"
+			"item_type_name"		"#TF_Wearable_Armor"
+			"equip_region"		"shirt"
+			"propername"		"1"
+			"image_inventory"		"backpack/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest"
+			"capabilities"
+			{
+				"can_craft_count"		"1"
+			}
+			"model_player"		"models/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest.mdl"
+			"used_by_classes"
+			{
+				"heavy"		"1"
+			}
+		}
 	}
 	
 	// attributes are moved to items_game.txt

@@ -53,6 +53,11 @@ public:
 
 	int					GetKillStreak ( )			{ return m_iKillStreak; }
 	void				SetKillStreak ( int value ) { m_iKillStreak = value; };
+
+#if defined(QUIVER_DLL)
+	int					IsArmor() { return m_bIsArmor; }
+	void				SetArmor(int value) { m_bIsArmor = value; };
+#endif
 #endif
 
 #if defined( CLIENT_DLL )
@@ -83,6 +88,9 @@ private:
 
 #ifdef GAME_DLL
 	int				m_iKillStreak;
+#if defined(QUIVER_DLL)
+	bool			m_bIsArmor;
+#endif
 #endif // GAME_DLL
 
 #if defined( CLIENT_DLL )
