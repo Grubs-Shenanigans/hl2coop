@@ -5061,9 +5061,14 @@ CBaseEntity *FindPlayerStart(const char *pszClassName)
 		}
 
 		pStart = gEntList.FindEntityByClassname(pStart, pszClassName);
+
+		// Break loop if pStart is equal to pStartFirst to avoid infinite loop
+		if (pStart == pStartFirst)
+			break;
 	}
 
-	return pStartFirst;
+	// Return NULL if no suitable entity found
+	return NULL;
 }
 
 /*

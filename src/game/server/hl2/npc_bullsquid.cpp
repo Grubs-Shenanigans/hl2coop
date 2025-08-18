@@ -265,6 +265,12 @@ void CNPC_Bullsquid::HandleAnimEvent( animevent_t *pEvent )
 				Vector vSpitPos;
 
 				GetAttachment( "Mouth", vSpitPos );
+
+				// Raise the spawning position to prevent spawning in the ground
+				vSpitPos.z += 10.0f;
+
+				Vector vTarget = GetEnemy()->GetAbsOrigin();
+				vTarget.z += 45.0f;
 				
 				Vector			vTarget = GetEnemy()->GetAbsOrigin();
 				Vector			vToss;

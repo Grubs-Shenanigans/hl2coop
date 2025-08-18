@@ -62,7 +62,7 @@ ConVar	footsteps( "mp_footsteps","1", FCVAR_NOTIFY );
 ConVar	flashlight("mp_flashlight", "1", FCVAR_NOTIFY);
 #else
 #ifdef BDSBASE
-ConVar	flashlight("mp_flashlight", "0", FCVAR_NOTIFY, 0, flashlight_changed);
+ConVar	flashlight("mp_flashlight", "1", FCVAR_NOTIFY, 0, flashlight_changed);
 #else
 ConVar	flashlight("mp_flashlight", "0", FCVAR_NOTIFY);
 #endif

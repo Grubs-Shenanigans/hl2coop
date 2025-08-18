@@ -1659,54 +1659,54 @@ void CChangeLevel::WarnAboutActiveLead( void )
 	}
 }
 
-void CChangeLevel::ChangeLevelNow( CBaseEntity *pActivator )
+void CChangeLevel::ChangeLevelNow(CBaseEntity* pActivator)
 {
-	CBaseEntity	*pLandmark;
+	CBaseEntity* pLandmark;
 	levellist_t	levels[16];
 
 	Assert(!FStrEq(m_szMapName, ""));
 
 	// Don't work in deathmatch
-	if ( g_pGameRules->IsDeathmatch() )
-		return;
+	//if ( g_pGameRules->IsDeathmatch() )
+		//return;
 
 	// Some people are firing these multiple times in a frame, disable
-	if ( m_bTouched )
+	if (m_bTouched)
 		return;
 
 	m_bTouched = true;
 
-	CBaseEntity *pPlayer = (pActivator && pActivator->IsPlayer()) ? pActivator : UTIL_GetLocalPlayer();
+	CBaseEntity* pPlayer = (pActivator && pActivator->IsPlayer()) ? pActivator : UTIL_GetLocalPlayer();
 
 	int transitionState = InTransitionVolume(pPlayer, m_szLandmarkName);
-	if ( transitionState == TRANSITION_VOLUME_SCREENED_OUT )
+	if (transitionState == TRANSITION_VOLUME_SCREENED_OUT)
 	{
-		DevMsg( 2, "Player isn't in the transition volume %s, aborting\n", m_szLandmarkName );
+		DevMsg(2, "Player isn't in the transition volume %s, aborting\n", m_szLandmarkName);
 		return;
 	}
 
 	// look for a landmark entity		
-	pLandmark = FindLandmark( m_szLandmarkName );
+	pLandmark = FindLandmark(m_szLandmarkName);
 
-	if ( !pLandmark )
+	if (!pLandmark)
 		return;
 
 	// no transition volumes, check PVS of landmark
-	if ( transitionState == TRANSITION_VOLUME_NOT_FOUND )
+	if (transitionState == TRANSITION_VOLUME_NOT_FOUND)
 	{
-		byte pvs[MAX_MAP_CLUSTERS/8];
-		int clusterIndex = engine->GetClusterForOrigin( pLandmark->GetAbsOrigin() );
-		engine->GetPVSForCluster( clusterIndex, sizeof(pvs), pvs );
-		if ( pPlayer )
+		byte pvs[MAX_MAP_CLUSTERS / 8];
+		int clusterIndex = engine->GetClusterForOrigin(pLandmark->GetAbsOrigin());
+		engine->GetPVSForCluster(clusterIndex, sizeof(pvs), pvs);
+		if (pPlayer)
 		{
 			Vector vecSurroundMins, vecSurroundMaxs;
-			pPlayer->CollisionProp()->WorldSpaceSurroundingBounds( &vecSurroundMins, &vecSurroundMaxs );
-			bool playerInPVS = engine->CheckBoxInPVS( vecSurroundMins, vecSurroundMaxs, pvs, sizeof( pvs ) );
+			pPlayer->CollisionProp()->WorldSpaceSurroundingBounds(&vecSurroundMins, &vecSurroundMaxs);
+			bool playerInPVS = engine->CheckBoxInPVS(vecSurroundMins, vecSurroundMaxs, pvs, sizeof(pvs));
 
 			//Assert( playerInPVS );
-			if ( !playerInPVS )
+			if (!playerInPVS)
 			{
-				Warning( "Player isn't in the landmark's (%s) PVS, aborting\n", m_szLandmarkName );
+				Warning("Player isn't in the landmark's (%s) PVS, aborting\n", m_szLandmarkName);
 #ifndef HL1_DLL
 				// HL1 works even with these errors!
 				return;
@@ -1719,7 +1719,7 @@ void CChangeLevel::ChangeLevelNow( CBaseEntity *pActivator )
 
 	g_iDebuggingTransition = 0;
 	st_szNextSpot[0] = 0;	// Init landmark to NULL
-	Q_strncpy(st_szNextSpot, m_szLandmarkName,sizeof(st_szNextSpot));
+	Q_strncpy(st_szNextSpot, m_szLandmarkName, sizeof(st_szNextSpot));
 	// This object will get removed in the call to engine->ChangeLevel, copy the params into "safe" memory
 	Q_strncpy(st_szNextMap, m_szMapName, sizeof(st_szNextMap));
 
@@ -1730,60 +1730,61 @@ void CChangeLevel::ChangeLevelNow( CBaseEntity *pActivator )
 	NotifyEntitiesOutOfTransition();
 
 
-////	Msg( "Level touches %d levels\n", ChangeList( levels, 16 ) );
-	if ( g_debug_transitions.GetInt() )
+	////	Msg( "Level touches %d levels\n", ChangeList( levels, 16 ) );
+	if (g_debug_transitions.GetInt())
 	{
-		Msg( "CHANGE LEVEL: %s %s\n", st_szNextMap, st_szNextSpot );
+		Msg("CHANGE LEVEL: %s %s\n", st_szNextMap, st_szNextSpot);
 	}
 
 	// If we're debugging, don't actually change level
-	if ( g_debug_transitions.GetInt() == 0 )
+	if (g_debug_transitions.GetInt() == 0)
 	{
-		engine->ChangeLevel( st_szNextMap, st_szNextSpot );
+		//engine->ChangeLevel( st_szNextMap, st_szNextSpot );
+		engine->ServerCommand(UTIL_VarArgs("changelevel %s\n", st_szNextMap));
 	}
 	else
 	{
 		// Build a change list so we can see what would be transitioning
-		CSaveRestoreData *pSaveData = SaveInit( 0 );
-		if ( pSaveData )
+		CSaveRestoreData* pSaveData = SaveInit(0);
+		if (pSaveData)
 		{
-			g_pGameSaveRestoreBlockSet->PreSave( pSaveData );
-			pSaveData->levelInfo.connectionCount = BuildChangeList( pSaveData->levelInfo.levelList, MAX_LEVEL_CONNECTIONS );
+			g_pGameSaveRestoreBlockSet->PreSave(pSaveData);
+			pSaveData->levelInfo.connectionCount = BuildChangeList(pSaveData->levelInfo.levelList, MAX_LEVEL_CONNECTIONS);
 			g_pGameSaveRestoreBlockSet->PostSave();
 		}
 
-		SetTouch( NULL );
+		SetTouch(NULL);
 	}
 }
 
 //
 // GLOBALS ASSUMED SET:  st_szNextMap
 //
-void CChangeLevel::TouchChangeLevel( CBaseEntity *pOther )
+void CChangeLevel::TouchChangeLevel(CBaseEntity* pOther)
 {
-	CBasePlayer *pPlayer = ToBasePlayer(pOther);
-	if ( !pPlayer )
+	CBasePlayer* pPlayer = ToBasePlayer(pOther);
+	if (!pPlayer)
 		return;
 
-	if( pPlayer->IsSinglePlayerGameEnding() )
+	if (pPlayer->IsSinglePlayerGameEnding())
 	{
 		// Some semblance of deceleration, but allow player to fall normally.
 		// Also, disable controls.
 		Vector vecVelocity = pPlayer->GetAbsVelocity();
 		vecVelocity.x *= 0.5f;
 		vecVelocity.y *= 0.5f;
-		pPlayer->SetAbsVelocity( vecVelocity );
-		pPlayer->AddFlag( FL_FROZEN );
+		pPlayer->SetAbsVelocity(vecVelocity);
+		pPlayer->AddFlag(FL_FROZEN);
 		return;
 	}
 
-	if ( !pPlayer->IsInAVehicle() && pPlayer->GetMoveType() == MOVETYPE_NOCLIP )
+	if (!pPlayer->IsInAVehicle() && pPlayer->GetMoveType() == MOVETYPE_NOCLIP)
 	{
-		DevMsg("In level transition: %s %s\n", st_szNextMap, st_szNextSpot );
+		DevMsg("In level transition: %s %s\n", st_szNextMap, st_szNextSpot);
 		return;
 	}
 
-	ChangeLevelNow( pOther );
+	ChangeLevelNow(pOther);
 }
 
 
