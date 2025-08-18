@@ -1036,6 +1036,10 @@ void CClassLoadoutPanel::UpdateModelPanels( void )
 
 	if ( m_pPlayerModelPanel )
 	{
+#if defined(QUIVER_DLL)
+		m_pPlayerModelPanel->AddArmorCosmetics();
+#endif
+
 		m_pPlayerModelPanel->HoldItemInSlot( m_iCurrentSlotIndex );
 	}
 

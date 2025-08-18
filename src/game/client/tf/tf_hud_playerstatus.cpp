@@ -169,6 +169,13 @@ void CTFHudPlayerClass::ApplySchemeSettings( IScheme *pScheme )
 	m_pSpyOutlineImage = FindControl<CTFImagePanel>( "PlayerStatusSpyOutlineImage", false );
 
 	m_pPlayerModelPanel = FindControl<CTFPlayerModelPanel>( "classmodelpanel", false );
+#if defined(QUIVER_DLL)
+	if (m_pPlayerModelPanel)
+	{
+		m_pPlayerModelPanel->SetStaticArmorCosmetics(false);
+	}
+#endif
+
 	m_pPlayerModelPanelBG = FindControl<CTFImagePanel>( "classmodelpanelBG", false );
 
 	m_pCarryingWeaponPanel = FindControl< EditablePanel >( "CarryingWeapon", false );
@@ -535,7 +542,6 @@ void CTFHudPlayerClass::UpdateModelPanel()
 				m_pPlayerModelPanel->AddCarriedItem( pEconItemView );
 			}
 		}
-
 		m_pPlayerModelPanel->HoldItemInSlot( nItemSlot );
 	}
 }

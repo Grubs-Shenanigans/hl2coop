@@ -9507,6 +9507,38 @@ BEGIN_DATADESC(CSparkTrail)
 DEFINE_THINKFUNC(SparkThink),
 END_DATADESC()
 
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+CON_COMMAND(breakarmor, "Breaks the player's armor.")
+{
+	if (args.ArgC() > 1 && sv_cheats->GetBool())
+	{
+		// Find the matching netname
+		for (int i = 1; i <= gpGlobals->maxClients; i++)
+		{
+			CTFPlayer* pPlayer = ToTFPlayer(UTIL_PlayerByIndex(i));
+			if (pPlayer)
+			{
+				if (Q_strstr(pPlayer->GetPlayerName(), args[1]))
+				{
+					CTakeDamageInfo info(pPlayer, pPlayer, NULL, vec3_origin, pPlayer->GetAbsOrigin(), 0, DMG_GENERIC);
+					pPlayer->BreakArmor(info, pPlayer, info.GetDamageType(), false);
+				}
+			}
+		}
+	}
+	else
+	{
+		CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
+		if (pPlayer)
+		{
+			CTakeDamageInfo info(pPlayer, pPlayer, NULL, vec3_origin, pPlayer->GetAbsOrigin(), 0, DMG_GENERIC);
+			pPlayer->BreakArmor(info, pPlayer, info.GetDamageType(), false);
+		}
+	}
+
+}
+
 void CTFPlayer::AutoBreakArmor()
 {
 	SetArmorValue(0);

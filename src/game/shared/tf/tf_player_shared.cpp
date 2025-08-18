@@ -5485,7 +5485,6 @@ void AddCosmeticArmorItem(CTFPlayer *pPlayer, const char* pszItemName)
 
 		// If we already have an item in that slot, remove it
 		int iClass = pPlayer->GetPlayerClass()->GetClassIndex();
-		int iTeam = pPlayer->GetTeamNumber();
 		int iSlot = pScriptItem->GetStaticData()->GetLoadoutSlot(iClass);
 		equip_region_mask_t unNewItemRegionMask = pScriptItem->GetItemDefinition() ? pScriptItem->GetItemDefinition()->GetEquipRegionConflictMask() : 0;
 
@@ -5511,24 +5510,11 @@ void AddCosmeticArmorItem(CTFPlayer *pPlayer, const char* pszItemName)
 			}
 		}
 
-		// Fake global id
-		pScriptItem->SetItemID(1);
-
-		CTFWearable* pExtraWearableItem = dynamic_cast<CTFWearable*>(CreateEntityByName("tf_wearable"));
+		CTFWearable* pExtraWearableItem = dynamic_cast<CTFWearable*>(pPlayer->GiveNamedItem("tf_wearable", 0, pScriptItem, true));
 		if (pExtraWearableItem)
 		{
-			if (modelinfo->GetModelIndex(pScriptItem->GetPlayerDisplayModel(iClass, iTeam)) == -1)
-			{
-				// Precaching may be needed here, because we allow virtually everything to be loaded on demand now.
-				pExtraWearableItem->PrecacheModel(pScriptItem->GetPlayerDisplayModel(iClass, iTeam));
-			}
-
-			pExtraWearableItem->AddSpawnFlags(SF_NORESPAWN);
 			pExtraWearableItem->SetArmor(true);
-			pExtraWearableItem->SetAlwaysAllow(true);
 			pExtraWearableItem->MarkAttachedEntityAsValidated();
-			pExtraWearableItem->SetModel(pScriptItem->GetPlayerDisplayModel(iClass, iTeam));
-			DispatchSpawn(pExtraWearableItem);
 			pExtraWearableItem->GiveTo(pPlayer);
 		}
 

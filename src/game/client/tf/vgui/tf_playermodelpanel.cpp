@@ -1231,6 +1231,25 @@ void CTFPlayerModelPanel::SetTeam( int iTeam )
 	UpdatePreviewVisuals();
 }
 
+#ifdef QUIVER_DLL
+void CTFPlayerModelPanel::AddArmorCosmetics()
+{
+	if (m_bStaticArmorCosmetics)
+	{
+		//add the armor
+		CEconItemDefinition* pItemDef = GetItemSchema()->GetItemDefinitionByName(g_szArmorItems[m_iCurrentClassIndex]);
+
+		if (pItemDef)
+		{
+			//create a fake armor item that we equip
+			CEconItemView* pArmorData = new CEconItemView();
+			pArmorData->Init(pItemDef->GetDefinitionIndex(), AE_UNIQUE, AE_USE_SCRIPT_VALUE, false);
+			AddCarriedItem(pArmorData);
+		}
+	}
+}
+#endif
+
 void CTFPlayerModelPanel::UpdatePreviewVisuals()
 {
 	// Assume skin will be chosen based only on the preview team

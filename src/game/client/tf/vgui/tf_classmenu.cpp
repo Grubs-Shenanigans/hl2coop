@@ -864,6 +864,10 @@ void CTFClassMenu::LoadItems()
 		}
 	}
 
+#if defined(QUIVER_DLL)
+	m_pTFPlayerModelPanel->AddArmorCosmetics();
+#endif
+
 	m_pTFPlayerModelPanel->PlayVCD( bCanUseFancyClassSelectAnimation ? pszVCD : NULL, g_pszLegacyClassSelectVCDWeapons[iClass] );
 	m_pTFPlayerModelPanel->HoldItemInSlot( g_iLegacyClassSelectWeaponSlots[iClass] );
 }

@@ -74,6 +74,11 @@ public:
 
 	void	InvalidateParticleEffects();
 
+#ifdef QUIVER_DLL
+	void	SetStaticArmorCosmetics(bool value) { m_bStaticArmorCosmetics = value; }
+	void	AddArmorCosmetics();
+#endif
+
 protected:
 	// From CBaseModelPanel
 	virtual void	PrePaint3D( IMatRenderContext *pRenderContext ) OVERRIDE;
@@ -161,6 +166,10 @@ private:
 	int				m_nBody;
 	int				m_iTeam;
 	bool			m_bZoomedToHead;
+
+#ifdef QUIVER_DLL
+	bool			m_bStaticArmorCosmetics;
+#endif
 
 	MDLHandle_t		m_MergeMDL;
 
