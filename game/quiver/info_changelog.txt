@@ -64,6 +64,8 @@ Added the following Source SDK Pull Requests:
 	- #1483: (Temporary) Fix issues with dynamic models on listen servers
 	- #948: Add proper server admin tools (heavily modified)
 	- #1490: Fix Thermal Thruster passives not being removed if it's unequipped during use (or player is a Medic)
+	- #1496: Fix for collection checklists incorrectly marking some items as 'owned'
+	- #1497: Add custom text handling for vote failed messages
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
