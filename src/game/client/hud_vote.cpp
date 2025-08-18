@@ -1187,6 +1187,10 @@ void CHudVote::MsgFunc_CallVoteFailed( bf_read &msg )
 
 	vote_create_failed_t nReason = (vote_create_failed_t)msg.ReadByte();
 	int nTime = msg.ReadShort();
+#ifdef BDSBASE
+	char szCustomText[k_MAX_VOTE_NAME_LENGTH];
+	msg.ReadString(szCustomText, sizeof(szCustomText));
+#endif
 
 	// if we're already drawing a vote, do nothing
 	if ( ShouldDraw() )
@@ -1230,6 +1234,14 @@ void CHudVote::MsgFunc_CallVoteFailed( bf_read &msg )
 	g_pVGuiLocalize->ConvertANSIToUnicode( szTime, wszTime, sizeof( wszTime ) );
 
 	wchar_t wszHeaderString[k_MAX_VOTE_NAME_LENGTH];
+
+#ifdef BDSBASE
+	if (szCustomText[0])
+	{
+		pFreeVotePanel->m_pCallVoteFailed->SetControlString("FailedReason", szCustomText);
+		return;
+	}
+#endif
 
 	switch( nReason )
 	{
@@ -1364,6 +1376,11 @@ void CHudVote::MsgFunc_VoteFailed( bf_read &msg )
 
 	vote_create_failed_t nReason = (vote_create_failed_t)msg.ReadByte();
 
+#ifdef BDSBASE
+	char szCustomText[k_MAX_VOTE_NAME_LENGTH];
+	msg.ReadString(szCustomText, sizeof(szCustomText));
+#endif
+
 	// Visibility of this error is handled by OnThink()
 	pVotePanel->m_bVotingActive = false;
 	pVotePanel->m_bVotePassed = false;
@@ -1371,6 +1388,29 @@ void CHudVote::MsgFunc_VoteFailed( bf_read &msg )
 	pVotePanel->m_flHideTime = gpGlobals->curtime + 5.f;
 	pVotePanel->m_nVoteIdx = -1;
 
+#ifdef BDSBASE
+	if (szCustomText[0])
+	{
+		pVotePanel->m_pVoteFailed->SetControlString("FailedReason", szCustomText);
+	}
+	else
+	{
+		switch (nReason)
+		{
+		case VOTE_FAILED_GENERIC:
+			pVotePanel->m_pVoteFailed->SetControlString("FailedReason", "#GameUI_vote_failed");
+			break;
+
+		case VOTE_FAILED_YES_MUST_EXCEED_NO:
+			pVotePanel->m_pVoteFailed->SetControlString("FailedReason", "#GameUI_vote_failed_yesno");
+			break;
+
+		case VOTE_FAILED_QUORUM_FAILURE:
+			pVotePanel->m_pVoteFailed->SetControlString("FailedReason", "#GameUI_vote_failed_quorum");
+			break;
+		}
+	}
+#else
 	switch ( nReason )
 	{
 	case VOTE_FAILED_GENERIC:
@@ -1385,6 +1425,7 @@ void CHudVote::MsgFunc_VoteFailed( bf_read &msg )
 		pVotePanel->m_pVoteFailed->SetControlString( "FailedReason", "#GameUI_vote_failed_quorum" );
 		break;
 	}
+#endif
 
 	IGameEvent *event = gameeventmanager->CreateEvent( "vote_failed" );
 	if ( event )

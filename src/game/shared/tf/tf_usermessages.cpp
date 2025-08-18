@@ -87,7 +87,11 @@ void RegisterUserMessages()
 	usermessages->Register( "CallVoteFailed", -1 );
 	usermessages->Register( "VoteStart", -1 );
 	usermessages->Register( "VotePass", -1 );
+#ifdef BDSBASE
+	usermessages->Register("VoteFailed", -1);
+#else
 	usermessages->Register( "VoteFailed", 6 );
+#endif
 	usermessages->Register( "VoteSetup", -1 );  // Initiates client-side voting UI
 
 	usermessages->Register( "PlayerBonusPoints", 3 );
