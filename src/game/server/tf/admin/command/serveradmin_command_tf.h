@@ -7,7 +7,10 @@
 
 #ifdef BDSBASE
 
-#define COMMAND_MODULE_NAME "Team Fortress 2 Commands"
+#define TF_COMMAND_MODULE_NAME "Team Fortress 2 Commands"
+#if defined(QUIVER_DLL)
+#define QF_COMMAND_SUB_MODULE_NAME "Quiver Fortress Commands"
+#endif
 
 static void LoadTFCommandModule()
 {
