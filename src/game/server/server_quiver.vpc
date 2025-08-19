@@ -127,6 +127,14 @@ $Project "Server (Quiver)"
 				}
 			}
 		}
+		
+		$Folder	"Admin"
+		{
+			$Folder	"Commands"
+			{
+				$File	"tf\admin\command\serveradmin_command_tf.h"
+			}
+		}
 
 		$Folder	"TF"
 		{

@@ -167,7 +167,7 @@ Details:
 - Changed Armor visualization. Instead of using Vaccinator shields, the game will now add cosmetics to the player that represent armor. 
 - The Flying Guillotine will now turn mini-crits into full crits, allowing more synergy with the Sandman.
 - Added a 25% damage penalty to the Artillery Cannon.
-- Fixed a bug where the Artillery Cannon's "large" texture wasn't available
+- Fixed a bug where the Artillery Cannon's "large" texture wasn't available.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
