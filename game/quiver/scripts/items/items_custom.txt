@@ -124,7 +124,7 @@
 				"damage penalty"
 				{
 					"attribute_class"	"mult_dmg"
-					"value"	"0.85"
+					"value"	"0.75"
 				}
 				"aiming movespeed decreased"
 				{

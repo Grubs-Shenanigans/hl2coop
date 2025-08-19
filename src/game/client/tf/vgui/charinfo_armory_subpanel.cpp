@@ -349,7 +349,7 @@ void CArmoryPanel::OnCommand( const char *command )
 			{
 				m_iFilterPage = ceil(m_FilteredItemList.Count() / (float)(m_iThumbnailRows * m_iThumbnailColumns)) - 1;
 			}
-}
+		}
 		UpdateItemList();
 		UpdateSelectedItem();
 	}
