@@ -126,7 +126,7 @@ Details:
 - Removed the Neon Annihilator's damage against sappers.
 - Upon covering enemies with gas, enemies now have a 50% fire damage vulnerability.
 - Decreased the Gas Passer's charge rate from 60 seconds to 40 seconds.
-- Decreased the Gas Passer's damage requirement from 750 to 450.
+- Decreased the Gas Passer's damage requirement from 750 to 600.
 - Fixed a bug where the Gas Passer's gas can cover people in gas through spawnrooms.
 	- The throwing through walls bug has been fixed as well! It's been fixed a while back.
 - Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
@@ -164,6 +164,8 @@ Details:
 - Added the Ultimate Visual Fix Pack.
 - Added armor percentages to the player target ID hud.
 - Changed Armor visualization. Instead of using Vaccinator shields, the game will now add cosmetics to the player that represent armor. 
+- The Flying Guillotine will now turn mini-crits into full crits, allowing more synergy with the Sandman.
+- Added a 25% damage penalty to the Artillery Cannon.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

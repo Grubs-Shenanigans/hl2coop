@@ -75,7 +75,7 @@ Unlockable weapon balance changes:
 - All Australium weapons will now turn players gold.
 - The Axtinguisher now fully crits against burning targets, at the expense of 33% less damage against non-burning players.
 - Reduced the holster penalty on the Axtinguisher from 35% to 25%.
-- The Flying Guillotine now does 100% crits vs players that just had their armor break, at the expense of 33% damage on armored players.
+- The Flying Guillotine now does 100% crits vs mini crits (i.e players that just had their armor break or players attacked with the Sandman ball without armor), at the expense of 33% damage on armored players.
 - Baby Face's Blaster users will no longer lose Boost when taking damage.
 - You will now only lose 35% of boost when air jumping with the Baby Face's Blaster.
 - The Loch-N-Load's 20% damage bonus against buildings is now a normal 20% damage bonus.
@@ -115,7 +115,7 @@ Unlockable weapon balance changes:
 - Removed the Neon Annihilator's damage against sappers.
 - Upon covering enemies with gas, enemies now have a 50% fire damage vulnerability.
 - Decreased the Gas Passer's charge rate from 60 seconds to 40 seconds.
-- Decreased the Gas Passer's damage requirement from 750 to 450.
+- Decreased the Gas Passer's damage requirement from 750 to 600.
 - Fixed a bug where the Gas Passer's gas can cover people in gas through spawnrooms.
 	- The throwing through walls bug has been fixed as well! It's been fixed a while back.
 - Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.

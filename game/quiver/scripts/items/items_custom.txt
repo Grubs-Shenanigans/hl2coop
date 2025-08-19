@@ -121,6 +121,11 @@
 					"attribute_class"	"mult_postfiredelay"
 					"value"	"1.9"
 				}
+				"damage penalty"
+				{
+					"attribute_class"	"mult_dmg"
+					"value"	"0.85"
+				}
 				"aiming movespeed decreased"
 				{
 					"attribute_class"	"mult_player_aiming_movespeed"

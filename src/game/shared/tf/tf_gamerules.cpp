@@ -22681,10 +22681,12 @@ bool CTFGameRules::CanUpgradeWithAttrib( CTFPlayer *pPlayer, int iWeaponSlot, at
 				return ( iWeaponID != TF_WEAPON_FLAME_BALL );
 			}
 		}
+#if !defined(QUIVER_DLL)
 	case 875:	// explode_on_ignite
 		{
 			return ( iWeaponID == TF_WEAPON_JAR_GAS );
 		}
+#endif
 	}
 
 	// All weapon related attributes require an item that does damage
