@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "backpack/quiver/weapons/c_tomislav_artillery_large"
+	"$translucent" 1
+	"$vertexcolor" 1
+}
