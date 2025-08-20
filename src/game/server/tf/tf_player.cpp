@@ -16102,6 +16102,10 @@ void CTFPlayer::CheatImpulseCommands( int iImpulse )
 				GiveAmmo( 1000, TF_AMMO_GRENADES3 );
 				TakeHealth( 999, DMG_GENERIC );
 
+#if defined(QUIVER_DLL)
+				SetArmorValue(GetMaxArmor());
+#endif
+
 				// Refills weapon clips, too
 				for ( int i = 0; i < MAX_WEAPONS; i++ )
 				{

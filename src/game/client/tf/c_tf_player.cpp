@@ -1470,6 +1470,9 @@ bool C_TFRagdoll::IsDecapitation()
 		|| (m_iDamageCustom == TF_DMG_CUSTOM_HEADSHOT_DECAPITATION)
 #ifdef BDSBASE
 		|| (m_iDamageCustom == TF_DMG_CUSTOM_MERASMUS_DECAPITATION)
+#if defined(QUIVER_DLL)
+		|| (m_iDamageCustom == TF_DMG_CUSTOM_CLEAVER)
+#endif
 		|| (m_iDamageCustom == TF_DMG_CUSTOM_TAUNTATK_ALLCLASS_GUITAR_RIFF));
 #else
 		|| (m_iDamageCustom == TF_DMG_CUSTOM_MERASMUS_DECAPITATION));
