@@ -263,7 +263,11 @@ void CTFProjectile_Flare::Explode( trace_t *pTrace, CBaseEntity *pOther )
 					}
 #endif
 					
+#if defined(QUIVER_DLL)
+					float flForce = bIsBurningVictim ? 250.0f : 100.0f;
+#else
 					float flForce = bIsBurningVictim ? 400.0f : 100.0f;
+#endif
 					pTFVictim->ApplyGenericPushbackImpulse( vecToTarget * flForce, ToTFPlayer( pAttacker ) );
 				}
 

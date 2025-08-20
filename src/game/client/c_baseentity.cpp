@@ -1427,6 +1427,17 @@ void C_BaseEntity::UpdateVisibility()
 		}
 	}
 
+#if defined(QUIVER_DLL)
+	CTFWearable *pTFWearable = dynamic_cast<CTFWearable*>(this);
+	if (pTFWearable)
+	{
+		if (pTFWearable->IsArmor())
+		{
+			bForceAllow = true;
+		}
+	}
+#endif
+
 	if (!engine->IsPlayingDemo() && !bForceAllow)
 #else
 	if (!engine->IsPlayingDemo())

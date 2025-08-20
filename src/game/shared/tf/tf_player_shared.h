@@ -924,7 +924,7 @@ private:
 
 #if defined(QUIVER_DLL)
 	void OnAddArmor(void);
-	void AddAmorCosmetics(void);
+	void AddArmorCosmetics(bool bIsDisguise = false);
 	void RemoveArmorCosmetics(void);
 	bool HasArmorCosmeticsEquipped(void);
 	void OnAddUnbreakableArmor(void);

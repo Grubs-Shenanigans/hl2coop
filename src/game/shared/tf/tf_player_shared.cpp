@@ -3563,7 +3563,7 @@ void CTFPlayerShared::ConditionThink( void )
 	}
 	else
 	{
-		AddAmorCosmetics();
+		AddArmorCosmetics();
 	}
 #endif
 
@@ -5471,7 +5471,7 @@ void CTFPlayerShared::OnRemoveRuneResist( void )
 #if defined(QUIVER_DLL)
 #ifdef GAME_DLL
 // copied from tfbot
-void AddCosmeticArmorItem(CTFPlayer *pPlayer, const char* pszItemName)
+void AddCosmeticArmorItem(CTFPlayer *pPlayer, const char* pszItemName, bool bIsDisguise)
 {
 	CItemSelectionCriteria criteria;
 	criteria.SetQuality(AE_USE_SCRIPT_VALUE);
@@ -5484,28 +5484,33 @@ void AddCosmeticArmorItem(CTFPlayer *pPlayer, const char* pszItemName)
 		CEconItemView* pScriptItem = static_cast<CEconEntity*>(pItem)->GetAttributeContainer()->GetItem();
 
 		// If we already have an item in that slot, remove it
-		int iClass = pPlayer->GetPlayerClass()->GetClassIndex();
+		int iClass = bIsDisguise ? pPlayer->m_Shared.GetDisguiseClass() : pPlayer->GetPlayerClass()->GetClassIndex();
 		int iSlot = pScriptItem->GetStaticData()->GetLoadoutSlot(iClass);
-		equip_region_mask_t unNewItemRegionMask = pScriptItem->GetItemDefinition() ? pScriptItem->GetItemDefinition()->GetEquipRegionConflictMask() : 0;
 
-		if (IsWearableSlot(iSlot))
+		// disguise code already handles this. just give the spy the item.
+		if (!bIsDisguise)
 		{
-			// Remove any wearable that has a conflicting equip_region
-			for (int wbl = 0; wbl < pPlayer->GetNumWearables(); wbl++)
+			equip_region_mask_t unNewItemRegionMask = pScriptItem->GetItemDefinition() ? pScriptItem->GetItemDefinition()->GetEquipRegionConflictMask() : 0;
+
+			if (IsWearableSlot(iSlot))
 			{
-				CEconWearable* pWearable = pPlayer->GetWearable(wbl);
-				if (!pWearable)
-					continue;
-
-				equip_region_mask_t unWearableRegionMask = 0;
-				if (pWearable->GetAttributeContainer()->GetItem())
+				// Remove any wearable that has a conflicting equip_region
+				for (int wbl = 0; wbl < pPlayer->GetNumWearables(); wbl++)
 				{
-					unWearableRegionMask = pWearable->GetAttributeContainer()->GetItem()->GetItemDefinition()->GetEquipRegionConflictMask();
-				}
+					CEconWearable* pWearable = pPlayer->GetWearable(wbl);
+					if (!pWearable)
+						continue;
 
-				if (unWearableRegionMask & unNewItemRegionMask)
-				{
-					pPlayer->RemoveWearable(pWearable);
+					equip_region_mask_t unWearableRegionMask = 0;
+					if (pWearable->GetAttributeContainer()->GetItem())
+					{
+						unWearableRegionMask = pWearable->GetAttributeContainer()->GetItem()->GetItemDefinition()->GetEquipRegionConflictMask();
+					}
+
+					if (unWearableRegionMask & unNewItemRegionMask)
+					{
+						pPlayer->RemoveWearable(pWearable);
+					}
 				}
 			}
 		}
@@ -5514,6 +5519,7 @@ void AddCosmeticArmorItem(CTFPlayer *pPlayer, const char* pszItemName)
 		if (pExtraWearableItem)
 		{
 			pExtraWearableItem->SetArmor(true);
+			pExtraWearableItem->SetDisguiseWearable(bIsDisguise);
 			pExtraWearableItem->MarkAttachedEntityAsValidated();
 			pExtraWearableItem->GiveTo(pPlayer);
 		}
@@ -5543,28 +5549,28 @@ void CTFPlayerShared::OnAddArmor(void)
 	// armor cosmetics are handled in ConditionThink
 }
 
-void CTFPlayerShared::AddAmorCosmetics(void)
+void CTFPlayerShared::AddArmorCosmetics(bool bIsDisguise)
 {
 #ifdef GAME_DLL
-	if (HasArmorCosmeticsEquipped())
+	if (HasArmorCosmeticsEquipped() && !bIsDisguise)
 		return;
 
-	int iIndex = m_pOuter->GetPlayerClass()->GetClassIndex();
+	int iIndex = bIsDisguise ? GetDisguiseClass() : m_pOuter->GetPlayerClass()->GetClassIndex();
 
 	CTFBot* bot = ToTFBot(m_pOuter);
 	if (bot && (bot->IsServerUsingTheFunnyMVMCvar() || (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && m_pOuter->GetTeamNumber() == TF_TEAM_PVE_INVADERS)))
 	{
 		if (bot->HasMission(CTFBot::MISSION_DESTROY_SENTRIES))
 		{
-			AddCosmeticArmorItem(m_pOuter, "tw_sentrybuster");
+			AddCosmeticArmorItem(m_pOuter, "tw_sentrybuster", bIsDisguise);
 			return;
 		}
 
-		AddCosmeticArmorItem(m_pOuter, g_szRomePromoItems_Misc[iIndex]);
+		AddCosmeticArmorItem(m_pOuter, g_szRomePromoItems_Misc[iIndex], bIsDisguise);
 	}
 	else
 	{
-		AddCosmeticArmorItem(m_pOuter, g_szArmorItems[iIndex]);
+		AddCosmeticArmorItem(m_pOuter, g_szArmorItems[iIndex], bIsDisguise);
 	}
 #endif
 }
@@ -9210,12 +9216,25 @@ void CTFPlayerShared::DetermineDisguiseWeapon( bool bForcePrimary )
 
 void CTFPlayerShared::DetermineDisguiseWearables()
 {
+#if defined(QUIVER_DLL)
+	// Remove any existing disguise wearables.
+	RemoveDisguiseWearables();
+
+	if (m_pOuter->ArmorValue() > 0)
+	{
+		//add the armor cosmetics based on the class we're disguising as.
+		AddArmorCosmetics(true);
+	}
+#endif
+
 	CTFPlayer *pDisguiseTarget = ToTFPlayer( m_hDisguiseTarget.Get() );
 	if ( !pDisguiseTarget )
 		return;
 
+#if !defined(QUIVER_DLL)
 	// Remove any existing disguise wearables.
 	RemoveDisguiseWearables();
+#endif
 
 	if ( GetDisguiseClass() != pDisguiseTarget->GetPlayerClass()->GetClassIndex() )
 		return;
@@ -9229,6 +9248,12 @@ void CTFPlayerShared::DetermineDisguiseWearables()
 		{
 			if ( pWearable->IsDisguiseWearable() )
 				continue; // Never copy a target's disguise wearables.
+
+#if defined(QUIVER_DLL)
+			if (pWearable->IsArmor())
+				continue;
+#endif
+
 			CEconItemView *pScriptItem = pWearable->GetAttributeContainer()->GetItem();
 			// Never copy target's action slot items
 			if ( pScriptItem && pScriptItem->IsValid() && pScriptItem->GetStaticData()->GetItemClass() && ( pScriptItem->GetStaticData()->GetLoadoutSlot( GetDisguiseClass() ) != LOADOUT_POSITION_ACTION ) )

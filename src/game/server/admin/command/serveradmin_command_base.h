@@ -747,6 +747,14 @@ static void BringPlayerCommand(const CCommand& args)
 	}
 }
 
+#ifdef HL2MP
+#define LAST_VALID_GAME_TEAM TEAM_REBELS
+#elif TF_DLL
+#define LAST_VALID_GAME_TEAM TF_TEAM_BLUE
+#else
+#define LAST_VALID_GAME_TEAM LAST_SHARED_TEAM
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Change a player's team
 //-----------------------------------------------------------------------------
@@ -770,7 +778,7 @@ static void TeamPlayerCommand(const CCommand& args)
 	const char* partialName = args.Arg(2);
 	int teamIndex = atoi(args.Arg(3));
 
-	if (teamIndex < 1 || teamIndex > 3)
+	if (teamIndex < TEAM_SPECTATOR || teamIndex > LAST_VALID_GAME_TEAM)
 	{
 		AdminReply(replySource, pAdmin, "Invalid team index. Team index must be between 1 and 3.");
 		return;
@@ -783,24 +791,24 @@ static void TeamPlayerCommand(const CCommand& args)
 		return;
 
 	const char* teamName = "Unassigned"; // Default (index == 0)
-	if (teamIndex == 1)
+	if (teamIndex == TEAM_SPECTATOR)
 	{
 		teamName = "Spectator";
 	}
 #ifdef HL2MP
 	else if (HL2MPRules()->IsTeamplay())
 	{
-		if (teamIndex == 2)
+		if (teamIndex == TEAM_COMBINE)
 			teamName = "Combine";
-		else if (teamIndex == 3)
+		else if (teamIndex == TEAM_REBELS)
 			teamName = "Rebels";
 	}
 #elif TF_DLL
 	else
 	{
-		if (teamIndex == 2)
+		if (teamIndex == TF_TEAM_RED)
 			teamName = "RED";
-		else if (teamIndex == 3)
+		else if (teamIndex == TF_TEAM_BLUE)
 			teamName = "BLU";
 	}
 #endif
@@ -852,14 +860,17 @@ static void TeamPlayerCommand(const CCommand& args)
 		{
 			CBasePlayer* pPlayer = targetPlayers[i];
 
-			// Skip players already on the desired team
-			if ((pPlayer->GetTeamNumber() == teamIndex) || ((teamIndex == 2 || teamIndex == 3) && pPlayer->GetTeamNumber() == TEAM_UNASSIGNED))
+			if (pPlayer)
 			{
-				continue;
-			}
+				// Skip players already on the desired team
+				if ((pPlayer->GetTeamNumber() == teamIndex) || ((teamIndex == 2 || teamIndex == 3) && pPlayer->GetTeamNumber() == TEAM_UNASSIGNED))
+				{
+					continue;
+				}
 
-			MovePlayerToTeam(pPlayer);
-			movedPlayersCount++;
+				MovePlayerToTeam(pPlayer);
+				movedPlayersCount++;
+			}
 		}
 
 		if (movedPlayersCount == 0)

@@ -132,7 +132,8 @@ Details:
 	- The throwing through walls bug has been fixed as well! It's been fixed a while back.
 - Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
 	- In MvM, the Gas Passer's explosion damage was decreased from 350 to 150.
-	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 75.
+	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 50.
+	- Lowered the explosion radius in PvP from 200 to 100.
 - Implemented NeoDement's Missing Killicons Pack.
 - Pyro bots can now reflect most projectiles.
 - Re-enabled stun for taunt kills.
@@ -275,6 +276,7 @@ Details:
 - The Family Business is now a multi-class shotgun.
 - Added a Vaccinator shield to visualize armor. (temporary)
 - Disabled random crits on custom weapons that can situationally crit.
+- Reduced the Scorch Shot's knockback velocity on burning enemies from 400 to 250.
 
 Quiver Private Alpha 1.0.1:
 Whitelists:

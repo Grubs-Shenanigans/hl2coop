@@ -120,7 +120,8 @@ Unlockable weapon balance changes:
 	- The throwing through walls bug has been fixed as well! It's been fixed a while back.
 - Gave the Gas Passer the MvM explosion upgrade by default, but nerfed it.
 	- In MvM, the Gas Passer's explosion damage was decreased from 350 to 150.
-	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 75.
+	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 50.
+	- Lowered the explosion radius in PvP from 200 to 100.
 - The Winger now has a 50% reduction to your bunnyhop speed boost.
 - Decreased the The Winger's clip size from 60% to 50%.
 - Increased the Thermal Thruster's deploy and holster speed by 50%
@@ -131,6 +132,7 @@ Unlockable weapon balance changes:
 - Added the Texan Trickshot as a kill taunt to the Wrangler.
 - Added the Classic tracer to the Ambassador.
 - Nerfed the Wrangler's shield's damage resistance from 67% to 40%.
+- Reduced the Scorch Shot's knockback velocity on burning enemies from 400 to 250.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).
