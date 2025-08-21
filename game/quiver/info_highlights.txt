@@ -135,7 +135,7 @@ Unlockable weapon balance changes:
 - Reduced the Scorch Shot's knockback velocity on burning enemies from 400 to 250.
 - The Baby Face's Blaster's move speed penalty was increased from 10% to 20%.
 - The Flying Guillotine now decapitates enemies on successful kills.
-- Added a mark-for-death penalty to the Flying Guillotine.
+- Added a self mark-for-death penalty to the Flying Guillotine.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

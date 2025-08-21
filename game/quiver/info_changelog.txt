@@ -171,7 +171,7 @@ Details:
 - Fixed a bug where the Artillery Cannon's "large" texture wasn't available.
 - The Baby Face's Blaster's move speed penalty was increased from 10% to 20%.
 - The Flying Guillotine now decapitates enemies on successful kills.
-- Added a mark-for-death penalty to the Flying Guillotine.
+- Added a self mark-for-death penalty to the Flying Guillotine.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
