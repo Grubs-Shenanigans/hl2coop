@@ -1380,63 +1380,7 @@ void C_BaseEntity::UpdateVisibility()
 
 #ifdef BDSBASE
 	//except in some instances, where we need to show players items held by bots or any custom items from quiver.
-	bool bForceAllow = false;
-
-	C_BaseEntity* pParent = GetRootMoveParent();
-
-	if (pParent)
-	{
-		if (pParent == this)
-		{
-			bForceAllow = true;
-		}
-
-		//allow bots to use wearables.
-		C_TFPlayer* pPlayer = ToTFPlayer(pParent);
-		if (pPlayer && pPlayer->IsABot())
-		{
-			bForceAllow = true;
-		}
-
-		C_TFDroppedWeapon* pDroppedWeapon = dynamic_cast<C_TFDroppedWeapon*>(pParent);
-		if (pDroppedWeapon)
-		{
-			bForceAllow = true;
-		}
-	}
-
-	//allow wearables if they're custom.
-	CEconEntity* pEcon = dynamic_cast<CEconEntity*>(this);
-	if (pEcon)
-	{
-		CEconItemView* pItem = pEcon->GetAttributeContainer()->GetItem();
-		if (pItem && pItem->IsValid())
-		{
-			CEconItemDefinition* pData = pItem->GetStaticData();
-			if (pData)
-			{
-#if (defined(BDSBASE_CURATED_ITEMS) && defined(BDSBASE_CURATED_ITEMS_GIVEWHITELISTEDITEMS))
-				if (pData->IsSoloItem() || pData->IsWhitelisted())
-#else
-				if (pData->IsSoloItem())
-#endif
-				{
-					bForceAllow = true;
-				}
-			}
-		}
-	}
-
-#if defined(QUIVER_DLL)
-	CTFWearable *pTFWearable = dynamic_cast<CTFWearable*>(this);
-	if (pTFWearable)
-	{
-		if (pTFWearable->IsArmor())
-		{
-			bForceAllow = true;
-		}
-	}
-#endif
+	bool bForceAllow = true;
 
 	if (!engine->IsPlayingDemo() && !bForceAllow)
 #else

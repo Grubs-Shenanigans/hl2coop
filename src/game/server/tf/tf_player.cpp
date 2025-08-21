@@ -14080,6 +14080,17 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetWeapon(), iCritOnHardHit, crit_on_hard_hit );
 	}
 
+#if defined(QUIVER_DLL)
+	// put the armor kill effect in here.
+	if (!DoesDamagePenetrateArmor(info, info.GetDamageType()) && ArmorValue() > 0)
+	{
+		BreakArmorEffect();
+	}
+
+	// Remove all conditions...
+	m_Shared.RemoveAllCond();
+#endif
+
 	// Create the ragdoll entity.
 	if ( bGib || bRagdoll )
 	{
@@ -14095,16 +14106,10 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 		CreateRagdollEntity( bGib, bBurning, bElectrocuted, bOnGround, bCloakedCorpse, iGoldRagdoll != 0, iIceRagdoll != 0, iRagdollsBecomeAsh != 0, iCustomDamage, ( iCritOnHardHit != 0 ) );
 	}
 
-#if defined(QUIVER_DLL)
-	// put the armor kill effect in here.
-	if (!DoesDamagePenetrateArmor(info, info.GetDamageType()) && ArmorValue() > 0)
-	{
-		BreakArmorEffect();
-	}
-#endif
-
+#if !defined(QUIVER_DLL)
 	// Remove all conditions...
 	m_Shared.RemoveAllCond();
+#endif
 
 	// Don't overflow the value for this.
 	m_iHealth = 0;
