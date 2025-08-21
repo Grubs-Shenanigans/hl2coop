@@ -13553,7 +13553,7 @@ void CTFGameRules::DeathNotice( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 			{
 #ifndef _DEBUG
 #ifdef BDSBASE
-				if ((BTDMHavePlayers()) || (GetGlobalTeam(pVictim->GetTeamNumber()) && GetGlobalTeam(pVictim->GetTeamNumber())->GetNumPlayers() > 1))
+				if ((IsInTDMMode() && BTDMHavePlayers()) || (GetGlobalTeam(pVictim->GetTeamNumber()) && GetGlobalTeam(pVictim->GetTeamNumber())->GetNumPlayers() > 1))
 #else
 				if ( GetGlobalTeam( pVictim->GetTeamNumber() ) && GetGlobalTeam( pVictim->GetTeamNumber() )->GetNumPlayers() > 1 )
 #endif
