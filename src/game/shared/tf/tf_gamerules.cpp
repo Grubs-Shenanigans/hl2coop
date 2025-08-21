@@ -14763,7 +14763,7 @@ bool CTFGameRules::BHavePlayers( void )
 			}
 		}
 
-		return (iCount > 0);
+		return (iCount >= 2);
 	}
 #endif
 
