@@ -13552,7 +13552,11 @@ void CTFGameRules::DeathNotice( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 			if ( !FStrEq( eventName, "fish_notice" ) && !FStrEq( eventName, "fish_notice__arm" ) && !FStrEq( eventName, "slap_notice" ) && !FStrEq( eventName, "throwable_hit" ) )
 			{
 #ifndef _DEBUG
+#ifdef BDSBASE
+				if ((IsInTDMMode() && BHavePlayers()) || (GetGlobalTeam(pVictim->GetTeamNumber()) && GetGlobalTeam(pVictim->GetTeamNumber())->GetNumPlayers() > 1))
+#else
 				if ( GetGlobalTeam( pVictim->GetTeamNumber() ) && GetGlobalTeam( pVictim->GetTeamNumber() )->GetNumPlayers() > 1 )
+#endif
 #endif // !DEBUG
 				{
 					float flFastTime = IsCompetitiveMode() ? 120.f : TF_ARENA_MODE_FAST_FIRST_BLOOD_TIME;
@@ -14743,6 +14747,25 @@ bool CTFGameRules::BHavePlayers( void )
 
 		// Otherwise, fall through to base logic (e.g. 1v0 but already running)
 	}
+
+#if defined(QUIVER_DLL)
+	if (IsInTDMMode())
+	{
+		int iCount = 0;
+
+		for (int i = 0; i <= gpGlobals->maxClients; i++)
+		{
+			CBasePlayer* pPlayer = ToBasePlayer(UTIL_PlayerByIndex(i));
+
+			if (pPlayer && pPlayer->IsReadyToPlay())
+			{
+				iCount++;
+			}
+		}
+
+		return (iCount > 0);
+	}
+#endif
 
 	return BaseClass::BHavePlayers();
 }
