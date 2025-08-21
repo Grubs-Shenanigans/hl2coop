@@ -13553,7 +13553,7 @@ void CTFGameRules::DeathNotice( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 			{
 #ifndef _DEBUG
 #ifdef BDSBASE
-				if ((IsInTDMMode() && BHavePlayers()) || (GetGlobalTeam(pVictim->GetTeamNumber()) && GetGlobalTeam(pVictim->GetTeamNumber())->GetNumPlayers() > 1))
+				if ((BTDMHavePlayers()) || (GetGlobalTeam(pVictim->GetTeamNumber()) && GetGlobalTeam(pVictim->GetTeamNumber())->GetNumPlayers() > 1))
 #else
 				if ( GetGlobalTeam( pVictim->GetTeamNumber() ) && GetGlobalTeam( pVictim->GetTeamNumber() )->GetNumPlayers() > 1 )
 #endif
@@ -14748,7 +14748,12 @@ bool CTFGameRules::BHavePlayers( void )
 		// Otherwise, fall through to base logic (e.g. 1v0 but already running)
 	}
 
+	return BaseClass::BHavePlayers();
+}
+
 #if defined(QUIVER_DLL)
+bool CTFGameRules::BTDMHavePlayers(void)
+{
 	if (IsInTDMMode())
 	{
 		int iCount = 0;
@@ -14765,10 +14770,10 @@ bool CTFGameRules::BHavePlayers( void )
 
 		return (iCount >= 2);
 	}
-#endif
 
-	return BaseClass::BHavePlayers();
+	return false;
 }
+#endif
 
 int SortPlayerSpectatorQueue( CTFPlayer* const *p1, CTFPlayer* const *p2 )
 {

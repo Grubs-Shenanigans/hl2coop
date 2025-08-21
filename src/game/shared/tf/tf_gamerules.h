@@ -982,6 +982,10 @@ bool IsCreepWaveMode( void ) const;
 	void		Arena_NotifyTeamSizeChange( void );
 	float		GetRoundStart( void ) { return m_flRoundStartTime; }
 
+#if defined(QUIVER_DLL)
+	virtual bool BTDMHavePlayers(void);
+#endif
+
 	// Voting
 	void		ManageServerSideVoteCreation( void );
 
