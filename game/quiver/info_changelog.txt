@@ -172,6 +172,7 @@ Details:
 - The Baby Face's Blaster's move speed penalty was increased from 10% to 20%.
 - The Flying Guillotine now decapitates enemies on successful kills.
 - Added a self mark-for-death penalty to the Flying Guillotine.
+- Fixed TDM's first blood not triggering if there's only 2 players in the server.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
