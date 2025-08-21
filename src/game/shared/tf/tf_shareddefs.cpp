@@ -197,6 +197,21 @@ const char g_szArmorItems[][MAX_PATH] =
 	"Le Morne Uniforme",
 	"Iron Lung",
 };
+
+const char g_szArmorItems_MvM[][MAX_PATH] =
+{
+	"", //TF_CLASS_UNDEFINED
+
+	"tw_scoutbot_armor armor version",
+	"tw_sniperbot_armor armor version",
+	"tw_soldierbot_armor armor version",
+	"tw_demobot_armor armor version",
+	"tw_medibot_chariot armor version",
+	"tw_heavybot_armor armor version",
+	"tw_pyrobot_armor armor version",
+	"tw_spybot_armor armor version",
+	"tw_engineerbot_armor armor version",
+};
 #endif
 
 const char *g_pszBreadModels[] = 

@@ -402,7 +402,13 @@ bool CTFWearable::ShouldDraw()
 #if defined(QUIVER_DLL)
 		else if (IsArmor() && pLocalPlayer)
 		{
-			if (pOwner->GetTeamNumber() == pLocalPlayer->GetTeamNumber())
+			int iLocalPlayerTeam = pLocalPlayer->GetTeamNumber();
+			if (pLocalPlayer->m_bIsCoaching && pLocalPlayer->m_hStudent)
+			{
+				iLocalPlayerTeam = pLocalPlayer->m_hStudent->GetTeamNumber();
+			}
+
+			if (pOwner->GetTeamNumber() == iLocalPlayerTeam)
 			{
 				return BaseClass::ShouldDraw();
 			}

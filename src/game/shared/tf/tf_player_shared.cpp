@@ -5558,15 +5558,22 @@ void CTFPlayerShared::AddArmorCosmetics(bool bIsDisguise)
 	int iIndex = bIsDisguise ? GetDisguiseClass() : m_pOuter->GetPlayerClass()->GetClassIndex();
 
 	CTFBot* bot = ToTFBot(m_pOuter);
-	if (bot && (bot->IsServerUsingTheFunnyMVMCvar() || (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && m_pOuter->GetTeamNumber() == TF_TEAM_PVE_INVADERS)))
+	if (bot && (bot->IsServerUsingTheFunnyMVMCvar() || (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && m_pOuter->GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFObjectiveResource()->GetMvMEventPopfileType() != MVM_EVENT_POPFILE_HALLOWEEN)))
 	{
-		if (bot->HasMission(CTFBot::MISSION_DESTROY_SENTRIES))
+		if (bIsDisguise)
 		{
-			AddCosmeticArmorItem(m_pOuter, "tw_sentrybuster", bIsDisguise);
-			return;
+			AddCosmeticArmorItem(m_pOuter, g_szArmorItems[iIndex], bIsDisguise);
 		}
+		else
+		{
+			if (bot->HasMission(CTFBot::MISSION_DESTROY_SENTRIES))
+			{
+				AddCosmeticArmorItem(m_pOuter, "tw_sentrybuster armor version", bIsDisguise);
+				return;
+			}
 
-		AddCosmeticArmorItem(m_pOuter, g_szRomePromoItems_Misc[iIndex], bIsDisguise);
+			AddCosmeticArmorItem(m_pOuter, g_szArmorItems_MvM[iIndex], bIsDisguise);
+		}
 	}
 	else
 	{
@@ -9220,7 +9227,7 @@ void CTFPlayerShared::DetermineDisguiseWearables()
 	// Remove any existing disguise wearables.
 	RemoveDisguiseWearables();
 
-	if (m_pOuter->ArmorValue() > 0)
+	if (InCond(QF_COND_ARMOR))
 	{
 		//add the armor cosmetics based on the class we're disguising as.
 		AddArmorCosmetics(true);

@@ -5641,7 +5641,11 @@ void CTFPlayer::ValidateWearables( TFPlayerClassData_t *pData )
 
 		if ( !itemMatch || pWearable->GetTeamNumber() != GetTeamNumber() || m_bForceItemRemovalOnRespawn || m_bSwitchedClass )
 		{
+#if defined(QUIVER_DLL)
+			if (!pWearable->AlwaysAllow() && (pTFWearable && !pTFWearable->IsArmor()))
+#else
 			if ( !pWearable->AlwaysAllow() )
+#endif
 			{
 				// We shouldn't have this wearable. Remove it.
 				RemoveWearable( pWearable );
