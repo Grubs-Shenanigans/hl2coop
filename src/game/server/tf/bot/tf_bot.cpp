@@ -4324,6 +4324,18 @@ bool CTFBot::ScriptIsWeaponRestricted( HSCRIPT script ) const
 //
 bool CTFBot::ShouldFireCompressionBlast( void )
 {
+#ifdef BDSBASE
+	if (!m_CompressionBlastTimer.IsElapsed())
+	{
+		return false;
+	}
+	else
+	{
+		// invalidate the timer when we go for another blast.
+		m_CompressionBlastTimer.Invalidate();
+	}
+#endif
+
 	if ( TFGameRules()->IsInTraining() )
 	{
 		// no reflection in training mode

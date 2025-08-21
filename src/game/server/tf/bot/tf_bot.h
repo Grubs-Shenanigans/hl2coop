@@ -535,6 +535,10 @@ public:
 	bool ShouldReEvaluateCurrentClass( void ) const;
 	void ReEvaluateCurrentClass( void );
 
+#ifdef BDSBASE
+public:
+	CountdownTimer m_CompressionBlastTimer;
+#endif
 private:
 	CTFBotLocomotion	*m_locomotor;
 	CTFBotBody			*m_body;
