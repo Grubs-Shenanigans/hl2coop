@@ -1470,7 +1470,7 @@ void CTFBot::Spawn()
 #ifdef BDSBASE
 	int newClass = GetPlayerClass()->GetClassIndex();
 
-	if (newClass != iOldClassIndex)
+	if (newClass != iOldClassIndex && !tf_bot_keep_class_after_death.GetBool())
 	{
 		ResetLoadout();
 	}
