@@ -4760,15 +4760,21 @@ void CTFBot::GiveRandomItem( loadout_positions_t loadoutPosition )
 #ifdef BDSBASE
 bool CanEquipOnClass(CTFItemDefinition* pItemDef, int iClassIndex)
 {
-	if (pItemDef && pItemDef->GetClassUsability())
+	if (pItemDef)
 	{
-		for (int i = 0; i < pItemDef->GetClassUsability()->GetNumBits(); i++)
+		if (pItemDef->CanBeUsedByAllClasses())
+			return true;
+
+		if (pItemDef->GetClassUsability())
 		{
-			if (pItemDef->GetClassUsability()->IsBitSet(i))
+			for (int i = 0; i < pItemDef->GetClassUsability()->GetNumBits(); i++)
 			{
-				if (i == iClassIndex)
+				if (pItemDef->GetClassUsability()->IsBitSet(i))
 				{
-					return true;
+					if (i == iClassIndex)
+					{
+						return true;
+					}
 				}
 			}
 		}
