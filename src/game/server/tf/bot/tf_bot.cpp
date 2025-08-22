@@ -4758,6 +4758,25 @@ void CTFBot::GiveRandomItem( loadout_positions_t loadoutPosition )
 }
 
 #ifdef BDSBASE
+bool CanEquipIconOnClass(CTFItemDefinition* pItemDef, int iClassIndex)
+{
+	if (pItemDef && pItemDef->GetClassUsability())
+	{
+		for (int i = 0; i < pItemDef->GetClassUsability()->GetNumBits(); i++)
+		{
+			if (pItemDef->GetClassUsability()->IsBitSet(i))
+			{
+				if (i == iClassIndex)
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
 const CEconItemDefinition* CTFBot::GiveRandomItemEx(loadout_positions_t loadoutPosition)
 {
 	CUtlVector< const CEconItemDefinition* > itemVector;
@@ -4785,7 +4804,7 @@ const CEconItemDefinition* CTFBot::GiveRandomItemEx(loadout_positions_t loadoutP
 			continue;
 		}
 
-		bool bCanBeUsedByClass = (pItemDef->CanBeUsedByClass(GetPlayerClass()->GetClassIndex()) && pItemDef->GetDefaultLoadoutSlot() == loadoutPosition);
+		bool bCanBeUsedByClass = (CanEquipIconOnClass(pItemDef, GetPlayerClass()->GetClassIndex()) && pItemDef->GetDefaultLoadoutSlot() == loadoutPosition);
 
 		if (!bCanBeUsedByClass)
 		{

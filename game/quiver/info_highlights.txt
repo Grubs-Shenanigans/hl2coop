@@ -50,6 +50,7 @@ Stock weapon balance changes:
 - All miniguns now have full accuracy and damage upon revving up.
 - Increased the syringeguns' syringe speed from 1000 hu/s to 1500 hu/s
 - Changed the syringeguns' fire rate from 0.1 to 0.065
+- Increased the syringeguns' base damage from 10 to 15 per syringe
 
 Unlockable weapon balance changes:
 - The Shortstop's shove has a doubled pushback force (from 400 to 800).

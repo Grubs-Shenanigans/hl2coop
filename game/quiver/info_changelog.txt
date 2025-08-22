@@ -175,6 +175,7 @@ Details:
 - Added a self mark-for-death penalty to the Flying Guillotine.
 - Fixed TDM's first blood not triggering if there's only 2 players in the server.
 - Changed the syringeguns' fire rate from 0.1 to 0.065
+- Increased the syringeguns' base damage from 10 to 15 per syringe
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
