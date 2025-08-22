@@ -38,9 +38,9 @@
 
 #define		SQUID_SPRINT_DIST	256 // how close the squid has to get before starting to sprint and refusing to swerve
 
-ConVar sk_bullsquid_health( "sk_bullsquid_health", "0" );
-ConVar sk_bullsquid_dmg_bite( "sk_bullsquid_dmg_bite", "0" );
-ConVar sk_bullsquid_dmg_whip( "sk_bullsquid_dmg_whip", "0" );
+ConVar sk_bullsquid_health( "sk_bullsquid_health", "120" );
+ConVar sk_bullsquid_dmg_bite( "sk_bullsquid_dmg_bite", "25" );
+ConVar sk_bullsquid_dmg_whip( "sk_bullsquid_dmg_whip", "35" );
 
 //=========================================================
 // monster-specific schedule types
@@ -169,9 +169,10 @@ void CNPC_Bullsquid::Precache()
 // Purpose: Indicates this monster's place in the relationship table.
 // Output : 
 //-----------------------------------------------------------------------------
+
 Class_T	CNPC_Bullsquid::Classify( void )
 {
-	return CLASS_BULLSQUID; 
+	return CLASS_BULLSQUID;
 }
 
 //=========================================================
@@ -258,51 +259,51 @@ void CNPC_Bullsquid::HandleAnimEvent( animevent_t *pEvent )
 {
 	switch( pEvent->event )
 	{
-		case BSQUID_AE_SPIT:
+	case BSQUID_AE_SPIT:
+	{
+		if (GetEnemy())
 		{
-			if ( GetEnemy() )
-			{
-				Vector vSpitPos;
+			Vector vSpitPos;
 
-				GetAttachment( "Mouth", vSpitPos );
+			GetAttachment("Mouth", vSpitPos);
 
-				// Raise the spawning position to prevent spawning in the ground
-				vSpitPos.z += 10.0f;
+			// Raise the spawning position to prevent spawning in the ground
+			vSpitPos.z += 10.0f; // Adjust this value as needed
 
-				Vector vTarget = GetEnemy()->GetAbsOrigin();
-				vTarget.z += 45.0f;
-				
-				Vector			vTarget = GetEnemy()->GetAbsOrigin();
-				Vector			vToss;
-				CBaseEntity*	pBlocker;
-				float flGravity  = SPIT_GRAVITY;
-				ThrowLimit(vSpitPos, vTarget, flGravity, 3, Vector(0,0,0), Vector(0,0,0), GetEnemy(), &vToss, &pBlocker);
+			Vector vTarget = GetEnemy()->GetAbsOrigin();
+			vTarget.z += 45.0f; // Adjust this value as needed
 
-				CGrenadeSpit *pGrenade = (CGrenadeSpit*)CreateNoSpawn( "grenade_spit", vSpitPos, vec3_angle, this );
-				//pGrenade->KeyValue( "velocity", vToss );
-				pGrenade->Spawn( );
-				pGrenade->SetThrower( this );
-				pGrenade->SetOwnerEntity( this );
-				pGrenade->SetSpitSize( 2 );
-				pGrenade->SetAbsVelocity( vToss );
+			Vector vToss;
+			CBaseEntity* pBlocker;
+			float flGravity = SPIT_GRAVITY;
+			ThrowLimit(vSpitPos, vTarget, flGravity, 3, Vector(0, 0, 0), Vector(0, 0, 0), GetEnemy(), &vToss, &pBlocker);
 
-				// Tumble through the air
-				pGrenade->SetLocalAngularVelocity(
-					QAngle(
-						random->RandomFloat( -100, -500 ),
-						random->RandomFloat( -100, -500 ),
-						random->RandomFloat( -100, -500 )
-					)
-				);
-						
-				AttackSound();
-			
-				CPVSFilter filter( vSpitPos );
-				te->SpriteSpray( filter, 0.0,
-					&vSpitPos, &vToss, m_nSquidSpitSprite, 5, 10, 15 );
-			}
+			CGrenadeSpit* pGrenade = (CGrenadeSpit*)CreateNoSpawn("grenade_spit", vSpitPos, vec3_angle, this);
+			pGrenade->Spawn();
+			pGrenade->SetThrower(this);
+			pGrenade->SetOwnerEntity(this);
+			pGrenade->SetSpitSize(2);
+			pGrenade->SetAbsVelocity(vToss);
+
+			// Tumble through the air
+			pGrenade->SetLocalAngularVelocity(
+				QAngle(
+					random->RandomFloat(-100, -500),
+					random->RandomFloat(-100, -500),
+					random->RandomFloat(-100, -500)
+				)
+			);
+
+
+			AttackSound();
+
+			CPVSFilter filter(vSpitPos);
+			te->SpriteSpray(filter, 0.0,
+				&vSpitPos, &vToss, m_nSquidSpitSprite, 5, 10, 15);
 		}
-		break;
+	}
+	break;
+
 
 		case BSQUID_AE_BITE:
 		{
