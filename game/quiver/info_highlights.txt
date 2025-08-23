@@ -36,6 +36,7 @@ Custom Weapons:
 - The Soldier gets a melee that's a blast from the past, The Vitality Glitch, which increases the damage and move speed of the user when on low health, in return for damage, move speed, and armor durability.
 - The Medic gets a new Medigun called the Überrüstungsheiler that heals armor on top of health. Its ÜberCharge fully repairs armor and makes it unbreakable.
 - Demoknights have a new shield called The Sun-Jumper, which allows increased armor durability and the ability to jump while charging, at the cost of his charge, his armor's repair rate, and his max armor.
+- The Pyro gets a Flamethrower called The Afterburner, that allows him to airblast herself (similar to the FaN's knockback) at the expense of how quickly it can use their airblast. The airblast can also be charged to deliver up to 2.5x airblast force, but the amount of ammo used depends on how far it is in the charge, and the Pyro gets less airblast force initially.
 
 Stock weapon balance changes:
 - Random critical hits have been disabled. 

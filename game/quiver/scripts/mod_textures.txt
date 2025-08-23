@@ -3887,5 +3887,15 @@
 				"width"		"63"
 				"height"	"32"
 		}
+
+		"afterburner"
+		{
+				"dfile"	"HUD/AfterburnerKillicon/d"
+				"dnegfile"	"HUD/AfterburnerKillicon/dneg"
+				"x"		"0"
+				"y"		"0"
+				"width"		"128"
+				"height"	"32"
+		}
 	}
 }

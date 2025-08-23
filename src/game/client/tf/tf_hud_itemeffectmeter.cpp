@@ -348,7 +348,11 @@ void CHudItemEffectMeter::CreateHudElementsForClass( C_TFPlayer* pPlayer, CUtlVe
 
 	case TF_CLASS_PYRO:
 	{
+#if defined(QUIVER_DLL)
+		DECLARE_ITEM_EFFECT_METER(CTFFlameThrower, TF_WEAPON_FLAMETHROWER, true, "resource/UI/HudItemEffectMeter_FlameThrower.res");
+#else
 		DECLARE_ITEM_EFFECT_METER( CTFFlameThrower, TF_WEAPON_FLAMETHROWER, true, "resource/UI/HudItemEffectMeter_Pyro.res" );
+#endif
 #ifdef BDSBASE
 		DECLARE_ITEM_EFFECT_METER(CTFFlareGun_Revenge, TF_WEAPON_FLAREGUN_REVENGE, false, "resource/UI/HUDItemEffectMeter_Flaregun.res"); // respect shared meter language
 #if defined(QUIVER_DLL)
@@ -899,7 +903,11 @@ bool CHudItemEffectMeter_Weapon<CTFFlameThrower>::IsEnabled( void )
 	if ( !pWeapon )
 		return false;
 
+#if defined(QUIVER_DLL)
+	return ( pWeapon->GetBuffType() > 0 || pWeapon->GetFlameThrowerMode() == QF_FLAMETHROWER_MODE_AFTERBURNER);
+#else
 	return ( pWeapon->GetBuffType() > 0 );
+#endif
 }
 
 //-----------------------------------------------------------------------------

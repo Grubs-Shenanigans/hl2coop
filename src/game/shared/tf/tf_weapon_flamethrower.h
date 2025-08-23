@@ -42,7 +42,12 @@ enum FlameThrowerMode_t
 	TF_FLAMETHROWER_MODE_NORMAL = 0,
 	TF_FLAMETHROWER_MODE_PHLOG = 1,
 	TF_FLAMETHROWER_MODE_GIANT = 2,
+#if defined(QUIVER_DLL)
+	TF_FLAMETHROWER_MODE_RAINBOW = 3,
+	QF_FLAMETHROWER_MODE_AFTERBURNER = 4
+#else
 	TF_FLAMETHROWER_MODE_RAINBOW = 3
+#endif
 };
 
 #define MAX_PARTICLE_EFFECT_NAME_LENGTH 128
@@ -85,6 +90,11 @@ public:
 	bool			CanAirBlastPushPlayer() const;
 	bool			CanAirBlastDeflectProjectile() const;
 	bool			CanAirBlastPutOutTeammate() const;
+#ifdef BDSBASE
+	float			GetChargeMaxTime() const;
+	float			GetChargeMultiplier() const;
+	float			GetChargeProgress() const;
+#endif
 
 	void			FireAirBlast( int iAmmoPerShot );
 
@@ -107,7 +117,21 @@ public:
 
 	float			GetProgress( void );
 	bool			IsRageFull( void ); // same as GetProgress() without the division by 100.0f
+#if defined(QUIVER_DLL)
+	const char* GetEffectLabelText(void) 
+	{ 
+		if (GetFlameThrowerMode() == QF_FLAMETHROWER_MODE_AFTERBURNER)
+		{
+			return "#Quiver_ABMeter";
+		}
+		else
+		{
+			return "#TF_PYRORAGE";
+		}
+	}
+#else
 	const char*		GetEffectLabelText( void ) { return "#TF_PYRORAGE"; }
+#endif
 	bool			EffectMeterShouldFlash( void );
 
 	virtual bool	Deploy( void ) OVERRIDE;

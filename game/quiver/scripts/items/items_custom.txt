@@ -672,6 +672,61 @@
 			"drop_sound"		"ui/item_wood_pole_drop.wav"
 			"xifier_class_remap"	"weapon_targe"
 		}
+		
+		"weapon_quiver_afterburner"
+		{
+			"enabled"	"1"
+			"prefab"	"quiver_customweapon weapon_baseflamethrower"
+			"capabilities"
+			{
+				"nameable"		"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_reflect_projectiles"	"1"
+				"can_extinguish"			"1"
+				"can_deal_posthumous_damage"	"1"
+				"can_deal_critical_damage"	"1"
+				"is_flamethrower" "1"
+			}
+			"item_logname"	"afterburner"
+			"item_iconname"	"afterburner"
+			"show_in_armory"	"1"
+			"item_name"		"#Quiver_Afterburner"
+			"image_inventory"	"backpack/workshop/weapons/c_models/c_pilot_flamer/c_pilot_flamer"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"model_player"	"models/workshop/weapons/c_models/c_pilot_flamer/c_pilot_flamer.mdl"
+			"attach_to_hands"	"1"
+			"inspect_panel_dist" "91"
+			"item_quality"	"unique"
+			"propername"	"1"
+			"used_by_classes"
+			{
+				"pyro"	"1"
+			}
+			"static_attrs"
+			{
+				"min_viewmodel_offset"					"10 0 -10"
+				"airblast_self_knockback"				"1"
+				"mult airblast refire time penalty"		"1.30"
+				"charged airblast"						"1"
+				"charged_airblast_minblast"				"0.5"
+				"charged_airblast_maxblast"				"2.0"
+				"charged_airblast_uses_ammo"			"1"
+				"lunchbox adds minicrits"				"4"
+			}
+			"visuals"
+			{
+				"sound_single_shot"	"Weapon_Degreaser.FireStart"
+				"sound_special1"	"Weapon_Degreaser.FireLoop"
+				"sound_burst"	"Weapon_Degreaser.FireLoopCrit"
+				"sound_special3"	"Weapon_Degreaser.FireEnd"
+			}
+			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
+			"drop_sound"		"ui/item_heavy_gun_drop.wav"
+		}
 	}
 
 	"items"
@@ -916,6 +971,13 @@
 			{
 				"demoman"		"1"
 			}
+		}
+		"34418"
+		{
+			"name"		"Afterburner"
+			"prefab"	"weapon_quiver_afterburner"
+			"first_sale_date"	"2010/09/29"
+			"xifier_class_remap"	"weapon_quiver_afterburner"
 		}
 	}
 	
