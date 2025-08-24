@@ -1162,6 +1162,8 @@ void CTFFlameThrower::FireAirBlast( int iAmmoPerShot )
 
 				// Slow player movement for a brief period of time.
 				pOwner->RemoveFlag(FL_ONGROUND);
+
+				pOwner->SetBlastJumpState(QF_PLAYER_AIRBLAST_JUMPED);
 			}
 		}
 	}

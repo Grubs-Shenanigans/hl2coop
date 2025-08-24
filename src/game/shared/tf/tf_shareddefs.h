@@ -1870,6 +1870,9 @@ extern const char *TranslateWeaponEntForClass( const char *pszName, int iClass )
 #define TF_PLAYER_ROCKET_JUMPED		( 1 << 0 )
 #define TF_PLAYER_STICKY_JUMPED		( 1 << 1 )
 #define TF_PLAYER_ENEMY_BLASTED_ME	( 1 << 2 )
+#if defined(QUIVER_DLL)
+#define QF_PLAYER_AIRBLAST_JUMPED	( 1 << 3 )
+#endif
 
 enum taunts_t
 {

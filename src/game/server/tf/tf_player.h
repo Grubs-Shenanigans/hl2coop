@@ -1076,6 +1076,9 @@ public:
 
 	int					RocketJumped( void ) { return m_iBlastJumpState & TF_PLAYER_ROCKET_JUMPED; }
 	int					StickyJumped( void ) { return m_iBlastJumpState & TF_PLAYER_STICKY_JUMPED; }
+#if defined(QUIVER_DLL)
+	int					AirblastJumped(void) { return m_iBlastJumpState & QF_PLAYER_AIRBLAST_JUMPED; }
+#endif
 	void				SetBlastJumpState( int iState, bool bPlaySound = false );
 	void				ClearBlastJumpState( void );
 

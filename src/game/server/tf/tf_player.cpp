@@ -1613,6 +1613,12 @@ void CTFPlayer::TFPlayerThink()
 			{
 				pszEvent = "rocket_jump_landed";
 			}
+#if defined(QUIVER_DLL)
+			else if (AirblastJumped())
+			{
+				pszEvent = "airblast_jump_landed";
+			}
+#endif
 
 			ClearBlastJumpState();
 
@@ -9331,6 +9337,12 @@ void CTFPlayer::SetBlastJumpState( int iState, bool bPlaySound /*= false*/ )
 	{
 		pszEvent = "rocket_jump";
 	}
+#if defined(QUIVER_DLL)
+	else if (iState == QF_PLAYER_AIRBLAST_JUMPED)
+	{
+		pszEvent = "airblast_jump";
+	}
+#endif
 
 	if ( pszEvent )
 	{
@@ -9973,7 +9985,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 	bool bIsSoldierRocketJumping = ( IsPlayerClass( TF_CLASS_SOLDIER ) && (pAttacker == this) && !(GetFlags() & FL_ONGROUND) && !(GetFlags() & FL_INWATER)) && (inputInfo.GetDamageType() & DMG_BLAST);
 	bool bIsDemomanPipeJumping = ( IsPlayerClass( TF_CLASS_DEMOMAN) && (pAttacker == this) && !(GetFlags() & FL_ONGROUND) && !(GetFlags() & FL_INWATER)) && (inputInfo.GetDamageType() & DMG_BLAST);
-	
+
 	if ( bDebug )
 	{
 		Warning( "%s taking damage from %s, via %s. Damage: %.2f\n", GetDebugName(), info.GetInflictor() ? info.GetInflictor()->GetDebugName() : "Unknown Inflictor", pAttacker ? pAttacker->GetDebugName() : "Unknown Attacker", info.GetDamage() );
