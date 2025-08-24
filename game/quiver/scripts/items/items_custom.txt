@@ -714,7 +714,7 @@
 				"mult airblast refire time penalty"		"1.30"
 				"charged airblast"						"1"
 				"charged_airblast_minblast"				"0.5"
-				"charged_airblast_maxblast"				"2.0"
+				"charged_airblast_maxblast"				"1.75"
 				"charged_airblast_uses_ammo"			"1"
 				"lunchbox adds minicrits"				"4"
 			}

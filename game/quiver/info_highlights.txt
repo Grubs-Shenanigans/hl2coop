@@ -138,6 +138,10 @@ Unlockable weapon balance changes:
 - The Baby Face's Blaster's move speed penalty was increased from 10% to 20%.
 - The Flying Guillotine now decapitates enemies on successful kills.
 - Added a self mark-for-death penalty to the Flying Guillotine.
+- Changed the Mantreads' extra blast control from 200% to 82% due to the increased passive air control given to Soldier by default.
+- Lowered the Mantreads' airblast vulnerability reduction fom 70% to 45%.
+- Added a 25% armor damage durability reduction to the Mantreads.
+- Added a 40% increase in bunnyhop speed to the Mantreads.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

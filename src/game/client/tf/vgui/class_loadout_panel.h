@@ -74,9 +74,6 @@ public:
 	virtual void OnShowPanel( bool bVisible, bool bReturningFromArmory );
 	virtual void PostShowPanel( bool bVisible );
 	virtual void OnKeyCodePressed( vgui::KeyCode code ) OVERRIDE;
-#ifdef BDSBASE
-	virtual void OnKeyCodeTyped(vgui::KeyCode code) OVERRIDE;
-#endif
 	virtual void OnNavigateTo( const char* panelName ) OVERRIDE;
 	virtual void OnNavigateFrom( const char* panelName ) OVERRIDE;
 

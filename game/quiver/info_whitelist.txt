@@ -94,5 +94,6 @@
 - The Tide Turner
 - The Natascha* (w/ balance changes)
 - Mad Milk/Mutated Milk (w/ balance changes)
+- The Mantreads (w/ balance changes)
 
 * - Weapon was whitelisted as long as it got a rebalance.

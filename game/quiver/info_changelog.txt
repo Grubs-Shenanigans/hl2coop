@@ -47,6 +47,7 @@ Whitelists:
 	- The Tide Turner
 	- The Natascha
 	- Mad Milk/Mutated Milk
+	- The Mantreads
 
 Blacklists:
 	- The Spy-Cicle
@@ -178,6 +179,10 @@ Details:
 - Increased the syringeguns' base damage from 10 to 15 per syringe
 - Enabled the Nostromo Napalmer as a reskin.
 - Added the Afterburner, a Flame Thrower for the Pyro that allows him to airblast herself (similar to the FaN's knockback) at the expense of how quickly it can use their airblast. The airblast can also be charged to deliver up to 2.5x airblast force, but the amount of ammo used depends on how far it is in the charge, and the Pyro gets less airblast force initially.
+- Changed the Mantreads' extra blast control from 200% to 82% due to the increased passive air control given to Soldier by default.
+- Lowered the Mantreads' airblast vulnerability reduction fom 70% to 45%.
+- Added a 25% armor damage durability reduction to the Mantreads.
+- Added a 40% increase in bunnyhop speed to the Mantreads.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
