@@ -188,7 +188,7 @@ const char g_szArmorItems[][MAX_PATH] =
 	"", //TF_CLASS_UNDEFINED
 
 	"Courtly Cuirass",
-	"Preventative Measure",
+	"Poacher's Safari Jacket",
 	"The Patriot's Pouches",
 	"The Dark Age Defender",
 	"Coldfront Carapace",

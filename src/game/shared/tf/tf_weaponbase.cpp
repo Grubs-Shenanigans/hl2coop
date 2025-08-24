@@ -18,6 +18,9 @@
 #include "tf_gcmessages.h"
 
 #include "tf_weapon_wrench.h"
+#ifdef BDSBASE
+#include "tf_weapon_flamethrower.h"
+#endif
 
 #include "passtime_convars.h"
 
@@ -6301,6 +6304,23 @@ bool CTFWeaponBase::DeflectEntity( CBaseEntity *pTarget, CTFPlayer *pOwner, Vect
 			Vector vecDir = pTarget->WorldSpaceCenter() - vecEye;
 			VectorNormalize( vecDir );
 			float flVel = 50.0f * CTFWeaponBase::DeflectionForce( pTarget->CollisionProp()->OBBSize(), 90, 12.0f );
+
+#ifdef BDSBASE
+			int iChargedAirblast = 0;
+			CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+			if (iChargedAirblast != 0)
+			{
+				CTFFlameThrower* pFlamethrower = assert_cast<CTFFlameThrower*>(this);
+				if (pFlamethrower)
+				{
+					flVel *= pFlamethrower->GetChargeMultiplier();
+				}
+			}
+
+			// Attributes.  Pushback scale is on the player, vulnerability multiplier on the victim.
+			CALL_ATTRIB_HOOK_FLOAT(flVel, airblast_pushback_scale);
+#endif
+
 			pPhysicsObject->ApplyForceOffset( vecDir * flVel, vecEye );
 		}
 		return true;
@@ -6331,6 +6351,23 @@ bool CTFWeaponBase::DeflectEntity( CBaseEntity *pTarget, CTFPlayer *pOwner, Vect
 		pPhysicsObject->GetVelocity( &vecVel, &angularimp );
 	}
 	float flVel = vecVel.Length();
+
+#ifdef BDSBASE
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		CTFFlameThrower* pFlamethrower = assert_cast<CTFFlameThrower*>(this);
+		if (pFlamethrower)
+		{
+			flVel *= pFlamethrower->GetChargeMultiplier();
+		}
+	}
+
+	// Attributes.  Pushback scale is on the player, vulnerability multiplier on the victim.
+	CALL_ATTRIB_HOOK_FLOAT(flVel, airblast_pushback_scale);
+#endif
+
 	vecVel = flVel * vecDir;
 	if ( pPhysicsObject )
 	{

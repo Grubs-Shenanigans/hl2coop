@@ -427,7 +427,11 @@ float CTFFlameThrower::GetChargeMaxTime() const
 	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
 	if (iChargedAirblast != 0)
 	{
+#if defined(QUIVER_DLL)
+		return 6.0f;
+#else
 		return 3.0f;
+#endif
 	}
 	else
 	{

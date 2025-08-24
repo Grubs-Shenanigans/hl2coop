@@ -709,6 +709,7 @@
 			"static_attrs"
 			{
 				"min_viewmodel_offset"					"10 0 -10"
+				"airblast cost increased"				"1.25"
 				"airblast_self_knockback"				"1"
 				"mult airblast refire time penalty"		"1.30"
 				"charged airblast"						"1"
