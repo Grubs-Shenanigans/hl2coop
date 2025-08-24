@@ -2731,6 +2731,14 @@ Activity CTFWeaponBase::GetInspectActivity( TFWeaponInspectStage inspectStage )
 #ifdef BDSBASE
 bool CTFWeaponBase::CanInspect() const
 {
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+	// VMs don't have inspect anims.
+	if (UsesForcedViewModel())
+	{
+		return false;
+	}
+#endif
+
 	const CEconItemView* pItem = GetAttributeContainer()->GetItem();
 	if (pItem)
 	{

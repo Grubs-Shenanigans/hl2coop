@@ -428,7 +428,7 @@ float CTFFlameThrower::GetChargeMaxTime() const
 	if (iChargedAirblast != 0)
 	{
 #if defined(QUIVER_DLL)
-		return 6.0f;
+		return 4.0f;
 #else
 		return 3.0f;
 #endif
@@ -482,10 +482,10 @@ float CTFFlameThrower::GetChargeProgress() const
 		CALL_ATTRIB_HOOK_FLOAT(flChargedAirblastMaxBlast, charged_airblast_maxblast);
 
 		flProgress = RemapValClamped((gpGlobals->curtime - m_flChargeBeginTime),
-															0.0f,
-															GetChargeMaxTime(),
-															0.0f,
-															1.0f);
+									0.0f,
+									GetChargeMaxTime(),
+									0.0f,
+									1.0f);
 	}
 
 	return flProgress;
