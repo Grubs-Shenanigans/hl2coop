@@ -336,6 +336,10 @@ void CWeaponMedigun::WeaponReset( void )
 	m_nChargesReleased = 0;
 #endif
 
+#ifdef BDSBASE
+	m_flReviveMarkerNextHeal = 0.f;
+#endif
+
 #if defined( CLIENT_DLL )
 	m_nOldChargeResistType = 0;
 	m_bPlayingSound = false;
@@ -984,7 +988,11 @@ void CWeaponMedigun::HealTargetThink( void )
 		}
 	}
 
+#ifdef BDSBASE
+	if (gpGlobals->curtime >= m_flReviveMarkerNextHeal && !pTarget->IsPlayer())
+#else
 	if ( !pTarget->IsPlayer() )
+#endif
 	{
 
 		CTFReviveMarker *pReviveMarker = dynamic_cast< CTFReviveMarker* >( pTarget );
@@ -999,6 +1007,9 @@ void CWeaponMedigun::HealTargetThink( void )
 				float flHealRate = GetHealRate();
 				float flReviveRate = m_bChargeRelease ? flHealRate / 2.f : flHealRate / 8.f;
 				pReviveMarker->AddMarkerHealth( flReviveRate );
+#ifdef BDSBASE
+				m_flReviveMarkerNextHeal = gpGlobals->curtime + ROUND_TO_TICKS(0.2f);
+#endif
 
 				// Set observer target to reviver so they know they're being revived
 				if ( pDeadPlayer->GetObserverMode() > OBS_MODE_FREEZECAM )
