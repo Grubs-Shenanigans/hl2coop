@@ -269,14 +269,12 @@ CEconItemView* CTFInventoryManager::AddSoloItem(int id, bool bWhitelisted)
 	pItemView->SetNonSOEconItem(pItem);
 #endif
 
+#if defined(QUIVER_DLL)
 	if (bWhitelisted)
 	{
-#if defined(QUIVER_DLL)
 		pItemView->SetItemQuality(GIVEN_ITEM_QUALITY);
-#endif
 		pItemView->SetItemLevel(1);
 	}
-#if defined(QUIVER_DLL)
 	else
 	{
 		pItemView->SetItemQuality(CUSTOM_ITEM_QUALITY);
