@@ -184,6 +184,7 @@ Details:
 - Added a 25% armor damage durability reduction to the Mantreads.
 - Added a 40% increase in bunnyhop speed to the Mantreads.
 - Fixed a bug where the flamethrower viewmodel wasn't compatible with the JI flames.
+- Disabled the Truce system.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

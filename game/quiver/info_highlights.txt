@@ -18,6 +18,7 @@ Highlights:
 - Whitelisted weapons are now given to players even if they don't own them, allowing each player to be on an equal playing field.
 - Implemented NeoDement's Missing Killicons Pack.
 - Implemented Ultimate Visual Fix Pack.
+- Disabled the Truce system.
 
 Class changes:
 - Run speeds have been increased across all 9 classes. However, one aspect remains: Heavies are the slowest, Scouts are the fastest.

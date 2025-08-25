@@ -10262,6 +10262,10 @@ void CTFGameRules::GoToIntermission( void )
 //-----------------------------------------------------------------------------
 void CTFGameRules::RecalculateTruce( void )
 {
+#if defined(QUIVER_DLL)
+	return;
+#endif
+
 	bool bTruceActive = false;
 
 	// Call a truce if the teams are fighting a Halloween boss
