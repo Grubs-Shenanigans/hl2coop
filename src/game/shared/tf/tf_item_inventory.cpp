@@ -245,13 +245,15 @@ CEconItemView* CTFInventoryManager::AddSoloItem(int id, bool bWhitelisted)
 	pItem->SetItemID(id);
 	pItem->m_unAccountID = 0;
 	pItem->SetFlags(kEconItemFlag_NonEconomy);
-#if defined(QUIVER_DLL)
+
 	if (bWhitelisted)
 	{
+#if defined(QUIVER_DLL)
 		CAttribute_String attrStr;
 		attrStr.set_value("#given");
 		static CSchemaAttributeDefHandle pAttrDef_QualityTextOverride("quality text override");
 		pItem->SetDynamicAttributeValue(pAttrDef_QualityTextOverride, attrStr);
+#endif
 
 		pItem->SetOrigin(kEconItemOrigin_QuestLoanerItem);
 	}
@@ -259,9 +261,7 @@ CEconItemView* CTFInventoryManager::AddSoloItem(int id, bool bWhitelisted)
 	{
 		pItem->SetOrigin(kEconItemOrigin_CustomItem);
 	}
-#else
-	pItem->SetOrigin(kEconItemOrigin_CustomItem);
-#endif
+
 	pItemView->Init(id, AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, false);
 	pItemView->SetItemID(id);
 
