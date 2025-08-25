@@ -31,6 +31,10 @@
 #include "haptics/ihaptics.h"
 #endif
 
+#ifdef BDSBASE
+ConVar tf_melee_old_trace_behavior("tf_melee_old_trace_behavior", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Re-enables old melee trace behavior");
+#endif
+
 #if defined(QUIVER_DLL)
 ConVar tf_weapon_criticals_melee("tf_weapon_criticals_melee", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Controls random crits for melee weapons. 0 - Melee weapons do not randomly crit. 1 - Melee weapons can randomly crit only if tf_weapon_criticals is also enabled. 2 - Melee weapons can always randomly crit regardless of the tf_weapon_criticals setting.");
 #else
@@ -435,8 +439,8 @@ public:
 	// It does have a base, but we'll never network anything below here..
 	DECLARE_CLASS(CTraceFilterIgnoreTeammatesMelee, CTraceFilterSimple);
 
-	CTraceFilterIgnoreTeammatesMelee(const IHandleEntity* passentity, int collisionGroup, int iIgnoreTeam)
-		: CTraceFilterSimple(passentity, collisionGroup), m_iIgnoreTeam(iIgnoreTeam)
+	CTraceFilterIgnoreTeammatesMelee(const IHandleEntity* passentity, int collisionGroup, int iIgnoreTeam, bool bOldTraceBehavior)
+		: CTraceFilterSimple(passentity, collisionGroup), m_iIgnoreTeam(iIgnoreTeam), m_bOldTraceBehavior(bOldTraceBehavior)
 	{
 	}
 
@@ -448,6 +452,12 @@ public:
 
 		if ((pEntity->IsPlayer() || pEntity->IsCombatItem()) && (pEntity->GetTeamNumber() == m_iIgnoreTeam || m_iIgnoreTeam == TEAM_ANY))
 		{
+			// Make sure we check for old behavior first.
+			if (m_bOldTraceBehavior)
+			{
+				return false;
+			}
+
 			// first, evaluate passtime logic
 			if (g_pPasstimeLogic)
 			{
@@ -500,6 +510,7 @@ public:
 	}
 
 	int m_iIgnoreTeam;
+	bool m_bOldTraceBehavior;
 };
 #endif
 
@@ -539,9 +550,26 @@ bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUt
 	Vector vecSwingEnd = vecSwingStart + vecForward * fSwingRange;
 
 #ifdef BDSBASE
+	bool bOldTraceBehavior = tf_melee_old_trace_behavior.GetBool();
+
+	if (!bOldTraceBehavior)
+	{
+		int iOldTraceBehavior = 0;
+		CALL_ATTRIB_HOOK_INT(iOldTraceBehavior, set_old_melee_trace_behavior);
+		bOldTraceBehavior = (iOldTraceBehavior != 0);
+	}
+
 	// only hit teammates if friendly fire is on.
 	bool bDontHitTeammates = !friendlyfire.GetBool();
-	CTraceFilterIgnoreTeammatesMelee ignoreTeammatesFilter(pPlayer, COLLISION_GROUP_NONE, pPlayer->GetTeamNumber());
+
+	if (bOldTraceBehavior)
+	{
+		// In MvM, melee hits from the robot team wont hit teammates to ensure mobs of melee bots don't 
+		// swarm so tightly they hit each other and no-one else
+		bDontHitTeammates = pPlayer->GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFGameRules()->IsMannVsMachineMode();
+	}
+
+	CTraceFilterIgnoreTeammatesMelee ignoreTeammatesFilter(pPlayer, COLLISION_GROUP_NONE, pPlayer->GetTeamNumber(), bOldTraceBehavior);
 #else
 	// In MvM, melee hits from the robot team wont hit teammates to ensure mobs of melee bots don't 
 	// swarm so tightly they hit each other and no-one else
