@@ -9,6 +9,10 @@
 #include "effect_dispatch_data.h"
 #include "tf_gamerules.h"
 
+#if defined(QUIVER_DLL)
+#include "tf_weapon_wrench.h"
+#endif
+
 // Server specific.
 #if !defined( CLIENT_DLL )
 #include "tf_player.h"
@@ -16,12 +20,11 @@
 #include "ilagcompensationmanager.h"
 #include "tf_passtime_logic.h"
 
-#if defined(QUIVER_DLL)
-#include "tf_weapon_wrench.h"
-#endif
-
 // Client specific.
 #else
+#ifdef BDSBASE
+#include "c_tf_passtime_logic.h"
+#endif
 #include "c_tf_gamestats.h"
 #include "c_tf_player.h"
 // NVNT haptics system interface
@@ -425,6 +428,80 @@ void CTFWeaponBaseMelee::ItemPostFrame()
 	BaseClass::ItemPostFrame();
 }
 
+#ifdef BDSBASE
+class CTraceFilterIgnoreTeammatesMelee : public CTraceFilterSimple
+{
+public:
+	// It does have a base, but we'll never network anything below here..
+	DECLARE_CLASS(CTraceFilterIgnoreTeammatesMelee, CTraceFilterSimple);
+
+	CTraceFilterIgnoreTeammatesMelee(const IHandleEntity* passentity, int collisionGroup, int iIgnoreTeam)
+		: CTraceFilterSimple(passentity, collisionGroup), m_iIgnoreTeam(iIgnoreTeam)
+	{
+	}
+
+	virtual bool ShouldHitEntity(IHandleEntity* pServerEntity, int contentsMask)
+	{
+		CBaseEntity* pEntity = EntityFromEntityHandle(pServerEntity);
+		const CBaseEntity* pPassEntity = EntityFromEntityHandle(GetPassEntity());
+		CBaseEntity* pPassNonConst = const_cast<CBaseEntity*>(pPassEntity);
+
+		if ((pEntity->IsPlayer() || pEntity->IsCombatItem()) && (pEntity->GetTeamNumber() == m_iIgnoreTeam || m_iIgnoreTeam == TEAM_ANY))
+		{
+			// first, evaluate passtime logic
+			if (g_pPasstimeLogic)
+			{
+				CTFPlayer* pTFTargetPlayer = ToTFPlayer(pEntity);
+
+				if (pTFTargetPlayer && pTFTargetPlayer->m_Shared.HasPasstimeBall())
+				{
+					return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
+				}
+			}
+
+			if (pPassNonConst)
+			{
+				// now, check the player we passed in.
+				CTFPlayer* pTFPassPlayer = static_cast<CTFPlayer*>(pPassNonConst);
+
+				if (pTFPassPlayer)
+				{
+					CTFWeaponBase* pWeapon = pTFPassPlayer->GetActiveTFWeapon();
+
+					if (pWeapon)
+					{
+						// attributes
+						int iSpeedBuffOnHit = 0;
+						CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iSpeedBuffOnHit, speed_buff_ally);
+
+						int nGiveHealthOnHit = 0;
+						CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, nGiveHealthOnHit, add_give_health_to_teammate_on_hit);
+
+						if ((iSpeedBuffOnHit != 0) || (nGiveHealthOnHit != 0))
+						{
+							return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
+						}
+
+#if defined(QUIVER_DLL)
+						// wrench (quiver)
+						if (pWeapon->GetWeaponID() == TF_WEAPON_WRENCH)
+						{
+							return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
+						}
+#endif
+					}
+				}
+			}
+
+			return false;
+		}
+
+		return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
+	}
+
+	int m_iIgnoreTeam;
+};
+#endif
 
 bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUtlVector< trace_t >* pTargetTraceVector )
 {
@@ -461,10 +538,16 @@ bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUt
 	Vector vecSwingStart = pPlayer->Weapon_ShootPosition();
 	Vector vecSwingEnd = vecSwingStart + vecForward * fSwingRange;
 
+#ifdef BDSBASE
+	// only hit teammates if friendly fire is on.
+	bool bDontHitTeammates = !friendlyfire.GetBool();
+	CTraceFilterIgnoreTeammatesMelee ignoreTeammatesFilter(pPlayer, COLLISION_GROUP_NONE, pPlayer->GetTeamNumber());
+#else
 	// In MvM, melee hits from the robot team wont hit teammates to ensure mobs of melee bots don't 
 	// swarm so tightly they hit each other and no-one else
 	bool bDontHitTeammates = pPlayer->GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFGameRules()->IsMannVsMachineMode();
 	CTraceFilterIgnoreTeammates ignoreTeammatesFilter( pPlayer, COLLISION_GROUP_NONE, pPlayer->GetTeamNumber() );
+#endif
 
 	if ( bCleave )
 	{
@@ -710,12 +793,15 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 			}
 
 #ifdef QUIVER_DLL
-			//do the same for armor. Wrenches only, mainly.
-			CTFWrench* pWrench = dynamic_cast<CTFWrench*>(this);
-
-			if (pWrench)
+			if (GetWeaponID() == TF_WEAPON_WRENCH)
 			{
-				pWrench->OnFriendlyPlayerHit(pTargetPlayer, pPlayer, trace.endpos);
+				//do the same for armor. Wrenches only, mainly.
+				CTFWrench* pWrench = dynamic_cast<CTFWrench*>(this);
+
+				if (pWrench)
+				{
+					pWrench->OnFriendlyPlayerHit(pTargetPlayer, pPlayer, trace.endpos);
+				}
 			}
 #endif
 		}
