@@ -2562,27 +2562,35 @@ void CTFWeaponBase::ItemPostFrame( void )
 	bool bNeedsReload = NeedsReloadForAmmo1( GetMaxClip1() ) || ( IsEnergyWeapon() && !Energy_FullyCharged() );
 
 #if defined(QUIVER_DLL)
-	if (pOwner->m_Shared.InCond(TF_COND_DISGUISED) && !bNeedsReload && (pOwner->m_nButtons & IN_RELOAD))
+	if (pOwner->m_Shared.InCond(TF_COND_DISGUISED))
 	{
-		//if we press the reload key, fake a reload in third person.
-		// Play the player's reload animation
-		pOwner->DoAnimationEvent(PLAYERANIMEVENT_RELOAD);
+		CTFWeaponBase* pDisguiseWeapon = pOwner->m_Shared.GetDisguiseWeapon();
 
-		float flReloadTime;
-		// First, see if we have a reload animation
-		if (SendWeaponAnim(ACT_VM_RELOAD))
+		if (pDisguiseWeapon)
 		{
-			// We consider the reload finished 0.2 sec before the anim is, so that players don't keep accidentally aborting their reloads
-			flReloadTime = SequenceDuration() - 0.2;
-		}
-		else
-		{
-			// No reload animation. Use the script time.
-			flReloadTime = GetTFWpnData().m_WeaponData[TF_WEAPON_PRIMARY_MODE].m_flTimeReload;
-		}
+			if (pDisguiseWeapon->UsesClipsForAmmo1() && !pDisguiseWeapon->IsMeleeWeapon() && !bNeedsReload && (pOwner->m_nButtons & IN_RELOAD))
+			{
+				//if we press the reload key, fake a reload in third person.
+				// Play the player's reload animation
+				pOwner->DoAnimationEvent(PLAYERANIMEVENT_RELOAD);
 
-		SetReloadTimer(flReloadTime);
-		return;
+				float flReloadTime;
+				// First, see if we have a reload animation
+				if (SendWeaponAnim(ACT_VM_RELOAD))
+				{
+					// We consider the reload finished 0.2 sec before the anim is, so that players don't keep accidentally aborting their reloads
+					flReloadTime = SequenceDuration() - 0.2;
+				}
+				else
+				{
+					// No reload animation. Use the script time.
+					flReloadTime = GetTFWpnData().m_WeaponData[TF_WEAPON_PRIMARY_MODE].m_flTimeReload;
+				}
+
+				SetReloadTimer(flReloadTime);
+				return;
+			}
+		}
 	}
 #endif
 

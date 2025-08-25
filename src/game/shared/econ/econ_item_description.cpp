@@ -3300,6 +3300,12 @@ void CEconItemDescription::Generate_FlagsAttributes( const CLocalizationProvider
 		{
 			vecLines.AddToTail( localized_localplayer_line_t( "#Attrib_LoanerItem", ATTRIB_COL_NEUTRAL ) );
 		}
+#ifdef BDSBASE
+		else if (eOrigin == kEconItemOrigin_CustomItem)
+		{
+			vecLines.AddToTail(localized_localplayer_line_t("#Attrib_CustomItem", ATTRIB_COL_NEUTRAL));
+		}
+#endif
 		else if ( eOrigin == kEconItemOrigin_Invalid )
 		{
 			// do nothing, but skip the below "cannot trade/cannot craft" block below"
@@ -3423,18 +3429,6 @@ void CEconItemDescription::Generate_VisibleAttributes( const CLocalizationProvid
 {
 	Assert( pLocalizationProvider );
 	Assert( pEconItem );
-
-#if defined(QUIVER_DLL)
-	// hack
-	const GameItemDefinition_t* pItemDef = pEconItem->GetItemDefinition();
-	if (!pItemDef)
-		return;
-
-	if (pItemDef->IsWhitelisted())
-	{
-		AddDescLine(pLocalizationProvider->Find("#Quiver_Whitelisted"), ATTRIB_COL_NEUTRAL, kDescLineFlag_Attribute);
-	}
-#endif
 
 	CVisibleAttributeDisplayer AttributeDisplayer;
 	pEconItem->IterateAttributes( &AttributeDisplayer );

@@ -255,6 +255,12 @@ CEconItemView* CTFInventoryManager::AddSoloItem(int id, bool bWhitelisted)
 
 		pItem->SetOrigin(kEconItemOrigin_QuestLoanerItem);
 	}
+	else
+	{
+		pItem->SetOrigin(kEconItemOrigin_CustomItem);
+	}
+#else
+	pItem->SetOrigin(kEconItemOrigin_CustomItem);
 #endif
 	pItemView->Init(id, AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, false);
 	pItemView->SetItemID(id);

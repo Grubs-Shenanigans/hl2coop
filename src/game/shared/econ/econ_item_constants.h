@@ -421,6 +421,9 @@ enum eEconItemOrigin
 	kEconItemOrigin_CYOABloodMoneyPurchase,
 	kEconItemOrigin_Paintkit,
 	kEconItemOrigin_UntradableFreeContractReward,
+#ifdef BDSBASE
+	kEconItemOrigin_CustomItem,
+#endif
 
 	kEconItemOrigin_Max,
 };
