@@ -4,9 +4,8 @@
 {
 	"prefabs"
 	{
-		"quiver_customweapon"
+		"quiver"
 		{
-			"customitem" "1"
 			"show_in_armory"	"1"
 			"min_ilevel"		"1"
 			"max_ilevel"		"99"
@@ -15,29 +14,23 @@
 				"killstreak tier NO MARKETING NAME"	"1"
 			}
 		}
+	
+		"quiver_customweapon"
+		{
+			"prefab"		"quiver"
+			"customitem" "1"
+		}
 		
 		"quiver_jokeweapon"
 		{
+			"prefab"		"quiver"
 			"jokeitem" "1"
-			"show_in_armory"	"0"
-			"min_ilevel"		"69"
-			"max_ilevel"		"69"
-			"static_attrs"
-			{
-				"killstreak tier NO MARKETING NAME"	"1"
-			}
 		}
 		
 		"quiver_customweapon_staging"
 		{
+			"prefab"		"quiver"
 			"staging" "1"
-			"show_in_armory"	"0"
-			"min_ilevel"		"1"
-			"max_ilevel"		"1"
-			"static_attrs"
-			{
-				"killstreak tier NO MARKETING NAME"	"1"
-			}
 		}
 	
 		// custom
