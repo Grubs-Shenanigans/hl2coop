@@ -972,6 +972,28 @@
 			"first_sale_date"	"2010/09/29"
 			"xifier_class_remap"	"weapon_quiver_afterburner"
 		}
+		"34419"
+		{
+			"name"		"Invisible Flame Armor Version"
+			"prefab"		"no_craft misc marketable"
+			"item_name"		"#TF_sum24_invisible_flame"
+			"item_description"		"#TF_sum24_invisible_flame_Desc"
+			"item_type_name"		"#TF_Wearable_Jacket"
+			"equip_region"		"shirt"
+			"image_inventory"		"backpack/workshop/player/items/pyro/sum24_invisible_flame_style1/sum24_invisible_flame_style1"
+			"capabilities"
+			{
+				"can_craft_count"		"1"
+				"paintable"		"1"
+			}
+			"model_player"		"models/workshop/player/items/pyro/sum24_invisible_flame_style2/sum24_invisible_flame_style2.mdl"
+			"used_by_classes"
+			{
+				"pyro"		"1"
+			}
+			"mouse_pressed_sound"		"ui/item_hat_pickup.wav"
+			"drop_sound"		"ui/item_hat_drop.wav"
+		}
 	}
 	
 	// attributes are moved to items_game.txt

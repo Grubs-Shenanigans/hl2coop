@@ -187,13 +187,13 @@ const char g_szArmorItems[][MAX_PATH] =
 {
 	"", //TF_CLASS_UNDEFINED
 
-	"Airborne Attire",
+	"Flak Jack",
 	"Airborne Attire",
 	"The Patriot's Pouches",
 	"The Dark Age Defender",
-	"Coldfront Carapace",
+	"Bunnyhopper's Ballistics Vest",
 	"Immobile Suit Armor Version",
-	"Torcher's Trench Coat",
+	"Invisible Flame Armor Version",
 	"Le Morne Uniforme",
 	"Iron Lung",
 };
