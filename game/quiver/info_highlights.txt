@@ -53,6 +53,7 @@ Stock weapon balance changes:
 - Increased the syringeguns' syringe speed from 1000 hu/s to 1500 hu/s
 - Changed the syringeguns' fire rate from 0.1 to 0.065
 - Increased the syringeguns' base damage from 10 to 15 per syringe
+- Fixed melee weapons hitting teammates in front of you instead of friendly players behind them.
 
 Unlockable weapon balance changes:
 - The Shortstop's shove has a doubled pushback force (from 400 to 800).
@@ -143,7 +144,6 @@ Unlockable weapon balance changes:
 - Lowered the Mantreads' airblast vulnerability reduction fom 70% to 45%.
 - Added a 25% armor damage durability reduction to the Mantreads.
 - Added a 40% increase in bunnyhop speed to the Mantreads.
-- Fixed melee weapons hitting teammates in front of you instead of friendly players behind them.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

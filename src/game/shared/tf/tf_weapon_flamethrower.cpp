@@ -324,6 +324,10 @@ void CTFFlameThrower::Precache( void )
 	PrecacheScriptSound( "Weapon_FlameThrower.AirBurstAttack" );
 	PrecacheScriptSound( "TFPlayer.AirBlastImpact" );
 	PrecacheScriptSound( "Weapon_FlameThrower.AirBurstAttackDeflect" );
+#ifdef BDSBASE
+	PrecacheScriptSound( "Weapon_DragonsFury.PressureBuild" );
+	PrecacheScriptSound("Weapon_DragonsFury.PressureBuildStop");
+#endif
 	PrecacheParticleSystem( "deflect_fx" );
 	PrecacheParticleSystem( "drg_bison_idle" );
 	PrecacheParticleSystem( "medicgun_invulnstatus_fullcharge_blue" );
@@ -528,6 +532,16 @@ void CTFFlameThrower::DestroySounds( void )
 	StopHitSound();
 #endif
 
+#ifdef BDSBASE
+#ifdef GAME_DLL
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		StopPressureSound();
+	}
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -551,6 +565,17 @@ void CTFFlameThrower::WeaponReset( void )
 #if defined( CLIENT_DLL )
 	StopFullCritEffect();
 #endif
+
+#ifdef BDSBASE
+#ifdef GAME_DLL
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		StopPressureSound();
+	}
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -561,6 +586,17 @@ void CTFFlameThrower::WeaponIdle( void )
 	BaseClass::WeaponIdle();
 
 	SetWeaponState( FT_STATE_IDLE );
+
+#ifdef BDSBASE
+#ifdef GAME_DLL
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		StopPressureSound();
+	}
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -614,6 +650,17 @@ bool CTFFlameThrower::Holster( CBaseCombatWeapon *pSwitchingTo )
 	StopFullCritEffect();
 
 	m_bEffectsThinking = false;
+#endif
+
+#ifdef BDSBASE
+#ifdef GAME_DLL
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		StopPressureSound();
+	}
+#endif
 #endif
 
 	return BaseClass::Holster( pSwitchingTo );
@@ -755,10 +802,31 @@ void CTFFlameThrower::ItemPostFrame()
 				{
 					FireAirBlast(iAmmoPerShot);
 				}
+
+#ifdef GAME_DLL
+				int iChargedAirblast = 0;
+				CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+				if (iChargedAirblast != 0)
+				{
+					StopPressureSound();
+				}
+#endif
 #else
 				FireAirBlast( iAmmoPerShot );
 #endif
 			}
+#ifdef BDSBASE
+			else if (pOwner->m_nButtons & IN_ATTACK2)
+			{
+#ifdef GAME_DLL
+				if (!m_pSndPressure)
+				{
+					StartPressureSound();
+					CSoundEnvelopeController::GetController().SoundChangePitch(m_pSndPressure, 70, (GetChargeMaxTime() / 2));
+				}
+#endif
+			}
+#endif
 		}
 	}
 }
@@ -768,6 +836,18 @@ void CTFFlameThrower::ItemPostFrame()
 //-----------------------------------------------------------------------------
 void CTFFlameThrower::PrimaryAttack()
 {
+#ifdef BDSBASE
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		if (m_bFiredBothAttacks || (m_flChargeBeginTime > 0))
+		{
+			return;
+		}
+	}
+#endif
+
 	float flSpinUpTime = GetSpinUpTime();
 
 	if ( flSpinUpTime > 0.0f )
@@ -850,6 +930,16 @@ void CTFFlameThrower::PrimaryAttack()
 		}
 		return;
 	}
+
+#ifdef BDSBASE
+	if (iChargedAirblast != 0)
+	{
+		if (m_iWeaponState == FT_STATE_SECONDARY)
+		{
+			SetWeaponState(FT_STATE_IDLE);
+		}
+	}
+#endif
 
 	switch ( m_iWeaponState )
 	{
@@ -1312,6 +1402,36 @@ void CTFFlameThrower::UseRage( void )
 
 	m_flNextSecondaryAttack = flNextAttack;
 }
+
+#ifdef BDSBASE
+#ifdef GAME_DLL
+void CTFFlameThrower::StartPressureSound()
+{
+	if (m_pSndPressure)
+		StopPressureSound();
+
+	if (!m_pSndPressure)
+	{
+		CPASAttenuationFilter filter(GetAbsOrigin());
+		// Create the repressurization sound
+		CSoundEnvelopeController& controller = CSoundEnvelopeController::GetController();
+		m_pSndPressure = controller.SoundCreate(filter, entindex(), "Weapon_DragonsFury.PressureBuild");
+
+		controller.Play(m_pSndPressure, 1.0, 100);
+	}
+}
+
+void CTFFlameThrower::StopPressureSound()
+{
+	if (m_pSndPressure)
+	{
+		CSoundEnvelopeController::GetController().SoundDestroy(m_pSndPressure);
+		m_pSndPressure = NULL;
+		EmitSound("Weapon_DragonsFury.PressureBuildStop");
+	}
+}
+#endif
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

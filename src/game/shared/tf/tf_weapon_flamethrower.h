@@ -256,6 +256,12 @@ private:
 	FlameEffect_t m_MmmmphEffect;
 #else
 	float		m_flTimeToStopHitSound;
+#ifdef BDSBASE
+	void StartPressureSound();
+	void StopPressureSound();
+
+	CSoundPatch* m_pSndPressure;
+#endif
 #endif
 
 	// used for the new style flames (via CTFFlameManager)
