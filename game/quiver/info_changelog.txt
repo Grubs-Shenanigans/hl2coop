@@ -185,6 +185,7 @@ Details:
 - Added a 40% increase in bunnyhop speed to the Mantreads.
 - Fixed a bug where the flamethrower viewmodel wasn't compatible with the JI flames.
 - Disabled the Truce system.
+- Fixed melee weapons hitting teammates in front of you instead of friendly players behind them.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

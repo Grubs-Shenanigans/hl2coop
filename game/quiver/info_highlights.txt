@@ -143,6 +143,7 @@ Unlockable weapon balance changes:
 - Lowered the Mantreads' airblast vulnerability reduction fom 70% to 45%.
 - Added a 25% armor damage durability reduction to the Mantreads.
 - Added a 40% increase in bunnyhop speed to the Mantreads.
+- Fixed melee weapons hitting teammates in front of you instead of friendly players behind them.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

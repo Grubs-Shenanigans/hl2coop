@@ -134,6 +134,26 @@ void CTFWrench::OnFriendlyBuildingHit( CBaseObject *pObject, CTFPlayer *pPlayer,
 
 	CDisablePredictionFiltering disabler;
 
+#ifdef BDSBASE
+	if (bUsefulHit)
+	{
+		// play success sound
+		WeaponSound(SPECIAL1);
+	}
+	else
+	{
+		if (pObject->IsDisposableBuilding())
+		{
+			CSingleUserRecipientFilter singleFilter(pPlayer);
+			EmitSound(singleFilter, pObject->entindex(), "Player.UseDeny");
+		}
+		else
+		{
+			// play failure sound
+			WeaponSound(SPECIAL2);
+		}
+	}
+#else
 	if ( pObject->IsDisposableBuilding() )
 	{
 		CSingleUserRecipientFilter singleFilter( pPlayer );
@@ -152,6 +172,7 @@ void CTFWrench::OnFriendlyBuildingHit( CBaseObject *pObject, CTFPlayer *pPlayer,
 			WeaponSound( SPECIAL2 );
 		}
 	}
+#endif
 }
 
 #ifdef QUIVER_DLL
