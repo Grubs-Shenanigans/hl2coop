@@ -656,6 +656,11 @@ public:
 	void SetDecapitations( int iVal )	{ m_iDecapitations = iVal; }
 	int GetDecapitations( void ) const	{ return m_iDecapitations; }
 
+#ifdef BDSBASE
+	void SetOldMeleeTrace(bool bVal)	{ m_bOldMeleeTrace = bVal; }
+	bool IsOldMeleeTrace(void) const	{ return m_bOldMeleeTrace; }
+#endif
+
 	void SetStreak( ETFStreak streak_type, int iVal )		{ m_nStreaks.Set( streak_type, iVal ); }
 	int GetStreak( ETFStreak streak_type ) const		{ return m_nStreaks[streak_type]; }
 	int IncrementStreak( ETFStreak streak_type, int iVal )
@@ -985,6 +990,7 @@ private:
 	int m_iDisguiseAmmo;
 #ifdef BDSBASE
 	int m_iDisguiseAmmoReserve;
+	CNetworkVar(bool, m_bOldMeleeTrace);
 #endif
 
 	bool m_bEnableSeparation;		// Keeps separation forces on when player stops moving, but still penetrating

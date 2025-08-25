@@ -925,6 +925,10 @@ public:
 	int					ScriptGetBonusPoints() const				{ return m_Shared.GetBonusPoints( 0 ); }
 	void				ScriptResetScores()							{ m_Shared.ResetScores(); }
 	bool				ScriptIsParachuteEquipped()					{ return m_Shared.IsParachuteEquipped(); }
+#ifdef BDSBASE
+	bool				ScriptIsOldMeleeTrace()						{ return m_Shared.IsOldMeleeTrace(); }
+	void				ScriptSetOldMeleeTrace(bool bVal)			{ m_Shared.SetOldMeleeTrace(bVal); }
+#endif
 
 	int					ScriptGetPlayerClass()
 	{

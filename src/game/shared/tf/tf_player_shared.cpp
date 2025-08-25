@@ -449,6 +449,10 @@ BEGIN_RECV_TABLE_NOBASE( CTFPlayerShared, DT_TFPlayerShared )
 	RecvPropFloat( RECVINFO( m_askForBallTime ) ),
 	RecvPropBool( RECVINFO( m_bKingRuneBuffActive ) ),
 
+#ifdef BDSBASE
+	RecvPropBool(RECVINFO(m_bOldMeleeTrace)),
+#endif
+
 	RecvPropUtlVectorDataTable( m_ConditionData, TF_COND_LAST, DT_TFPlayerConditionSource ),
 
 	RecvPropInt( RECVINFO( m_nPlayerCondEx4 ) ),
@@ -495,6 +499,7 @@ BEGIN_PREDICTION_DATA_NO_BASE( CTFPlayerShared )
 	DEFINE_PRED_FIELD(m_iRevengeCrits, FIELD_INTEGER, FTYPEDESC_INSENDTABLE),
 	DEFINE_PRED_FIELD(m_flHolsterAnimTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE),
 	DEFINE_PRED_FIELD(m_iStunIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE),
+	DEFINE_PRED_FIELD(m_bOldMeleeTrace, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 #endif
 END_PREDICTION_DATA()
 
@@ -627,6 +632,10 @@ BEGIN_SEND_TABLE_NOBASE( CTFPlayerShared, DT_TFPlayerShared )
 	SendPropEHandle( SENDINFO( m_hPasstimePassTarget ) ),
 	SendPropFloat( SENDINFO( m_askForBallTime ) ),
 	SendPropBool( SENDINFO( m_bKingRuneBuffActive ) ),
+
+#ifdef BDSBASE
+	SendPropBool(SENDINFO(m_bOldMeleeTrace)),
+#endif
 
 	SendPropUtlVectorDataTable( m_ConditionData, TF_COND_LAST, DT_TFPlayerConditionSource ),
 
