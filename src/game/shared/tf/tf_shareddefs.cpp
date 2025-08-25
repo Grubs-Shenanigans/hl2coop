@@ -187,13 +187,13 @@ const char g_szArmorItems[][MAX_PATH] =
 {
 	"", //TF_CLASS_UNDEFINED
 
-	"Courtly Cuirass",
-	"Poacher's Safari Jacket",
+	"Airborne Attire",
+	"Airborne Attire",
 	"The Patriot's Pouches",
 	"The Dark Age Defender",
 	"Coldfront Carapace",
 	"Immobile Suit Armor Version",
-	"dec2014 Armoured Appendages",
+	"Torcher's Trench Coat",
 	"Le Morne Uniforme",
 	"Iron Lung",
 };
