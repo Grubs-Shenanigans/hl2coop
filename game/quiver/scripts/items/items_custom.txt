@@ -24,12 +24,14 @@
 		"quiver_jokeweapon"
 		{
 			"prefab"		"quiver"
+			"item_description"	"#Quiver_Joke_Desc"
 			"jokeitem" "1"
 		}
 		
 		"quiver_customweapon_staging"
 		{
 			"prefab"		"quiver"
+			"item_description"	"#Quiver_Test_Desc"
 			"staging" "1"
 		}
 	

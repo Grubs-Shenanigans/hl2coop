@@ -48,6 +48,7 @@ Whitelists:
 	- The Natascha
 	- Mad Milk/Mutated Milk
 	- The Mantreads
+	- The Tribalman's Shiv
 
 Blacklists:
 	- The Spy-Cicle
@@ -188,6 +189,10 @@ Details:
 - Fixed a bug where the flamethrower viewmodel wasn't compatible with the JI flames.
 - Disabled the Truce system.
 - Fixed melee weapons hitting teammates in front of you instead of friendly players behind them.
+- Reduced the Tribalman's Shiv's damage penalty from 50% to 35%.
+- Reduced the Tribalman's Shiv's bleed duration from 6 seconds to 4 seconds.
+- The Tribalman's Shiv now does 100% crits against unarmored players.
+- The Tribalman's Shiv has a 20% damage penalty against armor.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

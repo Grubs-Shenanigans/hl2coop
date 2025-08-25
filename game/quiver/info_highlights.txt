@@ -144,6 +144,10 @@ Unlockable weapon balance changes:
 - Lowered the Mantreads' airblast vulnerability reduction fom 70% to 45%.
 - Added a 25% armor damage durability reduction to the Mantreads.
 - Added a 40% increase in bunnyhop speed to the Mantreads.
+- Reduced the Tribalman's Shiv's damage penalty from 50% to 30%.
+- Reduced the Tribalman's Shiv's bleed duration from 6 seconds to 4 seconds.
+- The Tribalman's Shiv now does 100% crits against unarmored players.
+- The Tribalman's Shiv has a 20% damage penalty against armor.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).
