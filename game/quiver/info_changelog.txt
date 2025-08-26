@@ -75,6 +75,7 @@ Added the following Source SDK Pull Requests:
 	- #1506: Make Killfeed use the Assisters team color if applicable instead of always using the Killers team color
 	- #1508: Add C_BaseEntity::CanGlow to opt-out of glowing for Sentry Gun shield
 	- #1509: Fix reanimator fast revive exploit
+	- #1512: Explain client crash reason when malicious server sends CUtlVector length out of allowed range
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
