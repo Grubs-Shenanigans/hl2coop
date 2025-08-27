@@ -708,13 +708,22 @@ static const char *GetAppInstallDirNoSteam( int nAppID )
 {
 	// First, get the Steam installation.
 	char szSteamPath[1024] = {};
+	
+#ifdef BDSBASE
+	V_strncpy( szSteamPath, GetSteamInstallationPath(), sizeof( szSteamPath ) );
+#else
 	Q_strncpy( szSteamPath, GetSteamInstallationPath(), sizeof( szSteamPath ) );
+#endif
 	if( !szSteamPath || szSteamPath[0] == '\0' )
 		return nullptr;
 
 	// Second, go to the libraryfolders.vdf and look if the appid is in them.
 	char szLibraryFoldersFile[1024] = {};
+#ifdef BDSBASE
+	V_snprintf( szLibraryFoldersFile, sizeof( szLibraryFoldersFile ), "%s%s", szSteamPath, "/config/libraryfolders.vdf" );
+#else
 	Q_snprintf( szLibraryFoldersFile, sizeof( szLibraryFoldersFile ), "%s%s", szSteamPath, "/config/libraryfolders.vdf" );
+#endif
 
 	// NOTE: ReadKeyValuesFile already deletes the KV if it doesn't exist
 	// read the libraryfolders.vdf file
@@ -724,7 +733,11 @@ static const char *GetAppInstallDirNoSteam( int nAppID )
 
 	// Get a string representation of the Steam AppID passed
 	char szAppID[32] = {};
+#ifdef BDSBASE
+	V_snprintf( szAppID, sizeof( szAppID ), "%d", nAppID );
+#else
 	Q_snprintf( szAppID, sizeof( szAppID ), "%d", nAppID );
+#endif
 
 	// Path KV
 	KeyValues *pPathKV = nullptr;
@@ -753,7 +766,11 @@ static const char *GetAppInstallDirNoSteam( int nAppID )
 	// Look for the game that this mod asked for
 	char szInstallationPath[1024] = {};
 	// copy this string over since we're gonna delete the KV
+#ifdef BDSBASE
+	V_strncpy( szInstallationPath, pPathKV->GetString(), sizeof( szInstallationPath ) );
+#else
 	Q_strncpy( szInstallationPath, pPathKV->GetString(), sizeof( szInstallationPath ) );
+#endif
 	// If it's empty somehow, error out
 	if( !szInstallationPath || szInstallationPath[0] == '\0' )
 	{
@@ -769,7 +786,11 @@ static const char *GetAppInstallDirNoSteam( int nAppID )
 
 	// get the appmanifest_APPID.acf file
 	char szAppManifestPath[1024] = {};
+#ifdef BDSBASE
+	V_snprintf( szAppManifestPath, sizeof( szAppManifestPath ), "%s%s%s.acf", szInstallationPath, "/steamapps/appmanifest_", szAppID );
+#else
 	Q_snprintf( szAppManifestPath, sizeof( szAppManifestPath ), "%s%s%s.acf", szInstallationPath, "/steamapps/appmanifest_", szAppID );
+#endif
 	// Reuse the root pointer to open the appmanifest file
 	pRootKV = ReadKeyValuesFile( szAppManifestPath );
 
@@ -787,7 +808,11 @@ static const char *GetAppInstallDirNoSteam( int nAppID )
 	// Get the game name to get it from the common dir.
 	// Again, deleting the KV after this
 	char szGameName[256] = {};
+#ifdef BDSBASE
+	V_strncpy( szGameName, pInstallDirKV->GetString(), sizeof( szGameName ) );
+#else
 	Q_strncpy( szGameName, pInstallDirKV->GetString(), sizeof( szGameName ) );
+#endif
 
 	if( !szGameName || szGameName[0] == '\0' )
 		return nullptr;
@@ -798,7 +823,11 @@ static const char *GetAppInstallDirNoSteam( int nAppID )
 
 	// Now that we got everything, put it all together
 	static char szAbsoluteGameDirPath[1024] = {};
+#ifdef BDSBASE
+	V_snprintf( szAbsoluteGameDirPath, sizeof( szAbsoluteGameDirPath ), "%s%s%s", szInstallationPath, "/common/", szGameName );
+#else
 	Q_snprintf( szAbsoluteGameDirPath, sizeof( szAbsoluteGameDirPath ), "%s%s%s", szInstallationPath, "/common/", szGameName );
+#endif
 
 	// Fix the slashes before passing it
 	V_FixDoubleSlashes( szAbsoluteGameDirPath ); 
