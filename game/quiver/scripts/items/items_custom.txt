@@ -214,9 +214,9 @@
 					"attribute_class"	"sniper_classic_allow_jump"
 					"value"	"1"
 				}
-				"no aiming movespeed penalty"
+				"zoom speed mod disabled"
 				{
-					"attribute_class"	"player_no_aiming_movespeed_penalty"
+					"attribute_class"	"unimplemented_mod_zoom_speed_disabled"
 					"value" "1"
 				}
 				"move speed penalty"
@@ -720,6 +720,51 @@
 			"mouse_pressed_sound"	"ui/item_heavy_gun_pickup.wav"
 			"drop_sound"		"ui/item_heavy_gun_drop.wav"
 		}
+		
+		"weapon_quiver_syringe"
+		{
+			"enabled"	"1"
+			"prefab"		"quiver_customweapon"
+			"item_class"	"tf_weapon_bonesaw"
+			"craft_material_type"	"weapon"
+			"capabilities"
+			{
+				"nameable"			"1"
+			}
+			"tags"
+			{
+				"can_deal_damage"			"1"
+				"can_deal_posthumous_damage"	"1"
+				"can_deal_critical_damage"	"1"
+			}
+			"base_item_name"	"Syringe"
+			"item_logname"		"syringe"
+			"item_iconname"		"syringe"
+			"show_in_armory"	"1"
+			"item_type_name"	"#Quiver_Syringe_Type"
+			"item_name"			"#Quiver_Syringe"
+			"item_slot"			"melee"
+			"image_inventory"	"backpack/weapons/c_models/c_bonesaw/c_bonesaw"
+			"image_inventory_size_w"		"128"
+			"image_inventory_size_h"		"82"
+			"inspect_panel_dist" 				"42"			
+			"attach_to_hands"	"1"
+			"model_player"	"models/weapons/w_models/w_syringe.mdl"
+			"used_by_classes"
+			{
+				"medic"	"1"
+			}
+			"static_attrs"
+			{
+				"min_viewmodel_offset"		"10 0 -12"
+				"fire rate penalty"		"1.35"
+				"add_give_health_to_teammate_on_hit" "25"
+				"bleeding_infinite"		"1"
+				"dmg penalty vs buildings" "0"
+			}
+			"mouse_pressed_sound"	"ui/item_metal_weapon_pickup.wav"
+			"drop_sound"		"ui/item_metal_weapon_drop.wav"
+		}
 	}
 
 	"items"
@@ -974,25 +1019,32 @@
 		}
 		"34419"
 		{
-			"name"		"Invisible Flame Armor Version"
+			"name"		"Lurker's Leathers Armor Version"
 			"prefab"		"no_craft misc marketable"
-			"item_name"		"#TF_sum24_invisible_flame"
-			"item_description"		"#TF_sum24_invisible_flame_Desc"
-			"item_type_name"		"#TF_Wearable_Jacket"
-			"equip_region"		"shirt"
-			"image_inventory"		"backpack/workshop/player/items/pyro/sum24_invisible_flame_style1/sum24_invisible_flame_style1"
+			"item_name"		"#TF_cc_summer2015_lurkers_leathers"
+			"item_description"		"#TF_cc_summer2015_lurkers_leathers_Desc"
+			"item_type_name"		"#TF_Wearable_Coat"
+			"equip_region"		"spy_coat"
+			"image_inventory"		"backpack/workshop/player/items/spy/cc_summer2015_lurkers_leathers/cc_summer2015_lurkers_leathers"
 			"capabilities"
 			{
 				"can_craft_count"		"1"
 				"paintable"		"1"
 			}
-			"model_player"		"models/workshop/player/items/pyro/sum24_invisible_flame_style2/sum24_invisible_flame_style2.mdl"
+			"model_player"		"models/workshop/player/items/spy/cc_summer2015_lurkers_leathers_2/cc_summer2015_lurkers_leathers_2.mdl"
 			"used_by_classes"
 			{
-				"pyro"		"1"
+				"spy"		"1"
 			}
-			"mouse_pressed_sound"		"ui/item_hat_pickup.wav"
+			"mouse_pressed_sound"		"ui/item_leather_pickup.wav"
 			"drop_sound"		"ui/item_hat_drop.wav"
+		}
+		"34420"
+		{
+			"name"		"Syringe"
+			"prefab"	"weapon_quiver_syringe"
+			"first_sale_date"	"2010/09/29"
+			"xifier_class_remap"	"weapon_quiver_syringe"
 		}
 	}
 	

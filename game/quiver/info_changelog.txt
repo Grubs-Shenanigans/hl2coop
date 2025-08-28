@@ -196,6 +196,8 @@ Details:
 - Reduced the Tribalman's Shiv's bleed duration from 6 seconds to 4 seconds.
 - The Tribalman's Shiv now does 100% crits against unarmored players.
 - The Tribalman's Shiv has a 20% damage penalty against armor.
+- Implemented Fixed Spy's View Model Sleev V2 by Hecates and H.Gaspar.
+- Added the Pharmaceutical's Public Panic, a Syringe weapon for the Medic that is similar to the TFC/QWTF medkit. It gives 25 health to teammates on hit and give an indefinite bleeding effect to enemies on hit. However, it has a 35% slower fire rate and healing friendly players takes 25 of your own health.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

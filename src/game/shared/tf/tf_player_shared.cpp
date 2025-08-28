@@ -10172,6 +10172,11 @@ CTFWeaponBase *CTFPlayerShared::GetActiveTFWeapon() const
 //-----------------------------------------------------------------------------
 bool CTFPlayerShared::IsAlly( CBaseEntity *pEntity )
 {
+#ifdef BDSBASE
+	if (friendlyfire.GetBool())
+		return false;
+#endif
+
 	return ( pEntity->GetTeamNumber() == m_pOuter->GetTeamNumber() );
 }
 
@@ -11768,9 +11773,21 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 	int iNoMoveSpeedPenalty = 0;
 	CALL_ATTRIB_HOOK_INT(iNoMoveSpeedPenalty, player_no_aiming_movespeed_penalty);
 
+	if (iNoMoveSpeedPenalty == 0)
+	{
+		CALL_ATTRIB_HOOK_INT(iNoMoveSpeedPenalty, unimplemented_mod_zoom_speed_disabled);
+	}
+
 	if ( !iNoMoveSpeedPenalty && ( !TFGameRules()->IsMannVsMachineMode() || !IsMiniBoss() ) ) // No aiming slowdown penalties for MiniBoss players in MVM
 #else
+#ifdef BDSBASE
+	int iNoMoveSpeedPenalty = 0;
+	CALL_ATTRIB_HOOK_INT(iNoMoveSpeedPenalty, unimplemented_mod_zoom_speed_disabled);
+
+	if (!iNoMoveSpeedPenalty && (!TFGameRules()->IsMannVsMachineMode() || !IsMiniBoss())) // No aiming slowdown penalties for MiniBoss players in MVM
+#else
 	if ( !TFGameRules()->IsMannVsMachineMode() || !IsMiniBoss() ) // No aiming slowdown penalties for MiniBoss players in MVM
+#endif
 #endif
 	{
 		// if they're a sniper, and they're aiming, their speed must be 80 or less

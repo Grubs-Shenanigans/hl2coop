@@ -38,6 +38,7 @@ Custom Weapons:
 - The Medic gets a new Medigun called the Überrüstungsheiler that heals armor on top of health. Its ÜberCharge fully repairs armor and makes it unbreakable.
 - Demoknights have a new shield called The Sun-Jumper, which allows increased armor durability and the ability to jump while charging, at the cost of his charge, his armor's repair rate, and his max armor.
 - The Pyro gets a Flamethrower called The Afterburner, that allows him to airblast herself (similar to the FaN's knockback) at the expense of how quickly it can use their airblast. The airblast can also be charged to deliver up to 2.5x airblast force, but the amount of ammo used depends on how far it is in the charge, and the Pyro gets less airblast force initially.
+- The Medic gets a melee Syringe called the Pharmaceutical's Public Panic, that is similar to the TFC/QWTF medkit. It gives 25 health to teammates on hit and give an indefinite bleeding effect to enemies on hit. However, it has a 35% slower fire rate and healing friendly players takes 25 of your own health.
 
 Stock weapon balance changes:
 - Random critical hits have been disabled. 

@@ -167,6 +167,9 @@ public:
 private:
 	static void			PrecachePlayerModels();
 	static void			PrecacheTFPlayer();
+#if defined(QUIVER_DLL)
+	void				PrecacheQuiver();
+#endif
 public:
 	virtual void		Precache();
 	virtual bool		IsReadyToPlay( void );

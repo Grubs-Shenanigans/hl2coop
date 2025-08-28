@@ -193,8 +193,8 @@ const char g_szArmorItems[][MAX_PATH] =
 	"The Dark Age Defender",
 	"Bunnyhopper's Ballistics Vest",
 	"Immobile Suit Armor Version",
-	"Invisible Flame Armor Version",
-	"Le Morne Uniforme",
+	"The Steel Sixpack",
+	"Lurker's Leathers Armor Version",
 	"Iron Lung",
 };
 
