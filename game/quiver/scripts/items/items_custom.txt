@@ -743,6 +743,7 @@
 			"show_in_armory"	"1"
 			"item_type_name"	"#Quiver_Syringe_Type"
 			"item_name"			"#Quiver_Syringe"
+			"item_description"	"#Quiver_Syringe_Desc"
 			"item_slot"			"melee"
 			"image_inventory"	"backpack/weapons/c_models/c_bonesaw/c_bonesaw"
 			"image_inventory_size_w"		"128"
@@ -759,8 +760,9 @@
 				"min_viewmodel_offset"		"10 0 -12"
 				"fire rate penalty"		"1.35"
 				"add_give_health_to_teammate_on_hit" "25"
-				"bleeding_infinite"		"1"
+				"theres_this_disease_going_around_killing_people_and_i_think_i_have_it_uh_oh"		"1"
 				"dmg penalty vs buildings" "0"
+				"lunchbox adds minicrits" "5"
 			}
 			"mouse_pressed_sound"	"ui/item_metal_weapon_pickup.wav"
 			"drop_sound"		"ui/item_metal_weapon_drop.wav"

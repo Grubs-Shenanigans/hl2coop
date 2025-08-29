@@ -11929,21 +11929,6 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	{
 		m_Shared.MakeBleed( pTFAttacker, dynamic_cast< CTFWeaponBase * >( info.GetWeapon() ), flBleedingTime );
 	}
-#if defined(QUIVER_DLL)
-	else
-	{
-		if (pTFAttacker && pTFAttacker != this)
-		{
-			int iInfiniteBleed = 0;
-			CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iInfiniteBleed, bleeding_infinite);
-			if (iInfiniteBleed != 0)
-			{
-				float flBleedDmg = 0.05f * GetMaxHealth();
-				m_Shared.MakeBleed(pTFAttacker, dynamic_cast<CTFWeaponBase*>(info.GetWeapon()), 0.f, flBleedDmg, true);
-			}
-		}
-	}
-#endif
 
 	// Don't recieve reflected damage if you are carrying Reflect (prevents a loop in a game with two Reflect players)
 	if ( ( info.GetDamageType() & TF_DMG_CUSTOM_RUNE_REFLECT ) && m_Shared.GetCarryingRuneType() == RUNE_REFLECT )

@@ -474,8 +474,11 @@ static const char *g_aConditionNames[] =
 	"QF_COND_ARMOR",							// = 133
 	"QF_COND_UNBREAKABLE_ARMOR",				// = 134
 	"QF_COND_ARMOR_BUFF",						// = 135
-#endif
+	"TF_COND_POWERPLAY",						// = 136
+	"QF_COND_INFECTED"							// = 137
+#else
 	"TF_COND_POWERPLAY"							// = 136
+#endif
 #endif
 
 	// ******** Keep this block last! ********

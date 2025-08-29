@@ -4495,6 +4495,13 @@ void CTFPlayerShared::OnAddBleeding( void )
 //-----------------------------------------------------------------------------
 void CTFPlayerShared::OnRemoveBleeding( void )
 {
+#if defined(QUIVER_DLL)
+	if (InCond(QF_COND_INFECTED))
+	{
+		RemoveCond(QF_COND_INFECTED);
+	}
+#endif
+
 #ifdef CLIENT_DLL
 	if ( m_pOuter->IsLocalPlayer() )
 	{

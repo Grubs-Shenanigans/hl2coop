@@ -155,7 +155,6 @@ Details:
 - Moved the Ludmila's stats to the Natascha, and removed the Ludmila.
 - Increased the Thermal Thruster's deploy and holster speed by 50%
 - Increased Mad Milk recharge time to 35 seconds
-- Reduced Gas Passer gas cloud lifetime from 5 seconds to 4 seconds
 - Added a 25% reload time increase penalty to the Enforcer.
 - The Pretty Boy's Pocket Pistol is now usable by the Engineer.
 - Added the Texan Trickshot as a kill taunt to the Wrangler.

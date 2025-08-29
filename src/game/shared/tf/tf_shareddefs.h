@@ -846,6 +846,9 @@ enum ETFCond
 	QF_COND_ARMOR_BUFF						= 135,
 #endif
 	TF_COND_POWERPLAY						= 136,
+#if defined(QUIVER_DLL)
+	QF_COND_INFECTED						= 137,
+#endif
 #endif
 
 	// ******** Keep this block last! ********
