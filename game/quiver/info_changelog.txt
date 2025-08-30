@@ -76,6 +76,8 @@ Added the following Source SDK Pull Requests:
 	- #1508: Add C_BaseEntity::CanGlow to opt-out of glowing for Sentry Gun shield
 	- #1509: Fix reanimator fast revive exploit
 	- #1512: Explain client crash reason when malicious server sends CUtlVector length out of allowed range
+	- #1514: Crusader's Crossbow arrow healing is now affected by mult_health_fromhealers (used by Back Scratcher)
+	- #1515: Add "ParticleEffectStopAndDestroy" Client Effect and "DestroyImmediately" Input for info_particle_system
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.

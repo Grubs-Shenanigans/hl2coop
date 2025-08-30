@@ -811,11 +811,35 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 			// Give health to teammates on hit
 			int nGiveHealthOnHit = 0;
 			CALL_ATTRIB_HOOK_INT( nGiveHealthOnHit, add_give_health_to_teammate_on_hit );
+
+#ifdef BDSBASE
+			//scaled by other attributes
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHit, mult_healing_from_medics);
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHit, mult_health_fromhealers);
+
+			// Don't heal players using a weapon that blocks healing
+			CTFWeaponBase* pWeapon = pTargetPlayer->GetActiveTFWeapon();
+			if (pWeapon)
+			{
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, nGiveHealthOnHit, mult_health_fromhealers_penalty_active);
+
+				int iBlockHealing = 0;
+				CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iBlockHealing, weapon_blocks_healing);
+				if (iBlockHealing)
+				{
+					nGiveHealthOnHit = 0;
+				}
+			}
+#endif
+
 			if ( nGiveHealthOnHit != 0 )
 			{
 				// Always keep at least 1 health for ourselves
 				nGiveHealthOnHit = Min( pPlayer->GetHealth() - 1, nGiveHealthOnHit );
 				int nHealthGiven = pTargetPlayer->TakeHealth( nGiveHealthOnHit, DMG_GENERIC );
+#ifdef BDSBASE
+				CTF_GameStats.Event_PlayerHealedOther(pPlayer, nGiveHealthOnHit);
+#endif
 
 				if ( nHealthGiven > 0 )
 				{
