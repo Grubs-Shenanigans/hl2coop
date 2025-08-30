@@ -700,6 +700,9 @@ void CInput::CAM_ToFirstPerson(void)
 	g_ThirdPersonManager.SetDesiredCameraOffset( vec3_origin );
 
 	m_fCameraInThirdPerson = false;
+#ifdef BDSBASE
+	m_CameraIsOrthographic = false;
+#endif
 	cam_command.SetValue( 0 );
 
 	// Let the local player know
