@@ -17,6 +17,11 @@ $Configuration
 	{
 		$AdditionalIncludeDirectories	"$BASE;$SRCDIR\game\shared\hl2,.\hl2,.\hl2mp,$SRCDIR\game\shared\hl2mp"
 		$PreprocessorDefinitions		"$BASE;HL2MP;HL2_DLL;NEXT_BOT"
+		//PLEASE READ THE README BEFORE TOGGLING THESE OPTIONS
+		$PreprocessorDefinitions		"$BASE;BDSBASE_TEMP_FIXDYNAMICMODELS" [$BDSBASE]
+		$PreprocessorDefinitions		"$BASE;BDSBASE_ACHIEVEMENT_NOTIFICATIONS" [$BDSBASE]
+		$PreprocessorDefinitions		"$BASE;BDSBASE_DISCORD" [$BDSBASE]
+		//$PreprocessorDefinitions		"$BASE;BDSBASE_NPC" [$BDSBASE]
 	}
 }
 

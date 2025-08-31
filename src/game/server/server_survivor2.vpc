@@ -15,7 +15,11 @@ $Configuration
 	$Compiler
 	{
 		$AdditionalIncludeDirectories	"$BASE;$SRCDIR\game\shared\hl2,.\hl2,.\hl2mp,$SRCDIR\game\shared\hl2mp"
-		$PreprocessorDefinitions		"$BASE;HL2MP;HL2_DLL;NEXT_BOT;SURVIVOR2;BDSBASE_DISCORD;BDSBASE_NPC"
+		$PreprocessorDefinitions		"$BASE;HL2MP;HL2_DLL;NEXT_BOT;SURVIVOR2"
+		$PreprocessorDefinitions		"$BASE;BDSBASE_TEMP_FIXDYNAMICMODELS"
+		$PreprocessorDefinitions		"$BASE;BDSBASE_ACHIEVEMENT_NOTIFICATIONS"
+		$PreprocessorDefinitions		"$BASE;BDSBASE_DISCORD"
+		//$PreprocessorDefinitions		"$BASE;BDSBASE_NPC"
 	}
 }
 
