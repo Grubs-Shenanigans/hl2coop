@@ -80,7 +80,7 @@ Added the following Source SDK Pull Requests:
 	- #1515: Add "ParticleEffectStopAndDestroy" Client Effect and "DestroyImmediately" Input for info_particle_system
 	- #1516: Fix not being able to toggle off the orthographic camera
 	- #1517: Implement tf_stats_bogus covnvars to allow High stat tracking in modes with Increased Stats. I.E MvM
-	- #1518: Fix the B.A.S.E. Jumpers parachute not using half of its animations
+	- #1518: Fix the B.A.S.E. Jumper's parachute not using half of its animations
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
@@ -201,7 +201,8 @@ Details:
 - The Tribalman's Shiv now does 100% crits against unarmored players.
 - The Tribalman's Shiv has a 20% damage penalty against armor.
 - Implemented Fixed Spy's View Model Sleev V2 by Hecates and H.Gaspar.
-- Added the Pharmaceutical's Public Panic, a Syringe weapon for the Medic that is similar to the TFC/QWTF medkit. It gives 25 health to teammates on hit and give an indefinite bleeding effect to enemies on hit. However, it has a 35% slower fire rate and healing friendly players takes 25 of your own health.
+- Added the Pharmaceutical's Public Panic, a Syringe weapon for the Medic that is similar to the TFC/QWTF medkit. It gives 25 health to teammates on hit and creates a disease cloud that spreads to surrounding enemies on hit. However, it has a 35% slower fire rate and healing friendly players takes 25 of your own health.
+- Added MvM upgrades for the Pharmaceutical's Public Panic.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

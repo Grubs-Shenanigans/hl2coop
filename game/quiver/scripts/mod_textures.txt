@@ -3897,5 +3897,15 @@
 				"width"		"128"
 				"height"	"32"
 		}
+
+		"syringe"
+		{
+				"dfile"	"HUD/quiver/syringe_d"
+				"dnegfile"	"HUD/quiver/syringe_dneg"
+				"x"		"0"
+				"y"		"0"
+				"width"		"128"
+				"height"	"32"
+		}
 	}
 }

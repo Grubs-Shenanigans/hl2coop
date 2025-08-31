@@ -143,6 +143,9 @@
 #include "tf_weapon_buff_item.h"
 #include "tf_weapon_flamethrower.h"
 #include "tf_weapon_medigun.h"
+#if defined(QUIVER_DLL)
+#include "tf_weapon_bonesaw.h"
+#endif
 
 #include "econ_holidays.h"
 #include "rtime.h"
@@ -22729,6 +22732,16 @@ bool CTFGameRules::CanUpgradeWithAttrib( CTFPlayer *pPlayer, int iWeaponSlot, at
 	case 875:	// explode_on_ignite
 		{
 			return ( iWeaponID == TF_WEAPON_JAR_GAS );
+		}
+#else
+	//add syringe upgrades.
+	case 4061:
+	case 4062:
+	case 4063:
+		{
+			int iTHEDISEASE = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pEntity, iTHEDISEASE, theres_this_disease_going_around_killing_people_and_i_think_i_have_it_uh_oh);
+			return (iTHEDISEASE != 0);
 		}
 #endif
 	}

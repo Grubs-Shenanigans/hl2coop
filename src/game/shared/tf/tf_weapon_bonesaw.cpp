@@ -17,25 +17,6 @@
 #include "c_tf_player.h"
 #endif
 
-#if defined(QUIVER_DLL)
-#ifdef GAME_DLL
-void Disease(CTFPlayer *pTFOwner, CTFPlayer* pVictimPlayer)
-{
-	if (pVictimPlayer && !pVictimPlayer->m_Shared.IsInvulnerable() && !pVictimPlayer->m_Shared.InCond(TF_COND_PHASE) && !pVictimPlayer->m_Shared.InCond(QF_COND_INFECTED) && !pVictimPlayer->m_Shared.InCond(TF_COND_PASSTIME_INTERCEPTION))
-	{
-		float flBleedDmg = TF_DISEASE_BLEED_BASE_DMG_PERCENTAGE * pVictimPlayer->GetMaxHealth();
-		pVictimPlayer->m_Shared.MakeBleed(pTFOwner, NULL, TF_DISEASE_BLEED_TIME, flBleedDmg);
-		CTFDiseaseManager* pChildDisease = CTFDiseaseManager::Create(pTFOwner, pVictimPlayer);
-		if (pChildDisease)
-		{
-			pChildDisease->AddDisease();
-		}
-		pVictimPlayer->m_Shared.AddCond(QF_COND_INFECTED, TF_DISEASE_BLEED_TIME);
-	}
-}
-#endif
-#endif
-
 #define UBERSAW_CHARGE_POSEPARAM		"syringe_charge_level"
 #define VITASAW_CHARGE_PER_HIT 0.15f
 
@@ -95,6 +76,47 @@ bool CTFBonesaw::DefaultDeploy( char *szViewModel, char *szWeaponModel, int iAct
 
 	return false;
 }
+
+#if defined(QUIVER_DLL)
+#ifdef GAME_DLL
+void Disease(CTFPlayer* pTFOwner, CTFPlayer* pVictimPlayer)
+{
+	if (pVictimPlayer && !pVictimPlayer->m_Shared.InCond(QF_COND_INFECTED) && !pVictimPlayer->m_Shared.IsInvulnerable() && !pVictimPlayer->m_Shared.InCond(TF_COND_PHASE) && !pVictimPlayer->m_Shared.InCond(TF_COND_PASSTIME_INTERCEPTION))
+	{
+		float flBleedDmg = TF_DISEASE_BLEED_BASE_DMG_PERCENTAGE * pVictimPlayer->GetMaxHealth();
+		CTFWeaponBase* pWeapon = pTFOwner->GetActiveTFWeapon();
+		if (pWeapon)
+		{
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, flBleedDmg, mult_dmg);
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, flBleedDmg, mult_dmg_infection_bleeding);
+		}
+
+		float flBleedTime = TF_DISEASE_BLEED_TIME;
+
+		if (pWeapon)
+		{
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, flBleedTime, infection_bleeding_duration);
+		}
+
+		pVictimPlayer->m_Shared.MakeBleed(pTFOwner, NULL, flBleedTime, flBleedDmg);
+		CTFDiseaseManager* pChildDisease = CTFDiseaseManager::Create(pTFOwner, pVictimPlayer);
+		if (pChildDisease)
+		{
+			pChildDisease->AddDisease();
+		}
+
+		float flInfectionDelay = TF_DISEASE_INFECTION_DELAY;
+
+		if (pWeapon)
+		{
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, flInfectionDelay, infection_delay);
+		}
+
+		pVictimPlayer->m_Shared.AddCond(QF_COND_INFECTED, flInfectionDelay);
+	}
+}
+#endif
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -317,6 +339,7 @@ void CTFBonesaw::GetPoseParameters( CStudioHdr *pStudioHdr, float poseParameter[
 #endif
 
 #if defined(QUIVER_DLL)
+
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
