@@ -19,7 +19,7 @@ $Configuration
 		$PreprocessorDefinitions		"$BASE;BDSBASE_TEMP_FIXDYNAMICMODELS"
 		$PreprocessorDefinitions		"$BASE;BDSBASE_ACHIEVEMENT_NOTIFICATIONS"
 		$PreprocessorDefinitions		"$BASE;BDSBASE_DISCORD"
-		//$PreprocessorDefinitions		"$BASE;BDSBASE_NPC"
+		$PreprocessorDefinitions		"$BASE;BDSBASE_NPC"
 	}
 }
 
