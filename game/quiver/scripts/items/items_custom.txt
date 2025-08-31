@@ -2,6 +2,14 @@
  
 "items_game"
 {
+	"qualities"
+	{
+		"custom"
+		{
+			//AE_RARITY_ANCIENT
+			"value"	"22"
+		}
+	}
 	"prefabs"
 	{
 		"quiver"
@@ -9,6 +17,7 @@
 			"show_in_armory"	"1"
 			"min_ilevel"		"1"
 			"max_ilevel"		"99"
+			"item_quality"		"custom"
 			"static_attrs"
 			{
 				"killstreak tier NO MARKETING NAME"	"1"
@@ -67,7 +76,6 @@
 			"model_player"	"models/weapons/c_models/c_tomislav/c_tomislav.mdl"
 			"attach_to_hands"	"1"
 			"inspect_panel_dist" "88"
-			"item_quality"	"unique"
 			"used_by_classes"
 			{
 				"heavy"	"1"
@@ -164,7 +172,6 @@
 			"item_name"	"#Quiver_Railgun"
 			"item_description"	"#TF_DEX_Rifle_Desc"
 			"item_slot"	"primary"
-			"item_quality"	"unique"
 			"propername"	"1"
 			"item_logname"	"railgun"
 			"item_iconname"		"shooting_star"
@@ -253,7 +260,6 @@
 			"item_name"	"#Quiver_SentryPDA"
 			"item_type_name"	"#TF_Weapon_PDA_Engineer"
 			"item_slot"	"pda"
-			"item_quality"	"unique"
 			"attach_to_hands" "1"
 			"image_inventory"	"backpack/weapons/w_models/w_builder"
 			"image_inventory_size_w"		"128"
@@ -330,7 +336,6 @@
 			"item_name"	"#Quiver_Pickaxe"
 			"item_logname"	"unique_pickaxe"
 			"item_slot"	"melee"
-			"item_quality"	"unique"
 			"propername"	"1"
 			"min_ilevel"	"10"
 			"max_ilevel"	"10"
@@ -429,7 +434,6 @@
 			"item_name"	"#Quiver_Joke_lexecutor"
 			"item_description"	"#Quiver_Joke_lexecutor_Desc"
 			"item_slot"	"secondary"
-			"item_quality"	"unique"
 			"propername"	"1"
 			"item_logname"	"bleedfor8seconds"
 			"item_iconname"	"enforcer"
@@ -488,7 +492,6 @@
 			"model_player"	"models/workshop/weapons/c_models/c_medigun_defense/c_medigun_defense.mdl"
 			"extra_wearable" "models/workshop/weapons/c_models/c_medigun_defense/c_medigun_defensepack.mdl"
 			"attach_to_hands"	"1"
-			"item_quality"	"unique"
 			"min_ilevel"	"8"
 			"max_ilevel"	"8"
 			"used_by_classes"
@@ -598,7 +601,6 @@
 			"item_slot"		"secondary"
 			"equip_region"	"arms"
 			"anim_slot"		"FORCE_NOT_USED"
-			"item_quality"		"unique"
 			"propername"	"1"
 			"min_ilevel"		"1"
 			"max_ilevel"		"99"
@@ -692,7 +694,6 @@
 			"model_player"	"models/workshop/weapons/c_models/c_pilot_flamer/c_pilot_flamer.mdl"
 			"attach_to_hands"	"1"
 			"inspect_panel_dist" "91"
-			"item_quality"	"unique"
 			"propername"	"1"
 			"used_by_classes"
 			{
@@ -745,7 +746,7 @@
 			"item_name"			"#Quiver_Syringe"
 			"item_description"	"#Quiver_Syringe_Desc"
 			"item_slot"			"melee"
-			"image_inventory"	"backpack/weapons/c_models/c_bonesaw/c_bonesaw"
+			"image_inventory"	"backpack/weapons/w_models/w_syringe"
 			"image_inventory_size_w"		"128"
 			"image_inventory_size_h"		"82"
 			"inspect_panel_dist" 				"42"			

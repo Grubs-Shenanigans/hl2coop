@@ -275,10 +275,6 @@ CEconItemView* CTFInventoryManager::AddSoloItem(int id, bool bWhitelisted)
 		pItemView->SetItemQuality(GIVEN_ITEM_QUALITY);
 		pItemView->SetItemLevel(1);
 	}
-	else
-	{
-		pItemView->SetItemQuality(CUSTOM_ITEM_QUALITY);
-	}
 #endif
 
 	m_pSoloLoadoutItems.AddToTail(pItemView);

@@ -546,7 +546,6 @@ enum EEconItemQuality
 };
 
 #if defined(QUIVER_DLL)
-#define CUSTOM_ITEM_QUALITY AE_RARITY_ANCIENT
 #define GIVEN_ITEM_QUALITY AE_PAINTKITWEAPON
 #endif
 
