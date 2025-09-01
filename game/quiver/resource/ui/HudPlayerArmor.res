@@ -5,10 +5,10 @@
 	{
 		"ControlName"	"EditablePanel"
 		"fieldName"		"HudPlayerArmor"
-		"xpos"			"50"		[$WIN32]
-		"xpos_minmode"	"60"		[$WIN32]
-		"ypos"			"r127"	[$WIN32]
-		"ypos_minmode"	"r94"	[$WIN32]
+		"xpos"			"50"
+		"xpos_minmode"	"60"
+		"ypos"			"r127"
+		"ypos_minmode"	"r94"
 		"zpos"			"0"
 		"wide"			"250"
 		"tall"			"120"
@@ -51,19 +51,15 @@
 	{
 		"ControlName"	"ImagePanel"
 		"fieldName"		"PlayerStatusArmorBonusImage"
-		"xpos"			"73"	[$WIN32]
-		"xpos_minmode"	"65"	[$WIN32]
-		"xpos"			"83"	[$X360]
-		"ypos"			"33"	[$WIN32]
-		"ypos_minmode"	"40"	[$WIN32]
-		"ypos"			"43"	[$X360]
+		"xpos"			"73"
+		"xpos_minmode"	"65"
+		"ypos"			"33"
+		"ypos_minmode"	"40"
 		"zpos"			"0"
-		"wide"			"55"	[$WIN32]
-		"wide_minmode"	"40"	[$WIN32]
-		"wide"			"35"	[$X360]
-		"tall"			"55"	[$WIN32]
-		"tall_minmode"	"40"	[$WIN32]
-		"tall"			"35"	[$X360]
+		"wide"			"55"
+		"wide_minmode"	"40"
+		"tall"			"55"
+		"tall_minmode"	"40"
 		"visible"		"0"
 		"enabled"		"1"
 		"image"			"../hud/armor_over_bg"
@@ -75,8 +71,7 @@
 		"fieldName"		"PlayerStatusArmorValue"
 		"xpos"			"76"
 		"xpos_minmode"	"61"
-		"ypos"			"52"	[$WIN32]
-		"ypos"			"55"	[$X360]
+		"ypos"			"52"
 		"zpos"			"3"
 		"wide"			"50"
 		"tall"			"18"
@@ -93,8 +88,7 @@
 		"fieldName"		"PlayerStatusMaxArmorValue"
 		"xpos"			"76"
 		"xpos_minmode"	"61"
-		"ypos"			"26"	[$WIN32]
-		"ypos"			"55"	[$X360]
+		"ypos"			"26"
 		"zpos"			"4"
 		"wide"			"50"
 		"tall"			"18"
