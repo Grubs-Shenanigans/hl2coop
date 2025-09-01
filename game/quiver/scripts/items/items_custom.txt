@@ -759,10 +759,10 @@
 			"static_attrs"
 			{
 				"min_viewmodel_offset"		"10 0 -12"
-				"fire rate penalty"		"1.35"
-				"add_give_health_to_teammate_on_hit" "25"
+				"fire rate penalty"		"1.45"
+				"add_give_health_to_teammate_on_hit_alt" "25"
 				"theres_this_disease_going_around_killing_people_and_i_think_i_have_it_uh_oh"		"1"
-				"dmg penalty vs buildings" "0"
+				"damage penalty" "0.80"
 				"lunchbox adds minicrits" "5"
 			}
 			"mouse_pressed_sound"	"ui/item_metal_weapon_pickup.wav"

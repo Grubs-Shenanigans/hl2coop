@@ -706,7 +706,11 @@ public:
 		, m_nSourceItemID( pItem->GetID() )
 	{
 		TFModalStack()->PushModal( this );
+#ifdef BDSBASE
+#ifndef BDSBASE_LEGACY_MAINMENU
 		GetMMDashboardParentManager()->AddPanel( this );
+#endif
+#endif
 
 		m_pIspectionPanel = new CTFItemInspectionPanel( this, "InspectionPanel" );
 		m_pIspectionPanel->SetOptions( false, true, true );
@@ -721,7 +725,11 @@ public:
 	virtual ~CTFPainkitConsumeDialog()
 	{
 		TFModalStack()->PopModal( this );
+#ifdef BDSBASE
+#ifndef BDSBASE_LEGACY_MAINMENU
 		GetMMDashboardParentManager()->RemovePanel( this );
+#endif
+#endif
 	}
 
 	virtual void ApplySchemeSettings( IScheme *pScheme ) OVERRIDE

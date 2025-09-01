@@ -850,6 +850,35 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 			}
 
 #ifdef QUIVER_DLL
+			// extra version that doesn't substract health
+			// Give health to teammates on hit
+			int nGiveHealthOnHitAlt = 0;
+			CALL_ATTRIB_HOOK_INT(nGiveHealthOnHitAlt, add_give_health_to_teammate_on_hit_alt);
+
+			//scaled by other attributes
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHitAlt, mult_healing_from_medics);
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHitAlt, mult_health_fromhealers);
+
+			// Don't heal players using a weapon that blocks healing
+			if (pWeapon)
+			{
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, nGiveHealthOnHitAlt, mult_health_fromhealers_penalty_active);
+
+				int iBlockHealing = 0;
+				CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iBlockHealing, weapon_blocks_healing);
+				if (iBlockHealing)
+				{
+					nGiveHealthOnHitAlt = 0;
+				}
+			}
+
+			if (nGiveHealthOnHitAlt != 0)
+			{
+				// Always keep at least 1 health for ourselves
+				pTargetPlayer->TakeHealth(nGiveHealthOnHitAlt, DMG_GENERIC);
+				CTF_GameStats.Event_PlayerHealedOther(pPlayer, nGiveHealthOnHitAlt);
+			}
+
 			if (GetWeaponID() == TF_WEAPON_WRENCH)
 			{
 				//do the same for armor. Wrenches only, mainly.

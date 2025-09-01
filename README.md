@@ -98,6 +98,10 @@ BDSBASE_TEMP_FIXDYNAMICMODELS
 - This is a temporary workaround and is not recomended to be enabled with future versions of the engine.
 - If this is disabled, use the command line variable -dynamicmodelsfix to enable the fix.
 
+BDSBASE_DISABLE_ITEM_DROP_PANEL
+- Games: TF2
+- This disables the panel shown for unacknowledged items in live TF2.
+
 ## Credits:
 - TheBetaM for the custom schema code. (https://github.com/TheBetaM/tf-solo)
 - rafradek for some bot AI changes (sigsegv-mvm) (https://github.com/rafradek/sigsegv-mvm)

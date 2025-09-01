@@ -2333,7 +2333,11 @@ public:
 		SetScheme(scheme);
 
 		LoadControlSettings( "resource/ui/XPSourcePanel.res" );
+#ifdef BDSBASE
+#ifndef BDSBASE_LEGACY_MAINMENU
 		GetMMDashboardParentManager()->AddPanel( this );
+#endif
+#endif
 		SetMouseInputEnabled( false );
 
 		PostMessage( GetVPanel(), new KeyValues( "Start" ), flDelay );
@@ -2351,14 +2355,16 @@ public:
 
 	virtual ~CScrollingIndicatorPanel()
 	{
+#ifdef BDSBASE
+#ifndef BDSBASE_LEGACY_MAINMENU
 		GetMMDashboardParentManager()->RemovePanel( this );
+#endif
+#endif
 	}
 
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme ) OVERRIDE
 	{
 		BaseClass::ApplySchemeSettings( pScheme );
-
-		
 	}
 
 	virtual void PerformLayout() OVERRIDE
@@ -2539,13 +2545,21 @@ class CGenericSwoop : public CControlPointIconSwoop
 
 		SetZPos( 50000 );
 		SetRotation( bDown ? ROTATED_UNROTATED : ROTATED_FLIPPED );
+#ifdef BDSBASE
+#ifndef BDSBASE_LEGACY_MAINMENU
 		GetMMDashboardParentManager()->AddPanel( this );
+#endif
+#endif
 		PostMessage( this, new KeyValues( "StartSwoop" ), flSwoopTime );
 	}
 
 	virtual ~CGenericSwoop()
 	{
+#ifdef BDSBASE
+#ifndef BDSBASE_LEGACY_MAINMENU
 		GetMMDashboardParentManager()->RemovePanel( this );
+#endif
+#endif
 	}
 
 	MESSAGE_FUNC( MsgStartSwoop, "StartSwoop" )

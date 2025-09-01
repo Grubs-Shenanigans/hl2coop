@@ -102,7 +102,7 @@ Scheme
 		MainMenu.TextColor			"TanLight"			[!$OSX]
 		MainMenu.ArmedTextColor		"117 107 94 255"	[!$OSX]
 		MainMenu.Inset				"0"
-		MainMenu.MenuItemHeight		"18"
+		MainMenu.MenuItemHeight		"16"
 		
 		Menu.TextInset					"6"
 		Menu.FgColor			"TFTextLight"
@@ -139,7 +139,7 @@ Scheme
 			"1"
 			{
 				"name"		"TF2 Build"
-				"tall"		"22"
+				"tall"		"18"
 				"weight"	"500"
 				"yres"	"480 599"
 				"antialias"	"1"
@@ -147,7 +147,7 @@ Scheme
 			"2"
 			{
 				"name"		"TF2 Build"
-				"tall"		"22"
+				"tall"		"18"
 				"weight"	"500"
 				"yres"	"600 767"
 				"antialias"	"1"
@@ -155,7 +155,7 @@ Scheme
 			"3"
 			{
 				"name"		"TF2 Build"
-				"tall"		"22"
+				"tall"		"18"
 				"weight"	"500"
 				"yres"	"768 1023"
 				"antialias"	"1"
@@ -163,7 +163,7 @@ Scheme
 			"4"
 			{
 				"name"		"TF2 Build"
-				"tall"		"25"
+				"tall"		"21"
 				"weight"	"500"
 				"yres"	"1024 1199"
 				"antialias"	"1"
@@ -171,7 +171,7 @@ Scheme
 			"5"
 			{
 				"name"		"TF2 Build"
-				"tall"		"25"
+				"tall"		"21"
 				"weight"	"500"
 				"yres"	"1200 6000"
 				"antialias"	"1"

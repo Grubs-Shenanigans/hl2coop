@@ -201,8 +201,9 @@ Details:
 - The Tribalman's Shiv now does 100% crits against unarmored players.
 - The Tribalman's Shiv has a 20% damage penalty against armor.
 - Implemented Fixed Spy's View Model Sleev V2 by Hecates and H.Gaspar.
-- Added the Pharmaceutical's Public Panic, a Syringe weapon for the Medic that is similar to the TFC/QWTF medkit. It gives 25 health to teammates on hit and creates a disease cloud that spreads to surrounding enemies on hit. However, it has a 35% slower fire rate and healing friendly players takes 25 of your own health.
+- Added the Pharmaceutical's Public Panic, a Syringe weapon for the Medic that is similar to the TFC/QWTF medkit. It gives 25 health to teammates on hit and creates a disease cloud that spreads to surrounding enemies on hitting an enemy. However, it has a 45% slower fire rate and has a 20% damage penalty.
 - Added MvM upgrades for the Pharmaceutical's Public Panic.
+- Disabled the unacknowledged item panel.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
