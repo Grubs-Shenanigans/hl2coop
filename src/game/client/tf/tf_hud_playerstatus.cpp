@@ -1554,6 +1554,11 @@ void CTFHudPlayerStatus::ApplySchemeSettings( IScheme *pScheme )
 	if ( cl_hud_minmode.IsValid() && cl_hud_minmode.GetBool() )
 	{
 		m_pHudPlayerClass->InvalidateLayout( false, true );
+
+#if defined(QUIVER_DLL)
+		// same issue with the armor too.
+		m_pHudPlayerArmor->InvalidateLayout(false, true);
+#endif
 	}
 }
 

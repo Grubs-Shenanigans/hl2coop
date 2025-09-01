@@ -51,10 +51,10 @@ Stock weapon balance changes:
 - Slightly increased aiming move speed to be more consistent with the main move speed.
 - Changed the default Grenade Launcher ammo count from 4 to 6.
 - All miniguns now have full accuracy and damage upon revving up.
-- Increased the syringeguns' syringe speed from 1000 hu/s to 1500 hu/s
+- Increased the syringeguns' syringe speed from 1000 hu/s to 1250 hu/s
 - Changed the syringeguns' fire rate from 0.1 to 0.065
-- Increased the syringeguns' base damage from 10 to 15 per syringe
 - Fixed melee weapons hitting teammates in front of you instead of friendly players behind them.
+- Syringeguns will now heal 2 health per syringe hit on teammates.
 
 Unlockable weapon balance changes:
 - The Shortstop's shove has a doubled pushback force (from 400 to 800).
@@ -148,6 +148,7 @@ Unlockable weapon balance changes:
 - Reduced the Tribalman's Shiv's bleed duration from 6 seconds to 4 seconds.
 - The Tribalman's Shiv now does 100% crits against unarmored players.
 - The Tribalman's Shiv has a 20% damage penalty against armor.
+- The Blutsauger will now heal 1 health per syringe hit on teammates.
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

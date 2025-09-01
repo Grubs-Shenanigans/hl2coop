@@ -5804,6 +5804,79 @@ void CTFWeaponBase::ApplyOnHitAttributes( CBaseEntity *pVictimBaseEntity, CTFPla
 	}
 }
 
+#ifdef BDSBASE
+void CTFWeaponBase::ApplyOnHitTeammateAttributes(CBaseEntity* pVictimBaseEntity, CTFPlayer* pAttacker, const CTakeDamageInfo& info)
+{
+	if (!pAttacker)
+		return;
+
+	CTFPlayer* pTargetPlayer = ToTFPlayer(pVictimBaseEntity);
+
+	if (pTargetPlayer)
+	{
+#if defined(QUIVER_DLL)
+		// Give health to teammates on hit
+		int nGiveHealthOnHit = 0;
+		CALL_ATTRIB_HOOK_INT(nGiveHealthOnHit, add_give_health_to_teammate_on_hit_proj);
+
+		//scaled by other attributes
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHit, mult_healing_from_medics);
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHit, mult_health_fromhealers);
+
+		// Don't heal players using a weapon that blocks healing
+		CTFWeaponBase* pWeapon = pTargetPlayer->GetActiveTFWeapon();
+		if (pWeapon)
+		{
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, nGiveHealthOnHit, mult_health_fromhealers_penalty_active);
+
+			int iBlockHealing = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iBlockHealing, weapon_blocks_healing);
+			if (iBlockHealing)
+			{
+				nGiveHealthOnHit = 0;
+			}
+		}
+
+		if (nGiveHealthOnHit != 0)
+		{
+			int nHealthGiven = pTargetPlayer->TakeHealth(nGiveHealthOnHit, DMG_GENERIC);
+
+			if (nHealthGiven > 0)
+			{
+				IGameEvent* event = gameeventmanager->CreateEvent("player_healed");
+				if (event)
+				{
+					// HLTV event priority, not transmitted
+					event->SetInt("priority", 1);
+
+					// Healed by another player.
+					event->SetInt("patient", pTargetPlayer->GetUserID());
+					event->SetInt("healer", pAttacker->GetUserID());
+					event->SetInt("amount", nHealthGiven);
+					gameeventmanager->FireEvent(event);
+				}
+
+				event = gameeventmanager->CreateEvent("player_healonhit");
+				if (event)
+				{
+					event->SetInt("amount", nHealthGiven);
+					event->SetInt("entindex", pTargetPlayer->entindex());
+					item_definition_index_t healingItemDef = INVALID_ITEM_DEF_INDEX;
+					if (GetAttributeContainer() && GetAttributeContainer()->GetItem())
+					{
+						healingItemDef = GetAttributeContainer()->GetItem()->GetItemDefIndex();
+					}
+					event->SetInt("weapon_def_index", healingItemDef);
+					gameeventmanager->FireEvent(event);
+				}
+
+				CTF_GameStats.Event_PlayerHealedOther(pAttacker, nHealthGiven);
+			}
+		}
+#endif
+	}
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: When owner of this weapon is hit
@@ -5924,7 +5997,6 @@ void CTFWeaponBase::ApplyPostHitEffects( const CTakeDamageInfo &info, CTFPlayer 
 		}
 	}
 }
-
 
 //-----------------------------------------------------------------------------
 // Purpose: 

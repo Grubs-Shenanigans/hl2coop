@@ -8,7 +8,7 @@ WeaponData
 	"ITEM_FLAG_NOITEMPICKUP" 	"1"
 		
 	// Attributes TF.
-	"Damage"		"15"
+	"Damage"		"10"
 	"Range"			"8192"
 	"BulletsPerShot"	"1"
 	"Spread"		"0.0"

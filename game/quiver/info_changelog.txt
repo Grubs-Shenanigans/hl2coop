@@ -125,7 +125,7 @@ Details:
 - Spies can now "fake" a reload by disguising and pressing the reload key with a full clip in their revolver.
 - Removed the Hitman's Executioner. The weapon offered too much risk for too little reward, and functioned as a even more gimped Ambassador.
 - Reverted the Ambassador's Jungle Inferno changes.
-- Increased the syringeguns' syringe speed from 1000 hu/s to 1500 hu/s
+- Increased the syringeguns' syringe speed from 1000 hu/s to 1250 hu/s
 - Disabled cosmetics, as newer cosmetics added to the base TF2 harm team recognition, alongside performance problems. However, cosmetic weapons (australiums, stranges, etc) and reskins are allowed.
 - Whitelisted weapons are now given to players even if they don't own them, allowing each player to be on an equal playing field.
 - Fixed BLU Scout using the incorrect team color pants. For real this time.
@@ -186,7 +186,6 @@ Details:
 - Added a self mark-for-death penalty to the Flying Guillotine.
 - Fixed TDM's first blood not triggering if there's only 2 players in the server.
 - Changed the syringeguns' fire rate from 0.1 to 0.065
-- Increased the syringeguns' base damage from 10 to 15 per syringe
 - Enabled the Nostromo Napalmer as a reskin.
 - Added the Afterburner, a Flame Thrower for the Pyro that allows him to airblast herself (similar to the FaN's knockback) at the expense of how quickly it can use their airblast. The airblast can also be charged to deliver up to 2.5x airblast force, but the amount of ammo used depends on how far it is in the charge, and the Pyro gets less airblast force initially.
 - Changed the Mantreads' extra blast control from 200% to 82% due to the increased passive air control given to Soldier by default.
@@ -204,6 +203,9 @@ Details:
 - Added the Pharmaceutical's Public Panic, a Syringe weapon for the Medic that is similar to the TFC/QWTF medkit. It gives 25 health to teammates on hit and creates a disease cloud that spreads to surrounding enemies on hitting an enemy. However, it has a 45% slower fire rate and has a 20% damage penalty.
 - Added MvM upgrades for the Pharmaceutical's Public Panic.
 - Disabled the unacknowledged item panel.
+- Syringeguns will now heal 2 health per syringe hit on teammates.
+- The Blutsauger will now heal 1 health per syringe hit on teammates.
+- Fixed a bug where the armor display doesn't reposition in the minimal hud.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

@@ -493,8 +493,11 @@ public:
 						}
 
 #if defined(QUIVER_DLL)
+						int nGiveHealthOnHitAlt = 0;
+						CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, nGiveHealthOnHitAlt, add_give_health_to_teammate_on_hit_alt);
+
 						// wrench (quiver)
-						if (pWeapon->GetWeaponID() == TF_WEAPON_WRENCH)
+						if (pWeapon->GetWeaponID() == TF_WEAPON_WRENCH || (nGiveHealthOnHitAlt != 0))
 						{
 							return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
 						}
@@ -838,7 +841,37 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 				nGiveHealthOnHit = Min( pPlayer->GetHealth() - 1, nGiveHealthOnHit );
 				int nHealthGiven = pTargetPlayer->TakeHealth( nGiveHealthOnHit, DMG_GENERIC );
 #ifdef BDSBASE
-				CTF_GameStats.Event_PlayerHealedOther(pPlayer, nGiveHealthOnHit);
+				if (nHealthGiven > 0)
+				{
+					IGameEvent* event = gameeventmanager->CreateEvent("player_healed");
+					if (event)
+					{
+						// HLTV event priority, not transmitted
+						event->SetInt("priority", 1);
+
+						// Healed by another player.
+						event->SetInt("patient", pTargetPlayer->GetUserID());
+						event->SetInt("healer", pPlayer->GetUserID());
+						event->SetInt("amount", nHealthGiven);
+						gameeventmanager->FireEvent(event);
+					}
+
+					event = gameeventmanager->CreateEvent("player_healonhit");
+					if (event)
+					{
+						event->SetInt("amount", nHealthGiven);
+						event->SetInt("entindex", pTargetPlayer->entindex());
+						item_definition_index_t healingItemDef = INVALID_ITEM_DEF_INDEX;
+						if (GetAttributeContainer() && GetAttributeContainer()->GetItem())
+						{
+							healingItemDef = GetAttributeContainer()->GetItem()->GetItemDefIndex();
+						}
+						event->SetInt("weapon_def_index", healingItemDef);
+						gameeventmanager->FireEvent(event);
+					}
+
+					CTF_GameStats.Event_PlayerHealedOther(pPlayer, nHealthGiven);
+				}
 #endif
 
 				if ( nHealthGiven > 0 )
@@ -874,9 +907,39 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 
 			if (nGiveHealthOnHitAlt != 0)
 			{
-				// Always keep at least 1 health for ourselves
-				pTargetPlayer->TakeHealth(nGiveHealthOnHitAlt, DMG_GENERIC);
-				CTF_GameStats.Event_PlayerHealedOther(pPlayer, nGiveHealthOnHitAlt);
+				int nHealthGiven = pTargetPlayer->TakeHealth(nGiveHealthOnHitAlt, DMG_GENERIC);
+
+				if (nHealthGiven > 0)
+				{
+					IGameEvent* event = gameeventmanager->CreateEvent("player_healed");
+					if (event)
+					{
+						// HLTV event priority, not transmitted
+						event->SetInt("priority", 1);
+
+						// Healed by another player.
+						event->SetInt("patient", pTargetPlayer->GetUserID());
+						event->SetInt("healer", pPlayer->GetUserID());
+						event->SetInt("amount", nHealthGiven);
+						gameeventmanager->FireEvent(event);
+					}
+
+					event = gameeventmanager->CreateEvent("player_healonhit");
+					if (event)
+					{
+						event->SetInt("amount", nHealthGiven);
+						event->SetInt("entindex", pTargetPlayer->entindex());
+						item_definition_index_t healingItemDef = INVALID_ITEM_DEF_INDEX;
+						if (GetAttributeContainer() && GetAttributeContainer()->GetItem())
+						{
+							healingItemDef = GetAttributeContainer()->GetItem()->GetItemDefIndex();
+						}
+						event->SetInt("weapon_def_index", healingItemDef);
+						gameeventmanager->FireEvent(event);
+					}
+
+					CTF_GameStats.Event_PlayerHealedOther(pPlayer, nHealthGiven);
+				}
 			}
 
 			if (GetWeaponID() == TF_WEAPON_WRENCH)

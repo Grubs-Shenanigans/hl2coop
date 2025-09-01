@@ -8937,6 +8937,18 @@ void CTFPlayer::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, 
 			}
 		}
 
+#ifdef BDSBASE
+		if (pAttacker->GetTeam() == GetTeam())
+		{
+			CTFWeaponBase* pWeapon = pAttacker->GetActiveTFWeapon();
+
+			if (pWeapon)
+			{
+				pWeapon->ApplyOnHitTeammateAttributes(this, pAttacker, info);
+			}
+		}
+#endif
+
 		// Prevent team damage here so blood doesn't appear
 		if ( !g_pGameRules->FPlayerCanTakeDamage( this, pAttacker, info ) )
 		{

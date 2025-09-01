@@ -64,7 +64,7 @@
 - The Eviction Notice (w/ balance changes)
 - The Widowmaker
 - The Eureka Effect
-- The Blutsauger
+- The Blutsauger (w/ balance changes)
 - The Overdose
 - The Cozy Camper
 - The Diamondback

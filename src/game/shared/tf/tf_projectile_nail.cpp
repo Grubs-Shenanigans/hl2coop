@@ -45,7 +45,7 @@ PRECACHE_REGISTER_FN(PrecacheSyringe);
 //-----------------------------------------------------------------------------
 #define SYRINGE_GRAVITY		0.3f
 #ifdef QUIVER_DLL
-#define SYRINGE_VELOCITY	1500.0f
+#define SYRINGE_VELOCITY	1250.0f
 #else
 #define SYRINGE_VELOCITY	1000.0f
 #endif
@@ -76,6 +76,15 @@ float CTFProjectile_Syringe::GetGravity( void )
 	return SYRINGE_GRAVITY;
 }
 
+#if defined(QUIVER_DLL)
+void CTFProjectile_Syringe::Spawn(void)
+{
+	BaseClass::Spawn();
+
+	// now we can hit teammates properly.
+	SetCollisionGroup(TFCOLLISION_GROUP_ROCKETS);
+}
+#endif
 
 #ifdef CLIENT_DLL
 
