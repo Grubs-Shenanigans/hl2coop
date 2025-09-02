@@ -1304,11 +1304,30 @@ bool CWeaponMedigun::FindAndHealTargets( void )
 					}
 				}
 
+#if defined(QUIVER_DLL)
+				bool bSlowDown = (pNewTarget->GetHealth() >= iBoostMax);
+
+				//don't block yet if our armor is low and we use the armor healer
+				if (GetMedigunType() == MEDIGUN_ARMOR_REPAIR)
+				{
+					if (pTFPlayer->ArmorValue() < pTFPlayer->GetMaxArmor() && bSlowDown)
+					{
+						bSlowDown = false;
+					}
+				}
+
+				// Reduced charge for healing fully healed guys
+				if ((bTargetOverhealBlocked || bSlowDown) && (TFGameRules() && !(TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer())))
+				{
+					flChargeModifier *= 0.5f;
+				}
+#else
 				// Reduced charge for healing fully healed guys
 				if ((bTargetOverhealBlocked || (pNewTarget->GetHealth() >= iBoostMax)) && (TFGameRules() && !(TFGameRules()->InSetup() && TFGameRules()->GetActiveRoundTimer())))
 				{
 					flChargeModifier *= 0.5f;
 				}
+#endif
 
 				int iTotalHealers = pTFPlayer->m_Shared.GetNumHealers();
 				if (iTotalHealers > 1)

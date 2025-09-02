@@ -203,9 +203,10 @@ Details:
 - Added the Pharmaceutical's Public Panic, a Syringe weapon for the Medic that is similar to the TFC/QWTF medkit. It gives 25 health to teammates on hit and creates a disease cloud that spreads to surrounding enemies on hitting an enemy. However, it has a 45% slower fire rate and has a 20% damage penalty.
 - Added MvM upgrades for the Pharmaceutical's Public Panic.
 - Disabled the unacknowledged item panel.
-- Syringeguns will now heal 2 health per syringe hit on teammates.
+- Most Syringeguns will now heal 2 health per syringe hit on teammates.
 - The Blutsauger will now heal 1 health per syringe hit on teammates.
 - Fixed a bug where the armor display doesn't reposition in the minimal hud.
+- The Überrüstungsheiler now gains ÜberCharge at a normal rate if the patient's armor didn't get fully repaired before overhealing.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
