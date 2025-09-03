@@ -190,7 +190,7 @@ const char g_szArmorItems[][MAX_PATH] =
 	"Flak Jack",
 	"Airborne Attire",
 	"The Patriot's Pouches",
-	"The Dark Age Defender",
+	"Bushi-Dou",
 	"Bunnyhopper's Ballistics Vest",
 	"Immobile Suit Armor Version",
 	"The Steel Sixpack",
