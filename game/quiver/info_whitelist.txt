@@ -22,12 +22,10 @@
 - The Loch-n-Load (w/ balance changes)
 - The Loose Cannon
 - The Ullapool Caber (w/ balance changes)
-- The Family Business
+- The Family Business (w/ balance changes)
 - The Kritzkrieg
 - The Quick-Fix (w/ balance changes)
 - The Übersaw
-- The Amputator
-- The Vita-Saw (w/ balance changes)
 - The Huntsman/Fortified Compound (w/ balance changes)
 - The Killing Gloves of Boxing
 - The Cloak and Dagger (w/ balance changes)
@@ -47,25 +45,19 @@
 - The Baby Face's Blaster* (w/ balance changes)
 - The Warrior's Spirit* (w/ balance changes)
 - The Sandman* (w/ balance changes)
-- The Liberty Launcher
 - The Air Strike
 - The Gunboats
 - The Concheror
-- The Panic Attack
 - The Disciplinary Action
 - The Scorch Shot (w/ balance changes)
 - The Homewrecker/Maul
 - The Powerjack
-- The Hot Hand
 - The Huo-Long Heater
-- The Dalokoh's Bar/Fishcake
 - The Second Banana
 - The Gloves of Running Urgently/Bread Bite
-- The Eviction Notice (w/ balance changes)
 - The Widowmaker
-- The Eureka Effect
 - The Blutsauger (w/ balance changes)
-- The Overdose
+- The Overdose (w/ balance changes)
 - The Cozy Camper
 - The Diamondback
 - The Red-Tape Recorder
@@ -81,7 +73,6 @@
 - The Ambassador (w/ balance changes)
 - The Neon Annihilator (w/ balance changes)
 - The Gas Passer (w/ balance changes)
-- The Winger* (w/ balance changes)
 - The Thermal Thruster
 - Ali Baba's Wee Booties/The Bootlegger
 - The Eyelander/Horseless Headless Horsemann's Headtaker/Nessie's Nine Iron

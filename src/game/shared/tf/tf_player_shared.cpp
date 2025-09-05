@@ -1361,6 +1361,9 @@ CBaseEntity *CTFPlayerShared::GetConditionAssistFromVictim( void )
 		TF_COND_MAD_MILK,
 		TF_COND_MARKEDFORDEATH,
 		TF_COND_GAS,
+#if defined(QUIVER_DLL)
+		QF_COND_INFECTED,
+#endif
 	};
 
 	CBaseEntity *pProvider = NULL;

@@ -5449,7 +5449,11 @@ void CTFWeaponBase::ApplyOnHitAttributes( CBaseEntity *pVictimBaseEntity, CTFPla
 	{
 		if ( pVictim->m_Shared.InCond( TF_COND_MAD_MILK ) )
 		{
+#if defined(QUIVER_DLL)
+			int nAmount = info.GetDamage() * 0.45f;
+#else
 			int nAmount = info.GetDamage() * 0.6f;
+#endif
 			iModHealthOnHit += nAmount;
 
 			CTFPlayer *pProvider = ToTFPlayer( pVictim->m_Shared.GetConditionProvider( TF_COND_MAD_MILK ) );

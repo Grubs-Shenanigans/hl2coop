@@ -108,15 +108,7 @@ Unlockable weapon balance changes:
 - Instead of a meter that does mini-crits when filled, The Cleaner's Carbine has been rebalanced to give 3 seconds of crits on kill, however these crits are affected by falloff (similar to the post-JI Ambassador)
 - Made it so the the Flying Guillotine guarantees full crits on long distance hits with enemies that just got their armor broken.
 - Increased the recharge time for the Flying Guillotine from 5.1 seconds to 7.6 seconds.
-- Added a 25% damage penalty on the Vita-Saw.
-- Removed the -10 max health penalty on the Vita-Saw.
-- Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
 - Reverted the Ambassador's Jungle Inferno changes.
-- Gave a 20% damage vulnerability to the Eviction Notice to replace its maximum health drain.
-- Replaced the Eviction Notice's 60% damage penalty with a 15% damage bonus.
-- Removed the Eviction Notice's speed boost on hit.
-- Increased the Eviction Notice's passive speed boost on active from 15% to 20%.
-- Made the Eviction Notice do 33% less damage against armor.
 - Removed the Neon Annihilator's damage against sappers.
 - Upon covering enemies with gas, enemies now have a 50% fire damage vulnerability.
 - Decreased the Gas Passer's charge rate from 60 seconds to 40 seconds.
@@ -127,8 +119,6 @@ Unlockable weapon balance changes:
 	- In MvM, the Gas Passer's explosion damage was decreased from 350 to 150.
 	- In PvP, the Gas Passer's explosion damage was decreased from 350 to 50.
 	- Lowered the explosion radius in PvP from 200 to 100.
-- The Winger now has a 50% reduction to your bunnyhop speed boost.
-- Decreased the The Winger's clip size from 60% to 50%.
 - Increased the Thermal Thruster's deploy and holster speed by 50%
 - Increased Mad Milk recharge time to 35 seconds
 - Added a 25% reload time increase penalty to the Enforcer.
@@ -149,6 +139,11 @@ Unlockable weapon balance changes:
 - The Tribalman's Shiv now does 100% crits against unarmored players.
 - The Tribalman's Shiv has a 20% damage penalty against armor.
 - The Blutsauger will now heal 1 health per syringe hit on teammates.
+- Added a 20% damage penalty to the Bushwacka.
+- Reduced the healing Mad Milk can do from 60% to 45%.
+- The Loch-n-Load's no grenade spin attribute was changed to a 85% slower grenade spin.
+- Changed the 25% projectile speed to a 35% projectile speed on the Loch-n-Load to increase range slightly to compensate.
+- Replaced the Loch-n-Load's 20% damage bonus with a 20% damage penalty
 
 MvM Changes:
 - Added armor-related upgrades to MvM (max armor, pierces damage resistances, and armor resistance).

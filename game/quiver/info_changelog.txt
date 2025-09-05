@@ -1,22 +1,16 @@
 Quiver Private Alpha 1.2.0:
 Whitelists:
-	- The Liberty Launcher
 	- The Air Strike
 	- The Gunboats
 	- The Concheror
-	- The Panic Attack
 	- The Disciplinary Action
 	- The Scorch Shot
 	- The Homewrecker/Maul
 	- The Powerjack
-	- The Hot Hand
 	- The Huo-Long Heater
-	- The Dalokoh's Bar/Fishcake
 	- The Second Banana
 	- The Gloves of Running Urgently/Bread Bite
-	- The Eviction Notice
 	- The Widowmaker
-	- The Eureka Effect
 	- The Blutsauger
 	- The Overdose
 	- The Cozy Camper
@@ -34,7 +28,6 @@ Whitelists:
 	- The Ambassador
 	- The Neon Annihilator
 	- The Gas Passer
-	- The Winger
 	- The Thermal Thruster
 	- Ali Baba's Wee Booties/The Bootlegger
 	- The Eyelander/Horseless Headless Horsemann's Headtaker/Nessie's Nine Iron
@@ -52,6 +45,8 @@ Whitelists:
 
 Blacklists:
 	- The Spy-Cicle
+	- The Amputator
+	- The Vita-Saw
 
 Added the following Source SDK Pull Requests:
 	- #1466: MAX_MENU_STRING increase (increased to 4096 characters)
@@ -92,7 +87,6 @@ Details:
 - Fixed env_sun sprite disappearing when you look at it.
 - Fixed issues with the inventory system.
 - Updated items_game to reflect the latest TF2 update.
-- Removed the Family Business from Soldier.
 - Fixed the Lolichop, Rainblower, Apoco-Fists, Enthusiast's Timepiece, Snack Attack, and Quäckenbirdt not showing up.
 - Added the ability for server owners to re-enable stun with qf_allow_stun.
 - The Sharpened Volcano Fragment is now a reskin of the Axtinguisher.
@@ -117,9 +111,6 @@ Details:
 - Made it so the the Flying Guillotine guarantees full crits on long distance hits with enemies that just got their armor broken.
 - Increased the recharge time for the Flying Guillotine from 5.1 seconds to 7.6 seconds.
 - Changed out the Dragon's Fury's -20 max armor attribute for a 25% damage reduction against unarmored players.
-- Added a 25% damage penalty on the Vita-Saw.
-- Removed the -10 max health penalty on the Vita-Saw.
-- Made it so the Vita-Saw saves up to 20% ÜberCharge after death, instead of using the organ mechanic.
 - Added the Überrüstungsheiler, a new Medigun for the Medic that heals armor on top of health. Its ÜberCharge fully repairs armor and makes it unbreakable.
 - Added a 20% cloak duration penalty to the Conniver's Kunai.
 - Spies can now "fake" a reload by disguising and pressing the reload key with a full clip in their revolver.
@@ -130,11 +121,6 @@ Details:
 - Whitelisted weapons are now given to players even if they don't own them, allowing each player to be on an equal playing field.
 - Fixed BLU Scout using the incorrect team color pants. For real this time.
 - Changed the quality color of custom weapons.
-- Gave a 20% damage vulnerability to the Eviction Notice to replace its maximum health drain.
-- Replaced the Eviction Notice's 60% damage penalty with a 15% damage bonus.
-- Removed the Eviction Notice's speed boost on hit.
-- Increased the Eviction Notice's passive speed boost on active from 15% to 20%.
-- Made the Eviction Notice do 33% less damage against armor.
 - Added killstreaks to the custom weapons.
 - Fixed a bug where offline practice variables reset upon closing a background map.
 - Removed the Neon Annihilator's damage against sappers.
@@ -152,8 +138,6 @@ Details:
 - Re-enabled stun for taunt kills.
 - Removed the Railgun's headshot charge penalty.
 - Restored the original 2007 knife model.
-- The Winger now has a 50% reduction to your bunnyhop speed boost.
-- Decreased the The Winger's clip size from 60% to 50%.
 - Removed the Assassinating the Assassin achievement
 - Removed the Charge Shield and the Sword, as the centralized Demoknight playstyle originally proposed for QF unfairly restricts Demoknights from playing the way they wish. 
 - Added The Sun-Jumper, which allows the Demoman to get increased armor durability and the ability to jump while charging, at the cost of his charge, his armor's repair rate, and his max armor.
@@ -206,7 +190,12 @@ Details:
 - Most Syringeguns will now heal 2 health per syringe hit on teammates.
 - The Blutsauger will now heal 1 health per syringe hit on teammates.
 - Fixed a bug where the armor display doesn't reposition in the minimal hud.
-- The Überrüstungsheiler now gains ÜberCharge at a normal rate if the patient's armor didn't get fully repaired before overhealing.
+- Added a 20% damage penalty to the Bushwacka.
+- Reduced the healing Mad Milk can do from 60% to 45%.
+- Fixed HDR eye textures
+- The Loch-n-Load's no grenade spin attribute was changed to a 85% slower grenade spin.
+- Changed the 25% projectile speed to a 35% projectile speed on the Loch-n-Load to increase range slightly to compensate.
+- Replaced the Loch-n-Load's 20% damage bonus with a 20% damage penalty
 
 Quiver Private Alpha 1.1.0:
 Whitelists:
