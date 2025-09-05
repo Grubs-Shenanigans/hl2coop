@@ -654,7 +654,7 @@ CBasePlayer::CBasePlayer( )
 	m_fReplayEnd = -1;
 	m_iReplayEntity = 0;
 
-	m_autoKickDisabled = false;
+	m_autoKickDisabled = true;
 
 	m_nNumCrouches = 0;
 	m_bDuckToggled = false;
