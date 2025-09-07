@@ -77,6 +77,7 @@ Added the following Source SDK Pull Requests:
 	- #1517: Implement tf_stats_bogus covnvars to allow High stat tracking in modes with Increased Stats. I.E MvM
 	- #1518: Fix the B.A.S.E. Jumper's parachute not using half of its animations
 	- #1520: Add ForceDifficultyBasedAim CTFBot flag to allow MvM missions to let Spies aim better
+	- #1522: Fix Thermal Thruster particles
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
