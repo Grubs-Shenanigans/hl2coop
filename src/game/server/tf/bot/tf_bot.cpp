@@ -4891,6 +4891,7 @@ void CTFBot::SelectRandomizedLoadout(void)
 			weapon.flKillstreakTier = 0;
 			weapon.flKillstreakSheen = 0;
 			weapon.flKillstreakEffect = 0;
+			weapon.flPaintkitQuality = 0;
 			vecSavedRandomLoadout.AddToTail(weapon);
 		}
 	}
@@ -4938,6 +4939,7 @@ void CTFBot::SelectRandomizedLoadout(void)
 			cosmetic.flKillstreakTier = 0;
 			cosmetic.flKillstreakSheen = 0;
 			cosmetic.flKillstreakEffect = 0;
+			cosmetic.flPaintkitQuality = 0;
 			vecSavedRandomLoadout.AddToTail(cosmetic);
 		}
 	}
@@ -5018,6 +5020,56 @@ bool TFBotSetItemAsStrange(CTFBot* pBot, CEconItemView* pItem)
 
 		//return true if we have the tier selected.
 		return (::FindAttribute(pAttrList, pAttrDefStrange));
+	}
+
+	return false;
+}
+
+bool TFBotSetPaintkitQuality(CTFBot* pBot, CEconItemView* pItem, int iSlot)
+{
+	CSteamID ownerSteamID;
+	pBot->GetSteamID(&ownerSteamID);
+	const char* itemName = pItem->GetItemDefinition()->GetItemDefinitionName();
+
+	if (IsValidPickupWeaponSlot(iSlot))
+	{
+		const CUtlVector<static_attrib_t>& vecStaticAttribs = pItem->GetStaticData()->GetStaticAttributes();
+
+		FOR_EACH_VEC(vecStaticAttribs, i)
+		{
+			const static_attrib_t& staticAttrib = vecStaticAttribs[i];
+
+			const CEconItemAttributeDefinition* pAttrDefPaint = GetItemSchema()->GetAttributeDefinitionByName("texture_wear_default");
+			if (!pAttrDefPaint)
+				return false;
+
+			if (staticAttrib.iDefIndex == pAttrDefPaint->GetDefinitionIndex())
+			{
+				//killstreaks can be applied to any weapon, so no checking here.
+				CAttributeList* pAttrList = pItem->GetAttributeList();
+				Assert(pAttrList);
+
+				if (pBot->vecSavedRandomLoadout[iSlot].flPaintkitQuality <= 0)
+				{
+					//hacky ass way of adding qualities...
+					CUtlVector<float> vecWear;
+					vecWear.AddToTail(0.2f);
+					vecWear.AddToTail(0.4f);
+					vecWear.AddToTail(0.6f);
+					vecWear.AddToTail(0.8f);
+					vecWear.AddToTail(1.0f);
+
+					float flQuality = vecWear.Random();
+
+					pBot->vecSavedRandomLoadout[iSlot].flPaintkitQuality = flQuality;
+				}
+
+				pAttrList->SetRuntimeAttributeValue(pAttrDefPaint, pBot->vecSavedRandomLoadout[iSlot].flPaintkitQuality);
+				DevMsg("%s's [%i] %s Set Painted Weapon quality to %f\n", pBot->GetPlayerName(), ownerSteamID.GetAccountID(), itemName, pBot->vecSavedRandomLoadout[iSlot].flPaintkitQuality);
+
+				return true;
+			}
+		}
 	}
 
 	return false;
@@ -5317,6 +5369,9 @@ void CTFBot::GiveSavedLoadout(void)
 					vecSavedRandomLoadout[i].flKillstreakSheen = 0;
 					vecSavedRandomLoadout[i].flKillstreakEffect = 0;
 				}
+
+				//set the paintkit quality if we have one.
+				TFBotSetPaintkitQuality(this, pItemData, i);
 
 				TFBotGenerateAndWearItem(this, pItemData);
 			}

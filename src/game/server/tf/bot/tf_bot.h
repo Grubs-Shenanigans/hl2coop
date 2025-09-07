@@ -552,6 +552,7 @@ public:
 		float flKillstreakTier;
 		float flKillstreakSheen;
 		float flKillstreakEffect;
+		float flPaintkitQuality;
 	};
 
 	CUtlVector< BotLoadoutItem_t > vecSavedRandomLoadout;
