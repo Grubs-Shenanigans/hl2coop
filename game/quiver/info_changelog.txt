@@ -198,6 +198,7 @@ Details:
 - Changed the 25% projectile speed to a 35% projectile speed on the Loch-n-Load to increase range slightly to compensate.
 - Replaced the Loch-n-Load's 20% damage bonus with a 20% damage penalty
 - Bots will now have a chance to spawn with Australium and/or Killstreak weapons alongside other weapon reskins.
+- Made it so bots' painted weapons will spawn with different paint qualities.
 - Removed the ability for Australium weapons (other than the Golden Wrench, Golden Frying Pan, and Saxxy) to turn players gold.
 
 Quiver Private Alpha 1.1.0:

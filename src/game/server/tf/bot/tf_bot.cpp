@@ -4982,49 +4982,6 @@ void TFBotGenerateAndWearItem(CTFBot* pBot, CEconItemView* pItem)
 	}
 }
 
-bool TFBotSetItemAsStrange(CTFBot* pBot, CEconItemView* pItem)
-{
-	int iClass = pBot->GetPlayerClass()->GetClassIndex();
-	CSteamID ownerSteamID;
-	pBot->GetSteamID(&ownerSteamID);
-	const char* itemName = pItem->GetItemDefinition()->GetItemDefinitionName();
-
-	if (IsValidPickupWeaponSlot(pItem->GetStaticData()->GetLoadoutSlot(iClass)))
-	{
-		const CEconItemAttributeDefinition* pAttrDefStrange = GetItemSchema()->GetAttributeDefinitionByName("kill eater");
-		if (!pAttrDefStrange)
-			return false;
-
-		//reinit any base item as an Upgradable item.
-		if (pItem->GetItemDefinition()->IsBaseItem())
-		{
-			CFmtStr fmtStrCustomizedDefName("Upgradeable %s", pItem->GetItemDefinition()->GetDefinitionName());
-			CEconItemDefinition* pItemDef = GetItemSchema()->GetItemDefinitionByName(fmtStrCustomizedDefName.Access());
-			if (pItemDef)
-			{
-				pItem->Init(pItemDef->GetDefinitionIndex(), AE_STRANGE, AE_USE_SCRIPT_VALUE, true);
-			}
-		}
-		else
-		{
-			pItem->SetItemQuality(AE_STRANGE);
-		}
-
-		//make it so we can be a Strange weapon.
-		CAttributeList* pAttrList = pItem->GetAttributeList();
-		Assert(pAttrList);
-
-		DevMsg("%s's [%i] %s spawned as a Strange weapon!\n", pBot->GetPlayerName(), ownerSteamID.GetAccountID(), itemName);
-
-		pAttrList->SetRuntimeAttributeValue(pAttrDefStrange, 1.0f);
-
-		//return true if we have the tier selected.
-		return (::FindAttribute(pAttrList, pAttrDefStrange));
-	}
-
-	return false;
-}
-
 bool TFBotSetPaintkitQuality(CTFBot* pBot, CEconItemView* pItem, int iSlot)
 {
 	CSteamID ownerSteamID;
@@ -5121,48 +5078,45 @@ bool TFBotSetItemAsAustralium(CTFBot* pBot, CEconItemView* pItem)
 			{
 				//SUCCESS!!
 				//reinit any base item as an Upgradable item.
+				//fake the strange quality since we can't do functional strange counters on bots
 				if (pItem->GetItemDefinition()->IsBaseItem())
 				{
+					CEconItemView* pItemNew = new CEconItemView();
 					CFmtStr fmtStrCustomizedDefName("Upgradeable %s", pItem->GetItemDefinition()->GetDefinitionName());
 					CEconItemDefinition* pItemDef = GetItemSchema()->GetItemDefinitionByName(fmtStrCustomizedDefName.Access());
 					if (pItemDef)
 					{
-						pItem->Init(pItemDef->GetDefinitionIndex(), AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
+						pItemNew->Init(pItemDef->GetDefinitionIndex(), AE_STRANGE, AE_USE_SCRIPT_VALUE, true);
 					}
-				}
 
-				//WE ARE AN AUSTRALIUM !
-
-				//make it strange first.
-				bool bIsStrange = TFBotSetItemAsStrange(pBot, pItem);
-
-				if (bIsStrange)
-				{
-					DevMsg("%s's [%i] %s spawned as an Australium!\n", pBot->GetPlayerName(), ownerSteamID.GetAccountID(), itemName);
-
-					CAttributeList* pAttrList = pItem->GetAttributeList();
-					Assert(pAttrList);
-
-					const CEconItemAttributeDefinition* pAttrDefAustralium = GetItemSchema()->GetAttributeDefinitionByName("is australium item");
-					if (!pAttrDefAustralium)
-						return false;
-
-					pAttrList->SetRuntimeAttributeValue(pAttrDefAustralium, 1.0f);
-
-					const CEconItemAttributeDefinition* pAttrDefStyleOverride = GetItemSchema()->GetAttributeDefinitionByName("item style override");
-					if (!pAttrDefStyleOverride)
-						return false;
-
-					pAttrList->SetRuntimeAttributeValue(pAttrDefStyleOverride, 1.0f);
-
-					//now find them. should return true at this point
-					return (::FindAttribute(pAttrList, pAttrDefAustralium) && ::FindAttribute(pAttrList, pAttrDefStyleOverride));
+					pItem = pItemNew;
 				}
 				else
 				{
-					DevMsg("%s's [%i] %s Australium spawn failed: Strange Conversion Failed\n", pBot->GetPlayerName(), ownerSteamID.GetAccountID(), itemName);
-					return false;
+					pItem->SetItemQuality(AE_STRANGE);
 				}
+
+				//WE ARE AN AUSTRALIUM!
+
+				DevMsg("%s's [%i] %s spawned as an Australium!\n", pBot->GetPlayerName(), ownerSteamID.GetAccountID(), itemName);
+
+				CAttributeList* pAttrList = pItem->GetAttributeList();
+				Assert(pAttrList);
+
+				const CEconItemAttributeDefinition* pAttrDefAustralium = GetItemSchema()->GetAttributeDefinitionByName("is australium item");
+				if (!pAttrDefAustralium)
+					return false;
+
+				pAttrList->SetRuntimeAttributeValue(pAttrDefAustralium, 1.0f);
+
+				const CEconItemAttributeDefinition* pAttrDefStyleOverride = GetItemSchema()->GetAttributeDefinitionByName("item style override");
+				if (!pAttrDefStyleOverride)
+					return false;
+
+				pAttrList->SetRuntimeAttributeValue(pAttrDefStyleOverride, 1.0f);
+
+				//now find them. should return true at this point
+				return (::FindAttribute(pAttrList, pAttrDefAustralium) && ::FindAttribute(pAttrList, pAttrDefStyleOverride));
 			}
 		}
 	}
@@ -5195,12 +5149,15 @@ bool TFBotSetItemAsKillstreak(CTFBot* pBot, CEconItemView* pItem, int iSlot)
 		//reinit any base item as an Upgradable item.
 		if (pItem->GetItemDefinition()->IsBaseItem())
 		{
+			CEconItemView* pItemNew = new CEconItemView();
 			CFmtStr fmtStrCustomizedDefName("Upgradeable %s", pItem->GetItemDefinition()->GetDefinitionName());
 			CEconItemDefinition* pItemDef = GetItemSchema()->GetItemDefinitionByName(fmtStrCustomizedDefName.Access());
 			if (pItemDef)
 			{
-				pItem->Init(pItemDef->GetDefinitionIndex(), AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
+				pItemNew->Init(pItemDef->GetDefinitionIndex(), AE_UNIQUE, AE_USE_SCRIPT_VALUE, true);
 			}
+
+			pItem = pItemNew;
 		}
 
 		//killstreaks can be applied to any weapon, so no checking here.
