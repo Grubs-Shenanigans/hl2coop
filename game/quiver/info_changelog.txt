@@ -198,6 +198,7 @@ Details:
 - The Loch-n-Load's no grenade spin attribute was changed to a 85% slower grenade spin.
 - Changed the 25% projectile speed to a 35% projectile speed on the Loch-n-Load to increase range slightly to compensate.
 - Replaced the Loch-n-Load's 20% damage bonus with a 20% damage penalty
+- Bots will now have a chance to spawn with Australium weapons alongside other weapon reskins.
 
 Quiver Private Alpha 1.1.0:
 Whitelists:

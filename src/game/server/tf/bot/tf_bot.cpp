@@ -5054,7 +5054,7 @@ void CTFBot::GiveSavedLoadout(void)
 				const char* itemName = pItemData->GetItemDefinition()->GetItemDefinitionName();
 				DevMsg("GIVING %s TO BOT %s [%i]\n", itemName, GetPlayerName(), ownerSteamID.GetAccountID());
 
-				if (!tf_bot_give_items_skip_australiums.GetBool())
+				if (!tf_bot_give_items_skip_reskins.GetBool() && !tf_bot_give_items_skip_australiums.GetBool())
 				{
 					if (!vecSavedRandomLoadout[i].bIsAustralium)
 					{

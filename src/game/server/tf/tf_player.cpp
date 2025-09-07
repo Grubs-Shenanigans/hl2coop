@@ -302,7 +302,6 @@ ConVar sv_vote_late_join_cooldown( "sv_vote_late_join_cooldown", "300", FCVAR_NO
 #if defined(QUIVER_DLL)
 ConVar qf_tdm_spawnprotection("qf_tdm_spawnprotection", "1", FCVAR_NOTIFY, "");
 ConVar qf_tdm_spawnprotection_length("qf_tdm_spawnprotection_length", "4", FCVAR_NOTIFY, "");
-ConVar qf_australium_turntogold("qf_australium_turntogold", "1", FCVAR_NOTIFY, "");
 #endif
 
 #ifdef BDSBASE
@@ -14083,13 +14082,6 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 	if ( pKillerWeapon )
 	{
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( pKillerWeapon, iGoldRagdoll, set_turn_to_gold );
-
-#if defined(QUIVER_DLL)
-		if (qf_australium_turntogold.GetBool() && iGoldRagdoll == 0)
-		{
-			CALL_ATTRIB_HOOK_INT_ON_OTHER(pKillerWeapon, iGoldRagdoll, is_australium_item);
-		}
-#endif
 	}
 
 	int iRagdollsBecomeAsh = 0;
@@ -17312,13 +17304,6 @@ void CTFPlayer::CreateFeignDeathRagdoll( const CTakeDamageInfo& info, bool bGib,
 			if ( info.GetWeapon() )
 			{
 				 CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetWeapon(), iGoldRagdoll, set_turn_to_gold );
-
-#if defined(QUIVER_DLL)
-				 if (qf_australium_turntogold.GetBool() && iGoldRagdoll == 0)
-				 {
-					 CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iGoldRagdoll, is_australium_item);
-				 }
-#endif
 			}
 			pRagdoll->m_bGoldRagdoll = iGoldRagdoll != 0;
 
