@@ -5207,8 +5207,16 @@ bool CTFWeaponBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& orig
 
 		EHANDLE m_hEjectBrassWeapon = GetWeaponForEffect();
 
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+		if (!UsesForcedViewModel())
+		{
+			if (!m_hEjectBrassWeapon)
+				return true;
+		}
+#else
 		if (!m_hEjectBrassWeapon)
 			return true;
+#endif
 #endif
 
 		if ( UsingViewModel() && !g_pClientMode->ShouldDrawViewModel() )
@@ -5222,7 +5230,18 @@ bool CTFWeaponBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& orig
 		if ( m_iEjectBrassAttachpoint == -2 )
 		{
 #ifdef BDSBASE
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+			if (!UsesForcedViewModel())
+			{
+				m_iEjectBrassAttachpoint = m_hEjectBrassWeapon->LookupAttachment("eject_brass");
+			}
+			else
+			{
+				m_iEjectBrassAttachpoint = pViewModel->LookupAttachment("eject_brass");
+			}
+#else
 			m_iEjectBrassAttachpoint = m_hEjectBrassWeapon->LookupAttachment("eject_brass");
+#endif
 #else
 			m_iEjectBrassAttachpoint = pViewModel->LookupAttachment("eject_brass");
 #endif
@@ -5231,7 +5250,18 @@ bool CTFWeaponBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& orig
 		if ( m_iEjectBrassAttachpoint > 0 )
 		{
 #ifdef BDSBASE
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+			if (!UsesForcedViewModel())
+			{
+				m_hEjectBrassWeapon->GetAttachment(m_iEjectBrassAttachpoint, data.m_vOrigin, data.m_vAngles);
+			}
+			else
+			{
+				pViewModel->GetAttachment(m_iEjectBrassAttachpoint, data.m_vOrigin, data.m_vAngles);
+			}
+#else
 			m_hEjectBrassWeapon->GetAttachment(m_iEjectBrassAttachpoint, data.m_vOrigin, data.m_vAngles);
+#endif
 #else
 			pViewModel->GetAttachment(m_iEjectBrassAttachpoint, data.m_vOrigin, data.m_vAngles);
 #endif
@@ -5239,7 +5269,18 @@ bool CTFWeaponBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& orig
 		else
 		{
 #ifdef BDSBASE
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+			if (!UsesForcedViewModel())
+			{
+				m_hEjectBrassWeapon->GetAttachment(atoi(options), data.m_vOrigin, data.m_vAngles);
+			}
+			else
+			{
+				pViewModel->GetAttachment(atoi(options), data.m_vOrigin, data.m_vAngles);
+			}
+#else
 			m_hEjectBrassWeapon->GetAttachment(atoi(options), data.m_vOrigin, data.m_vAngles);
+#endif
 #else
 			pViewModel->GetAttachment(atoi(options), data.m_vOrigin, data.m_vAngles);
 #endif

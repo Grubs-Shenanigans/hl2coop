@@ -541,6 +541,20 @@ public:
 #ifdef BDSBASE
 public:
 	CountdownTimer m_CompressionBlastTimer;
+
+	struct BotLoadoutItem_t
+	{
+		const CEconItemDefinition* pItemDef;
+		bool bIsAustralium;
+		bool bHasCheckedIfAustralium;
+		bool bIsKillstreak;
+		bool bHasCheckedIfKillstreak;
+		float flKillstreakTier;
+		float flKillstreakSheen;
+		float flKillstreakEffect;
+	};
+
+	CUtlVector< BotLoadoutItem_t > vecSavedRandomLoadout;
 #endif
 private:
 	CTFBotLocomotion	*m_locomotor;
@@ -548,14 +562,6 @@ private:
 	CTFBotVision		*m_vision;
 
 #ifdef BDSBASE
-	struct BotLoadoutItem_t
-	{
-		const CEconItemDefinition* pItemDef;
-		bool bIsAustralium;
-		bool bHasCheckedIfAustralium;
-	};
-
-	CUtlVector< BotLoadoutItem_t > vecSavedRandomLoadout;
 	CountdownTimer m_InitialLoadoutLoadTimer;
 	int iOldClassIndex;
 #endif
