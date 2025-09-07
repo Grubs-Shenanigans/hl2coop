@@ -74,7 +74,7 @@ Added the following Source SDK Pull Requests:
 	- #1514: Crusader's Crossbow arrow healing is now affected by mult_health_fromhealers (used by Back Scratcher)
 	- #1515: Add "ParticleEffectStopAndDestroy" Client Effect and "DestroyImmediately" Input for info_particle_system
 	- #1516: Fix not being able to toggle off the orthographic camera
-	- #1517: Implement tf_stats_bogus covnvars to allow High stat tracking in modes with Increased Stats. I.E MvM
+	- #1517: Implement tf_stats_bogus convars to allow High stat tracking in modes with Increased Stats. I.E MvM
 	- #1518: Fix the B.A.S.E. Jumper's parachute not using half of its animations
 	- #1520: Add ForceDifficultyBasedAim CTFBot flag to allow MvM missions to let Spies aim better
 	- #1522: Fix Thermal Thruster particles
