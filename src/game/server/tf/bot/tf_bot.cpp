@@ -4986,6 +4986,27 @@ bool TFBotSetItemAsAustralium(CTFBot* pBot, CEconItemView* pItem)
 		FOR_EACH_VEC(vecStaticAttribs, i)
 		{
 			const static_attrib_t& staticAttrib = vecStaticAttribs[i];
+
+			const CEconItemAttributeDefinition* pAttrDefLimited = GetItemSchema()->GetAttributeDefinitionByName("limited quantity item");
+			if (!pAttrDefLimited)
+				return false;
+
+			if (staticAttrib.iDefIndex == pAttrDefLimited->GetDefinitionIndex())
+			{
+				//festives aren't australiums in most cases.
+				return false;
+			}
+
+			const CEconItemAttributeDefinition* pAttrDefPaint = GetItemSchema()->GetAttributeDefinitionByName("texture_wear_default");
+			if (!pAttrDefPaint)
+				return false;
+
+			if (staticAttrib.iDefIndex == pAttrDefPaint->GetDefinitionIndex())
+			{
+				//painted weapons aren't australiums.
+				return false;
+			}
+
 			if (staticAttrib.iDefIndex == pAttrDef->GetDefinitionIndex())
 			{
 				//SUCCESS!!
