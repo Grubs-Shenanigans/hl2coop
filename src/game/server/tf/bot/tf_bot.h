@@ -548,7 +548,14 @@ private:
 	CTFBotVision		*m_vision;
 
 #ifdef BDSBASE
-	CUtlVector< const CEconItemDefinition* > vecSavedRandomLoadout;
+	struct BotLoadoutItem_t
+	{
+		const CEconItemDefinition* pItemDef;
+		bool bIsAustralium;
+		bool bHasCheckedIfAustralium;
+	};
+
+	CUtlVector< BotLoadoutItem_t > vecSavedRandomLoadout;
 	CountdownTimer m_InitialLoadoutLoadTimer;
 	int iOldClassIndex;
 #endif

@@ -72,10 +72,21 @@ ConVar tf_bot_debug_tags( "tf_bot_debug_tags", "0", FCVAR_CHEAT, "ent_text will 
 ConVar tf_bot_spawn_use_preset_roster("tf_bot_spawn_use_preset_roster", "0", FCVAR_NONE, "Bot will choose class from a preset class table.");
 
 ConVar tf_bot_give_items("tf_bot_give_items", "1", FCVAR_GAMEDLL);
+ConVar tf_bot_give_items_nosteamcheck("tf_bot_give_items_nosteamcheck", "0", FCVAR_GAMEDLL);
+ConVar tf_bot_give_items_australium_rarity("tf_bot_give_items_australium_rarity", "5", FCVAR_GAMEDLL);
+
+#if (defined(BDSBASE_CURATED_ITEMS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS))
+ConVar tf_bot_give_items_nocosmetics("tf_bot_give_items_nocosmetics", "0", FCVAR_GAMEDLL);
+#else
+ConVar tf_bot_give_items_nocosmetics("tf_bot_give_items_nocosmetics", "1", FCVAR_GAMEDLL);
+#endif
+
 #if (defined(BDSBASE_CURATED_ITEMS) && (!defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS) && !defined(BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS)))
 ConVar tf_bot_give_items_skip_reskins("tf_bot_give_items_skip_reskins", "1", FCVAR_DEVELOPMENTONLY);
+ConVar tf_bot_give_items_skip_australiums("tf_bot_give_items_skip_australiums", "1", FCVAR_DEVELOPMENTONLY);
 #else
 ConVar tf_bot_give_items_skip_reskins("tf_bot_give_items_skip_reskins", "0", FCVAR_GAMEDLL);
+ConVar tf_bot_give_items_skip_australiums("tf_bot_give_items_skip_australiums", "0", FCVAR_GAMEDLL);
 #endif
 #else
 ConVar tf_bot_spawn_use_preset_roster("tf_bot_spawn_use_preset_roster", "1", FCVAR_CHEAT, "Bot will choose class from a preset class table.");
@@ -4868,43 +4879,54 @@ void CTFBot::SelectRandomizedLoadout(void)
 
 		if (pItem)
 		{
-			vecSavedRandomLoadout.AddToTail(pItem);
+			BotLoadoutItem_t weapon;
+			weapon.pItemDef = pItem;
+			weapon.bIsAustralium = false;
+			weapon.bHasCheckedIfAustralium = false;
+			vecSavedRandomLoadout.AddToTail(weapon);
 		}
 	}
 
-	int iChosenSlotVal = RandomInt(0, 2);
-	int iCosmeticSlot = LOADOUT_POSITION_HEAD;
-
-	switch (iChosenSlotVal)
+	if (tf_bot_give_items_nocosmetics.GetBool())
 	{
-		// 0 is default values above.
-		case 1:
+		int iChosenSlotVal = RandomInt(0, 2);
+		int iCosmeticSlot = LOADOUT_POSITION_HEAD;
+
+		switch (iChosenSlotVal)
 		{
-			iCosmeticSlot = LOADOUT_POSITION_MISC;
-			DevMsg("BOT %s CHOSE SLOT LOADOUT_POSITION_MISC\n", GetPlayerName());
-			break;
+			// 0 is default values above.
+			case 1:
+			{
+				iCosmeticSlot = LOADOUT_POSITION_MISC;
+				DevMsg("BOT %s CHOSE SLOT LOADOUT_POSITION_MISC\n", GetPlayerName());
+				break;
+			}
+
+			case 2:
+			{
+				iCosmeticSlot = LOADOUT_POSITION_MISC2;
+				DevMsg("BOT %s CHOSE SLOT LOADOUT_POSITION_MISC2\n", GetPlayerName());
+				break;
+			}
+
+			default:
+			{
+				DevMsg("BOT %s CHOSE SLOT LOADOUT_POSITION_HEAD\n", GetPlayerName());
+				break;
+			}
 		}
 
-		case 2:
+		// then cosmetics
+		const CEconItemDefinition* pItem = GiveRandomItemEx((loadout_positions_t)iCosmeticSlot);
+
+		if (pItem)
 		{
-			iCosmeticSlot = LOADOUT_POSITION_MISC2;
-			DevMsg("BOT %s CHOSE SLOT LOADOUT_POSITION_MISC2\n", GetPlayerName());
-			break;
+			BotLoadoutItem_t cosmetic;
+			cosmetic.pItemDef = pItem;
+			cosmetic.bIsAustralium = false;
+			cosmetic.bHasCheckedIfAustralium = true;
+			vecSavedRandomLoadout.AddToTail(cosmetic);
 		}
-
-		default:
-		{
-			DevMsg("BOT %s CHOSE SLOT LOADOUT_POSITION_HEAD\n", GetPlayerName());
-			break;
-		}
-	}
-
-	// then cosmetics
-	const CEconItemDefinition* pItem = GiveRandomItemEx((loadout_positions_t)iCosmeticSlot);
-
-	if (pItem)
-	{
-		vecSavedRandomLoadout.AddToTail(pItem);
 	}
 }
 
@@ -4945,6 +4967,54 @@ void TFBotGenerateAndWearItem(CTFBot* pBot, CEconItemView* pItem)
 	}
 }
 
+bool TFBotSetItemAsAustralium(CTFBot* pBot, CEconItemView* pItem)
+{
+	//check if we're in a weapon slot. if we are, determine if we should spawn this as a fake AUSTRALIUM.
+	int iClass = pBot->GetPlayerClass()->GetClassIndex();
+	CSteamID ownerSteamID;
+	pBot->GetSteamID(&ownerSteamID);
+	const char* itemName = pItem->GetItemDefinition()->GetItemDefinitionName();
+
+	if (IsValidPickupWeaponSlot(pItem->GetStaticData()->GetLoadoutSlot(iClass)))
+	{
+		const CEconItemAttributeDefinition* pAttrDef = GetItemSchema()->GetAttributeDefinitionByName("BOT ONLY uses australium variant");
+		if (!pAttrDef)
+			return false;
+
+		const CUtlVector<static_attrib_t>& vecStaticAttribs = pItem->GetStaticData()->GetStaticAttributes();
+
+		FOR_EACH_VEC(vecStaticAttribs, i)
+		{
+			const static_attrib_t& staticAttrib = vecStaticAttribs[i];
+			if (staticAttrib.iDefIndex == pAttrDef->GetDefinitionIndex())
+			{
+				//SUCCESS!!
+				CAttributeList* pAttrList = pItem->GetAttributeList();
+				Assert(pAttrList);
+
+				DevMsg("%s's [%i] %s spawned as an Australium!\n", pBot->GetPlayerName(), ownerSteamID.GetAccountID(), itemName);
+				//WE ARE AN AUSTRALIUM !
+				const CEconItemAttributeDefinition* pAttrDefAustralium = GetItemSchema()->GetAttributeDefinitionByName("is australium item");
+				if (!pAttrDefAustralium)
+					return false;
+
+				pAttrList->SetRuntimeAttributeValue(pAttrDefAustralium, 1.0f);
+
+				const CEconItemAttributeDefinition* pAttrDefStyleOverride = GetItemSchema()->GetAttributeDefinitionByName("item style override");
+				if (!pAttrDefStyleOverride)
+					return false;
+
+				pAttrList->SetRuntimeAttributeValue(pAttrDefStyleOverride, 1.0f);
+
+				//now find them. should return true at this point
+				return (::FindAttribute(pAttrList, pAttrDefAustralium) && ::FindAttribute(pAttrList, pAttrDefStyleOverride));
+			}
+		}
+	}
+
+	return false;
+}
+
 void CTFBot::GiveSavedLoadout(void)
 {
 	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
@@ -4952,16 +5022,52 @@ void CTFBot::GiveSavedLoadout(void)
 
 	for (int i = 0; i < vecSavedRandomLoadout.Count(); ++i)
 	{
-		if (vecSavedRandomLoadout[i])
+		if (vecSavedRandomLoadout[i].pItemDef)
 		{
 			CEconItemView* pItemData = new CEconItemView();
 			CSteamID ownerSteamID;
 			GetSteamID(&ownerSteamID);
-			pItemData->Init(vecSavedRandomLoadout[i]->GetDefinitionIndex(), AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, ownerSteamID.GetAccountID());
+			pItemData->Init(vecSavedRandomLoadout[i].pItemDef->GetDefinitionIndex(), AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, ownerSteamID.GetAccountID());
 			if (pItemData && pItemData->IsValid())
 			{
 				const char* itemName = pItemData->GetItemDefinition()->GetItemDefinitionName();
 				DevMsg("GIVING %s TO BOT %s [%i]\n", itemName, GetPlayerName(), ownerSteamID.GetAccountID());
+
+				if (!tf_bot_give_items_skip_australiums.GetBool())
+				{
+					if (!vecSavedRandomLoadout[i].bIsAustralium)
+					{
+						if (!vecSavedRandomLoadout[i].bHasCheckedIfAustralium)
+						{
+							int m_nRandomSeed = RandomInt(0, 9999);
+							CUniformRandomStream randomize;
+							randomize.SetSeed(m_nRandomSeed);
+
+							int rarity = tf_bot_give_items_australium_rarity.GetInt();
+
+							if (randomize.RandomInt(1, rarity) == rarity)
+							{
+								vecSavedRandomLoadout[i].bIsAustralium = TFBotSetItemAsAustralium(this, pItemData);
+							}
+							else
+							{
+								vecSavedRandomLoadout[i].bIsAustralium = false;
+							}
+
+							vecSavedRandomLoadout[i].bHasCheckedIfAustralium = true;
+						}
+					}
+					else
+					{
+						TFBotSetItemAsAustralium(this, pItemData);
+					}
+				}
+				else
+				{
+					vecSavedRandomLoadout[i].bIsAustralium = false;
+					vecSavedRandomLoadout[i].bHasCheckedIfAustralium = true;
+				}
+
 				TFBotGenerateAndWearItem(this, pItemData);
 			}
 		}
@@ -4976,7 +5082,7 @@ void CTFBot::HandleLoadout(void)
 	if (!m_InitialLoadoutLoadTimer.IsElapsed())
 		return;
 
-	bool bLoggedIntoSteam = steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn();
+	bool bLoggedIntoSteam = !tf_bot_give_items_nosteamcheck.GetBool() && (steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn());
 
 	if (bLoggedIntoSteam && tf_bot_give_items.GetBool())
 	{
@@ -5001,7 +5107,7 @@ void CTFBot::ResetLoadout(void)
 	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode())
 		return;
 
-	bool bLoggedIntoSteam = steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn();
+	bool bLoggedIntoSteam = !tf_bot_give_items_nosteamcheck.GetBool() && (steamapicontext && steamapicontext->SteamUser() && steamapicontext->SteamUser()->BLoggedOn());
 	if (bLoggedIntoSteam && tf_bot_give_items.GetBool() && !(TFGameRules() && TFGameRules()->IsMannVsMachineMode()))
 	{
 		vecSavedRandomLoadout.RemoveAll();
