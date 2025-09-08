@@ -6522,7 +6522,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 					//}
 #endif
 
-#if defined(QUIVER_DLL)
+#ifdef BDSBASE
 					// Some weapons crit *any* target in the air, regardless of how they got there.
 					int iCritModeSwitchAirborneDeploy = 0;
 					CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iCritModeSwitchAirborneDeploy, crit_mode_switch_airborne_deploy);
@@ -7720,7 +7720,7 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flRealDamage, mult_dmgtaken );
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim->GetActiveTFWeapon(), flRealDamage, mult_dmgtaken_active );
 
-#if defined(QUIVER_DLL)
+#ifdef BDSBASE
 		if (info.GetCritType() == CTakeDamageInfo::CRIT_MINI)
 		{
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pVictim, flRealDamage, mult_dmgtaken_minicrits);

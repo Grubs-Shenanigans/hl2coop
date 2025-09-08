@@ -5859,7 +5859,6 @@ void CTFWeaponBase::ApplyOnHitTeammateAttributes(CBaseEntity* pVictimBaseEntity,
 
 	if (pTargetPlayer)
 	{
-#if defined(QUIVER_DLL)
 		// Give health to teammates on hit
 		int nGiveHealthOnHit = 0;
 		CALL_ATTRIB_HOOK_INT(nGiveHealthOnHit, add_give_health_to_teammate_on_hit_proj);
@@ -5918,7 +5917,6 @@ void CTFWeaponBase::ApplyOnHitTeammateAttributes(CBaseEntity* pVictimBaseEntity,
 				CTF_GameStats.Event_PlayerHealedOther(pAttacker, nHealthGiven);
 			}
 		}
-#endif
 	}
 }
 #endif

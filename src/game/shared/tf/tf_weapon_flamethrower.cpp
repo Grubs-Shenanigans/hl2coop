@@ -1203,11 +1203,11 @@ void CTFFlameThrower::FireAirBlast( int iAmmoPerShot )
 		DeflectPlayer( pOwner, pOwner, vDashDir );
 	}
 
-#if defined(QUIVER_DLL)
-	int nDashReversed = 0;
-	CALL_ATTRIB_HOOK_INT(nDashReversed, airblast_self_knockback);
+#ifdef BDSBASE
+	int nAirblastKnockback = 0;
+	CALL_ATTRIB_HOOK_INT(nAirblastKnockback, airblast_self_knockback);
 
-	if (nDashReversed)
+	if (nAirblastKnockback)
 	{
 		// No knockback during pre-round freeze.
 		if (TFGameRules() && (TFGameRules()->State_Get() != GR_STATE_PREROUND))

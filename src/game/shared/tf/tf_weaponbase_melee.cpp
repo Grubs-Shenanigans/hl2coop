@@ -492,10 +492,9 @@ public:
 							return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
 						}
 
-#if defined(QUIVER_DLL)
 						int nGiveHealthOnHitAlt = 0;
 						CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, nGiveHealthOnHitAlt, add_give_health_to_teammate_on_hit_alt);
-
+#if defined(QUIVER_DLL)
 						// wrench (quiver)
 						if (pWeapon->GetWeaponID() == TF_WEAPON_WRENCH || (nGiveHealthOnHitAlt != 0))
 						{
@@ -882,7 +881,7 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 				}
 			}
 
-#ifdef QUIVER_DLL
+#ifdef BDSBASE
 			// extra version that doesn't substract health
 			// Give health to teammates on hit
 			int nGiveHealthOnHitAlt = 0;
@@ -941,7 +940,9 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 					CTF_GameStats.Event_PlayerHealedOther(pPlayer, nHealthGiven);
 				}
 			}
+#endif
 
+#ifdef QUIVER_DLL
 			if (GetWeaponID() == TF_WEAPON_WRENCH)
 			{
 				//do the same for armor. Wrenches only, mainly.

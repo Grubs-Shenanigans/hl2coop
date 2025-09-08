@@ -3593,7 +3593,7 @@ void CTFPlayer::ApplyAbsVelocityImpulse( const Vector &vecImpulse )
 	// Check for Attributes (mult_aiming_knockback_resistance)
 	Vector vecForce = vecImpulse;
 	float flImpulseScale = 1.0f;
-#ifdef QUIVER_DLL
+#ifdef BDSBASE
 	if (m_Shared.InCond(TF_COND_AIMING))
 #else
 	if (IsPlayerClass(TF_CLASS_SNIPER) && m_Shared.InCond(TF_COND_AIMING))
@@ -10197,7 +10197,6 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		}
 	}
 	
-#if !defined(QUIVER_DLL)
 #ifdef BDSBASE
 	if (pTFAttacker && pTFAttacker->IsPlayerClass(TF_CLASS_MEDIC) && pWeapon && pWeapon->GetWeaponID() == TF_WEAPON_BONESAW)
 	{
@@ -10289,7 +10288,6 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			}
 		}
 	}
-#endif
 #endif
 
 	if ( bIsSoldierRocketJumping || bIsDemomanPipeJumping )

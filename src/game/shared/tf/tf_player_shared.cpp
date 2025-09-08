@@ -10995,7 +10995,7 @@ void CTFPlayer::MaybeDrawRailgunBeam( IRecipientFilter *pFilter, CTFWeaponBase *
 		const char *pParticleSystemName = pWeapon->GetTeamNumber() == TF_TEAM_BLUE ? "dxhr_sniper_rail_blue" : "dxhr_sniper_rail_red";
 		CTFSniperRifle *pRifle = dynamic_cast< CTFSniperRifle* >( pWeapon );
 
-#if defined(QUIVER_DLL)
+#if BDSBASE
 		int iShouldUseClassicTracer = 0;
 		CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iShouldUseClassicTracer, sniper_classic_tracer);
 
@@ -11779,7 +11779,7 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 		maxfbspeed = MIN( flMaxDisguiseSpeed, maxfbspeed );
 	}
 
-#if defined(QUIVER_DLL)
+#if BDSBASE
 	int iNoMoveSpeedPenalty = 0;
 	CALL_ATTRIB_HOOK_INT(iNoMoveSpeedPenalty, player_no_aiming_movespeed_penalty);
 
@@ -11790,14 +11790,7 @@ float CTFPlayer::TeamFortress_CalculateMaxSpeed( bool bIgnoreSpecialAbility /*= 
 
 	if ( !iNoMoveSpeedPenalty && ( !TFGameRules()->IsMannVsMachineMode() || !IsMiniBoss() ) ) // No aiming slowdown penalties for MiniBoss players in MVM
 #else
-#ifdef BDSBASE
-	int iNoMoveSpeedPenalty = 0;
-	CALL_ATTRIB_HOOK_INT(iNoMoveSpeedPenalty, unimplemented_mod_zoom_speed_disabled);
-
-	if (!iNoMoveSpeedPenalty && (!TFGameRules()->IsMannVsMachineMode() || !IsMiniBoss())) // No aiming slowdown penalties for MiniBoss players in MVM
-#else
 	if ( !TFGameRules()->IsMannVsMachineMode() || !IsMiniBoss() ) // No aiming slowdown penalties for MiniBoss players in MVM
-#endif
 #endif
 	{
 		// if they're a sniper, and they're aiming, their speed must be 80 or less
