@@ -15,6 +15,9 @@
 	#include "c_tf_player.h"
 	#include "in_buttons.h"
 	#include "tf_hud_menu_eureka_teleport.h"
+#ifdef BDSBASE
+	#include "prediction.h"
+#endif
 	// NVNT haptics system interface
 	#include "haptics/ihaptics.h"
 // Server specific.
@@ -307,6 +310,13 @@ void CTFWrench::ItemPostFrame()
 	{
 		return;
 	}
+
+#ifdef BDSBASE
+	if (!pOwner->IsLocalPlayer() || !prediction->IsFirstTimePredicted())
+	{
+		return;
+	}
+#endif
 
 	// Just pressed reload?
 	if ( pOwner->m_nButtons & IN_RELOAD && !m_bReloadDown )
