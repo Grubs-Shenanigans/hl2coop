@@ -59,11 +59,7 @@ public:
 
 
 private:
-#ifdef BDSBASE
-	float				m_flNextReloadTime;
-#else
 	bool				m_bReloadDown;
-#endif
 	CTFWrench( const CTFWrench & ) {}
 };
 
