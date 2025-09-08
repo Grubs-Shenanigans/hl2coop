@@ -5257,8 +5257,11 @@ void CTFBot::GiveSavedLoadout(void)
 				CUniformRandomStream randomize;
 				randomize.SetSeed(pItemData->GetItemDefinition()->GetDefinitionIndex());
 
+				//set the paintkit quality if we have one.
+				bool painted = TFBotSetPaintkitQuality(this, pItemData, i);
+
 				//australium
-				if (!tf_bot_give_items_skip_reskins.GetBool() && !tf_bot_give_items_skip_australiums.GetBool())
+				if (!painted && !tf_bot_give_items_skip_reskins.GetBool() && !tf_bot_give_items_skip_australiums.GetBool())
 				{
 					if (!vecSavedRandomLoadout[i].bIsAustralium)
 					{
@@ -5326,9 +5329,6 @@ void CTFBot::GiveSavedLoadout(void)
 					vecSavedRandomLoadout[i].flKillstreakSheen = 0;
 					vecSavedRandomLoadout[i].flKillstreakEffect = 0;
 				}
-
-				//set the paintkit quality if we have one.
-				TFBotSetPaintkitQuality(this, pItemData, i);
 
 				TFBotGenerateAndWearItem(this, pItemData);
 			}

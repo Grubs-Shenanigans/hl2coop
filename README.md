@@ -27,6 +27,8 @@ This base is specific to multiplayer mod projects.
 - Menu music in map backgrounds with adjustable volume and mix volume.
 - Server Admin tools support (based off #948) with extendable module-based command interface.
 - Animated Avatars support (based off #1380)
+- Improved AI Bot behavior (based off multiple pull requests)
+- Added randomized loadouts to AI bots that allow bots to spawn with a variety of weapons. (TF2 only)
 
 ## Options/Preprocessor Definitions
 These options are meant to be added to the VPC files (client and server) of the mod you wish to modify.
