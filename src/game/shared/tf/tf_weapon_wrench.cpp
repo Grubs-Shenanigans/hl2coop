@@ -100,7 +100,11 @@ LINK_ENTITY_TO_CLASS( tf_wearable_robot_arm, CTFWearableRobotArm );
 // Purpose:
 //-----------------------------------------------------------------------------
 CTFWrench::CTFWrench()
+#ifdef BDSBASE
+	: m_flNextReloadTime(0.f)
+#else
 	: m_bReloadDown( false )
+#endif
 {}
 
 
@@ -309,9 +313,17 @@ void CTFWrench::ItemPostFrame()
 	}
 
 	// Just pressed reload?
+#ifdef BDSBASE
+	if (pOwner->m_afButtonPressed & IN_RELOAD && gpGlobals->curtime >= m_flNextReloadTime)
+#else
 	if ( pOwner->m_nButtons & IN_RELOAD && !m_bReloadDown )
+#endif
 	{
+#ifdef BDSBASE
+		m_flNextReloadTime = gpGlobals->curtime + 0.5f;
+#else
 		m_bReloadDown = true;
+#endif
 		int iAltFireTeleportToSpawn = 0;
 		CALL_ATTRIB_HOOK_INT( iAltFireTeleportToSpawn, alt_fire_teleport_to_spawn );
 		if ( iAltFireTeleportToSpawn )
@@ -324,10 +336,12 @@ void CTFWrench::ItemPostFrame()
 			}
 		}
 	}
+#ifndef BDSBASE
 	else if ( !(pOwner->m_nButtons & IN_RELOAD) && m_bReloadDown )
 	{
 		m_bReloadDown = false;
 	}
+#endif
 }
 #endif
 
