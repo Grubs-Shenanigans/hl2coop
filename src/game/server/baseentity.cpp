@@ -4557,9 +4557,19 @@ bool CBaseEntity::AcceptInput( const char *szInputName, CBaseEntity *pActivator,
 							g_pScriptVM->SetValue( "activator", ( pActivator ) ? ScriptVariant_t( pActivator->GetScriptInstance() ) : SCRIPT_VARIANT_NULL );
 							g_pScriptVM->SetValue( "caller", ( pCaller ) ? ScriptVariant_t( pCaller->GetScriptInstance() ) : SCRIPT_VARIANT_NULL );
 
+#ifdef BDSBASE
+							g_pScriptVM->SetValue("input_value", Value.String());
+#endif
+
 							if( CallScriptFunction( szScriptFunctionName, &functionReturn ) )
 							{
 								bCallInputFunc = functionReturn;
+#ifdef BDSBASE
+								// Allow reassignment of activator and caller of the input
+								IScriptVM* pVM = g_pScriptVM;
+								pVM->IfHas<HSCRIPT>(m_ScriptScope, "activator", [&](HSCRIPT value) { data.pActivator = ToEnt(value); });
+								pVM->IfHas<HSCRIPT>(m_ScriptScope, "caller", [&](HSCRIPT value) { data.pCaller = ToEnt(value); });
+#endif
 							}
 						}
 
@@ -4572,6 +4582,9 @@ bool CBaseEntity::AcceptInput( const char *szInputName, CBaseEntity *pActivator,
 						{
 							g_pScriptVM->ClearValue( "activator" );
 							g_pScriptVM->ClearValue( "caller" );
+#ifdef BDSBASE
+							g_pScriptVM->ClearValue("input_value");
+#endif
 						}
 					}
 					else if ( dmap->dataDesc[i].flags & FTYPEDESC_KEY )

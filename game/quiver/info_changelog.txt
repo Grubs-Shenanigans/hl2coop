@@ -79,6 +79,8 @@ Added the following Source SDK Pull Requests:
 	- #1520: Add ForceDifficultyBasedAim CTFBot flag to allow MvM missions to let Spies aim better
 	- #1522: Fix Thermal Thruster particles
 	- #1524: Fix Eureka Effect menu reopening
+	- #1526: Fix Client Crashes from Invalid Banner model indexes
+	- #1525: Add more functionality to Input<name>() callback in VScript
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
