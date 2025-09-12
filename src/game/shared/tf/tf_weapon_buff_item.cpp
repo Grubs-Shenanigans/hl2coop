@@ -316,6 +316,16 @@ void CTFBuffItem::CreateBanner()
 		if ( !pPlayer || !pPlayer->IsAlive() )
 			return;
 
+#ifdef BDSBASE
+		int iBuffType = GetBuffType();
+		// Prevent Crashes From Invalid Buff Types
+		if (iBuffType > ARRAYSIZE(BannerModels) || iBuffType <= 0)
+		{
+			DevMsg("Invalid buff type %d, Not Creating Banner\n", iBuffType);
+			return;
+		}
+#endif
+
 		C_TFBuffBanner* pBanner = new C_TFBuffBanner;
 		if ( !pBanner )
 			return;
@@ -323,9 +333,17 @@ void CTFBuffItem::CreateBanner()
 		//Assert( iBuffType > 0 );
 		//Assert( iBuffType <= ARRAYSIZE(BannerModels) );
 		pBanner->m_nSkin = 0;
+#ifdef BDSBASE
+		pBanner->InitializeAsClientEntity(BannerModels[iBuffType - 1], RENDER_GROUP_OPAQUE_ENTITY);
+#else
 		pBanner->InitializeAsClientEntity( BannerModels[GetBuffType()-1], RENDER_GROUP_OPAQUE_ENTITY );
+#endif
 		pBanner->SetBuffItem( this );
+#ifdef BDSBASE
+		pBanner->SetBuffType(iBuffType);
+#else
 		pBanner->SetBuffType( GetBuffType() );
+#endif
 		pBanner->ForceClientSideAnimationOn();
 		SetBanner( pBanner );
 		int iSpine = pPlayer->LookupBone( "bip_spine_3" );
