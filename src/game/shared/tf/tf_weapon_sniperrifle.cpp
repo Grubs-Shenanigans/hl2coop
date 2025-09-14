@@ -484,7 +484,9 @@ void CTFSniperRifle::PlayWeaponShootSound( void )
 #ifdef BDSBASE
 		// Prevents Non-Machina rifles with "sniper_full_charge_damage_bonus" 
 		// from playing "SPECIAL3", which usually is Undefined
-		if (flDamageBonus > 1.0f && GetRifleType() == RIFLE_MACHINA)
+		const CEconItemView* pItem = GetAttributeContainer()->GetItem();
+
+		if (flDamageBonus > 1.0f && (pItem && pItem->GetStaticData()->GetWeaponReplacementSound(GetTeamNumber(), SPECIAL3)))
 #else
 		if ( flDamageBonus > 1.0f )
 #endif
