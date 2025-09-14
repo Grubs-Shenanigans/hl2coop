@@ -81,6 +81,8 @@ Added the following Source SDK Pull Requests:
 	- #1524: Fix Eureka Effect menu reopening
 	- #1526: Fix Client Crashes from Invalid Banner model indexes
 	- #1525: Add more functionality to Input<name>() callback in VScript
+	- #1528: Add a non full charge sound check to tf_weapon_sniperrifle.cpp
+	- #1529: Add DevMsgs for returns in CBaseCombatWeapon::WeaponSound
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
