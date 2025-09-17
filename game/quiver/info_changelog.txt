@@ -84,6 +84,7 @@ Added the following Source SDK Pull Requests:
 	- #1528: Add a non full charge sound check to tf_weapon_sniperrifle.cpp
 	- #1529: Add DevMsgs for returns in CBaseCombatWeapon::WeaponSound
 	- #1530: Allow null caller on team_control_point's SetOwner input
+	- #1534: Fix cleanup collect on MvM currency rest logic
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.
