@@ -85,6 +85,7 @@ Added the following Source SDK Pull Requests:
 	- #1529: Add DevMsgs for returns in CBaseCombatWeapon::WeaponSound
 	- #1530: Allow null caller on team_control_point's SetOwner input
 	- #1534: Fix cleanup collect on MvM currency rest logic
+	- #1536: Add EntIndex params to player_teleported
 
 Details:
 - Fixed a bug where the mini-crit damage effect doesn't show up when your shield breaks.

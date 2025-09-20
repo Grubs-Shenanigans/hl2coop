@@ -564,6 +564,8 @@
 		"userid"	"short"		// userid of the player
 		"builderid"	"short"		// userid of the player who built the teleporter
 		"dist"		"float"		// distance the player was teleported
+		"exitindex"	"short"
+		"entranceindex"	"short"
 	}
 	
 	// client only

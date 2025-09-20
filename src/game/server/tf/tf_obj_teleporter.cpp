@@ -1142,6 +1142,26 @@ void CObjectTeleporter::TeleporterThink( void )
 
 				pTeleportingPlayer->SpeakConceptIfAllowed( MP_CONCEPT_TELEPORTED );
 
+#ifdef BDSBASE
+				IGameEvent* event = gameeventmanager->CreateEvent("player_teleported");
+				if (event)
+				{
+					event->SetInt("userid", pTeleportingPlayer->GetUserID());
+					event->SetInt("builderid", GetBuilder() ? GetBuilder()->GetUserID() : 0);
+					event->SetInt("exitindex", entindex());
+					if (GetMatchingTeleporter())
+					{
+						event->SetFloat("dist", GetMatchingTeleporter()->GetAbsOrigin().DistTo(GetAbsOrigin()));
+						event->SetInt("entranceindex", GetMatchingTeleporter()->entindex());
+					}
+					else
+					{
+						event->SetFloat("dist", 0);
+						event->SetInt("entranceindex", 0);
+					}
+					gameeventmanager->FireEvent(event);
+				}
+#else
 				IGameEvent * event = gameeventmanager->CreateEvent( "player_teleported" );
 				if ( event )
 				{
@@ -1157,6 +1177,7 @@ void CObjectTeleporter::TeleporterThink( void )
 					}
 					gameeventmanager->FireEvent( event );
 				}
+#endif
 			}
 
 			// reset the pointers to the player now that we're done teleporting
