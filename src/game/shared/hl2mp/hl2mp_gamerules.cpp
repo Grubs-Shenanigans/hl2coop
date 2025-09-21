@@ -1188,7 +1188,7 @@ CAmmoDef *GetAmmoDef()
 		// Ok, spawn all the bots.
 		while (--count >= 0)
 		{
-			BotPutInServer(bFrozen, iTeam);
+//			BotPutInServer(bFrozen, iTeam);
 		}
 	}
 
