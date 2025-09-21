@@ -302,7 +302,6 @@ ConVar sv_vote_late_join_cooldown( "sv_vote_late_join_cooldown", "300", FCVAR_NO
 #if defined(QUIVER_DLL)
 ConVar qf_tdm_spawnprotection("qf_tdm_spawnprotection", "1", FCVAR_NOTIFY, "");
 ConVar qf_tdm_spawnprotection_length("qf_tdm_spawnprotection_length", "4", FCVAR_NOTIFY, "");
-ConVar qf_australium_turntogold("qf_australium_turntogold", "1", FCVAR_NOTIFY, "");
 #endif
 
 #ifdef BDSBASE
@@ -696,6 +695,11 @@ BEGIN_ENT_SCRIPTDESC( CTFPlayer, CBaseMultiplayerPlayer , "Team Fortress 2 Playe
 	DEFINE_SCRIPTFUNC_NAMED( ScriptGetBonusPoints, "GetBonusPoints", "" )
 	DEFINE_SCRIPTFUNC_NAMED( ScriptResetScores, "ResetScores", "" )
 	DEFINE_SCRIPTFUNC_NAMED( ScriptIsParachuteEquipped, "IsParachuteEquipped", "" )
+
+#ifdef BDSBASE
+	DEFINE_SCRIPTFUNC_NAMED(ScriptIsOldMeleeTrace, "IsOldMeleeTrace", "")
+	DEFINE_SCRIPTFUNC_NAMED(ScriptSetOldMeleeTrace, "SetOldMeleeTrace", "")
+#endif
 
 	DEFINE_SCRIPTFUNC( GetCurrency, "Get player's cash for game modes with upgrades, ie. MvM" )
 	DEFINE_SCRIPTFUNC( SetCurrency, "Set player's cash for game modes with upgrades, ie. MvM" )
@@ -1613,6 +1617,12 @@ void CTFPlayer::TFPlayerThink()
 			{
 				pszEvent = "rocket_jump_landed";
 			}
+#if defined(QUIVER_DLL)
+			else if (AirblastJumped())
+			{
+				pszEvent = "airblast_jump_landed";
+			}
+#endif
 
 			ClearBlastJumpState();
 
@@ -3336,6 +3346,21 @@ void CTFPlayer::PrecacheTFPlayer()
 	PrecacheModel( "models/props_trainyard/bomb_eotl_red.mdl" );
 }
 
+#if defined(QUIVER_DLL)
+void CTFPlayer::PrecacheQuiver()
+{
+	//doing it here due to static errors....
+	int index = PrecacheModel("sprites/shockwave.vmt");
+	m_iArmorBreakSpriteTexture = index;
+
+	PrecacheScriptSound("Game.ArmorBreakCrit");
+	PrecacheScriptSound("Game.ArmorBreakHit");
+	PrecacheScriptSound("Game.ArmorBreakAll");
+
+	UTIL_PrecacheOther("sparktrail");
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -3352,16 +3377,8 @@ void CTFPlayer::Precache()
 	*/
 	PrecacheTFPlayer();
 
-#ifdef QUIVER_DLL
-	//doing it here due to static errors....
-	int index = PrecacheModel("sprites/shockwave.vmt");
-	m_iArmorBreakSpriteTexture = index;
-
-	PrecacheScriptSound("Game.ArmorBreakCrit");
-	PrecacheScriptSound("Game.ArmorBreakHit");
-	PrecacheScriptSound("Game.ArmorBreakAll");
-
-	UTIL_PrecacheOther("sparktrail");
+#if defined(QUIVER_DLL)
+	PrecacheQuiver();
 #endif
 
 	BaseClass::Precache();
@@ -3576,7 +3593,7 @@ void CTFPlayer::ApplyAbsVelocityImpulse( const Vector &vecImpulse )
 	// Check for Attributes (mult_aiming_knockback_resistance)
 	Vector vecForce = vecImpulse;
 	float flImpulseScale = 1.0f;
-#ifdef QUIVER_DLL
+#ifdef BDSBASE
 	if (m_Shared.InCond(TF_COND_AIMING))
 #else
 	if (IsPlayerClass(TF_CLASS_SNIPER) && m_Shared.InCond(TF_COND_AIMING))
@@ -5641,7 +5658,11 @@ void CTFPlayer::ValidateWearables( TFPlayerClassData_t *pData )
 
 		if ( !itemMatch || pWearable->GetTeamNumber() != GetTeamNumber() || m_bForceItemRemovalOnRespawn || m_bSwitchedClass )
 		{
+#if defined(QUIVER_DLL)
+			if (!pWearable->AlwaysAllow() && (pTFWearable && !pTFWearable->IsArmor()))
+#else
 			if ( !pWearable->AlwaysAllow() )
+#endif
 			{
 				// We shouldn't have this wearable. Remove it.
 				RemoveWearable( pWearable );
@@ -8915,6 +8936,18 @@ void CTFPlayer::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, 
 			}
 		}
 
+#ifdef BDSBASE
+		if (pAttacker->GetTeam() == GetTeam())
+		{
+			CTFWeaponBase* pWeapon = pAttacker->GetActiveTFWeapon();
+
+			if (pWeapon)
+			{
+				pWeapon->ApplyOnHitTeammateAttributes(this, pAttacker, info);
+			}
+		}
+#endif
+
 		// Prevent team damage here so blood doesn't appear
 		if ( !g_pGameRules->FPlayerCanTakeDamage( this, pAttacker, info ) )
 		{
@@ -9327,6 +9360,12 @@ void CTFPlayer::SetBlastJumpState( int iState, bool bPlaySound /*= false*/ )
 	{
 		pszEvent = "rocket_jump";
 	}
+#if defined(QUIVER_DLL)
+	else if (iState == QF_PLAYER_AIRBLAST_JUMPED)
+	{
+		pszEvent = "airblast_jump";
+	}
+#endif
 
 	if ( pszEvent )
 	{
@@ -9507,6 +9546,70 @@ BEGIN_DATADESC(CSparkTrail)
 DEFINE_THINKFUNC(SparkThink),
 END_DATADESC()
 
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+CON_COMMAND(breakarmor, "Breaks the player's armor.")
+{
+	if (args.ArgC() > 1 && sv_cheats->GetBool())
+	{
+		// Find the matching netname
+		for (int i = 1; i <= gpGlobals->maxClients; i++)
+		{
+			CTFPlayer* pPlayer = ToTFPlayer(UTIL_PlayerByIndex(i));
+			if (pPlayer)
+			{
+				if (Q_strstr(pPlayer->GetPlayerName(), args[1]))
+				{
+					CTakeDamageInfo info(pPlayer, pPlayer, NULL, vec3_origin, pPlayer->GetAbsOrigin(), 0, DMG_GENERIC);
+					pPlayer->BreakArmor(info, pPlayer, info.GetDamageType(), false);
+				}
+			}
+		}
+	}
+	else
+	{
+		CTFPlayer* pPlayer = ToTFPlayer(UTIL_GetCommandClient());
+		if (pPlayer)
+		{
+			CTakeDamageInfo info(pPlayer, pPlayer, NULL, vec3_origin, pPlayer->GetAbsOrigin(), 0, DMG_GENERIC);
+			pPlayer->BreakArmor(info, pPlayer, info.GetDamageType(), false);
+		}
+	}
+
+}
+
+void CTFPlayer::AutoBreakArmor()
+{
+	SetArmorValue(0);
+	m_Shared.RemoveArmorCosmetics();
+}
+
+void CTFPlayer::BreakArmorEffect()
+{
+	if (!m_Shared.IsStealthed())
+	{
+		// in most instances, we SHOULD have an inflictor.
+		CBroadcastRecipientFilter filter;
+		te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
+
+		CBaseEntity* pTrail;
+		int sparkcount = RandomInt(2, 3);
+		for (int i = 0; i < sparkcount; i++)
+		{
+			pTrail = CreateEntityByName("sparktrail");
+			pTrail->SetOwnerEntity(this);
+			DispatchSpawn(pTrail);
+		}
+
+		EmitSound("Game.ArmorBreakAll");
+	}
+	else
+	{
+		CSingleUserRecipientFilter filter2(this);
+		EmitSound("Game.ArmorBreakAll");
+	}
+}
+
 void CTFPlayer::BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage, bool bNoArmor)
 {
 	if (m_Shared.IsInvulnerable())
@@ -9524,23 +9627,7 @@ void CTFPlayer::BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, 
 		SetArmorValue(0);
 	}
 
-	if (!m_Shared.IsStealthed())
-	{
-		// in most instances, we SHOULD have an inflictor.
-		CBroadcastRecipientFilter filter;
-		te->BeamRingPoint(filter, 0.0, GetAbsOrigin() + Vector(0, 0, 64), 16, 250, m_iArmorBreakSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 254, 189, 255, 50, 0);
-
-		CBaseEntity* pTrail;
-		int sparkcount = RandomInt(2, 3);
-		for (int i = 0; i < sparkcount; i++)
-		{
-			pTrail = CreateEntityByName("sparktrail");
-			pTrail->SetOwnerEntity(this);
-			DispatchSpawn(pTrail);
-		}
-	}
-
-	EmitSound("Game.ArmorBreakAll");
+	BreakArmorEffect();
 
 	if (!(bitsDamage & (DMG_FALL)))
 	{
@@ -9921,7 +10008,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 	bool bIsSoldierRocketJumping = ( IsPlayerClass( TF_CLASS_SOLDIER ) && (pAttacker == this) && !(GetFlags() & FL_ONGROUND) && !(GetFlags() & FL_INWATER)) && (inputInfo.GetDamageType() & DMG_BLAST);
 	bool bIsDemomanPipeJumping = ( IsPlayerClass( TF_CLASS_DEMOMAN) && (pAttacker == this) && !(GetFlags() & FL_ONGROUND) && !(GetFlags() & FL_INWATER)) && (inputInfo.GetDamageType() & DMG_BLAST);
-	
+
 	if ( bDebug )
 	{
 		Warning( "%s taking damage from %s, via %s. Damage: %.2f\n", GetDebugName(), info.GetInflictor() ? info.GetInflictor()->GetDebugName() : "Unknown Inflictor", pAttacker ? pAttacker->GetDebugName() : "Unknown Attacker", info.GetDamage() );
@@ -10110,7 +10197,6 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		}
 	}
 	
-#if !defined(QUIVER_DLL)
 #ifdef BDSBASE
 	if (pTFAttacker && pTFAttacker->IsPlayerClass(TF_CLASS_MEDIC) && pWeapon && pWeapon->GetWeaponID() == TF_WEAPON_BONESAW)
 	{
@@ -10202,7 +10288,6 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			}
 		}
 	}
-#endif
 #endif
 
 	if ( bIsSoldierRocketJumping || bIsDemomanPipeJumping )
@@ -10650,6 +10735,13 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	bool bMedicExplosiveResist	= m_Shared.InCond( TF_COND_MEDIGUN_UBER_BLAST_RESIST )	|| m_Shared.InCond( TF_COND_MEDIGUN_SMALL_BLAST_RESIST );
 	bool bMedicFireResist		= m_Shared.InCond( TF_COND_MEDIGUN_UBER_FIRE_RESIST )	|| m_Shared.InCond( TF_COND_MEDIGUN_SMALL_FIRE_RESIST );
 
+#if defined(QUIVER_DLL)
+	if (!bMedicBulletResist)
+	{
+		bMedicBulletResist = m_Shared.InCond(QF_COND_UNBREAKABLE_ARMOR);
+	}
+#endif
+
 	if( ( bMedicBulletResist && ( bitsDamage & DMG_BULLET	) ) )
 	{
 		pzsMedigunResistEffect = CFmtStr( "vaccinator_%s_buff1_burst", pzsTeam );
@@ -11005,7 +11097,11 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			if ( iExplodeOnIgnite )
 			{
 				bool bExploded = false;
+#if defined(QUIVER_DLL)
+				float flRadius = ((TFGameRules() && TFGameRules()->IsMannVsMachineMode()) ? 200.f : 100.f);
+#else
 				float flRadius = 200.f;
+#endif
 
 				CBaseEntity	*pObjects[32];
 				int nCount = UTIL_EntitiesInSphere( pObjects, ARRAYSIZE( pObjects ), GetAbsOrigin(), flRadius, FL_CLIENT );
@@ -11041,7 +11137,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 						continue;
 
 #if defined(QUIVER_DLL)
-					pTFBlastVictim->m_Shared.MakeBleed(pTFGasTosser, pGasCan, 0.1f, ((TFGameRules() && TFGameRules()->IsMannVsMachineMode()) ? 150.f : 75.f), false, TF_DMG_CUSTOM_BURNING);
+					pTFBlastVictim->m_Shared.MakeBleed(pTFGasTosser, pGasCan, 0.1f, ((TFGameRules() && TFGameRules()->IsMannVsMachineMode()) ? 150.f : 50.f), false, TF_DMG_CUSTOM_BURNING);
 #else
 					pTFBlastVictim->m_Shared.MakeBleed( pTFGasTosser, pGasCan, 0.1f, 350.f, false, TF_DMG_CUSTOM_BURNING );
 #endif
@@ -12216,6 +12312,10 @@ void CTFPlayer::DetermineAssistForKill( const CTakeDamageInfo &info )
 	}
 }
 
+#if defined(QUIVER_DLL)
+extern ConVar qf_tdm_scorewar;
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -12242,6 +12342,53 @@ void CTFPlayer::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &
 				}
 			}
 		}
+
+#if defined(QUIVER_DLL)
+		// if we have a frag limit, increment the score of the team
+		// in addition, reduce the score for the victim if its a death.
+		if (fraglimit.GetInt() > 0 &&
+			TFGameRules()->IsInTDMMode() &&
+			!TFGameRules()->IsInWaitingForPlayers() &&
+			(TFGameRules()->State_Get() != GR_STATE_TEAM_WIN &&
+				TFGameRules()->State_Get() != GR_STATE_RESTART &&
+				TFGameRules()->State_Get() != GR_STATE_STALEMATE))
+		{
+			if (TFTeamMgr() && pTFVictim)
+			{
+				// suicides shouldn't add or take away from score.
+				if (this != pTFVictim)
+				{
+					bool bCountScore = true;
+
+					// non-wrangled sentry kills are calculated differently
+					CObjectSentrygun* sentrygun = dynamic_cast<CObjectSentrygun*>(info.GetInflictor());
+					if (sentrygun && !sentrygun->IsPlayerControlled() && !sentrygun->DoesSentryCountAsFullKill())
+					{
+						// every 2 kills counts as a kill.
+						int iKillCount = sentrygun->GetKills();
+						if ((iKillCount % 2) > 0)
+						{
+							bCountScore = false;
+						}
+					}
+
+					if (bCountScore)
+					{
+						TFTeamMgr()->AddTeamScore(GetTeamNumber(), 1);
+						if (qf_tdm_scorewar.GetBool())
+						{
+							TFTeamMgr()->AddTeamScore(pTFVictim->GetTeamNumber(), -1);
+
+							if (TFTeamMgr()->GetTeam(pTFVictim->GetTeamNumber())->GetScore() < 0)
+							{
+								TFTeamMgr()->GetTeam(pTFVictim->GetTeamNumber())->SetScore(0);
+							}
+						}
+					}
+				}
+			}
+		}
+#endif
 
 		// Custom death handlers
 		// TODO: Need a system here!  This conditional is getting pretty big.
@@ -12906,23 +13053,6 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 		m_iHealth = 1;
 		return;
 	}
-
-#if defined(QUIVER_DLL)
-	// if we died, and we have armor, break the armor so our shield goes away.
-	// if the damage penetrates, we set the armor value to 0 silently.
-	if (!DoesDamagePenetrateArmor(info, info.GetDamageType()))
-	{
-		if ((ArmorValue() > 0))
-		{
-			BreakArmor(info, pPlayerAttacker, info.GetDamageType(), false);
-		}
-	}
-	else
-	{
-		SetArmorValue(0);
-		m_Shared.RemoveCond(QF_COND_ARMOR);
-	}
-#endif
 
 	SpeakConceptIfAllowed( MP_CONCEPT_DIED );
 
@@ -13950,13 +14080,6 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 	if ( pKillerWeapon )
 	{
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( pKillerWeapon, iGoldRagdoll, set_turn_to_gold );
-
-#if defined(QUIVER_DLL)
-		if (qf_australium_turntogold.GetBool() && iGoldRagdoll == 0)
-		{
-			CALL_ATTRIB_HOOK_INT_ON_OTHER(pKillerWeapon, iGoldRagdoll, is_australium_item);
-		}
-#endif
 	}
 
 	int iRagdollsBecomeAsh = 0;
@@ -13983,6 +14106,17 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetWeapon(), iCritOnHardHit, crit_on_hard_hit );
 	}
 
+#if defined(QUIVER_DLL)
+	// put the armor kill effect in here.
+	if (!DoesDamagePenetrateArmor(info, info.GetDamageType()) && ArmorValue() > 0)
+	{
+		BreakArmorEffect();
+	}
+
+	// Remove all conditions...
+	m_Shared.RemoveAllCond();
+#endif
+
 	// Create the ragdoll entity.
 	if ( bGib || bRagdoll )
 	{
@@ -13998,9 +14132,10 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 		CreateRagdollEntity( bGib, bBurning, bElectrocuted, bOnGround, bCloakedCorpse, iGoldRagdoll != 0, iIceRagdoll != 0, iRagdollsBecomeAsh != 0, iCustomDamage, ( iCritOnHardHit != 0 ) );
 	}
 
-
+#if !defined(QUIVER_DLL)
 	// Remove all conditions...
 	m_Shared.RemoveAllCond();
+#endif
 
 	// Don't overflow the value for this.
 	m_iHealth = 0;
@@ -16002,6 +16137,10 @@ void CTFPlayer::CheatImpulseCommands( int iImpulse )
 				GiveAmmo( 1000, TF_AMMO_GRENADES3 );
 				TakeHealth( 999, DMG_GENERIC );
 
+#if defined(QUIVER_DLL)
+				SetArmorValue(GetMaxArmor());
+#endif
+
 				// Refills weapon clips, too
 				for ( int i = 0; i < MAX_WEAPONS; i++ )
 				{
@@ -17163,13 +17302,6 @@ void CTFPlayer::CreateFeignDeathRagdoll( const CTakeDamageInfo& info, bool bGib,
 			if ( info.GetWeapon() )
 			{
 				 CALL_ATTRIB_HOOK_INT_ON_OTHER( info.GetWeapon(), iGoldRagdoll, set_turn_to_gold );
-
-#if defined(QUIVER_DLL)
-				 if (qf_australium_turntogold.GetBool() && iGoldRagdoll == 0)
-				 {
-					 CALL_ATTRIB_HOOK_INT_ON_OTHER(info.GetWeapon(), iGoldRagdoll, is_australium_item);
-				 }
-#endif
 			}
 			pRagdoll->m_bGoldRagdoll = iGoldRagdoll != 0;
 

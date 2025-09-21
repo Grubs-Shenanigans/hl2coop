@@ -294,11 +294,9 @@ void CTFStickBomb::Detonate(bool bTaunting)
 				dmgType |= DMG_RADIUS_MAX;
 
 			float flDamage = TF_STICKBOMB_DAMAGE;
-#if defined(QUIVER_DLL)
+
 			CALL_ATTRIB_HOOK_FLOAT(flDamage, mult_dmg_caber);
-#else
 			CALL_ATTRIB_HOOK_FLOAT(flDamage, mult_dmg);
-#endif
 			// instantly kill the target if we're in a taunt.
 			if (bTaunting)
 			{

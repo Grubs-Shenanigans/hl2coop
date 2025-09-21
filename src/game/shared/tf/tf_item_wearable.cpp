@@ -30,9 +30,15 @@ IMPLEMENT_NETWORKCLASS_ALIASED( TFWearable, DT_TFWearable )
 BEGIN_NETWORK_TABLE( CTFWearable, DT_TFWearable )
 #if defined( GAME_DLL )
 	SendPropBool( SENDINFO( m_bDisguiseWearable ) ),
+#if defined(QUIVER_DLL)
+	SendPropBool(SENDINFO(m_bIsArmor)),
+#endif
 	SendPropEHandle( SENDINFO( m_hWeaponAssociatedWith ) ),
 #else
 	RecvPropBool( RECVINFO( m_bDisguiseWearable ) ),
+#if defined(QUIVER_DLL)
+	RecvPropBool(RECVINFO(m_bIsArmor)),
+#endif
 	RecvPropEHandle( RECVINFO( m_hWeaponAssociatedWith ) ),
 #endif // GAME_DLL
 END_NETWORK_TABLE()
@@ -393,6 +399,21 @@ bool CTFWearable::ShouldDraw()
 				}
 			}
 		}
+#if defined(QUIVER_DLL)
+		else if (IsArmor() && pLocalPlayer)
+		{
+			int iLocalPlayerTeam = pLocalPlayer->GetTeamNumber();
+			if (pLocalPlayer->m_bIsCoaching && pLocalPlayer->m_hStudent)
+			{
+				iLocalPlayerTeam = pLocalPlayer->m_hStudent->GetTeamNumber();
+			}
+
+			if (pOwner->GetTeamNumber() == iLocalPlayerTeam)
+			{
+				return BaseClass::ShouldDraw();
+			}
+		}
+#endif
 
 		return false;
 	}

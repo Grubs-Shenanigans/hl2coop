@@ -2311,6 +2311,7 @@ m_bSoloItem(false),
 m_bIsReskin(false),
 m_bWhitelisted(false),
 m_pszViewModelOverride(NULL),
+m_bUsableByBots(true),
 #endif
 m_pszItemLogClassname( NULL ),
 m_pszItemIconClassname( NULL ),
@@ -3244,6 +3245,8 @@ bool CEconItemDefinition::BInitFromKV( KeyValues *pKVItem, CUtlVector<CUtlString
 	//if stock only w/ cosmetics aren't enabled, no reskins are allowed.
 	m_bIsReskin = false;
 #endif
+
+	m_bUsableByBots = m_pKVItem->GetInt("usable_by_bots", 1) != 0;
 #endif
 	m_pszItemLogClassname = m_pKVItem->GetString( "item_logname", NULL );
 	m_pszItemIconClassname = m_pKVItem->GetString( "item_iconname", NULL );

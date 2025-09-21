@@ -27,6 +27,8 @@ This base is specific to multiplayer mod projects.
 - Menu music in map backgrounds with adjustable volume and mix volume.
 - Server Admin tools support (based off #948) with extendable module-based command interface.
 - Animated Avatars support (based off #1380)
+- Improved AI Bot behavior (based off multiple pull requests)
+- Added randomized loadouts to AI bots that allow bots to spawn with a variety of weapons. (TF2 only)
 
 ## Options/Preprocessor Definitions
 These options are meant to be added to the VPC files (client and server) of the mod you wish to modify.
@@ -57,7 +59,8 @@ BDSBASE_LEGACY_MAINMENU
 
 BDSBASE_CURATED_ITEMS
 - Games: TF2
-- NOTE: you don't need to enable this to blacklist items. To blacklist items, simply add "blacklist" 1 in its item definition. 
+- NOTE: You don't need to enable this to blacklist items. To blacklist items, simply add "blacklist" 1 in its item definition.
+- NOTE: If you'd like to prevent bots from using some items, even if they are whitelisted, add "usable_by_bots" 0 to the item's definition. Note that this will get ignored in MvM.
 - Prevents non-stock items from showing up in the loadout panel and loads whitelisted items for a curated item selection. 
 - To add an item to the curated item list, simply add "whitelist" 1 in its item definition. 
 - You may re-enable cosmetics and weapon stranges, reskins, etc by using BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS. Items that represent reskins must have "reskin" set to 1 in your desired item schema definitions. 
@@ -97,11 +100,17 @@ BDSBASE_TEMP_FIXDYNAMICMODELS
 - This is a temporary workaround and is not recomended to be enabled with future versions of the engine.
 - If this is disabled, use the command line variable -dynamicmodelsfix to enable the fix.
 
+BDSBASE_DISABLE_ITEM_DROP_PANEL
+- Games: TF2
+- This disables the panel shown for unacknowledged items in live TF2.
+
 ## Credits:
 - TheBetaM for the custom schema code. (https://github.com/TheBetaM/tf-solo)
 - rafradek for some bot AI changes (sigsegv-mvm) (https://github.com/rafradek/sigsegv-mvm)
 - Mastercoms for the inventory code rewrite (https://github.com/mastercomfig/tc2/commit/cc256a113abe9eb0530cc45d07aa4e00b187d5a8)
 - Missing Killicons Pack by NeoDement
+- Ultimate Visual Fix Pack by agrastiOs, Nonhuman, N-Cognito, Whurr, PieSavvy, JarateKing, and FlaminSarge
+- Fixed Spy's View Model Sleev V2 by Hecates and H.Gaspar (https://gamebanana.com/mods/193390)
 - The Valve Developer Community for the following articles:
 https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
 https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%2526_Fixes

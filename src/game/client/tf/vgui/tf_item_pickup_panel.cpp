@@ -39,7 +39,11 @@ CTFItemPickupPanel::CTFItemPickupPanel( Panel *parent ) : CItemPickupPanel( pare
 	m_pClassImage = NULL;
 	m_pClassImageBG = NULL;
 	SetZPos( 10000 );
+#ifdef BDSBASE
+#ifndef BDSBASE_LEGACY_MAINMENU
 	GetMMDashboardParentManager()->AddPanel( this );
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -47,7 +51,11 @@ CTFItemPickupPanel::CTFItemPickupPanel( Panel *parent ) : CItemPickupPanel( pare
 //-----------------------------------------------------------------------------
 CTFItemPickupPanel::~CTFItemPickupPanel()
 {
+#ifdef BDSBASE
+#ifndef BDSBASE_LEGACY_MAINMENU
 	GetMMDashboardParentManager()->RemovePanel( this );
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -244,7 +252,11 @@ CTFItemDiscardPanel::CTFItemDiscardPanel( Panel *parent ) : CItemDiscardPanel( p
 	m_pExplanationBLabel = NULL;
 	m_pExplanationCaratLabel = NULL;
 	SetZPos( 10000 );
+#ifdef BDSBASE
+#ifndef BDSBASE_LEGACY_MAINMENU
 	GetMMDashboardParentManager()->AddPanel( this );
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -252,7 +264,11 @@ CTFItemDiscardPanel::CTFItemDiscardPanel( Panel *parent ) : CItemDiscardPanel( p
 //-----------------------------------------------------------------------------
 CTFItemDiscardPanel::~CTFItemDiscardPanel()
 {
+#ifdef BDSBASE
+#ifndef BDSBASE_LEGACY_MAINMENU
 	GetMMDashboardParentManager()->RemovePanel( this );
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------

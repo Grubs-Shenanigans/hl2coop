@@ -277,6 +277,9 @@ public:
 		FIRE_IMMUNE					= 1<<25,				// "" fire
 		PARACHUTE					= 1<<26,				// demo/soldier parachute when falling
 		PROJECTILE_SHIELD			= 1<<27,				// medic projectile shield
+#ifdef BDSBASE
+		FORCE_DIFFICULTY_BASED_AIM = 1 << 28,				// force difficulty-based aim (for spy)
+#endif
 	};
 	void SetAttribute( int attributeFlag );
 	void ClearAttribute( int attributeFlag );
@@ -535,13 +538,31 @@ public:
 	bool ShouldReEvaluateCurrentClass( void ) const;
 	void ReEvaluateCurrentClass( void );
 
+#ifdef BDSBASE
+public:
+	CountdownTimer m_CompressionBlastTimer;
+
+	struct BotLoadoutItem_t
+	{
+		const CEconItemDefinition* pItemDef;
+		bool bIsAustralium;
+		bool bHasCheckedIfAustralium;
+		bool bIsKillstreak;
+		bool bHasCheckedIfKillstreak;
+		float flKillstreakTier;
+		float flKillstreakSheen;
+		float flKillstreakEffect;
+		float flPaintkitQuality;
+	};
+
+	CUtlVector< BotLoadoutItem_t > vecSavedRandomLoadout;
+#endif
 private:
 	CTFBotLocomotion	*m_locomotor;
 	CTFBotBody			*m_body;
 	CTFBotVision		*m_vision;
 
 #ifdef BDSBASE
-	CUtlVector< const CEconItemDefinition* > vecSavedRandomLoadout;
 	CountdownTimer m_InitialLoadoutLoadTimer;
 	int iOldClassIndex;
 #endif

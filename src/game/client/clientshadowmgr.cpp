@@ -3939,12 +3939,21 @@ void CClientShadowMgr::ComputeShadowDepthTextures( const CViewSetup &viewSetup )
 		if ( !bGotShadowDepthTexture )
 		{
 			// If we don't get one, that means we have too many this frame so bind no depth texture
+#ifdef BDSBASE
+			static int bitchCount = 0;
+			if (bitchCount < 10)
+			{
+				Warning("Too many shadow maps bitching this frame!\n");
+				bitchCount++;
+			}
+#else
 			static int mapCount = 0;
 			if( mapCount < 10 )
 			{
 				Warning( "Too many shadow maps this frame!\n"  );
 				mapCount++;
 			}
+#endif
 
 			Assert(0);
 			shadowmgr->SetFlashlightDepthTexture( shadow.m_ShadowHandle, NULL, 0 );

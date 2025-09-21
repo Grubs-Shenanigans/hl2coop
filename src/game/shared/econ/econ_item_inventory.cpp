@@ -802,6 +802,12 @@ void CInventoryManager::UpdateInventoryEquippedState( CPlayerInventory *pInvento
 //-----------------------------------------------------------------------------
 bool CInventoryManager::ShowItemsPickedUp( bool bForce, bool bReturnToGame, bool bNoPanel )
 {
+#ifdef BDSBASE
+#ifdef BDSBASE_DISABLE_ITEM_DROP_PANEL
+	return false;
+#endif
+#endif
+
 	CPlayerInventory *pLocalInv = GetLocalInventory();
 	if ( !pLocalInv )
 		return false;

@@ -36,6 +36,12 @@ void RecvProxy_UtlVectorLength( const CRecvProxyData *pData, void *pStruct, void
 		// to write arbitrary data to out of bounds memory.
 		// There isn't much we can do at this point - we're deep in the networking stack, it's hard to recover
 		// gracefully and we shouldn't be talking to this server anymore.
+#ifdef BDSBASE
+		// So we notify client.
+		Error("Server sent utlvector length value %d which is not in range [%d...%d]. Crashing client to prevent RCE...\n",
+			pData->m_Value.m_Int, 0, pExtra->m_nMaxElements);
+		// And crash.
+#endif
 		// So we crash.
 		*(int *) 1 = 2;
 	}

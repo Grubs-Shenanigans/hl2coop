@@ -195,6 +195,25 @@ void CCurrencyPack::ComeToRest( void )
 		return;
 	}
 
+#ifdef BDSBASE
+	// See if we've come to rest in a trigger_hurt
+	if (IsTakingTriggerHurtDamageAtPoint(GetAbsOrigin()))
+	{
+		TFGameRules()->DistributeCurrencyAmount(m_nAmount);
+		m_bTouched = true;
+		UTIL_Remove(this);
+		return;
+	}
+
+	// Or a func_respawnroom (robots can drop money in their own spawn)
+	if (PointInRespawnRoom(NULL, GetAbsOrigin()))
+	{
+		TFGameRules()->DistributeCurrencyAmount(m_nAmount);
+		m_bTouched = true;
+		UTIL_Remove(this);
+		return;
+	}
+#else
 	// See if we've come to rest in a trigger_hurt
 	for ( int i = 0; i < ITriggerHurtAutoList::AutoList().Count(); i++ )
 	{
@@ -210,21 +229,6 @@ void CCurrencyPack::ComeToRest( void )
 				m_bTouched = true;
 				UTIL_Remove( this );
 			}
-		}
-	}
-
-#ifdef BDSBASE
-	// Or a func_respawnroom (robots can drop money in their own spawn)
-	for (int i = 0; i < IFuncRespawnRoomAutoList::AutoList().Count(); i++)
-	{
-		CFuncRespawnRoom* pRespawnRoom = static_cast<CFuncRespawnRoom*>(IFuncRespawnRoomAutoList::AutoList()[i]);
-		Vector vecMins, vecMaxs;
-		pRespawnRoom->GetCollideable()->WorldSpaceSurroundingBounds(&vecMins, &vecMaxs);
-		if (IsPointInBox(GetCollideable()->GetCollisionOrigin(), vecMins, vecMaxs))
-		{
-			TFGameRules()->DistributeCurrencyAmount(m_nAmount);
-			m_bTouched = true;
-			UTIL_Remove(this);
 		}
 	}
 #endif

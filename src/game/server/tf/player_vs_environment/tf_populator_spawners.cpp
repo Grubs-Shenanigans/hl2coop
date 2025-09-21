@@ -750,6 +750,12 @@ static bool ParseDynamicAttributes( CTFBot::EventChangeAttributes_t& event, KeyV
 		{
 			event.m_attributeFlags |= CTFBot::PROJECTILE_SHIELD;
 		}
+#ifdef BDSBASE
+		else if (!Q_stricmp(value, "ForceDifficultyBasedAim"))
+		{
+			event.m_attributeFlags |= CTFBot::FORCE_DIFFICULTY_BASED_AIM;
+		}
+#endif
 		else
 		{
 			Warning( "TFBotSpawner: Invalid attribute '%s'\n", value );
@@ -1223,15 +1229,19 @@ bool CTFBotSpawner::Spawn( const Vector &rawHere, EntityHandleVector_t *result )
 		{
 			// Apply the Rome 2 promo items to each bot. They'll be 
 			// filtered out for clients that do not have Romevision.
+#if !defined(QUIVER_DLL)
 			CMissionPopulator *pMission = dynamic_cast< CMissionPopulator* >( GetPopulator() );
 			if ( pMission && ( pMission->GetMissionType() == CTFBot::MISSION_DESTROY_SENTRIES ) )
 			{
 				newBot->AddItem( "tw_sentrybuster" );
 			}
 			else
+#endif
 			{
 				newBot->AddItem( g_szRomePromoItems_Hat[m_class] );
+#if !defined(QUIVER_DLL)
 				newBot->AddItem( g_szRomePromoItems_Misc[m_class] );
+#endif
 			}
 		}
 

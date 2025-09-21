@@ -239,6 +239,11 @@ extern const char g_szBotBossSentryBusterModel[ MAX_PATH ];
 
 extern const char g_szRomePromoItems_Hat[TF_LAST_NORMAL_CLASS][ MAX_PATH ];
 extern const char g_szRomePromoItems_Misc[TF_LAST_NORMAL_CLASS][ MAX_PATH ];
+#if defined(QUIVER_DLL)
+// QF armor items
+extern const char g_szArmorItems[TF_LAST_NORMAL_CLASS][MAX_PATH];
+extern const char g_szArmorItems_MvM[TF_LAST_NORMAL_CLASS][MAX_PATH];
+#endif
 
 int GetClassIndexFromString( const char *pClassName, int nLastClassIndex = TF_LAST_NORMAL_CLASS );
 
@@ -841,6 +846,9 @@ enum ETFCond
 	QF_COND_ARMOR_BUFF						= 135,
 #endif
 	TF_COND_POWERPLAY						= 136,
+#if defined(QUIVER_DLL)
+	QF_COND_INFECTED						= 137,
+#endif
 #endif
 
 	// ******** Keep this block last! ********
@@ -1865,6 +1873,9 @@ extern const char *TranslateWeaponEntForClass( const char *pszName, int iClass )
 #define TF_PLAYER_ROCKET_JUMPED		( 1 << 0 )
 #define TF_PLAYER_STICKY_JUMPED		( 1 << 1 )
 #define TF_PLAYER_ENEMY_BLASTED_ME	( 1 << 2 )
+#if defined(QUIVER_DLL)
+#define QF_PLAYER_AIRBLAST_JUMPED	( 1 << 3 )
+#endif
 
 enum taunts_t
 {

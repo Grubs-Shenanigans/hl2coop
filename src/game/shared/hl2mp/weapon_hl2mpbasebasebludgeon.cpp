@@ -13,6 +13,9 @@
 #include "mathlib/mathlib.h"
 #include "in_buttons.h"
 #include "animation.h"
+#ifdef BDSBASE
+#include "hl2mp_gamerules.h"
+#endif
 
 #if defined( CLIENT_DLL )
 	#include "c_hl2mp_player.h"
@@ -289,6 +292,33 @@ void CBaseHL2MPBludgeonWeapon::ImpactEffect( trace_t &traceHit )
 	UTIL_ImpactTrace( &traceHit, DMG_CLUB );
 }
 
+#ifdef BDSBASE
+class CTraceFilterIgnoreTeammates : public CTraceFilterSimple
+{
+public:
+	// It does have a base, but we'll never network anything below here..
+	DECLARE_CLASS(CTraceFilterIgnoreTeammates, CTraceFilterSimple);
+
+	CTraceFilterIgnoreTeammates(const IHandleEntity* passentity, int collisionGroup, int iIgnoreTeam)
+		: CTraceFilterSimple(passentity, collisionGroup), m_iIgnoreTeam(iIgnoreTeam)
+	{
+	}
+
+	virtual bool ShouldHitEntity(IHandleEntity* pServerEntity, int contentsMask)
+	{
+		CBaseEntity* pEntity = EntityFromEntityHandle(pServerEntity);
+
+		if ((pEntity->IsPlayer() || pEntity->IsCombatItem()) && (pEntity->GetTeamNumber() == m_iIgnoreTeam || m_iIgnoreTeam == TEAM_ANY))
+		{
+			return false;
+		}
+
+		return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
+	}
+
+	int m_iIgnoreTeam;
+};
+#endif
 
 //------------------------------------------------------------------------------
 // Purpose : Starts the swing of the weapon and determines the animation
@@ -306,10 +336,26 @@ void CBaseHL2MPBludgeonWeapon::Swing( int bIsSecondary )
 	Vector swingStart = pOwner->Weapon_ShootPosition( );
 	Vector forward;
 
+#ifdef BDSBASE
+	bool bDontHitTeammates = (HL2MPRules()->IsTeamplay() && !friendlyfire.GetBool());
+	CTraceFilterIgnoreTeammates ignoreTeammatesFilter(pOwner, COLLISION_GROUP_NONE, pOwner->GetTeamNumber());
+#endif
+
 	pOwner->EyeVectors( &forward, NULL, NULL );
 
 	Vector swingEnd = swingStart + forward * GetRange();
+#ifdef BDSBASE
+	if (bDontHitTeammates)
+	{
+		UTIL_TraceLine(swingStart, swingEnd, MASK_SHOT_HULL, &ignoreTeammatesFilter, &traceHit);
+	}
+	else
+	{
+		UTIL_TraceLine(swingStart, swingEnd, MASK_SHOT_HULL, pOwner, COLLISION_GROUP_NONE, &traceHit);
+	}
+#else
 	UTIL_TraceLine( swingStart, swingEnd, MASK_SHOT_HULL, pOwner, COLLISION_GROUP_NONE, &traceHit );
+#endif
 	Activity nHitActivity = ACT_VM_HITCENTER;
 
 #ifndef CLIENT_DLL
@@ -318,14 +364,25 @@ void CBaseHL2MPBludgeonWeapon::Swing( int bIsSecondary )
 	TraceAttackToTriggers( triggerInfo, traceHit.startpos, traceHit.endpos, vec3_origin );
 #endif
 
-	if ( traceHit.fraction == 1.0 )
+	if (traceHit.fraction == 1.0)
 	{
 		float bludgeonHullRadius = 1.732f * BLUDGEON_HULL_DIM;  // hull is +/- 16, so use cuberoot of 2 to determine how big the hull is from center to the corner point
 
 		// Back off by hull "radius"
 		swingEnd -= forward * bludgeonHullRadius;
 
+#ifdef BDSBASE
+		if (bDontHitTeammates)
+		{
+			UTIL_TraceHull(swingStart, swingEnd, g_bludgeonMins, g_bludgeonMaxs, MASK_SHOT_HULL, &ignoreTeammatesFilter, &traceHit);
+		}
+		else
+		{
+			UTIL_TraceHull(swingStart, swingEnd, g_bludgeonMins, g_bludgeonMaxs, MASK_SHOT_HULL, pOwner, COLLISION_GROUP_NONE, &traceHit);
+		}
+#else
 		UTIL_TraceHull( swingStart, swingEnd, g_bludgeonMins, g_bludgeonMaxs, MASK_SHOT_HULL, pOwner, COLLISION_GROUP_NONE, &traceHit );
+#endif
 		if ( traceHit.fraction < 1.0 && traceHit.m_pEnt )
 		{
 			Vector vecToTarget = traceHit.m_pEnt->GetAbsOrigin() - swingStart;

@@ -1425,7 +1425,7 @@ void C_TFRagdoll::OnDataChanged( DataUpdateType_t type )
 			m_bNoModelParticles = true;
 
 			// Drop wearables (hats, etc)
-			CreateWearableGibs( m_bWasDisguised );			
+			CreateWearableGibs( m_bWasDisguised );
 		}
 	}
 	else 
@@ -1470,6 +1470,9 @@ bool C_TFRagdoll::IsDecapitation()
 		|| (m_iDamageCustom == TF_DMG_CUSTOM_HEADSHOT_DECAPITATION)
 #ifdef BDSBASE
 		|| (m_iDamageCustom == TF_DMG_CUSTOM_MERASMUS_DECAPITATION)
+#if defined(QUIVER_DLL)
+		|| (m_iDamageCustom == TF_DMG_CUSTOM_CLEAVER)
+#endif
 		|| (m_iDamageCustom == TF_DMG_CUSTOM_TAUNTATK_ALLCLASS_GUITAR_RIFF));
 #else
 		|| (m_iDamageCustom == TF_DMG_CUSTOM_MERASMUS_DECAPITATION));
@@ -10196,6 +10199,141 @@ void C_TFPlayer::GetTargetIDDataString( bool bIsDisguised, OUT_Z_BYTECAP(iMaxLen
 	// since the conditions below are tricky.
 	sDataString[0] = 0;
 
+#if defined(QUIVER_DLL)
+	// in QF, all strings here are updated to show armor.
+	// as a result, build a small string storing the armor status if needed.
+
+	wchar_t sArmorString[64] = L"";
+
+	//add armor percentage first
+	wchar_t wszArmor[10];
+	V_snwprintf(wszArmor, ARRAYSIZE(wszArmor) - 1, L"%d", ArmorValue());
+	g_pVGuiLocalize->ConstructString(sArmorString, sizeof(sArmorString), g_pVGuiLocalize->Find("#QF_playerid_armor_percentage"), 1, wszArmor);
+
+	if (bIsDisguised)
+	{
+		if (!IsEnemyPlayer())
+		{
+			// The target is a disguised friendly spy.  They appear to the player with no disguise.  Add the disguise
+			// team & class to the target ID element.
+			bool bDisguisedAsEnemy = (m_Shared.GetDisguiseTeam() != GetTeamNumber());
+			const wchar_t* wszAlignment = g_pVGuiLocalize->Find(bDisguisedAsEnemy ? "#TF_enemy" : "#TF_friendly");
+
+			int classindex = m_Shared.GetDisguiseClass();
+			const wchar_t* wszClassName = g_pVGuiLocalize->Find(g_aPlayerClassNames[classindex]);
+
+			// build a string with disguise information
+			g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_friendlyspy_disguise"),
+				3, sArmorString, wszAlignment, wszClassName);
+		}
+		else if (IsEnemyPlayer() && (m_Shared.GetDisguiseClass() == TF_CLASS_SPY))
+		{
+			// The target is an enemy spy disguised as a friendly spy. Show a fake team & class ID element.
+			int classindex = m_Shared.GetDisguiseMask();
+			const wchar_t* wszClassName = g_pVGuiLocalize->Find(g_aPlayerClassNames[classindex]);
+			const wchar_t* wszAlignment = g_pVGuiLocalize->Find("#TF_enemy");
+
+			g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_friendlyspy_disguise"),
+				3, sArmorString, wszAlignment, wszClassName);
+		}
+	}
+
+	if (IsPlayerClass(TF_CLASS_MEDIC))
+	{
+		CTFWeaponBase* pMedigun = NULL;
+
+		// Medics put their ubercharge & medigun type into the data string
+		wchar_t wszChargeLevel[10];
+		_snwprintf(wszChargeLevel, ARRAYSIZE(wszChargeLevel) - 1, L"%.0f", MedicGetChargeLevel(&pMedigun) * 100);
+		wszChargeLevel[ARRAYSIZE(wszChargeLevel) - 1] = '\0';
+
+		if (pMedigun && pMedigun->GetAttributeContainer()->GetItem() && pMedigun->GetAttributeContainer()->GetItem()->GetItemQuality() != AE_NORMAL)
+		{
+			g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_mediccharge_wpn"), 3, sArmorString, wszChargeLevel, pMedigun->GetAttributeContainer()->GetItem()->GetItemName());
+		}
+		else
+		{
+			g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_mediccharge"), 2, sArmorString, wszChargeLevel);
+		}
+	}
+	else if (bIsDisguised && (m_Shared.GetDisguiseClass() == TF_CLASS_MEDIC) && IsEnemyPlayer())
+	{
+		// Show a fake charge level for a disguised enemy medic.
+		g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_mediccharge"), 2, sArmorString, L"0");
+	}
+	else
+	{
+		C_TFPlayer* pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
+		if (pLocalPlayer && pLocalPlayer->IsPlayerClass(TF_CLASS_MEDIC))
+		{
+			CTFWeaponBase* pTFWeapon = GetActiveTFWeapon();
+			if (pTFWeapon)
+			{
+				// Check for weapon_blocks_healing
+				int iBlockHealing = 0;
+				CALL_ATTRIB_HOOK_INT_ON_OTHER(pTFWeapon, iBlockHealing, weapon_blocks_healing);
+				if (iBlockHealing)
+				{
+					if (pTFWeapon->GetAttributeContainer() && pTFWeapon->GetAttributeContainer()->GetItem())
+					{
+						g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_noheal"), 2, sArmorString, pTFWeapon->GetAttributeContainer()->GetItem()->GetItemName());
+					}
+					else
+					{
+						g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_noheal_unknown"), 1, sArmorString);
+					}
+				}
+
+				// Show target's clip state to attached medics
+				if (!sDataString[0] && m_nActiveWpnClip != UINT16_MAX)
+				{
+					C_TFPlayer* pTFHealTarget = ToTFPlayer(pLocalPlayer->MedicGetHealTarget());
+					if (pTFHealTarget && pTFHealTarget == this)
+					{
+						wchar_t wszClip[10];
+						V_snwprintf(wszClip, ARRAYSIZE(wszClip) - 1, L"%d", m_nActiveWpnClip);
+						if (m_nActiveWpnReserve != UINT16_MAX)
+						{
+							wchar_t wszReserve[10];
+							V_snwprintf(wszReserve, ARRAYSIZE(wszReserve) - 1, L"%d", m_nActiveWpnReserve);
+							g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_ammo_reserve"), 3, wszClip, wszReserve, sArmorString);
+						}
+						else
+						{
+							g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_ammo"), 2, wszClip, sArmorString);
+						}
+						bIsAmmoData = true;
+					}
+				}
+			}
+		}
+
+		if (!bIsAmmoData)
+		{
+			// Check for kill streak data
+			if (m_Shared.GetStreak(CTFPlayerShared::kTFStreak_Kills) > 0)
+			{
+				bIsKillStreakData = true;
+				wchar_t wszClip[10];
+				V_snwprintf(wszClip, ARRAYSIZE(wszClip) - 1, L"%d", m_Shared.GetStreak(CTFPlayerShared::kTFStreak_Kills));
+				g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_ammo"), 2, wszClip, sArmorString);
+			}
+		}
+
+		// if we have no data value, override sArmorString with the blank one and apply it.
+		if (!sDataString[0])
+		{
+			if (ArmorValue() > 0 && (ArmorValue() < GetMaxArmor()))
+			{
+				g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_armor_percentage_solo"), 1, sArmorString);
+			}
+			else
+			{
+				g_pVGuiLocalize->ConstructString(sDataString, iMaxLenInBytes, g_pVGuiLocalize->Find("#QF_playerid_armor_percentage_solo_none"), 1, sArmorString);
+			}
+		}
+	}
+#else
 	if ( bIsDisguised )
 	{
 		if ( !IsEnemyPlayer() )
@@ -10315,6 +10453,7 @@ void C_TFPlayer::GetTargetIDDataString( bool bIsDisguised, OUT_Z_BYTECAP(iMaxLen
 			}
 		}
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -10484,13 +10623,6 @@ void C_TFPlayer::UpdateSpyStateChange( void )
 	{
 		m_pTempShield->m_nSkin = ( m_Shared.GetDisplayedTeam() == TF_TEAM_RED ) ? 0 : 1;
 	}
-
-#if defined(QUIVER_DLL)
-	if (m_pTempShield && m_Shared.InCond(QF_COND_ARMOR))
-	{
-		m_pTempShield->m_nSkin = (m_Shared.GetDisplayedTeam() == TF_TEAM_RED) ? 0 : 1;
-	}
-#endif
 
 	UpdateRuneIcon( true );
 

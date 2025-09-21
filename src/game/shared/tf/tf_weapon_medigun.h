@@ -222,6 +222,9 @@ protected:
 
 	CHandle< CTFMedigunShield > m_hMedigunShield;
 	CHandle< CTFReviveMarker > m_hReviveMarker;
+#ifdef BDSBASE
+	float m_flReviveMarkerNextHeal;
+#endif
 
 #ifdef CLIENT_DLL
 	bool					m_bPlayingSound;

@@ -128,6 +128,9 @@ private:
 				   ( m_nSplitScreenSlot == GLOW_FOR_ALL_SPLIT_SCREEN_SLOTS || m_nSplitScreenSlot == nSlot ) && 
 				   ( m_bRenderWhenOccluded || m_bRenderWhenUnoccluded ) && 
 				   m_hEntity->ShouldDraw() && 
+#ifdef BDSBASE
+					m_hEntity->CanGlow() &&
+#endif
 				   !m_hEntity->IsDormant();
 		}
 

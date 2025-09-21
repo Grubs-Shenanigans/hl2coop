@@ -167,6 +167,9 @@ public:
 private:
 	static void			PrecachePlayerModels();
 	static void			PrecacheTFPlayer();
+#if defined(QUIVER_DLL)
+	void				PrecacheQuiver();
+#endif
 public:
 	virtual void		Precache();
 	virtual bool		IsReadyToPlay( void );
@@ -616,6 +619,8 @@ public:
 	void ScriptSetArmor(int iVal, bool bAdd) { if (bAdd) { IncrementArmorValue(iVal); } else { SetArmorValue(iVal); } }
 	bool DoesDamagePenetrateArmor(const CTakeDamageInfo& info, int bitsDamage);
 	void BreakArmor(const CTakeDamageInfo& info, CTFPlayer* pTFAttacker, int bitsDamage, bool bNoArmor);
+	void BreakArmorEffect();
+	void AutoBreakArmor();
 #endif
 
 	void PlayerUse( void );
@@ -923,6 +928,10 @@ public:
 	int					ScriptGetBonusPoints() const				{ return m_Shared.GetBonusPoints( 0 ); }
 	void				ScriptResetScores()							{ m_Shared.ResetScores(); }
 	bool				ScriptIsParachuteEquipped()					{ return m_Shared.IsParachuteEquipped(); }
+#ifdef BDSBASE
+	bool				ScriptIsOldMeleeTrace()						{ return m_Shared.IsOldMeleeTrace(); }
+	void				ScriptSetOldMeleeTrace(bool bVal)			{ m_Shared.SetOldMeleeTrace(bVal); }
+#endif
 
 	int					ScriptGetPlayerClass()
 	{
@@ -1074,6 +1083,9 @@ public:
 
 	int					RocketJumped( void ) { return m_iBlastJumpState & TF_PLAYER_ROCKET_JUMPED; }
 	int					StickyJumped( void ) { return m_iBlastJumpState & TF_PLAYER_STICKY_JUMPED; }
+#if defined(QUIVER_DLL)
+	int					AirblastJumped(void) { return m_iBlastJumpState & QF_PLAYER_AIRBLAST_JUMPED; }
+#endif
 	void				SetBlastJumpState( int iState, bool bPlaySound = false );
 	void				ClearBlastJumpState( void );
 

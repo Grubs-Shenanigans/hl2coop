@@ -427,6 +427,9 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 	virtual void	RemoveAssociatedObject( CBaseObject *pObject ) { }
 
 	virtual void	ApplyOnHitAttributes( CBaseEntity *pVictimBaseEntity, CTFPlayer *pAttacker, const CTakeDamageInfo &info );
+#ifdef BDSBASE
+	virtual void	ApplyOnHitTeammateAttributes(CBaseEntity* pVictimBaseEntity, CTFPlayer* pAttacker, const CTakeDamageInfo& info);
+#endif
 	virtual void	ApplyPostHitEffects( const CTakeDamageInfo &inputInfo, CTFPlayer *pPlayer );
 	virtual void	ApplyOnInjuredAttributes( CTFPlayer *pVictim, CTFPlayer *pAttacker, const CTakeDamageInfo &info );		// when owner of this weapon is hit
 

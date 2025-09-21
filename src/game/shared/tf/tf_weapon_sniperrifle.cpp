@@ -481,7 +481,15 @@ void CTFSniperRifle::PlayWeaponShootSound( void )
 	{
 		float flDamageBonus = 1.0f;
 		CALL_ATTRIB_HOOK_FLOAT( flDamageBonus, sniper_full_charge_damage_bonus );
+#ifdef BDSBASE
+		// Prevents Non-Machina rifles with "sniper_full_charge_damage_bonus" 
+		// from playing "SPECIAL3", which usually is Undefined
+		const CEconItemView* pItem = GetAttributeContainer()->GetItem();
+
+		if (flDamageBonus > 1.0f && (pItem && pItem->GetStaticData()->GetWeaponReplacementSound(GetTeamNumber(), SPECIAL3)))
+#else
 		if ( flDamageBonus > 1.0f )
+#endif
 		{
 			WeaponSound( SPECIAL3 );
 			return;
@@ -1123,7 +1131,7 @@ bool CTFSniperRifle::CanFireCriticalShot( bool bIsHeadshot, CBaseEntity *pTarget
 		}
 	}
 
-#if defined(QUIVER_DLL)
+#if BDSBASE
 	int iRangedHeadShotPenalty = 0;
 	CALL_ATTRIB_HOOK_INT(iRangedHeadShotPenalty, sniper_no_headshots_at_long_range);
 	if (iRangedHeadShotPenalty != 0)
@@ -2060,7 +2068,7 @@ void CTFSniperRifleClassic::ItemPostFrame( void )
 	}
 	else if ( m_bCharging )
 	{
-#if defined(QUIVER_DLL)
+#if BDSBASE
 		int iCanJump = 0;
 		CALL_ATTRIB_HOOK_INT(iCanJump, sniper_classic_allow_jump);
 

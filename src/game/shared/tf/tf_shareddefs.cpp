@@ -181,6 +181,39 @@ const char g_szRomePromoItems_Misc[][ MAX_PATH ] =
 	"tw_engineerbot_armor",
 };
 
+#if defined(QUIVER_DLL)
+// QF armor items
+const char g_szArmorItems[][MAX_PATH] =
+{
+	"", //TF_CLASS_UNDEFINED
+
+	"Flak Jack",
+	"Airborne Attire",
+	"The Patriot's Pouches",
+	"Bushi-Dou",
+	"Bunnyhopper's Ballistics Vest",
+	"Immobile Suit Armor Version",
+	"The Steel Sixpack",
+	"Lurker's Leathers Armor Version",
+	"Iron Lung",
+};
+
+const char g_szArmorItems_MvM[][MAX_PATH] =
+{
+	"", //TF_CLASS_UNDEFINED
+
+	"tw_scoutbot_armor armor version",
+	"tw_sniperbot_armor armor version",
+	"tw_soldierbot_armor armor version",
+	"tw_demobot_armor armor version",
+	"tw_medibot_chariot armor version",
+	"tw_heavybot_armor armor version",
+	"tw_pyrobot_armor armor version",
+	"tw_spybot_armor armor version",
+	"tw_engineerbot_armor armor version",
+};
+#endif
+
 const char *g_pszBreadModels[] = 
 {
 	"models/weapons/c_models/c_bread/c_bread_baguette.mdl",		// Spy
@@ -284,6 +317,9 @@ ETFCond g_aDebuffConditions[] =
 	TF_COND_BLEEDING,
 	TF_COND_MAD_MILK,
 	TF_COND_GAS,
+#if defined(QUIVER_DLL)
+	QF_COND_INFECTED,
+#endif
 	TF_COND_LAST
 };
 
@@ -293,7 +329,12 @@ bool ConditionExpiresFast( ETFCond eCond )
 		|| eCond == TF_COND_URINE
 		|| eCond == TF_COND_BLEEDING
 		|| eCond == TF_COND_MAD_MILK
+#if defined(QUIVER_DLL)
+		|| eCond == TF_COND_GAS
+		|| eCond == QF_COND_INFECTED;
+#else
 		|| eCond == TF_COND_GAS;
+#endif
 }
 
 static const char *g_aConditionNames[] =
@@ -441,8 +482,11 @@ static const char *g_aConditionNames[] =
 	"QF_COND_ARMOR",							// = 133
 	"QF_COND_UNBREAKABLE_ARMOR",				// = 134
 	"QF_COND_ARMOR_BUFF",						// = 135
-#endif
+	"TF_COND_POWERPLAY",						// = 136
+	"QF_COND_INFECTED"							// = 137
+#else
 	"TF_COND_POWERPLAY"							// = 136
+#endif
 #endif
 
 	// ******** Keep this block last! ********

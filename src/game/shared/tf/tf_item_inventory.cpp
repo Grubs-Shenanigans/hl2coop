@@ -245,17 +245,23 @@ CEconItemView* CTFInventoryManager::AddSoloItem(int id, bool bWhitelisted)
 	pItem->SetItemID(id);
 	pItem->m_unAccountID = 0;
 	pItem->SetFlags(kEconItemFlag_NonEconomy);
-#if defined(QUIVER_DLL)
+
 	if (bWhitelisted)
 	{
+#if defined(QUIVER_DLL)
 		CAttribute_String attrStr;
 		attrStr.set_value("#given");
 		static CSchemaAttributeDefHandle pAttrDef_QualityTextOverride("quality text override");
 		pItem->SetDynamicAttributeValue(pAttrDef_QualityTextOverride, attrStr);
+#endif
 
 		pItem->SetOrigin(kEconItemOrigin_QuestLoanerItem);
 	}
-#endif
+	else
+	{
+		pItem->SetOrigin(kEconItemOrigin_CustomItem);
+	}
+
 	pItemView->Init(id, AE_USE_SCRIPT_VALUE, AE_USE_SCRIPT_VALUE, false);
 	pItemView->SetItemID(id);
 
@@ -268,10 +274,6 @@ CEconItemView* CTFInventoryManager::AddSoloItem(int id, bool bWhitelisted)
 	{
 		pItemView->SetItemQuality(GIVEN_ITEM_QUALITY);
 		pItemView->SetItemLevel(1);
-	}
-	else
-	{
-		pItemView->SetItemQuality(CUSTOM_ITEM_QUALITY);
 	}
 #endif
 
@@ -559,6 +561,12 @@ int CTFInventoryManager::GetNumItemPickedUpItems( void )
 //-----------------------------------------------------------------------------
 bool CTFInventoryManager::ShowItemsPickedUp( bool bForce, bool bReturnToGame, bool bNoPanel )
 {
+#ifdef BDSBASE
+#ifdef BDSBASE_DISABLE_ITEM_DROP_PANEL
+	return false;
+#endif
+#endif
+
 	// don't show new items in training, unless forced to do so
 	// i.e. purchased something or traded...
 	if ( bForce == false && TFGameRules() && ( TFGameRules()->IsInTraining() || TFGameRules()->IsCompetitiveMode() ) )
@@ -687,6 +695,10 @@ void CTFInventoryManager::Update( float frametime )
 //-----------------------------------------------------------------------------
 void CTFInventoryManager::QueueGCInventoryChangeNotification()
 {
+	// don't mark any "changes" when we haven't initialized our inventory to the server yet.
+	if (!engine->IsConnected() || !engine->IsInGame())
+		return;
+
 	// queue an inventory change notification after 0.5 seconds, to prevent some systems from spamming it over a few frames
 	m_flQueuedGCNotificationTime = gpGlobals->realtime + 0.5f;
 }

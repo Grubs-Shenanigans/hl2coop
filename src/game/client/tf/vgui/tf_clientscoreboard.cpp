@@ -172,6 +172,13 @@ CTFClientScoreBoardDialog::CTFClientScoreBoardDialog( IViewPort *pViewPort ) : C
 	m_pImagePanelHorizLine = new ImagePanel( this, "HorizontalLine" );
 	m_pClassImage = new CTFClassImage( this, "ClassImage" );
 	m_pPlayerModelPanel = new CTFPlayerModelPanel( this, "classmodelpanel" );
+#if defined(QUIVER_DLL)
+	if (m_pPlayerModelPanel)
+	{
+		m_pPlayerModelPanel->SetStaticArmorCosmetics(false);
+	}
+#endif
+
 	m_pLocalPlayerStatsPanel = new vgui::EditablePanel( this, "LocalPlayerStatsPanel" );
 	m_pLocalPlayerDuelStatsPanel = new vgui::EditablePanel( this, "LocalPlayerDuelStatsPanel" );
 	m_duelPanelLocalPlayer.m_pPanel = new vgui::EditablePanel( m_pLocalPlayerDuelStatsPanel, "LocalPlayerData" );

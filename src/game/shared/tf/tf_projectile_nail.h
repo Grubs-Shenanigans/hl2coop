@@ -27,6 +27,10 @@ public:
 	virtual unsigned int PhysicsSolidMaskForEntity( void ) const;
 	virtual const char *GetProjectileModelName( void )	{ return "models/weapons/w_models/w_syringe_proj.mdl"; }
 	virtual float GetGravity( void );
+
+#if defined(QUIVER_DLL)
+	virtual void Spawn(void);
+#endif
 };
 
 

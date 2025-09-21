@@ -716,6 +716,13 @@ CBaseEntity *CTFWeaponBaseGun::FirePipeBomb( CTFPlayer *pPlayer, int iPipeBombTy
 	
 	// no spin for loch-n-load
 	Vector angImpulse = AngularImpulse( 600, random->RandomInt( -1200, 1200 ), 0 );
+
+#ifdef BDSBASE
+	float flSpinPercentage = 1.f;
+	CALL_ATTRIB_HOOK_FLOAT(flSpinPercentage, mult_grenade_spin);
+	angImpulse *= flSpinPercentage;
+#endif
+
 	int iNoSpin = 0;
 	CALL_ATTRIB_HOOK_INT( iNoSpin, grenade_no_spin );
 	if ( iNoSpin )

@@ -14,6 +14,8 @@ $include "$SRCDIR\game\shared\tf\tf_gcmessages_include.vpc"
 $include "$SRCDIR\game\shared\tf\tf_proto_def_messages_include.vpc"
 $Include "$SRCDIR\game\server\nav_mesh.vpc"
 
+$Macro "DEFAULT_RUN_ARGS" "-dev -w 1920 -h 1080 -windowed -customstaging -bleedfor8seconds"
+
 $Configuration
 {
 	$Compiler
@@ -22,9 +24,26 @@ $Configuration
 		$PreprocessorDefinitions		"$BASE;TF_DLL;ENABLE_GC_MATCHMAKING;GLOWS_ENABLE;USE_DYNAMIC_ASSET_LOADING;NEXT_BOT"
 		$PreprocessorDefinitions		"$BASE;DISABLE_GC_CONNECTION;DISABLE_IN_SOURCESDK;INVENTORY_VIA_WEBAPI" [$SOURCESDK]
 		//custom options
-		$PreprocessorDefinitions		"$BASE;QUIVER_DLL;BDSBASE_DISCORD;BDSBASE_USE_LOCAL_SCHEMA;BDSBASE_CUSTOM_SCHEMA;BDSBASE_LEGACY_MAINMENU;BDSBASE_CURATED_ITEMS;BDSBASE_LEGACY_VIEWMODELS;BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS;BDSBASE_CURATED_ITEMS_GIVEWHITELISTEDITEMS;BDSBASE_ACHIEVEMENT_NOTIFICATIONS"
-		//temp
+		$PreprocessorDefinitions		"$BASE;QUIVER_DLL"
+		
 		$PreprocessorDefinitions		"$BASE;BDSBASE_TEMP_FIXDYNAMICMODELS"
+		$PreprocessorDefinitions		"$BASE;BDSBASE_ACHIEVEMENT_NOTIFICATIONS"
+		$PreprocessorDefinitions		"$BASE;BDSBASE_DISCORD"
+		//$PreprocessorDefinitions		"$BASE;BDSBASE_NPC"
+		//$PreprocessorDefinitions		"$BASE;BDSBASE_ECON_LOADOUT_ONLY"
+		$PreprocessorDefinitions		"$BASE;BDSBASE_DISABLE_ITEM_DROP_PANEL"
+		//custom schema
+		$PreprocessorDefinitions		"$BASE;BDSBASE_USE_LOCAL_SCHEMA"
+		$PreprocessorDefinitions		"$BASE;BDSBASE_CUSTOM_SCHEMA"
+		//legacy stuff
+		$PreprocessorDefinitions		"$BASE;BDSBASE_LEGACY_MAINMENU"
+		$PreprocessorDefinitions		"$BASE;BDSBASE_LEGACY_VIEWMODELS"
+		//curated item options
+		$PreprocessorDefinitions		"$BASE;BDSBASE_CURATED_ITEMS"
+		//$PreprocessorDefinitions		"$BASE;BDSBASE_CURATED_ITEMS_ALLOWCOSMETICS"
+		$PreprocessorDefinitions		"$BASE;BDSBASE_CURATED_ITEMS_ALLOWCOSMETICWEAPONS"
+		//$PreprocessorDefinitions		"$BASE;BDSBASE_CURATED_ITEMS_DISABLE_CUSTOMITEMS" //USE WITH CUSTOM SCHEMA
+		$PreprocessorDefinitions		"$BASE;BDSBASE_CURATED_ITEMS_GIVEWHITELISTEDITEMS"
 	}
 }
 
@@ -125,6 +144,14 @@ $Project "Server (Quiver)"
 					$File	"quiver\bot\behavior\tf_bot_get_armor.cpp"
 					$File	"quiver\bot\behavior\tf_bot_get_armor.h"
 				}
+			}
+		}
+		
+		$Folder	"Admin"
+		{
+			$Folder	"Commands"
+			{
+				$File	"tf\admin\command\serveradmin_command_tf.h"
 			}
 		}
 

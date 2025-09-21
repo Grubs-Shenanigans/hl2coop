@@ -18,6 +18,9 @@
 #include "tf_gcmessages.h"
 
 #include "tf_weapon_wrench.h"
+#ifdef BDSBASE
+#include "tf_weapon_flamethrower.h"
+#endif
 
 #include "passtime_convars.h"
 
@@ -2559,27 +2562,35 @@ void CTFWeaponBase::ItemPostFrame( void )
 	bool bNeedsReload = NeedsReloadForAmmo1( GetMaxClip1() ) || ( IsEnergyWeapon() && !Energy_FullyCharged() );
 
 #if defined(QUIVER_DLL)
-	if (pOwner->m_Shared.InCond(TF_COND_DISGUISED) && !bNeedsReload && (pOwner->m_nButtons & IN_RELOAD))
+	if (pOwner->m_Shared.InCond(TF_COND_DISGUISED))
 	{
-		//if we press the reload key, fake a reload in third person.
-		// Play the player's reload animation
-		pOwner->DoAnimationEvent(PLAYERANIMEVENT_RELOAD);
+		CTFWeaponBase* pDisguiseWeapon = pOwner->m_Shared.GetDisguiseWeapon();
 
-		float flReloadTime;
-		// First, see if we have a reload animation
-		if (SendWeaponAnim(ACT_VM_RELOAD))
+		if (pDisguiseWeapon)
 		{
-			// We consider the reload finished 0.2 sec before the anim is, so that players don't keep accidentally aborting their reloads
-			flReloadTime = SequenceDuration() - 0.2;
-		}
-		else
-		{
-			// No reload animation. Use the script time.
-			flReloadTime = GetTFWpnData().m_WeaponData[TF_WEAPON_PRIMARY_MODE].m_flTimeReload;
-		}
+			if (pDisguiseWeapon->UsesClipsForAmmo1() && !pDisguiseWeapon->IsMeleeWeapon() && !bNeedsReload && (pOwner->m_nButtons & IN_RELOAD))
+			{
+				//if we press the reload key, fake a reload in third person.
+				// Play the player's reload animation
+				pOwner->DoAnimationEvent(PLAYERANIMEVENT_RELOAD);
 
-		SetReloadTimer(flReloadTime);
-		return;
+				float flReloadTime;
+				// First, see if we have a reload animation
+				if (SendWeaponAnim(ACT_VM_RELOAD))
+				{
+					// We consider the reload finished 0.2 sec before the anim is, so that players don't keep accidentally aborting their reloads
+					flReloadTime = SequenceDuration() - 0.2;
+				}
+				else
+				{
+					// No reload animation. Use the script time.
+					flReloadTime = GetTFWpnData().m_WeaponData[TF_WEAPON_PRIMARY_MODE].m_flTimeReload;
+				}
+
+				SetReloadTimer(flReloadTime);
+				return;
+			}
+		}
 	}
 #endif
 
@@ -2728,6 +2739,14 @@ Activity CTFWeaponBase::GetInspectActivity( TFWeaponInspectStage inspectStage )
 #ifdef BDSBASE
 bool CTFWeaponBase::CanInspect() const
 {
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+	// VMs don't have inspect anims.
+	if (UsesForcedViewModel())
+	{
+		return false;
+	}
+#endif
+
 	const CEconItemView* pItem = GetAttributeContainer()->GetItem();
 	if (pItem)
 	{
@@ -5188,8 +5207,16 @@ bool CTFWeaponBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& orig
 
 		EHANDLE m_hEjectBrassWeapon = GetWeaponForEffect();
 
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+		if (!UsesForcedViewModel())
+		{
+			if (!m_hEjectBrassWeapon)
+				return true;
+		}
+#else
 		if (!m_hEjectBrassWeapon)
 			return true;
+#endif
 #endif
 
 		if ( UsingViewModel() && !g_pClientMode->ShouldDrawViewModel() )
@@ -5203,7 +5230,18 @@ bool CTFWeaponBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& orig
 		if ( m_iEjectBrassAttachpoint == -2 )
 		{
 #ifdef BDSBASE
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+			if (!UsesForcedViewModel())
+			{
+				m_iEjectBrassAttachpoint = m_hEjectBrassWeapon->LookupAttachment("eject_brass");
+			}
+			else
+			{
+				m_iEjectBrassAttachpoint = pViewModel->LookupAttachment("eject_brass");
+			}
+#else
 			m_iEjectBrassAttachpoint = m_hEjectBrassWeapon->LookupAttachment("eject_brass");
+#endif
 #else
 			m_iEjectBrassAttachpoint = pViewModel->LookupAttachment("eject_brass");
 #endif
@@ -5212,7 +5250,18 @@ bool CTFWeaponBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& orig
 		if ( m_iEjectBrassAttachpoint > 0 )
 		{
 #ifdef BDSBASE
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+			if (!UsesForcedViewModel())
+			{
+				m_hEjectBrassWeapon->GetAttachment(m_iEjectBrassAttachpoint, data.m_vOrigin, data.m_vAngles);
+			}
+			else
+			{
+				pViewModel->GetAttachment(m_iEjectBrassAttachpoint, data.m_vOrigin, data.m_vAngles);
+			}
+#else
 			m_hEjectBrassWeapon->GetAttachment(m_iEjectBrassAttachpoint, data.m_vOrigin, data.m_vAngles);
+#endif
 #else
 			pViewModel->GetAttachment(m_iEjectBrassAttachpoint, data.m_vOrigin, data.m_vAngles);
 #endif
@@ -5220,7 +5269,18 @@ bool CTFWeaponBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& orig
 		else
 		{
 #ifdef BDSBASE
+#ifdef BDSBASE_LEGACY_VIEWMODELS
+			if (!UsesForcedViewModel())
+			{
+				m_hEjectBrassWeapon->GetAttachment(atoi(options), data.m_vOrigin, data.m_vAngles);
+			}
+			else
+			{
+				pViewModel->GetAttachment(atoi(options), data.m_vOrigin, data.m_vAngles);
+			}
+#else
 			m_hEjectBrassWeapon->GetAttachment(atoi(options), data.m_vOrigin, data.m_vAngles);
+#endif
 #else
 			pViewModel->GetAttachment(atoi(options), data.m_vOrigin, data.m_vAngles);
 #endif
@@ -5430,7 +5490,11 @@ void CTFWeaponBase::ApplyOnHitAttributes( CBaseEntity *pVictimBaseEntity, CTFPla
 	{
 		if ( pVictim->m_Shared.InCond( TF_COND_MAD_MILK ) )
 		{
+#if defined(QUIVER_DLL)
+			int nAmount = info.GetDamage() * 0.45f;
+#else
 			int nAmount = info.GetDamage() * 0.6f;
+#endif
 			iModHealthOnHit += nAmount;
 
 			CTFPlayer *pProvider = ToTFPlayer( pVictim->m_Shared.GetConditionProvider( TF_COND_MAD_MILK ) );
@@ -5785,6 +5849,77 @@ void CTFWeaponBase::ApplyOnHitAttributes( CBaseEntity *pVictimBaseEntity, CTFPla
 	}
 }
 
+#ifdef BDSBASE
+void CTFWeaponBase::ApplyOnHitTeammateAttributes(CBaseEntity* pVictimBaseEntity, CTFPlayer* pAttacker, const CTakeDamageInfo& info)
+{
+	if (!pAttacker)
+		return;
+
+	CTFPlayer* pTargetPlayer = ToTFPlayer(pVictimBaseEntity);
+
+	if (pTargetPlayer)
+	{
+		// Give health to teammates on hit
+		int nGiveHealthOnHit = 0;
+		CALL_ATTRIB_HOOK_INT(nGiveHealthOnHit, add_give_health_to_teammate_on_hit_proj);
+
+		//scaled by other attributes
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHit, mult_healing_from_medics);
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHit, mult_health_fromhealers);
+
+		// Don't heal players using a weapon that blocks healing
+		CTFWeaponBase* pWeapon = pTargetPlayer->GetActiveTFWeapon();
+		if (pWeapon)
+		{
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, nGiveHealthOnHit, mult_health_fromhealers_penalty_active);
+
+			int iBlockHealing = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iBlockHealing, weapon_blocks_healing);
+			if (iBlockHealing)
+			{
+				nGiveHealthOnHit = 0;
+			}
+		}
+
+		if (nGiveHealthOnHit != 0)
+		{
+			int nHealthGiven = pTargetPlayer->TakeHealth(nGiveHealthOnHit, DMG_GENERIC);
+
+			if (nHealthGiven > 0)
+			{
+				IGameEvent* event = gameeventmanager->CreateEvent("player_healed");
+				if (event)
+				{
+					// HLTV event priority, not transmitted
+					event->SetInt("priority", 1);
+
+					// Healed by another player.
+					event->SetInt("patient", pTargetPlayer->GetUserID());
+					event->SetInt("healer", pAttacker->GetUserID());
+					event->SetInt("amount", nHealthGiven);
+					gameeventmanager->FireEvent(event);
+				}
+
+				event = gameeventmanager->CreateEvent("player_healonhit");
+				if (event)
+				{
+					event->SetInt("amount", nHealthGiven);
+					event->SetInt("entindex", pTargetPlayer->entindex());
+					item_definition_index_t healingItemDef = INVALID_ITEM_DEF_INDEX;
+					if (GetAttributeContainer() && GetAttributeContainer()->GetItem())
+					{
+						healingItemDef = GetAttributeContainer()->GetItem()->GetItemDefIndex();
+					}
+					event->SetInt("weapon_def_index", healingItemDef);
+					gameeventmanager->FireEvent(event);
+				}
+
+				CTF_GameStats.Event_PlayerHealedOther(pAttacker, nHealthGiven);
+			}
+		}
+	}
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: When owner of this weapon is hit
@@ -5905,7 +6040,6 @@ void CTFWeaponBase::ApplyPostHitEffects( const CTakeDamageInfo &info, CTFPlayer 
 		}
 	}
 }
-
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -6301,6 +6435,23 @@ bool CTFWeaponBase::DeflectEntity( CBaseEntity *pTarget, CTFPlayer *pOwner, Vect
 			Vector vecDir = pTarget->WorldSpaceCenter() - vecEye;
 			VectorNormalize( vecDir );
 			float flVel = 50.0f * CTFWeaponBase::DeflectionForce( pTarget->CollisionProp()->OBBSize(), 90, 12.0f );
+
+#ifdef BDSBASE
+			int iChargedAirblast = 0;
+			CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+			if (iChargedAirblast != 0)
+			{
+				CTFFlameThrower* pFlamethrower = assert_cast<CTFFlameThrower*>(this);
+				if (pFlamethrower)
+				{
+					flVel *= pFlamethrower->GetChargeMultiplier();
+				}
+			}
+
+			// Attributes.  Pushback scale is on the player, vulnerability multiplier on the victim.
+			CALL_ATTRIB_HOOK_FLOAT(flVel, airblast_pushback_scale);
+#endif
+
 			pPhysicsObject->ApplyForceOffset( vecDir * flVel, vecEye );
 		}
 		return true;
@@ -6331,6 +6482,23 @@ bool CTFWeaponBase::DeflectEntity( CBaseEntity *pTarget, CTFPlayer *pOwner, Vect
 		pPhysicsObject->GetVelocity( &vecVel, &angularimp );
 	}
 	float flVel = vecVel.Length();
+
+#ifdef BDSBASE
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		CTFFlameThrower* pFlamethrower = assert_cast<CTFFlameThrower*>(this);
+		if (pFlamethrower)
+		{
+			flVel *= pFlamethrower->GetChargeMultiplier();
+		}
+	}
+
+	// Attributes.  Pushback scale is on the player, vulnerability multiplier on the victim.
+	CALL_ATTRIB_HOOK_FLOAT(flVel, airblast_pushback_scale);
+#endif
+
 	vecVel = flVel * vecDir;
 	if ( pPhysicsObject )
 	{

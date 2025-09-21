@@ -143,6 +143,9 @@
 #include "tf_weapon_buff_item.h"
 #include "tf_weapon_flamethrower.h"
 #include "tf_weapon_medigun.h"
+#if defined(QUIVER_DLL)
+#include "tf_weapon_bonesaw.h"
+#endif
 
 #include "econ_holidays.h"
 #include "rtime.h"
@@ -733,8 +736,10 @@ ConVar tf_bot_models_override("tf_bot_models_override", "0", FCVAR_REPLICATED | 
 
 #if defined(QUIVER_DLL)
 ConVar qf_tdm_enable("qf_tdm_enable", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, all maps with an undefined game mode become Team Deathmatch maps.");
-ConVar qf_tdm_fraglimit("qf_tdm_fraglimit", "25", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "seperate value to set if mp_fraglimit isn't set");
+ConVar qf_tdm_fraglimit("qf_tdm_fraglimit", "30", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "seperate value to set if mp_fraglimit isn't set");
 ConVar qf_tdm_scorewar("qf_tdm_scorewar", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "If set, points will be removed on kill. i.e. if a RED player kills a BLU player, the BLU team score will go down by 1.");
+ConVar qf_tdm_first_blood("qf_tdm_first_blood", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Rewards the first player to get a kill each round.");
+ConVar qf_tdm_overtimewait("qf_tdm_overtimewait", "6", FCVAR_REPLICATED | FCVAR_NOTIFY, "Amount of time (in seconds) the game will wait before choosing a TDM winner.");
 #endif
 
 #ifdef GAME_DLL
@@ -867,9 +872,6 @@ ConVar tf_arena_change_limit( "tf_arena_change_limit", "1", FCVAR_REPLICATED | F
 ConVar tf_arena_override_cap_enable_time( "tf_arena_override_cap_enable_time", "-1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Overrides the time (in seconds) it takes for the capture point to become enable, -1 uses the level designer specified time." );
 ConVar tf_arena_override_team_size( "tf_arena_override_team_size", "0", FCVAR_REPLICATED, "Overrides the maximum team size in arena mode. Set to zero to keep the default behavior of 1/3 maxplayers.");
 ConVar tf_arena_first_blood( "tf_arena_first_blood", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Rewards the first player to get a kill each round." );
-#if defined(QUIVER_DLL)
-ConVar qf_tdm_first_blood("qf_tdm_first_blood", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Rewards the first player to get a kill each round.");
-#endif
 extern ConVar tf_arena_preround_time;
 extern ConVar tf_arena_max_streak;
 #if defined( _DEBUG ) || defined( STAGING_ONLY )
@@ -6520,7 +6522,7 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 					//}
 #endif
 
-#if defined(QUIVER_DLL)
+#ifdef BDSBASE
 					// Some weapons crit *any* target in the air, regardless of how they got there.
 					int iCritModeSwitchAirborneDeploy = 0;
 					CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iCritModeSwitchAirborneDeploy, crit_mode_switch_airborne_deploy);
@@ -7718,7 +7720,7 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flRealDamage, mult_dmgtaken );
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim->GetActiveTFWeapon(), flRealDamage, mult_dmgtaken_active );
 
-#if defined(QUIVER_DLL)
+#ifdef BDSBASE
 		if (info.GetCritType() == CTakeDamageInfo::CRIT_MINI)
 		{
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pVictim, flRealDamage, mult_dmgtaken_minicrits);
@@ -8604,7 +8606,7 @@ void CTFGameRules::Think()
 			if ( State_Get() != GR_STATE_BONUS && State_Get() != GR_STATE_TEAM_WIN && State_Get() != GR_STATE_GAME_OVER && IsInWaitingForPlayers() == false )
 			{
 #if defined(QUIVER_DLL)
-				if ( CheckFragLimit() )
+				if (CheckTDMFragLimit())
 					return;
 #endif
 
@@ -9749,7 +9751,16 @@ bool CTFGameRules::CheckCapsPerRound()
 }
 
 #if defined(QUIVER_DLL)
-bool CTFGameRules::CheckFragLimit()
+void CTFGameRules::SetTDMOvertimeTimer()
+{
+	if (IsInTDMMode())
+	{
+		m_bTDMOvertimeTimerStarted = true;
+		m_flTDMOvertimeWait = gpGlobals->curtime + qf_tdm_overtimewait.GetFloat();
+	}
+}
+
+bool CTFGameRules::CheckTDMFragLimit()
 {
 	if (!IsInTDMMode())
 		return false;
@@ -9785,6 +9796,30 @@ bool CTFGameRules::CheckFragLimit()
 		{
 			SetWinningTeam(pMaxTeam->GetTeamNumber(), WINREASON_WINLIMIT);
 			return true;
+		}
+		else if (InOvertime() && m_bTDMOvertimeTimerStarted)
+		{
+			if (m_flTDMOvertimeWait < gpGlobals->curtime)
+			{
+				//we went into overtime. anything goes after the timer ends.
+				int iWinningTeam = TEAM_UNASSIGNED;
+				int iBlueScore = TFTeamMgr()->GetTeam(TF_TEAM_BLUE)->GetScore();
+				int iRedScore = TFTeamMgr()->GetTeam(TF_TEAM_RED)->GetScore();
+				if (iBlueScore > iRedScore)
+				{
+					iWinningTeam = TF_TEAM_BLUE;
+				}
+				else if (iRedScore > iBlueScore)
+				{
+					iWinningTeam = TF_TEAM_RED;
+				}
+
+				// if neither won, we are sent into a stalemate.
+				SetWinningTeam(iWinningTeam, WINREASON_WINLIMIT);
+
+				m_bTDMOvertimeTimerStarted = false;
+				m_flTDMOvertimeWait = 0.0f;
+			}
 		}
 	}
 
@@ -10230,6 +10265,10 @@ void CTFGameRules::GoToIntermission( void )
 //-----------------------------------------------------------------------------
 void CTFGameRules::RecalculateTruce( void )
 {
+#if defined(QUIVER_DLL)
+	return;
+#endif
+
 	bool bTruceActive = false;
 
 	// Call a truce if the teams are fighting a Halloween boss
@@ -13520,7 +13559,11 @@ void CTFGameRules::DeathNotice( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 			if ( !FStrEq( eventName, "fish_notice" ) && !FStrEq( eventName, "fish_notice__arm" ) && !FStrEq( eventName, "slap_notice" ) && !FStrEq( eventName, "throwable_hit" ) )
 			{
 #ifndef _DEBUG
+#ifdef BDSBASE
+				if ((IsInTDMMode() && BTDMHavePlayers()) || (GetGlobalTeam(pVictim->GetTeamNumber()) && GetGlobalTeam(pVictim->GetTeamNumber())->GetNumPlayers() > 1))
+#else
 				if ( GetGlobalTeam( pVictim->GetTeamNumber() ) && GetGlobalTeam( pVictim->GetTeamNumber() )->GetNumPlayers() > 1 )
+#endif
 #endif // !DEBUG
 				{
 					float flFastTime = IsCompetitiveMode() ? 120.f : TF_ARENA_MODE_FAST_FIRST_BLOOD_TIME;
@@ -14714,6 +14757,30 @@ bool CTFGameRules::BHavePlayers( void )
 
 	return BaseClass::BHavePlayers();
 }
+
+#if defined(QUIVER_DLL)
+bool CTFGameRules::BTDMHavePlayers(void)
+{
+	if (IsInTDMMode())
+	{
+		int iCount = 0;
+
+		for (int i = 0; i <= gpGlobals->maxClients; i++)
+		{
+			CBasePlayer* pPlayer = ToBasePlayer(UTIL_PlayerByIndex(i));
+
+			if (pPlayer && pPlayer->IsReadyToPlay())
+			{
+				iCount++;
+			}
+		}
+
+		return (iCount >= 2);
+	}
+
+	return false;
+}
+#endif
 
 int SortPlayerSpectatorQueue( CTFPlayer* const *p1, CTFPlayer* const *p2 )
 {
@@ -22642,17 +22709,41 @@ bool CTFGameRules::CanUpgradeWithAttrib( CTFPlayer *pPlayer, int iWeaponSlot, at
 		}
 	case 874:	// mult_item_meter_charge_rate
 		{
+#ifdef BDSBASE
+			CTFWearableRazorback* pRazorback = dynamic_cast<CTFWearableRazorback*>(pEntity);
+
+			return (iWeaponID == TF_WEAPON_LUNCHBOX ||
+				iWeaponID == TF_WEAPON_ROCKETPACK ||
+				iWeaponID == TF_WEAPON_JAR_GAS || 
+				iWeaponID == TF_WEAPON_JAR || 
+				iWeaponID == TF_WEAPON_JAR_MILK ||
+				iWeaponID == TF_WEAPON_CLEAVER ||
+				pRazorback);
+#else
 			attrib_value_t eChargeType = ATTRIBUTE_METER_TYPE_NONE;
 			CALL_ATTRIB_HOOK_INT_ON_OTHER( pEntity, eChargeType, item_meter_charge_type );
 			if ( eChargeType != ATTRIBUTE_METER_TYPE_NONE )
 			{
 				return ( iWeaponID != TF_WEAPON_FLAME_BALL );
 			}
+#endif
 		}
+#if !defined(QUIVER_DLL)
 	case 875:	// explode_on_ignite
 		{
 			return ( iWeaponID == TF_WEAPON_JAR_GAS );
 		}
+#else
+	//add syringe upgrades.
+	case 4061:
+	case 4062:
+	case 4063:
+		{
+			int iTHEDISEASE = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER(pEntity, iTHEDISEASE, theres_this_disease_going_around_killing_people_and_i_think_i_have_it_uh_oh);
+			return (iTHEDISEASE != 0);
+		}
+#endif
 	}
 
 	// All weapon related attributes require an item that does damage

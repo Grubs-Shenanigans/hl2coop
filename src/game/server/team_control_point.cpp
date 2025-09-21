@@ -336,10 +336,12 @@ void CTeamControlPoint::InputSetOwner( inputdata_t &input )
 
 	Assert( iCapTeam >= 0 && iCapTeam < GetNumberOfTeams() );
 
+#ifndef BDSBASE
 	Assert( input.pCaller );
 
 	if ( !input.pCaller )
 		return;
+#endif
 
 	if ( GetOwner() == iCapTeam )
 		return;
@@ -349,7 +351,11 @@ void CTeamControlPoint::InputSetOwner( inputdata_t &input )
 		// must be done before setting the owner
 		HandleScoring( iCapTeam );
 
+#ifdef BDSBASE
+		if (input.pCaller && input.pCaller->IsPlayer())
+#else
 		if ( input.pCaller->IsPlayer() )
+#endif
 		{
 			int iCappingPlayer = input.pCaller->entindex();
 			InternalSetOwner( iCapTeam, true, 1, &iCappingPlayer );

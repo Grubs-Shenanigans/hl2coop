@@ -1142,6 +1142,26 @@ void CObjectTeleporter::TeleporterThink( void )
 
 				pTeleportingPlayer->SpeakConceptIfAllowed( MP_CONCEPT_TELEPORTED );
 
+#ifdef BDSBASE
+				IGameEvent* event = gameeventmanager->CreateEvent("player_teleported");
+				if (event)
+				{
+					event->SetInt("userid", pTeleportingPlayer->GetUserID());
+					event->SetInt("builderid", GetBuilder() ? GetBuilder()->GetUserID() : 0);
+					event->SetInt("exitindex", entindex());
+					if (GetMatchingTeleporter())
+					{
+						event->SetFloat("dist", GetMatchingTeleporter()->GetAbsOrigin().DistTo(GetAbsOrigin()));
+						event->SetInt("entranceindex", GetMatchingTeleporter()->entindex());
+					}
+					else
+					{
+						event->SetFloat("dist", 0);
+						event->SetInt("entranceindex", 0);
+					}
+					gameeventmanager->FireEvent(event);
+				}
+#else
 				IGameEvent * event = gameeventmanager->CreateEvent( "player_teleported" );
 				if ( event )
 				{
@@ -1157,6 +1177,7 @@ void CObjectTeleporter::TeleporterThink( void )
 					}
 					gameeventmanager->FireEvent( event );
 				}
+#endif
 			}
 
 			// reset the pointers to the player now that we're done teleporting
@@ -1166,6 +1187,14 @@ void CObjectTeleporter::TeleporterThink( void )
 			SetState( TELEPORTER_STATE_RECHARGING );
 
 			m_flCurrentRechargeDuration = (float)g_iTeleporterRechargeTimes[GetUpgradeLevel()];
+#ifdef BDSBASE
+			if (!m_bWasMapPlaced)
+			{
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(GetBuilder(), m_flCurrentRechargeDuration, mult_teleporter_recharge_rate);
+			}
+
+			m_flRechargeTime = gpGlobals->curtime + m_flCurrentRechargeDuration;
+#endif
 			m_flMyNextThink = gpGlobals->curtime + m_flCurrentRechargeDuration;
 		}
 		break;

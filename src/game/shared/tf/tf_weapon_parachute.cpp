@@ -41,6 +41,22 @@ CTFParachute::CTFParachute()
 //-----------------------------------------------------------------------------
 void CTFParachute::CreateBanner()
 {
+#ifdef BDSBASE
+#ifdef CLIENT_DLL
+	if (m_hBannerEntity)
+		return;
+
+	BaseClass::CreateBanner();
+
+	if (m_hBannerEntity)
+	{
+		m_iParachuteAnimState = EParachuteRetracted_Idle;
+		int sequence = m_hBannerEntity->SelectWeightedSequence(ACT_PARACHUTE_RETRACT_IDLE);
+		m_hBannerEntity->ResetSequence(sequence);
+		m_flParachuteToIdleTime = -1;
+	}
+#endif // CLIENT_DLL
+#else
 	BaseClass::CreateBanner();
 
 #ifdef CLIENT_DLL
@@ -51,6 +67,7 @@ void CTFParachute::CreateBanner()
 		m_hBannerEntity->ResetSequence( sequence );
 	}
 #endif // CLIENT_DLL
+#endif
 }
 
 
@@ -91,6 +108,50 @@ void CTFParachute::ParachuteAnimThink( void )
 		bInCondition = false;
 	}
 
+#ifdef BDSBASE
+	bool bIsDeployed = m_iParachuteAnimState == EParachuteDeployed || m_iParachuteAnimState == EParachuteDeployed_Idle;
+	int iAct = -1;
+
+	// Track Anim State
+	if (m_flParachuteToIdleTime < gpGlobals->curtime && m_flParachuteToIdleTime != -1)
+	{
+		if (m_iParachuteAnimState == EParachuteDeployed)
+		{
+			iAct = ACT_PARACHUTE_DEPLOY_IDLE;
+			m_iParachuteAnimState = EParachuteDeployed_Idle;
+		}
+		else
+		{
+			iAct = ACT_PARACHUTE_RETRACT_IDLE;
+			m_iParachuteAnimState = EParachuteRetracted_Idle;
+		}
+		m_flParachuteToIdleTime = -1;
+	}
+
+	if (bIsDeployed != bInCondition)
+	{
+		if (bInCondition)
+		{
+			iAct = ACT_PARACHUTE_DEPLOY;
+			m_iParachuteAnimState = EParachuteDeployed;
+		}
+		else
+		{
+			iAct = ACT_PARACHUTE_RETRACT;
+			m_iParachuteAnimState = EParachuteRetracted;
+		}
+	}
+
+	if (iAct != -1)
+	{
+		int sequence = m_hBannerEntity->SelectWeightedSequence(iAct);
+		m_hBannerEntity->ResetSequence(sequence);
+		if (m_iParachuteAnimState == EParachuteDeployed || m_iParachuteAnimState == EParachuteRetracted)
+		{
+			m_flParachuteToIdleTime = m_hBannerEntity->SequenceDuration() + gpGlobals->curtime;
+		}
+	}
+#else
 	// Track Anim State
 	if ( m_iParachuteAnimState == EParachuteDeployed_Idle && !bInCondition )
 	{
@@ -123,6 +184,7 @@ void CTFParachute::ParachuteAnimThink( void )
 		m_hBannerEntity->ResetSequence( sequence );
 		m_iParachuteAnimState = EParachuteDeployed_Idle;
 	}
+#endif
 }
 
 #endif // CLIENT_DLL

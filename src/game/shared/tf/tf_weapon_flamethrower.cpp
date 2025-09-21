@@ -324,6 +324,10 @@ void CTFFlameThrower::Precache( void )
 	PrecacheScriptSound( "Weapon_FlameThrower.AirBurstAttack" );
 	PrecacheScriptSound( "TFPlayer.AirBlastImpact" );
 	PrecacheScriptSound( "Weapon_FlameThrower.AirBurstAttackDeflect" );
+#ifdef BDSBASE
+	PrecacheScriptSound( "Weapon_DragonsFury.PressureBuild" );
+	PrecacheScriptSound("Weapon_DragonsFury.PressureBuildStop");
+#endif
 	PrecacheParticleSystem( "deflect_fx" );
 	PrecacheParticleSystem( "drg_bison_idle" );
 	PrecacheParticleSystem( "medicgun_invulnstatus_fullcharge_blue" );
@@ -413,6 +417,85 @@ bool CTFFlameThrower::CanAirBlastPutOutTeammate() const
 	return ( iPutOutTeammateDisabled == 0 );
 }
 
+#ifdef BDSBASE
+float CTFFlameThrower::GetChargeMaxTime() const
+{
+	CTFPlayer* pOwner = GetTFPlayerOwner();
+	if (!pOwner)
+		return 0.0f;
+
+	if (!CanAirBlast())
+		return 0.0f;
+
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+#if defined(QUIVER_DLL)
+		return 4.0f;
+#else
+		return 3.0f;
+#endif
+	}
+	else
+	{
+		return 0.0f;
+	}
+}
+
+float CTFFlameThrower::GetChargeMultiplier() const
+{
+	float flChargeMult = 1.0f;
+
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		float flChargedAirblastMinBlast = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT(flChargedAirblastMinBlast, charged_airblast_minblast);
+
+		float flChargedAirblastMaxBlast = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT(flChargedAirblastMaxBlast, charged_airblast_maxblast);
+
+		flChargeMult *= RemapValClamped((gpGlobals->curtime - m_flChargeBeginTime),
+										0.0f,
+										GetChargeMaxTime(),
+										flChargedAirblastMinBlast,
+										flChargedAirblastMaxBlast);
+	}
+
+	return flChargeMult;
+}
+
+float CTFFlameThrower::GetChargeProgress() const
+{
+	float flProgress = 0.0f;
+
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		// no charge.
+		if (m_flChargeBeginTime == 0.0f)
+			return flProgress;
+
+		float flChargedAirblastMinBlast = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT(flChargedAirblastMinBlast, charged_airblast_minblast);
+
+		float flChargedAirblastMaxBlast = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT(flChargedAirblastMaxBlast, charged_airblast_maxblast);
+
+		flProgress = RemapValClamped((gpGlobals->curtime - m_flChargeBeginTime),
+									0.0f,
+									GetChargeMaxTime(),
+									0.0f,
+									1.0f);
+	}
+
+	return flProgress;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -449,6 +532,16 @@ void CTFFlameThrower::DestroySounds( void )
 	StopHitSound();
 #endif
 
+#ifdef BDSBASE
+#ifdef GAME_DLL
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		StopPressureSound();
+	}
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -472,6 +565,17 @@ void CTFFlameThrower::WeaponReset( void )
 #if defined( CLIENT_DLL )
 	StopFullCritEffect();
 #endif
+
+#ifdef BDSBASE
+#ifdef GAME_DLL
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		StopPressureSound();
+	}
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -482,6 +586,17 @@ void CTFFlameThrower::WeaponIdle( void )
 	BaseClass::WeaponIdle();
 
 	SetWeaponState( FT_STATE_IDLE );
+
+#ifdef BDSBASE
+#ifdef GAME_DLL
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		StopPressureSound();
+	}
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -535,6 +650,17 @@ bool CTFFlameThrower::Holster( CBaseCombatWeapon *pSwitchingTo )
 	StopFullCritEffect();
 
 	m_bEffectsThinking = false;
+#endif
+
+#ifdef BDSBASE
+#ifdef GAME_DLL
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		StopPressureSound();
+	}
+#endif
 #endif
 
 	return BaseClass::Holster( pSwitchingTo );
@@ -664,8 +790,43 @@ void CTFFlameThrower::ItemPostFrame()
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pOwner, flMultAmmoPerShot, mult_airblast_cost_nonflamethrower);
 #endif
 				int iAmmoPerShot = tf_flamethrower_burstammo.GetInt() * flMultAmmoPerShot;
+#ifdef BDSBASE
+				int iChargedAirblastAmmo = 0;
+				CALL_ATTRIB_HOOK_INT(iChargedAirblastAmmo, charged_airblast_uses_ammo);
+
+				if (iChargedAirblastAmmo)
+				{
+					FireAirBlast(iAmmoPerShot * GetChargeMultiplier());
+				}
+				else
+				{
+					FireAirBlast(iAmmoPerShot);
+				}
+
+#ifdef GAME_DLL
+				int iChargedAirblast = 0;
+				CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+				if (iChargedAirblast != 0)
+				{
+					StopPressureSound();
+				}
+#endif
+#else
 				FireAirBlast( iAmmoPerShot );
+#endif
 			}
+#ifdef BDSBASE
+			else if (pOwner->m_nButtons & IN_ATTACK2)
+			{
+#ifdef GAME_DLL
+				if (!m_pSndPressure)
+				{
+					StartPressureSound();
+					CSoundEnvelopeController::GetController().SoundChangePitch(m_pSndPressure, 70, (GetChargeMaxTime() / 2));
+				}
+#endif
+			}
+#endif
 		}
 	}
 }
@@ -675,6 +836,18 @@ void CTFFlameThrower::ItemPostFrame()
 //-----------------------------------------------------------------------------
 void CTFFlameThrower::PrimaryAttack()
 {
+#ifdef BDSBASE
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		if (m_bFiredBothAttacks || (m_flChargeBeginTime > 0))
+		{
+			return;
+		}
+	}
+#endif
+
 	float flSpinUpTime = GetSpinUpTime();
 
 	if ( flSpinUpTime > 0.0f )
@@ -757,6 +930,16 @@ void CTFFlameThrower::PrimaryAttack()
 		}
 		return;
 	}
+
+#ifdef BDSBASE
+	if (iChargedAirblast != 0)
+	{
+		if (m_iWeaponState == FT_STATE_SECONDARY)
+		{
+			SetWeaponState(FT_STATE_IDLE);
+		}
+	}
+#endif
 
 	switch ( m_iWeaponState )
 	{
@@ -1020,6 +1203,62 @@ void CTFFlameThrower::FireAirBlast( int iAmmoPerShot )
 		DeflectPlayer( pOwner, pOwner, vDashDir );
 	}
 
+#ifdef BDSBASE
+	int nAirblastKnockback = 0;
+	CALL_ATTRIB_HOOK_INT(nAirblastKnockback, airblast_self_knockback);
+
+	if (nAirblastKnockback)
+	{
+		// No knockback during pre-round freeze.
+		if (TFGameRules() && (TFGameRules()->State_Get() != GR_STATE_PREROUND))
+		{
+			// use the FAN's knockback.
+			if (!(pOwner->GetFlags() & FL_ONGROUND))
+			{
+				pOwner->m_Shared.StunPlayer(0.3f, 1.f, TF_STUN_MOVEMENT | TF_STUN_MOVEMENT_FORWARD_ONLY);
+
+				float flForce = AirBurstDamageForce(pOwner->WorldAlignSize(), 60, 6.f);
+				Vector vecForward;
+				AngleVectors(pOwner->EyeAngles(), &vecForward);
+				Vector vecForce = vecForward * -flForce;
+
+				VMatrix mtxPlayer;
+				mtxPlayer.SetupMatrixOrgAngles(pOwner->GetAbsOrigin(), pOwner->EyeAngles());
+				Vector vecAbsVelocity = pOwner->GetAbsVelocity();
+				Vector vecAbsVelocityAsPoint = vecAbsVelocity + pOwner->GetAbsOrigin();
+				Vector vecLocalVelocity = mtxPlayer.VMul4x3Transpose(vecAbsVelocityAsPoint);
+
+				float flBaseForce = -300.0f;
+
+				CALL_ATTRIB_HOOK_FLOAT(flBaseForce, airblast_pushback_scale);
+
+				float fMultiplier = 1.0f;
+				// for charged airblast
+				int iChargedAirblast1 = 0;
+				CALL_ATTRIB_HOOK_INT(iChargedAirblast1, set_charged_airblast);
+				if (iChargedAirblast1 != 0)
+				{
+					fMultiplier *= GetChargeMultiplier();
+				}
+
+				vecLocalVelocity.x = flBaseForce * fMultiplier;
+
+				vecAbsVelocityAsPoint = mtxPlayer.VMul4x3(vecLocalVelocity);
+				vecAbsVelocity = vecAbsVelocityAsPoint - pOwner->GetAbsOrigin();
+				pOwner->SetAbsVelocity(vecAbsVelocity);
+
+				// Impulse an additional bit of Z push.
+				pOwner->ApplyAbsVelocityImpulse(Vector(0, 0, 50.f));
+
+				// Slow player movement for a brief period of time.
+				pOwner->RemoveFlag(FL_ONGROUND);
+
+				pOwner->SetBlastJumpState(QF_PLAYER_AIRBLAST_JUMPED);
+			}
+		}
+	}
+#endif
+
 	// for charged airblast
 	int iChargedAirblast = 0;
 	CALL_ATTRIB_HOOK_INT( iChargedAirblast, set_charged_airblast );
@@ -1164,6 +1403,36 @@ void CTFFlameThrower::UseRage( void )
 	m_flNextSecondaryAttack = flNextAttack;
 }
 
+#ifdef BDSBASE
+#ifdef GAME_DLL
+void CTFFlameThrower::StartPressureSound()
+{
+	if (m_pSndPressure)
+		StopPressureSound();
+
+	if (!m_pSndPressure)
+	{
+		CPASAttenuationFilter filter(GetAbsOrigin());
+		// Create the repressurization sound
+		CSoundEnvelopeController& controller = CSoundEnvelopeController::GetController();
+		m_pSndPressure = controller.SoundCreate(filter, entindex(), "Weapon_DragonsFury.PressureBuild");
+
+		controller.Play(m_pSndPressure, 1.0, 100);
+	}
+}
+
+void CTFFlameThrower::StopPressureSound()
+{
+	if (m_pSndPressure)
+	{
+		CSoundEnvelopeController::GetController().SoundDestroy(m_pSndPressure);
+		m_pSndPressure = NULL;
+		EmitSound("Weapon_DragonsFury.PressureBuildStop");
+	}
+}
+#endif
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -1254,6 +1523,14 @@ float CTFFlameThrower::GetDeflectionRadius() const
 {
 	float fMultiplier = 1.0f;
 
+#ifdef BDSBASE
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		fMultiplier *= GetChargeMultiplier();
+	}
+#else
 	// int iChargedAirblast = 0;
 	// CALL_ATTRIB_HOOK_INT( iChargedAirblast, set_charged_airblast );
 	// if ( iChargedAirblast != 0 )
@@ -1264,6 +1541,7 @@ float CTFFlameThrower::GetDeflectionRadius() const
 	// 										  AIRBLAST_CHARGE_MULT_MIN,
 	// 										  AIRBLAST_CHARGE_MULT_MAX );
 	// }
+#endif
 
 	// Allow custom attributes to scale the deflection size.
 	CALL_ATTRIB_HOOK_FLOAT( fMultiplier, deflection_size_multiplier );
@@ -1341,6 +1619,15 @@ void CTFFlameThrower::ComputeCrayAirBlastForce( CTFPlayer *pTarget, CTFPlayer *p
 
 	float flAirblastBasePower = tf_airblast_cray_power.GetFloat();
 	float flAirblastVerticalMultiplier = 1.f;
+
+#ifdef BDSBASE
+	int iChargedAirblast = 0;
+	CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+	if (iChargedAirblast != 0)
+	{
+		flAirblastBasePower *= GetChargeMultiplier();
+	}
+#endif
 
 	// Attributes.  Pushback scale is on the player, vulnerability multiplier on the victim.
 	CALL_ATTRIB_HOOK_FLOAT( flAirblastBasePower, airblast_pushback_scale );
@@ -1809,6 +2096,15 @@ bool CTFFlameThrower::DeflectPlayer( CTFPlayer *pTarget, CTFPlayer *pOwner, Vect
 
 			float flForce = AirBurstDamageForce( pTarget->WorldAlignSize(), 60, 6.f );
 
+#ifdef BDSBASE
+			int iChargedAirblast = 0;
+			CALL_ATTRIB_HOOK_INT(iChargedAirblast, set_charged_airblast);
+			if (iChargedAirblast != 0)
+			{
+				flForce *= GetChargeMultiplier();
+			}
+#endif
+
 			CALL_ATTRIB_HOOK_FLOAT( flForce, airblast_pushback_scale );
 
 #ifdef _DEBUG
@@ -2095,11 +2391,26 @@ void CTFFlameThrower::ResetFlameHitCount( void )
 //-----------------------------------------------------------------------------
 float CTFFlameThrower::GetProgress( void )
 {
+#if defined(QUIVER_DLL)
+	if (GetFlameThrowerMode() == QF_FLAMETHROWER_MODE_AFTERBURNER)
+	{
+		return GetChargeProgress();
+	}
+	else
+	{
+		CTFPlayer* pPlayer = GetTFPlayerOwner();
+		if (!pPlayer)
+			return 0.f;
+
+		return pPlayer->m_Shared.GetRageMeter() / 100.0f;
+	}
+#else
 	CTFPlayer *pPlayer = GetTFPlayerOwner();
 	if ( !pPlayer )
 		return 0.f;
 
 	return pPlayer->m_Shared.GetRageMeter() / 100.0f;
+#endif
 }
 
 

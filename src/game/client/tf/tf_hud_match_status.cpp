@@ -588,23 +588,43 @@ void CTFHudMatchStatus::FireGameEvent( IGameEvent * event )
 		const IMatchGroupDescription* pMatchDesc = GetMatchGroupDescription( TFGameRules()->GetCurrentMatchGroup() );
 
 #ifdef BDSBASE
-		// FIX: Refresh versus doors so late-joiners do not see the wrong skin
-		int nSkin = 0;
-		int nSubModel = 0;
-		if (pMatchDesc->BGetRoundDoorParameters(nSkin, nSubModel))
+		if (pMatchDesc)
 		{
-			// Is VS doors model not initialized yet?
-			if (m_pMatchStartModelPanel->m_hModel == NULL)
+			// FIX: Refresh versus doors so late-joiners do not see the wrong skin
+			int nSkin = 0;
+			int nSubModel = 0;
+			if (pMatchDesc->BGetRoundDoorParameters(nSkin, nSubModel))
 			{
-				m_pMatchStartModelPanel->UpdateModel();
+				if (m_pMatchStartModelPanel)
+				{
+					// Is VS doors model not initialized yet?
+					if (m_pMatchStartModelPanel->m_hModel == NULL)
+					{
+						m_pMatchStartModelPanel->UpdateModel();
+					}
+
+					m_pMatchStartModelPanel->SetBodyGroup("logos", nSubModel);
+					m_pMatchStartModelPanel->UpdateModel();
+					m_pMatchStartModelPanel->SetSkin(nSkin);
+				}
 			}
 
-			m_pMatchStartModelPanel->SetBodyGroup("logos", nSubModel);
-			m_pMatchStartModelPanel->UpdateModel();
-			m_pMatchStartModelPanel->SetSkin(nSkin);
-		}
-#endif
+			bool bForceDoors = false;
+			if (bForceDoors || (pMatchDesc && pMatchDesc->BUsesPostRoundDoors()))
+			{
+				if (TFGameRules() && TFGameRules()->MapHasMatchSummaryStage() && (bForceDoors || pMatchDesc->BUseMatchSummaryStage()))
+				{
+					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudMatchStatus_ShowMatchWinDoors", false);
+				}
+				else
+				{
+					g_pClientMode->GetViewportAnimationController()->StartAnimationSequence(this, "HudMatchStatus_ShowMatchWinDoors_NoOpen", false);
+				}
 
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("CompetitiveGame_LowerChatWindow", false);
+			}
+		}
+#else
 		bool bForceDoors = false;
 		if ( bForceDoors || ( pMatchDesc && pMatchDesc->BUsesPostRoundDoors() ) )
 		{
@@ -616,11 +636,8 @@ void CTFHudMatchStatus::FireGameEvent( IGameEvent * event )
 			{
 				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( this, "HudMatchStatus_ShowMatchWinDoors_NoOpen", false );
 			}
-
-#ifdef BDSBASE
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("CompetitiveGame_LowerChatWindow", false);
-#endif
 		}
+#endif
 	}
 }
 

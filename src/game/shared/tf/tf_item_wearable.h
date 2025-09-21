@@ -55,6 +55,11 @@ public:
 	void				SetKillStreak ( int value ) { m_iKillStreak = value; };
 #endif
 
+#if defined(QUIVER_DLL)
+	int					IsArmor() { return m_bIsArmor; }
+	void				SetArmor(int value) { m_bIsArmor = value; };
+#endif
+
 #if defined( CLIENT_DLL )
 	virtual int			InternalDrawModel( int flags );
 	virtual bool		ShouldDraw();
@@ -80,6 +85,10 @@ private:
 	CNetworkHandle( CBaseEntity, m_hWeaponAssociatedWith );
 
 	CUtlVector< const char* >	m_HiddenBodyGroups;
+
+#if defined(QUIVER_DLL)
+	CNetworkVar(bool, m_bIsArmor);
+#endif
 
 #ifdef GAME_DLL
 	int				m_iKillStreak;

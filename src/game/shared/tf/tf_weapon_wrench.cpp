@@ -15,6 +15,9 @@
 	#include "c_tf_player.h"
 	#include "in_buttons.h"
 	#include "tf_hud_menu_eureka_teleport.h"
+#ifdef BDSBASE
+	#include "prediction.h"
+#endif
 	// NVNT haptics system interface
 	#include "haptics/ihaptics.h"
 // Server specific.
@@ -134,6 +137,26 @@ void CTFWrench::OnFriendlyBuildingHit( CBaseObject *pObject, CTFPlayer *pPlayer,
 
 	CDisablePredictionFiltering disabler;
 
+#ifdef BDSBASE
+	if (bUsefulHit)
+	{
+		// play success sound
+		WeaponSound(SPECIAL1);
+	}
+	else
+	{
+		if (pObject->IsDisposableBuilding())
+		{
+			CSingleUserRecipientFilter singleFilter(pPlayer);
+			EmitSound(singleFilter, pObject->entindex(), "Player.UseDeny");
+		}
+		else
+		{
+			// play failure sound
+			WeaponSound(SPECIAL2);
+		}
+	}
+#else
 	if ( pObject->IsDisposableBuilding() )
 	{
 		CSingleUserRecipientFilter singleFilter( pPlayer );
@@ -152,6 +175,7 @@ void CTFWrench::OnFriendlyBuildingHit( CBaseObject *pObject, CTFPlayer *pPlayer,
 			WeaponSound( SPECIAL2 );
 		}
 	}
+#endif
 }
 
 #ifdef QUIVER_DLL
@@ -286,6 +310,13 @@ void CTFWrench::ItemPostFrame()
 	{
 		return;
 	}
+
+#ifdef BDSBASE
+	if (!pOwner->IsLocalPlayer() || !prediction->IsFirstTimePredicted())
+	{
+		return;
+	}
+#endif
 
 	// Just pressed reload?
 	if ( pOwner->m_nButtons & IN_RELOAD && !m_bReloadDown )

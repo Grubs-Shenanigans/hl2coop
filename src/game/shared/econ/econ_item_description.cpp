@@ -2818,6 +2818,12 @@ void CEconItemDescription::Generate_CollectionDesc( const CLocalizationProvider 
 	if ( !pItemDef )
 		return;
 
+#ifdef BDSBASE
+	// Adding a check for if the collection we are browsing contains cosmetics or decorated weapons.
+	// We can handle decorated weapons the same as cosmetics, since they have proper schema entries
+	bool bIsHatOrDecorated = false;
+#endif
+
 	// For War Painted items (not War Paints themselves) we want highlight the row of the
 	// War Paint itself in the collection.  Look up our corresponding War Paint's item def
 	// and use that as our own if there is one.
@@ -2825,6 +2831,10 @@ void CEconItemDescription::Generate_CollectionDesc( const CLocalizationProvider 
 	if ( GetPaintKitDefIndex( pEconItem, &nPaintkitDefindex ) )
 	{
 		auto pPaintkitItemDef = GetItemSchema()->GetPaintKitItemDefinition( nPaintkitDefindex );
+#ifdef BDSBASE
+		if (pPaintkitItemDef == NULL)
+			bIsHatOrDecorated = true;
+#endif
 		pItemDef = pPaintkitItemDef ? pPaintkitItemDef : pItemDef;
 	}
 
@@ -2886,7 +2896,11 @@ void CEconItemDescription::Generate_CollectionDesc( const CLocalizationProvider 
 							return &vecItemsWithDefindex;
 
 						uint32 unPaintkitDefidnex = 0;
+#ifdef BDSBASE
+						if (GetPaintKitDefIndex(pItemDef, &unPaintkitDefidnex) && !bIsHatOrDecorated)
+#else
 						if ( GetPaintKitDefIndex( pItemDef, &unPaintkitDefidnex ) )
+#endif
 						{
 							auto& vecItemsWithPaintkit = pLocalInv->GetItemsWithPaintkitDefindex( unPaintkitDefidnex );
 							if ( !vecItemsWithPaintkit.IsEmpty() )
@@ -3286,6 +3300,12 @@ void CEconItemDescription::Generate_FlagsAttributes( const CLocalizationProvider
 		{
 			vecLines.AddToTail( localized_localplayer_line_t( "#Attrib_LoanerItem", ATTRIB_COL_NEUTRAL ) );
 		}
+#ifdef BDSBASE
+		else if (eOrigin == kEconItemOrigin_CustomItem)
+		{
+			vecLines.AddToTail(localized_localplayer_line_t("#Attrib_CustomItem", ATTRIB_COL_NEUTRAL));
+		}
+#endif
 		else if ( eOrigin == kEconItemOrigin_Invalid )
 		{
 			// do nothing, but skip the below "cannot trade/cannot craft" block below"
@@ -3409,18 +3429,6 @@ void CEconItemDescription::Generate_VisibleAttributes( const CLocalizationProvid
 {
 	Assert( pLocalizationProvider );
 	Assert( pEconItem );
-
-#if defined(QUIVER_DLL)
-	// hack
-	const GameItemDefinition_t* pItemDef = pEconItem->GetItemDefinition();
-	if (!pItemDef)
-		return;
-
-	if (pItemDef->IsWhitelisted())
-	{
-		AddDescLine(pLocalizationProvider->Find("#Quiver_Whitelisted"), ATTRIB_COL_NEUTRAL, kDescLineFlag_Attribute);
-	}
-#endif
 
 	CVisibleAttributeDisplayer AttributeDisplayer;
 	pEconItem->IterateAttributes( &AttributeDisplayer );

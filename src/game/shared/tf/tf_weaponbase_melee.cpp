@@ -9,6 +9,10 @@
 #include "effect_dispatch_data.h"
 #include "tf_gamerules.h"
 
+#if defined(QUIVER_DLL)
+#include "tf_weapon_wrench.h"
+#endif
+
 // Server specific.
 #if !defined( CLIENT_DLL )
 #include "tf_player.h"
@@ -16,16 +20,19 @@
 #include "ilagcompensationmanager.h"
 #include "tf_passtime_logic.h"
 
-#if defined(QUIVER_DLL)
-#include "tf_weapon_wrench.h"
-#endif
-
 // Client specific.
 #else
+#ifdef BDSBASE
+#include "c_tf_passtime_logic.h"
+#endif
 #include "c_tf_gamestats.h"
 #include "c_tf_player.h"
 // NVNT haptics system interface
 #include "haptics/ihaptics.h"
+#endif
+
+#ifdef BDSBASE
+ConVar tf_melee_old_trace_behavior("tf_melee_old_trace_behavior", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Re-enables old melee trace behavior");
 #endif
 
 #if defined(QUIVER_DLL)
@@ -425,6 +432,89 @@ void CTFWeaponBaseMelee::ItemPostFrame()
 	BaseClass::ItemPostFrame();
 }
 
+#ifdef BDSBASE
+class CTraceFilterIgnoreTeammatesMelee : public CTraceFilterSimple
+{
+public:
+	// It does have a base, but we'll never network anything below here..
+	DECLARE_CLASS(CTraceFilterIgnoreTeammatesMelee, CTraceFilterSimple);
+
+	CTraceFilterIgnoreTeammatesMelee(const IHandleEntity* passentity, int collisionGroup, int iIgnoreTeam, bool bOldTraceBehavior)
+		: CTraceFilterSimple(passentity, collisionGroup), m_iIgnoreTeam(iIgnoreTeam), m_bOldTraceBehavior(bOldTraceBehavior)
+	{
+	}
+
+	virtual bool ShouldHitEntity(IHandleEntity* pServerEntity, int contentsMask)
+	{
+		CBaseEntity* pEntity = EntityFromEntityHandle(pServerEntity);
+		const CBaseEntity* pPassEntity = EntityFromEntityHandle(GetPassEntity());
+		CBaseEntity* pPassNonConst = const_cast<CBaseEntity*>(pPassEntity);
+
+		if ((pEntity->IsPlayer() || pEntity->IsCombatItem()) && (pEntity->GetTeamNumber() == m_iIgnoreTeam || m_iIgnoreTeam == TEAM_ANY))
+		{
+			// Make sure we check for old behavior first.
+			if (m_bOldTraceBehavior)
+			{
+				return false;
+			}
+
+			// first, evaluate passtime logic
+			if (g_pPasstimeLogic)
+			{
+				CTFPlayer* pTFTargetPlayer = ToTFPlayer(pEntity);
+
+				if (pTFTargetPlayer && pTFTargetPlayer->m_Shared.HasPasstimeBall())
+				{
+					return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
+				}
+			}
+
+			if (pPassNonConst)
+			{
+				// now, check the player we passed in.
+				CTFPlayer* pTFPassPlayer = static_cast<CTFPlayer*>(pPassNonConst);
+
+				if (pTFPassPlayer)
+				{
+					CTFWeaponBase* pWeapon = pTFPassPlayer->GetActiveTFWeapon();
+
+					if (pWeapon)
+					{
+						// attributes
+						int iSpeedBuffOnHit = 0;
+						CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iSpeedBuffOnHit, speed_buff_ally);
+
+						int nGiveHealthOnHit = 0;
+						CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, nGiveHealthOnHit, add_give_health_to_teammate_on_hit);
+
+						if ((iSpeedBuffOnHit != 0) || (nGiveHealthOnHit != 0))
+						{
+							return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
+						}
+
+						int nGiveHealthOnHitAlt = 0;
+						CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, nGiveHealthOnHitAlt, add_give_health_to_teammate_on_hit_alt);
+#if defined(QUIVER_DLL)
+						// wrench (quiver)
+						if (pWeapon->GetWeaponID() == TF_WEAPON_WRENCH || (nGiveHealthOnHitAlt != 0))
+						{
+							return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
+						}
+#endif
+					}
+				}
+			}
+
+			return false;
+		}
+
+		return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
+	}
+
+	int m_iIgnoreTeam;
+	bool m_bOldTraceBehavior;
+};
+#endif
 
 bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUtlVector< trace_t >* pTargetTraceVector )
 {
@@ -461,10 +551,38 @@ bool CTFWeaponBaseMelee::DoSwingTraceInternal( trace_t &trace, bool bCleave, CUt
 	Vector vecSwingStart = pPlayer->Weapon_ShootPosition();
 	Vector vecSwingEnd = vecSwingStart + vecForward * fSwingRange;
 
+#ifdef BDSBASE
+	bool bOldTraceBehavior = tf_melee_old_trace_behavior.GetBool();
+
+	if (!bOldTraceBehavior)
+	{
+		bOldTraceBehavior = pPlayer->m_Shared.IsOldMeleeTrace();
+
+		if (!bOldTraceBehavior)
+		{
+			int iOldTraceBehavior = 0;
+			CALL_ATTRIB_HOOK_INT(iOldTraceBehavior, set_old_melee_trace_behavior);
+			bOldTraceBehavior = (iOldTraceBehavior != 0);
+		}
+	}
+
+	// only hit teammates if friendly fire is on.
+	bool bDontHitTeammates = !friendlyfire.GetBool();
+
+	if (bOldTraceBehavior)
+	{
+		// In MvM, melee hits from the robot team wont hit teammates to ensure mobs of melee bots don't 
+		// swarm so tightly they hit each other and no-one else
+		bDontHitTeammates = pPlayer->GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFGameRules()->IsMannVsMachineMode();
+	}
+
+	CTraceFilterIgnoreTeammatesMelee ignoreTeammatesFilter(pPlayer, COLLISION_GROUP_NONE, pPlayer->GetTeamNumber(), bOldTraceBehavior);
+#else
 	// In MvM, melee hits from the robot team wont hit teammates to ensure mobs of melee bots don't 
 	// swarm so tightly they hit each other and no-one else
 	bool bDontHitTeammates = pPlayer->GetTeamNumber() == TF_TEAM_PVE_INVADERS && TFGameRules()->IsMannVsMachineMode();
 	CTraceFilterIgnoreTeammates ignoreTeammatesFilter( pPlayer, COLLISION_GROUP_NONE, pPlayer->GetTeamNumber() );
+#endif
 
 	if ( bCleave )
 	{
@@ -695,11 +813,65 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 			// Give health to teammates on hit
 			int nGiveHealthOnHit = 0;
 			CALL_ATTRIB_HOOK_INT( nGiveHealthOnHit, add_give_health_to_teammate_on_hit );
+
+#ifdef BDSBASE
+			//scaled by other attributes
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHit, mult_healing_from_medics);
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHit, mult_health_fromhealers);
+
+			// Don't heal players using a weapon that blocks healing
+			CTFWeaponBase* pWeapon = pTargetPlayer->GetActiveTFWeapon();
+			if (pWeapon)
+			{
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, nGiveHealthOnHit, mult_health_fromhealers_penalty_active);
+
+				int iBlockHealing = 0;
+				CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iBlockHealing, weapon_blocks_healing);
+				if (iBlockHealing)
+				{
+					nGiveHealthOnHit = 0;
+				}
+			}
+#endif
+
 			if ( nGiveHealthOnHit != 0 )
 			{
 				// Always keep at least 1 health for ourselves
 				nGiveHealthOnHit = Min( pPlayer->GetHealth() - 1, nGiveHealthOnHit );
 				int nHealthGiven = pTargetPlayer->TakeHealth( nGiveHealthOnHit, DMG_GENERIC );
+#ifdef BDSBASE
+				if (nHealthGiven > 0)
+				{
+					IGameEvent* event = gameeventmanager->CreateEvent("player_healed");
+					if (event)
+					{
+						// HLTV event priority, not transmitted
+						event->SetInt("priority", 1);
+
+						// Healed by another player.
+						event->SetInt("patient", pTargetPlayer->GetUserID());
+						event->SetInt("healer", pPlayer->GetUserID());
+						event->SetInt("amount", nHealthGiven);
+						gameeventmanager->FireEvent(event);
+					}
+
+					event = gameeventmanager->CreateEvent("player_healonhit");
+					if (event)
+					{
+						event->SetInt("amount", nHealthGiven);
+						event->SetInt("entindex", pTargetPlayer->entindex());
+						item_definition_index_t healingItemDef = INVALID_ITEM_DEF_INDEX;
+						if (GetAttributeContainer() && GetAttributeContainer()->GetItem())
+						{
+							healingItemDef = GetAttributeContainer()->GetItem()->GetItemDefIndex();
+						}
+						event->SetInt("weapon_def_index", healingItemDef);
+						gameeventmanager->FireEvent(event);
+					}
+
+					CTF_GameStats.Event_PlayerHealedOther(pPlayer, nHealthGiven);
+				}
+#endif
 
 				if ( nHealthGiven > 0 )
 				{
@@ -709,13 +881,77 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 				}
 			}
 
-#ifdef QUIVER_DLL
-			//do the same for armor. Wrenches only, mainly.
-			CTFWrench* pWrench = dynamic_cast<CTFWrench*>(this);
+#ifdef BDSBASE
+			// extra version that doesn't substract health
+			// Give health to teammates on hit
+			int nGiveHealthOnHitAlt = 0;
+			CALL_ATTRIB_HOOK_INT(nGiveHealthOnHitAlt, add_give_health_to_teammate_on_hit_alt);
 
-			if (pWrench)
+			//scaled by other attributes
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHitAlt, mult_healing_from_medics);
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pTargetPlayer, nGiveHealthOnHitAlt, mult_health_fromhealers);
+
+			// Don't heal players using a weapon that blocks healing
+			if (pWeapon)
 			{
-				pWrench->OnFriendlyPlayerHit(pTargetPlayer, pPlayer, trace.endpos);
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER(pWeapon, nGiveHealthOnHitAlt, mult_health_fromhealers_penalty_active);
+
+				int iBlockHealing = 0;
+				CALL_ATTRIB_HOOK_INT_ON_OTHER(pWeapon, iBlockHealing, weapon_blocks_healing);
+				if (iBlockHealing)
+				{
+					nGiveHealthOnHitAlt = 0;
+				}
+			}
+
+			if (nGiveHealthOnHitAlt != 0)
+			{
+				int nHealthGiven = pTargetPlayer->TakeHealth(nGiveHealthOnHitAlt, DMG_GENERIC);
+
+				if (nHealthGiven > 0)
+				{
+					IGameEvent* event = gameeventmanager->CreateEvent("player_healed");
+					if (event)
+					{
+						// HLTV event priority, not transmitted
+						event->SetInt("priority", 1);
+
+						// Healed by another player.
+						event->SetInt("patient", pTargetPlayer->GetUserID());
+						event->SetInt("healer", pPlayer->GetUserID());
+						event->SetInt("amount", nHealthGiven);
+						gameeventmanager->FireEvent(event);
+					}
+
+					event = gameeventmanager->CreateEvent("player_healonhit");
+					if (event)
+					{
+						event->SetInt("amount", nHealthGiven);
+						event->SetInt("entindex", pTargetPlayer->entindex());
+						item_definition_index_t healingItemDef = INVALID_ITEM_DEF_INDEX;
+						if (GetAttributeContainer() && GetAttributeContainer()->GetItem())
+						{
+							healingItemDef = GetAttributeContainer()->GetItem()->GetItemDefIndex();
+						}
+						event->SetInt("weapon_def_index", healingItemDef);
+						gameeventmanager->FireEvent(event);
+					}
+
+					CTF_GameStats.Event_PlayerHealedOther(pPlayer, nHealthGiven);
+				}
+			}
+#endif
+
+#ifdef QUIVER_DLL
+			if (GetWeaponID() == TF_WEAPON_WRENCH)
+			{
+				//do the same for armor. Wrenches only, mainly.
+				CTFWrench* pWrench = dynamic_cast<CTFWrench*>(this);
+
+				if (pWrench)
+				{
+					pWrench->OnFriendlyPlayerHit(pTargetPlayer, pPlayer, trace.endpos);
+				}
 			}
 #endif
 		}
