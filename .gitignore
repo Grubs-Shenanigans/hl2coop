@@ -563,3 +563,8 @@ game/*/ServerConfig.vdf
 game/*/stats.txt
 game/*/textwindow_temp.html
 game/*/voice_ban.dt
+*.prt
+*.vmx
+game/hl2coop/mapsrc/test_map.bsp
+game/hl2coop/mapsrc/test_map.vmf
+game/hl2coop/maps/test_map.bsp

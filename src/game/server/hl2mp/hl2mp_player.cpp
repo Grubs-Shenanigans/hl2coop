@@ -331,12 +331,12 @@ void CHL2MP_Player::PickDefaultSpawnTeam( void )
 		}
 		else
 		{
-			CTeam *pCombine = g_Teams[TEAM_REBELS];
+			CTeam *pCombine = g_Teams[TEAM_COMBINE];
 			CTeam *pRebels = g_Teams[TEAM_REBELS];
 
 			if ( pCombine == NULL || pRebels == NULL )
 			{
-				ChangeTeam( random->RandomInt( TEAM_REBELS, TEAM_REBELS ) );
+				ChangeTeam( random->RandomInt( TEAM_COMBINE, TEAM_REBELS ) );
 			}
 			else
 			{
@@ -346,11 +346,11 @@ void CHL2MP_Player::PickDefaultSpawnTeam( void )
 				}
 				else if ( pCombine->GetNumPlayers() < pRebels->GetNumPlayers() )
 				{
-					ChangeTeam( TEAM_REBELS );
+					ChangeTeam( TEAM_COMBINE );
 				}
 				else
 				{
-					ChangeTeam( random->RandomInt( TEAM_REBELS, TEAM_REBELS ) );
+					ChangeTeam( random->RandomInt( TEAM_COMBINE, TEAM_REBELS ) );
 				}
 			}
 		}
@@ -1296,7 +1296,7 @@ bool CHL2MP_Player::ClientCommand( const CCommand &args )
 #ifdef BDSBASE
 		if (GetTeamNumber() == TEAM_SPECTATOR)
 		{
-			ChangeTeam(random->RandomInt(TEAM_REBELS, TEAM_REBELS));
+			ChangeTeam(random->RandomInt(TEAM_COMBINE, TEAM_REBELS));
 			Spawn();
 		}
 #endif
