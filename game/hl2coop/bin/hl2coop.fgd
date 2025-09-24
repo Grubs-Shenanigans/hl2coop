@@ -19,8 +19,15 @@
 	RespawnTime(float) : "Respawn Time" : 60 : "Ammount in seconds this prop will respawn after it breaks."
 ]
 
-@PointClass base(Weapon) studio("models/weapons/w_slam.mdl") = weapon_slam : "S.L.A.M. - Selectable Lightweight Attack Munition" []
+@PointClass base(Weapon) studio("models/weapons/w_slam.mdl") = weapon_slam : "S.L.A.M. - Selectable Lightweight Attack Munition"
+[
+]
 
-@NPCClass base(BaseHeadcrab, Parentname) studio("models/bullsquid.mdl") = npc_bullsquid : "Bullsquid"
+// New HL2COOP content
+
+@NPCClass base(BaseNPC, Parentname) studio("models/bullsquid.mdl") = npc_bullsquid : "Bullsquid"
+[
+]
+@NPCClass base(BaseNPC, Parentname) studio("models/houndeye.mdl") = npc_houndeye : "Houndeye"
 [
 ]

@@ -37,8 +37,8 @@
 
 #define HOUNDEYE_EYE_FRAMES 4 // how many different switchable maps for the eye
 
-ConVar	sk_Houndeye_health( "sk_Houndeye_health","0");
-ConVar	sk_Houndeye_dmg_blast( "sk_Houndeye_dmg_blast","0");
+ConVar	sk_houndeye_health( "sk_houndeye_health","0");
+ConVar	sk_houndeye_dmg_blast( "sk_houndeye_dmg_blast","0");
 
 //=========================================================
 // Interactions
@@ -59,7 +59,6 @@ enum
 	TASK_HOUND_WAKE_UP,
 	TASK_HOUND_HOP_BACK,
 
-	TASK_HOUND_GET_PATH_TO_CIRCLE,
 	TASK_HOUND_REVERSE_STRAFE_DIR,
 };
 
@@ -124,7 +123,6 @@ void CNPC_Houndeye::InitCustomSchedules(void)
 	ADD_CUSTOM_TASK(CNPC_Houndeye,	TASK_HOUND_WAKE_UP);
 	ADD_CUSTOM_TASK(CNPC_Houndeye,	TASK_HOUND_HOP_BACK);
 
-	ADD_CUSTOM_TASK(CNPC_Houndeye,	TASK_HOUND_GET_PATH_TO_CIRCLE);
 	ADD_CUSTOM_TASK(CNPC_Houndeye,	TASK_HOUND_REVERSE_STRAFE_DIR);
 	
 	ADD_CUSTOM_CONDITION(CNPC_Houndeye,	COND_HOUND_GROUP_ATTACK);
@@ -168,6 +166,7 @@ BEGIN_DATADESC( CNPC_Houndeye )
 	DEFINE_FIELD( m_bLoopClockwise,			FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_pEnergyWave,				FIELD_CLASSPTR ),
 	DEFINE_FIELD( m_flEndEnergyWaveTime,		FIELD_TIME ),	
+	DEFINE_FIELD( m_iSpriteTexture, FIELD_INTEGER ),
 
 END_DATADESC()
 
@@ -301,7 +300,6 @@ void CNPC_Houndeye::HandleAnimEvent( animevent_t *pEvent )
 		case HOUND_AE_THUMP:
 			// emit the shockwaves
 			SonicAttack();
-			m_flNextAttack = gpGlobals->curtime + random->RandomFloat( 5.0, 8.0 );
 			break;
 
 		case HOUND_AE_ANGERSOUND1:
@@ -319,7 +317,7 @@ void CNPC_Houndeye::HandleAnimEvent( animevent_t *pEvent )
 		case HOUND_AE_CLOSE_EYE:
 			if ( !m_fDontBlink )
 			{
-			//<<TEMP>>	pev->skin = HOUNDEYE_EYE_FRAMES - 1;
+				m_nSkin = HOUNDEYE_EYE_FRAMES - 1;
 			}
 			break;
 
@@ -406,6 +404,7 @@ void CNPC_Houndeye::Spawn()
 	Precache( );
 
 	SetModel("models/houndeye.mdl");
+	m_iSpriteTexture = PrecacheModel("sprites/shockwave.vmt");
 	SetHullType(HULL_WIDE_SHORT);
 	SetHullSizeNormal();
 
@@ -413,7 +412,7 @@ void CNPC_Houndeye::Spawn()
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
 	SetMoveType( MOVETYPE_STEP );
 	SetBloodColor( BLOOD_COLOR_YELLOW );
-	m_iHealth			= sk_Houndeye_health.GetFloat();
+	m_iHealth			= sk_houndeye_health.GetFloat();
 	m_flFieldOfView		= 0.5;// indicates the width of this monster's forward view cone ( as a dotproduct result )
 	m_NPCState			= NPC_STATE_NONE;
 	m_fAsleep			= false; // everyone spawns awake
@@ -521,7 +520,7 @@ void CNPC_Houndeye::AlertSound ( void )
 //=========================================================
 // DeathSound 
 //=========================================================
-void CNPC_Houndeye::DeathSound ( void )
+void CNPC_Houndeye::DeathSound ( const CTakeDamageInfo &info )
 {
 	EmitSound( "NPC_Houndeye.Die" );
 }
@@ -529,60 +528,10 @@ void CNPC_Houndeye::DeathSound ( void )
 //=========================================================
 // PainSound 
 //=========================================================
-void CNPC_Houndeye::PainSound ( void )
+void CNPC_Houndeye::PainSound ( const CTakeDamageInfo &info )
 {
 	EmitSound( "NPC_Houndeye.Pain" );
 }
-
-//=========================================================
-// WriteBeamColor - writes a color vector to the network 
-// based on the size of the group. 
-//=========================================================
-void CNPC_Houndeye::WriteBeamColor ( void )
-{
-	BYTE	bRed, bGreen, bBlue;
-
-	if ( m_pSquad )
-	{
-		switch ( m_pSquad->NumMembers() )
-		{
-		case 2:
-			// no case for 0 or 1, cause those are impossible for monsters in Squads.
-			bRed	= 101;
-			bGreen	= 133;
-			bBlue	= 221;
-			break;
-		case 3:
-			bRed	= 67;
-			bGreen	= 85;
-			bBlue	= 255;
-			break;
-		case 4:
-			bRed	= 62;
-			bGreen	= 33;
-			bBlue	= 211;
-			break;
-		default:
-			DevWarning( 2, "Unsupported Houndeye SquadSize!\n" );
-			bRed	= 188;
-			bGreen	= 220;
-			bBlue	= 255;
-			break;
-		}
-	}
-	else
-	{
-		// solo houndeye - weakest beam
-		bRed	= 188;
-		bGreen	= 220;
-		bBlue	= 255;
-	}
-	
-	WRITE_BYTE( bRed   );
-	WRITE_BYTE( bGreen );
-	WRITE_BYTE( bBlue  );
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: Plays the engine sound.
 //-----------------------------------------------------------------------------
@@ -664,6 +613,7 @@ void CNPC_Houndeye::Event_Killed( const CTakeDamageInfo &info )
 {
 	EmitSound( "NPC_Houndeye.Retreat" );
 	m_flSoundWaitTime = gpGlobals->curtime + 1.0;
+	m_nSkin = 1;
 
 	if (m_pSquad)
 	{
@@ -674,115 +624,180 @@ void CNPC_Houndeye::Event_Killed( const CTakeDamageInfo &info )
 }
 
 //=========================================================
-// SonicAttack
+// SonicAttack (Slapped in from HLS Code, the sdk one just crashed)
 //=========================================================
 void CNPC_Houndeye::SonicAttack ( void )
 {
-	EmitSound( "NPC_Houndeye.SonicAttack" );
+	float		flAdjustedDamage;
+	float		flDist;
 
-	if (m_pEnergyWave)
-	{
-		UTIL_Remove(m_pEnergyWave);
-	}
-	Vector vFacingDir = EyeDirection3D( );
-	m_pEnergyWave = (CEnergyWave*)Create( "energy_wave", EyePosition(), GetLocalAngles() );
-	m_flEndEnergyWaveTime = gpGlobals->curtime + 1; //<<TEMP>> magic
-	m_pEnergyWave->SetAbsVelocity( 100*vFacingDir );
+	CPASAttenuationFilter filter( this );
+	EmitSound( filter, entindex(), "HoundEye.Sonic");
 
+	CBroadcastRecipientFilter filter2;
+	te->BeamRingPoint( filter2, 0.0, 
+		GetAbsOrigin(),							//origin
+		16,										//start radius
+		HOUNDEYE_MAX_ATTACK_RADIUS,//end radius
+		m_iSpriteTexture,						//texture
+		0,										//halo index
+		0,										//start frame
+		0,										//framerate
+		0.2,									//life
+		24,									//width
+		16,										//spread
+		0,										//amplitude
+		WriteBeamColor().x,						//r
+		WriteBeamColor().y,						//g
+		WriteBeamColor().z,						//b
+		192,									//a
+		0										//speed
+		);
+
+	CBroadcastRecipientFilter filter3;
+	te->BeamRingPoint( filter3, 0.0, 
+		GetAbsOrigin(),									//origin
+		16,												//start radius
+		HOUNDEYE_MAX_ATTACK_RADIUS / 2,											//end radius
+		m_iSpriteTexture,								//texture
+		0,												//halo index
+		0,												//start frame
+		0,												//framerate
+		0.2,											//life
+		24,											//width
+		16,												//spread
+		0,												//amplitude
+		WriteBeamColor().x,								//r
+		WriteBeamColor().y,								//g
+		WriteBeamColor().z,								//b
+		192,											//a
+		0												//speed
+		);
+	
 	CBaseEntity *pEntity = NULL;
 	// iterate on all entities in the vicinity.
-	for ( CEntitySphereQuery sphere( GetAbsOrigin(), HOUNDEYE_MAX_ATTACK_RADIUS ); pEntity = sphere.GetCurrentEntity(); sphere.NextEntity() )
+	while ((pEntity = gEntList.FindEntityInSphere( pEntity, GetAbsOrigin(), HOUNDEYE_MAX_ATTACK_RADIUS )) != NULL)
 	{
-		if (pEntity->Classify()	== CLASS_HOUNDEYE)
+		if ( pEntity->m_takedamage  != DAMAGE_NO )
 		{
-			continue;
-		}
+			if ( !FClassnameIs(pEntity, "npc_houndeye") )
+			{// houndeyes don't hurt other houndeyes with their attack
 
-		if (pEntity->GetFlags() & FL_NOTARGET)
-		{
-			continue;
-		}
+				// houndeyes do FULL damage if the ent in question is visible. Half damage otherwise.
+				// This means that you must get out of the houndeye's attack range entirely to avoid damage.
+				// Calculate full damage first
 
-		IPhysicsObject *pPhysicsObject = pEntity->VPhysicsGetObject();
-
-		if ( pEntity->m_takedamage != DAMAGE_NO || pPhysicsObject)
-		{
-			// --------------------------
-			// Adjust damage by distance
-			// --------------------------
-			float flDist = (pEntity->WorldSpaceCenter() - GetAbsOrigin()).Length();
-			float flDamageAdjuster = 1-( flDist / HOUNDEYE_MAX_ATTACK_RADIUS );
-
-			// --------------------------
-			// Adjust damage by direction
-			// --------------------------
-			Vector forward;
-			AngleVectors( GetAbsAngles(), &forward );
-			Vector vEntDir		= (pEntity->GetAbsOrigin() - GetAbsOrigin());
-			VectorNormalize(vEntDir);
-			float flDotPr		= DotProduct(forward,vEntDir);
-			flDamageAdjuster   *= flDotPr;
-
-			if (flDamageAdjuster < 0)
-			{
-				continue;
-			}
-
-			// --------------------------
-			// Adjust damage by visibility
-			// --------------------------
-			if ( !FVisible( pEntity ) )
-			{
-				if ( pEntity->IsPlayer() )
+				if ( m_pSquad && m_pSquad->NumMembers() > 1 )
 				{
-					// if this entity is a client, and is not in full view, inflict half damage. We do this so that players still 
-					// take the residual damage if they don't totally leave the houndeye's effective radius. We restrict it to clients
-					// so that monsters in other parts of the level don't take the damage and get pissed.
-					flDamageAdjuster *= 0.5;
+					// squad gets attack bonus.
+					flAdjustedDamage = sk_houndeye_dmg_blast.GetFloat() + sk_houndeye_dmg_blast.GetFloat();
 				}
-				else if ( !FClassnameIs( pEntity, "func_breakable" ) && !FClassnameIs( pEntity, "func_pushable" ) ) 
+				else
 				{
-					// do not hurt nonclients through walls, but allow damage to be done to breakables
-					continue;
+					// solo
+					flAdjustedDamage = sk_houndeye_dmg_blast.GetFloat();
 				}
-			}
 
-			// ------------------------------
-			//  Apply the damage
-			// ------------------------------
-			if (pEntity->m_takedamage != DAMAGE_NO)
-			{
-				CTakeDamageInfo info( this, this, flDamageAdjuster * sk_Houndeye_dmg_blast.GetFloat(), DMG_SONIC | DMG_ALWAYSGIB );
-				CalculateExplosiveDamageForce( &info, (pEntity->GetAbsOrigin() - GetAbsOrigin()), pEntity->GetAbsOrigin() );
+				flDist = (pEntity->WorldSpaceCenter() - GetAbsOrigin()).Length();
 
-				pEntity->TakeDamage( info );
+				flAdjustedDamage -= ( flDist / HOUNDEYE_MAX_ATTACK_RADIUS ) * flAdjustedDamage;
 
-				// Throw the player
-				if ( pEntity->IsPlayer() )
+				if ( !FVisible( pEntity ) )
 				{
-					Vector forward;
-					AngleVectors( GetLocalAngles(), &forward );
-
-					Vector vecVelocity = pEntity->GetAbsVelocity();
-					vecVelocity	+= forward * 250 * flDamageAdjuster;
-					vecVelocity.z = 300 * flDamageAdjuster;
-					pEntity->SetAbsVelocity( vecVelocity );
-					pEntity->ViewPunch( QAngle(random->RandomInt(-20,20), 0, random->RandomInt(-20,20)) );
+					if ( pEntity->IsPlayer() )
+					{
+						// if this entity is a client, and is not in full view, inflict half damage. We do this so that players still 
+						// take the residual damage if they don't totally leave the houndeye's effective radius. We restrict it to clients
+						// so that monsters in other parts of the level don't take the damage and get pissed.
+						flAdjustedDamage *= 0.5;
+					}
+					else if ( !FClassnameIs( pEntity, "func_breakable" ) && !FClassnameIs( pEntity, "func_pushable" ) ) 
+					{
+						// do not hurt nonclients through walls, but allow damage to be done to breakables
+						flAdjustedDamage = 0;
+					}
 				}
-			}
-			// ------------------------------
-			//  Apply physics foces
-			// ------------------------------
-			IPhysicsObject *pPhysicsObject = pEntity->VPhysicsGetObject();
-			if (pPhysicsObject)
-			{
-				float flForce	= flDamageAdjuster * 8000;
-				pPhysicsObject->ApplyForceCenter( (vEntDir+Vector(0,0,0.2)) * flForce );
-				pPhysicsObject->ApplyTorqueCenter( vEntDir * flForce );
+
+				//ALERT ( at_aiconsole, "Damage: %f\n", flAdjustedDamage );
+
+				if (flAdjustedDamage > 0 )
+				{
+					CTakeDamageInfo info( this, this, flAdjustedDamage, DMG_SONIC | DMG_ALWAYSGIB );
+					CalculateExplosiveDamageForce( &info, (pEntity->GetAbsOrigin() - GetAbsOrigin()), pEntity->GetAbsOrigin() );
+
+					pEntity->TakeDamage( info );
+
+					if ( (pEntity->GetAbsOrigin() - GetAbsOrigin()).Length2D() <= HOUNDEYE_MAX_ATTACK_RADIUS )
+					{
+						if ( pEntity->GetMoveType() == MOVETYPE_VPHYSICS || (pEntity->VPhysicsGetObject() && !pEntity->IsPlayer()) ) 
+						{
+							IPhysicsObject *pPhysObject = pEntity->VPhysicsGetObject();
+
+							if ( pPhysObject )
+							{
+								float flMass = pPhysObject->GetMass();
+							}
+						}
+					}
+				}
 			}
 		}
 	}
 }
+
+//=========================================================
+// WriteBeamColor - writes a color vector to the network 
+// based on the size of the group. 
+//=========================================================
+Vector CNPC_Houndeye::WriteBeamColor ( void )
+{
+	BYTE	bRed, bGreen, bBlue;
+
+	if ( m_pSquad )
+	{
+		switch ( m_pSquad->NumMembers() )
+		{
+		case 1:
+			// solo houndeye - weakest beam
+			bRed	= 188;
+			bGreen	= 220;
+			bBlue	= 255;
+			break;
+		case 2:
+			bRed	= 101;
+			bGreen	= 133;
+			bBlue	= 221;
+			break;
+		case 3:
+			bRed	= 67;
+			bGreen	= 85;
+			bBlue	= 255;
+			break;
+		case 4:
+			bRed	= 62;
+			bGreen	= 33;
+			bBlue	= 211;
+			break;
+		default:
+			Msg ( "Unsupported Houndeye SquadSize!\n" );
+			bRed	= 188;
+			bGreen	= 220;
+			bBlue	= 255;
+			break;
+		}
+	}
+	else
+	{
+		// solo houndeye - weakest beam
+		bRed	= 188;
+		bGreen	= 220;
+		bBlue	= 255;
+	}
+	
+
+	return Vector ( bRed, bGreen, bBlue );
+}
+
 		
 //=========================================================
 // start task
@@ -791,26 +806,6 @@ void CNPC_Houndeye::StartTask( const Task_t *pTask )
 {
 	switch ( pTask->iTask )
 	{
-	case TASK_HOUND_GET_PATH_TO_CIRCLE:
-	{
-		if (GetEnemy() == NULL)
-		{
-			TaskFail(FAIL_NO_ENEMY);
-		}
-		else 
-		{
-			Vector vTargetPos = GetEnemyLKP();
-			vTargetPos.z	= GetFloorZ(vTargetPos);
-
-			if (GetNavigator()->SetRadialGoal(vTargetPos, random->RandomInt(50,500), 90, 175, m_bLoopClockwise))
-			{
-				TaskComplete();
-				return;
-			}
-			TaskFail(FAIL_NO_ROUTE);
-		}
-		break;
-	}
 	case TASK_HOUND_REVERSE_STRAFE_DIR:
 	{
 		// Try the other direction
@@ -868,7 +863,7 @@ void CNPC_Houndeye::StartTask( const Task_t *pTask )
 		}
 	case TASK_HOUND_CLOSE_EYE:
 		{
-//<<TEMP>>			pev->skin = 0;
+			m_nSkin = 0;
 			m_fDontBlink = true; // tell blink code to leave the eye alone.
 			break;
 		}
@@ -915,12 +910,10 @@ void CNPC_Houndeye::RunTask( const Task_t *pTask )
 		}
 	case TASK_HOUND_CLOSE_EYE:
 		{
-			/*//<<TEMP>>
-			if ( pev->skin < HOUNDEYE_EYE_FRAMES - 1 )
+			if ( m_nSkin < HOUNDEYE_EYE_FRAMES - 1 )
 			{
-				pev->skin++;
+				m_nSkin++;
 			}
-			*/
 			break;
 		}
 	case TASK_HOUND_HOP_BACK:
@@ -958,16 +951,14 @@ void CNPC_Houndeye::PrescheduleThink ( void )
 	// at random, initiate a blink if not already blinking or sleeping
 	if ( !m_fDontBlink )
 	{
-		/*//<<TEMP>>//<<TEMP>>
-		if ( ( pev->skin == 0 ) && random->RandomInt(0,0x7F) == 0 )
+		if ( ( m_nSkin == 0 ) && random->RandomInt(0,0x7F) == 0 )
 		{// start blinking!
-			pev->skin = HOUNDEYE_EYE_FRAMES - 1;
+			m_nSkin = HOUNDEYE_EYE_FRAMES - 1;
 		}
-		else if ( pev->skin != 0 )
+		else if ( m_nSkin != 0 )
 		{// already blinking
-			pev->skin--;
+			m_nSkin--;
 		}
-		*/
 	}
 }
 
@@ -1139,19 +1130,8 @@ int CNPC_Houndeye::SelectSchedule( void )
 			}
 			else
 			{
-				if (m_pSquad && random->RandomInt(0,5) == 0)
-				{
-					if (!IsAnyoneInSquadAttacking())
-					{
-						EmitSound( "NPC_Houndeye.GroupFollow" );
-
-						m_flSoundWaitTime = gpGlobals->curtime + 1.0;
-
-						m_pSquad->BroadcastInteraction( g_interactionHoundeyeGroupRalley, NULL, this );
-						return SCHED_HOUND_ATTACK_STRAFE;
-					}
-				}
-				return SCHED_HOUND_ATTACK_STRAFE;
+				// If not in attack range, chase the enemy aggressively.
+				return SCHED_HOUND_CHASE_ENEMY;
 			}
 			break;
 		}
@@ -1209,7 +1189,6 @@ AI_DEFINE_SCHEDULE
 
 	"	Tasks "
 	"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_HOUND_ATTACK_STRAFE_REVERSE"
-	"		TASK_HOUND_GET_PATH_TO_CIRCLE	0"
 	"		TASK_RUN_PATH					0"
 	"		TASK_WAIT_FOR_MOVEMENT			0"
 	""
@@ -1235,7 +1214,6 @@ AI_DEFINE_SCHEDULE
 	"	Tasks "
 	"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_HOUND_CHASE_ENEMY"
 	"		TASK_HOUND_REVERSE_STRAFE_DIR	0"
-	"		TASK_HOUND_GET_PATH_TO_CIRCLE	0"
 	"		TASK_RUN_PATH					0"
 	"		TASK_WAIT_FOR_MOVEMENT			0"
 	""
