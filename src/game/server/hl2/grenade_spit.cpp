@@ -80,13 +80,13 @@ void CGrenadeSpit::Spawn( void )
 	if ( m_hSpitEffect != NULL )
 	{
 		// Setup our basic parameters
-		m_hSpitEffect->KeyValue( "start_active", "1" );
-		m_hSpitEffect->KeyValue( "effect_name", "antlion_spit_trail" );
-		m_hSpitEffect->SetParent( this );
-		m_hSpitEffect->SetLocalOrigin( vec3_origin );
-		DispatchSpawn( m_hSpitEffect );
-		if ( gpGlobals->curtime > 0.5f )
-			m_hSpitEffect->Activate();
+//		m_hSpitEffect->KeyValue( "start_active", "1" );
+//		m_hSpitEffect->KeyValue( "effect_name", "antlion_spit_trail" );
+//		m_hSpitEffect->SetParent( this );
+//		m_hSpitEffect->SetLocalOrigin( vec3_origin );
+//		DispatchSpawn( m_hSpitEffect );
+//		if ( gpGlobals->curtime > 0.5f )
+//			m_hSpitEffect->Activate();
 	}
 }
 
@@ -186,11 +186,11 @@ void CGrenadeSpit::GrenadeSpitTouch( CBaseEntity *pOther )
 	if ( pOther->IsPlayer() || bHitWater )
 	{
 		// Do a lighter-weight effect if we just hit a player
-		DispatchParticleEffect( "antlion_spit_player", GetAbsOrigin(), vecAngles );
+//		DispatchParticleEffect( "antlion_spit_player", GetAbsOrigin(), vecAngles );
 	}
 	else
 	{
-		DispatchParticleEffect( "antlion_spit", GetAbsOrigin(), vecAngles );
+//		DispatchParticleEffect( "antlion_spit", GetAbsOrigin(), vecAngles );
 	}
 
 	Detonate();
@@ -279,6 +279,6 @@ void CGrenadeSpit::Precache( void )
 
 	PrecacheScriptSound( "GrenadeSpit.Hit" );
 
-	PrecacheParticleSystem( "antlion_spit_player" );
-	PrecacheParticleSystem( "antlion_spit" );
+//	PrecacheParticleSystem( "antlion_spit_player" );
+//	PrecacheParticleSystem( "antlion_spit" );
 }
