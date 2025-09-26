@@ -440,17 +440,17 @@ void CNPC_Houndeye::Precache()
 {
 	PrecacheModel("models/houndeye.mdl");
 
-	PrecacheScriptSound( "NPC_Houndeye.Anger1" );
-	PrecacheScriptSound( "NPC_Houndeye.Anger2" );
+	PrecacheScriptSound( "NPC_Houndeye.Anger1" ); 
+	PrecacheScriptSound( "NPC_Houndeye.Anger2" ); 
 	PrecacheScriptSound( "NPC_Houndeye.SpeakSentence" );
-	PrecacheScriptSound( "NPC_Houndeye.Idle" );
+	PrecacheScriptSound( "NPC_Houndeye.Idle" ); 
 	PrecacheScriptSound( "NPC_Houndeye.WarmUp" );
-	PrecacheScriptSound( "NPC_Houndeye.Warn" );
-	PrecacheScriptSound( "NPC_Houndeye.Alert" );
-	PrecacheScriptSound( "NPC_Houndeye.Die" );
-	PrecacheScriptSound( "NPC_Houndeye.Pain" );
+	PrecacheScriptSound( "NPC_Houndeye.Warn" ); 
+	PrecacheScriptSound( "NPC_Houndeye.Alert" ); 
+	PrecacheScriptSound( "NPC_Houndeye.Die" ); 
+	PrecacheScriptSound( "NPC_Houndeye.Pain" ); 
 	PrecacheScriptSound( "NPC_Houndeye.Retreat" );
-	PrecacheScriptSound( "NPC_Houndeye.SonicAttack" );
+	PrecacheScriptSound( "NPC_Houndeye.SonicAttack" ); 
 
 	PrecacheScriptSound( "NPC_Houndeye.GroupAttack" );
 	PrecacheScriptSound( "NPC_Houndeye.GroupFollow" );
@@ -632,7 +632,7 @@ void CNPC_Houndeye::SonicAttack ( void )
 	float		flDist;
 
 	CPASAttenuationFilter filter( this );
-	EmitSound( filter, entindex(), "HoundEye.Sonic");
+	EmitSound( filter, entindex(), "NPC_Houndeye.SonicAttack");
 
 	CBroadcastRecipientFilter filter2;
 	te->BeamRingPoint( filter2, 0.0, 

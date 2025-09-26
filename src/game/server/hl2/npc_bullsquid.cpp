@@ -160,7 +160,6 @@ void CNPC_Bullsquid::Precache()
 	PrecacheScriptSound( "NPC_Bullsquid.Death" );
 	PrecacheScriptSound( "NPC_Bullsquid.Attack1" );
 	PrecacheScriptSound( "NPC_Bullsquid.Growl" );
-	PrecacheScriptSound( "NPC_Bullsquid.TailWhip");
 
 	BaseClass::Precache();
 }
@@ -319,13 +318,13 @@ void CNPC_Bullsquid::HandleAnimEvent( animevent_t *pEvent )
 		}
 		break;
 
+		/*
 		case BSQUID_AE_WHIP_SND:
 		{
 			EmitSound( "NPC_Bullsquid.TailWhip" );
 			break;
 		}
 
-/*
 		case BSQUID_AE_TAILWHIP:
 		{
 			CBaseEntity *pHurt = CheckTraceHullAttack( 70, Vector(-16,-16,-16), Vector(16,16,16), sk_bullsquid_dmg_whip.GetFloat(), DMG_SLASH | DMG_ALWAYSGIB );
@@ -446,6 +445,7 @@ int CNPC_Bullsquid::RangeAttack1Conditions( float flDot, float flDist )
 	return( COND_NONE );
 }
 
+/*
 //=========================================================
 // MeleeAttack2Conditions - bullsquid is a big guy, so has a longer
 // melee range than most monsters. This is the tailwhip attack
@@ -459,14 +459,14 @@ int CNPC_Bullsquid::MeleeAttack1Conditions( float flDot, float flDist )
 	
 	return( COND_NONE );
 }
-
+*/
 //=========================================================
 // MeleeAttack2Conditions - bullsquid is a big guy, so has a longer
 // melee range than most monsters. This is the bite attack.
 // this attack will not be performed if the tailwhip attack
 // is valid.
 //=========================================================
-int CNPC_Bullsquid::MeleeAttack2Conditions( float flDot, float flDist )
+int CNPC_Bullsquid::MeleeAttack1Conditions( float flDot, float flDist )
 {
 	if ( flDist <= 85 && flDot >= 0.7 && !HasCondition( COND_CAN_MELEE_ATTACK1 ) )		// The player & bullsquid can be as much as their bboxes 
 		 return ( COND_CAN_MELEE_ATTACK2 );

@@ -40,7 +40,7 @@ public:
 
 	int RangeAttack1Conditions( float flDot, float flDist );
 	int MeleeAttack1Conditions( float flDot, float flDist );
-	int MeleeAttack2Conditions( float flDot, float flDist );
+//	int MeleeAttack2Conditions( float flDot, float flDist );
 
 	bool FValidateHintType ( CAI_Hint *pHint );
 	void RemoveIgnoredConditions( void );
